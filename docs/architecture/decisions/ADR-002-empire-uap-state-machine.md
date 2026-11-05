@@ -16,21 +16,28 @@ semantics in runtime.
 
 Use one conceptual state record per empire with states `Not scheduled`,
 `Scheduled`, `Discovered`, `Investigating`, `Resolved`, `Paused / Invalidated`,
-and `Completed`. Each accepted transition checks expected prior state, schema
-version, transition sequence, active object identity where relevant, and a
-unique operation key. `Completed` is terminal. Pauses carry a reason and
-explicit resumability policy. Concrete storage names and script syntax are
-deferred until verified.
+and `Completed`. Keep progression state distinct from record lifecycle:
+`Absent`, `Initialized`, `Interrupted`, `Damaged`, or `Migrated`. A damaged
+record is never initialized over; a migration is complete only after the
+converted record validates. Each accepted transition checks expected prior
+state, schema version, transition sequence, active object identity where
+relevant, and a transition key. Presentation, object creation, and effect
+operations have separate typed keys in a bounded active-stage ledger. Completed
+stages compact to fixed-size checkpoints; ledger overflow pauses progression.
+`Completed` is terminal. Pauses carry a reason and explicit resumability policy.
+Concrete storage names, ledger bound, and script syntax are deferred until
+verified.
 
 ## Consequences
 
 - Replay and stale callbacks become explicit no-op or quarantine cases.
-- One-time effects require their own operation keys; script atomicity cannot be
-  assumed and needs interruption/replay testing.
+- Transition, presentation, object-creation, and effect operations cannot reuse
+  each other's keys. Script atomicity and safe retries cannot be assumed and
+  need interruption/replay testing per operation class.
 - The state model can describe save migration and recovery without a global
   poller.
-- State storage, operation-key limits, and object-reference lifetime need
-  implementation-time design and runtime tests.
+- Lifecycle detection, bounded ledger persistence, pending/commit semantics,
+  and object-reference lifetime need implementation-time runtime tests.
 
 ## Alternatives considered
 

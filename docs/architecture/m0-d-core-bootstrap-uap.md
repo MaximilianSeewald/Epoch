@@ -40,6 +40,9 @@ the runtime behavior or underlying evidence is absent.
 ## Design invariants
 
 1. Bootstrap, eligibility, UAP state, and progression are country/empire scoped.
+   Record lifecycle is separate from progression: absent, initialized,
+   interrupted, damaged, and migrated are not interchangeable with a progression
+   state such as `Not scheduled`.
 2. Organic empires, Hive Minds, and Machine Intelligences use one shared
    eligibility policy. Player and AI empires use the same gates and state
    transitions.
@@ -65,24 +68,30 @@ the runtime behavior or underlying evidence is absent.
    usable country identity. Exact predicates for invalid, observer, unowned,
    fallen, crisis, enclave, and other special countries must be selected from
    verified 4.5.3 definitions before implementation.
-3. **Duplicate guard:** if a durable bootstrap marker or any UAP state already
-   exists, return without scheduling. A state record and its guard must be
-   written before queuing the delayed callback, so a repeat dispatch cannot
-   enqueue a second callback.
+3. **Duplicate guard:** distinguish no state record from a valid initialized
+   record. If a record already exists, classify it and follow its recovery path;
+   never treat damaged or interrupted data as absent. A transition guard and
+   scheduling intent are persisted before requesting the delayed callback.
 4. **Eligibility:** invoke the single shared eligibility policy. It treats
    organics, Hive Minds, and Machine Intelligences as supported classes and
    does not branch on human versus AI control. Eligibility outcomes carry a
    stable reason code for diagnostics.
-5. **Schedule:** for an eligible empire, persist `Scheduled`, the schedule
-   generation/key, and a bounded target time/order, then queue at most one
-   delayed callback. The exact delay mechanism and per-empire staggering method
-   remain subject to parser and multiplayer validation. A fixed, deterministic
-   offset is the first candidate; do not assume a random-delay form is safe.
-6. **Delivery:** the callback verifies its generation/key is still current,
-   confirms state is still `Scheduled`, and re-runs the same eligibility rule.
-   If all checks pass, it transitions to `Discovered` and emits the first
-   discovery presentation once. If a check fails, it transitions to
-   `Paused / Invalidated` with a reason and no progression side effects.
+5. **Schedule:** for an eligible empire, persist a `Scheduled` state with
+   `registration = unconfirmed`, generation/key, bounded target time/order, and
+   retry count zero. Then request the delayed callback. Do not infer from the
+   request returning that the engine has durably registered it; only delivery
+   proves that a callback arrived. This ordering makes a save interruption
+   visible as an outstanding registration intent. The exact delay mechanism and
+   per-empire staggering method remain subject to parser and multiplayer
+   validation. A fixed, deterministic offset is the first candidate; do not
+   assume a random-delay form is safe.
+6. **Delivery:** the callback carries the same generation and callback key on
+   every registration attempt. It verifies its key is current, confirms state
+   is still `Scheduled`, and re-runs the same eligibility rule. If all checks
+   pass, it commits the delivery transition and emits the first discovery
+   presentation through separate idempotency keys. If a check fails, it moves
+   to a reasoned pause/invalidation with no progression side effects. Duplicate
+   deliveries for the same key are no-ops after the first accepted transition.
 
 If handler merge behavior is not additive, the feature must not replace the
 Vanilla handler list. Stop at the integration gate and choose a verified
@@ -117,11 +126,27 @@ AI filters.
 - Treat a queued delayed callback and the state record as save data only after
   this is confirmed in the target runtime. Do not schedule again merely because
   a load occurred.
+- **Scheduling recovery decision:** represent the state write and delayed-event
+  request as a small recoverable protocol. First persist `Scheduled` plus the
+  generation, callback idempotency key, target, `registration = unconfirmed`,
+  and retry count. Then request registration. A later callback with that key is
+  the only positive evidence of delivery; no engine acknowledgement is
+  assumed. If execution is interrupted between the write and the request, or
+  registration outcome is otherwise unknown, a one-shot reconciliation entry
+  point may make at most one retry using the *same* generation and callback
+  key. Both the original and retry may be queued; the delivery guard accepts
+  only the first valid transition and treats later copies as stale/duplicate.
+  Persist the retry count before issuing that retry. After the bounded retry,
+  leave the record interrupted/paused with a diagnostic and do not keep
+  rescheduling. This design is safe only if state writes, callback payload,
+  callback persistence, and deduplicated delivery survive interruption and
+  save/load as required. Those properties and a synchronized one-shot
+  reconciliation entry point are **RUNTIME GATES**. If any fail, disable
+  automatic re-registration and leave the schedule paused for explicit,
+  supported recovery; do not guess that the callback is absent.
 - A callback after load follows the same key, state, and eligibility checks as
-  any other delivery. If it is missing, the architecture must not silently
-  infer whether it was consumed. Recovery may requeue only when a verified
-  reconciliation path can establish that the schedule is still pending and
-  safely deduplicate the old callback.
+  any other delivery. If no recovery entry point can be verified, keep the
+  schedule unresolved instead of polling or blindly requeueing it.
 - Do not use the single-player save-load hook as a recovery mechanism; M0-B
   source explicitly warns that it does not run on MP save loads due to OOS
   concerns.
@@ -131,23 +156,26 @@ AI filters.
   4.5.3-safe invocation path is verified. It calls the same duplicate guard and
   eligibility policy. Until then, document that existing campaigns are not
   supported for bootstrap. Never compensate with a recurring global scan.
-- A save containing an older EPOCH state version is reconciled through a
-  versioned migration map. Unknown or corrupt versions are quarantined as
-  `Paused / Invalidated` with a diagnostic reason; never reset them to
-  `Not scheduled` and risk replaying rewards.
+- A save containing an older EPOCH state version is classified as `Migrated`
+  only after a versioned migration map has completed and its result has been
+  validated. Unknown or corrupt versions are classified as `Damaged` and
+  quarantined; never reset them to `Not scheduled` and risk replaying rewards.
 
 ### Error and recovery policy
 
 | Condition | Required handling |
 |---|---|
 | Duplicate hook or callback | No-op using state plus operation key; record a diagnostic counter/reason only if that is safe and bounded. |
+| Interrupted callback registration | Keep the persisted `unconfirmed` intent; use at most one same-key retry from a verified one-shot reconciliation entry point. If the gate is not met, pause without retry. |
 | Eligibility lost before delivery | Mark paused/invalidated with reason; do not emit discovery or grant effects. |
 | Delayed callback key is stale | No-op; do not change newer state. |
-| Unsupported/corrupt saved schema | Quarantine; preserve original data where possible and log state version/reason. |
+| Unsupported/corrupt saved schema | Classify as Damaged; quarantine and preserve original data where possible. Do not initialize over it. |
+| Valid but incomplete in-progress write/operation | Classify as Interrupted; retain last committed progression state and operation journal, then resume/retry only its guarded operation through an approved recovery entry point. |
+| Legacy record migrated successfully | Classify as Migrated with source and destination schema versions and a completed migration key; normal progression is available only after validation. |
 | Missing downstream Situation/Project definition | Keep progression recoverable and paused with the missing integration identifier; do not mark success. Exact engine-safe detection needs validation. |
 | Callback or event is delivered twice | Transition guard and one-time operation key prevent duplicate presentation, rewards, or object creation. |
 | Permanent loss/removal of country | Mark terminal invalidation if country scope is still addressable; otherwise rely on engine cleanup and treat cleanup semantics as an open test. |
-| Unexpected event failure | Keep the last committed state and operation key; recovery is an explicit, guarded retry or operator-readable diagnosis, never implicit replay of completed effects. |
+| Unexpected event failure | Keep the last committed state and typed operation key; retry only if failure proves the operation did not execute or its specific operation is verified idempotent. Otherwise pause for diagnosis; never implicitly replay a possibly completed effect. |
 
 Error logging must be concise and bounded: empire identity, UAP schema/state,
 operation key, event/transition name, reason code, and game version where
@@ -155,19 +183,72 @@ available. Do not write per-tick logs.
 
 ## UAP empire state machine
 
-State is empire-specific. The state record contains: schema version; current
-state; monotonically increasing transition sequence; schedule generation/key
-and target; current arc/stage identifier; active Situation/Project reference
-when applicable; pause reason and resume policy; and a set/ledger of completed
-one-time operation keys. These are logical fields, not proposed Stellaris
-variables or commands. Choose concrete storage only after its scope, save/load,
-and multiplayer behavior are verified.
+State is empire-specific and has two separate dimensions:
+
+- **Record lifecycle:** `Absent` (no record exists), `Initialized` (a new
+  supported-schema record is valid), `Interrupted` (a known operation began but
+  did not reach its commit marker), `Damaged` (schema or invariants cannot be
+  trusted), and `Migrated` (a legacy record was transformed and validated).
+  Lifecycle is metadata about record integrity/recovery, not a progression
+  state. `Not scheduled` exists only inside an initialized or migrated valid
+  record. Damaged data is never treated as absent. Migration failure remains
+  Damaged; Interrupted is resumed only from its recorded operation checkpoint.
+- **Progression state:** one of the states in the table below. A record must
+  pass lifecycle/schema validation before transitions are accepted.
+
+| Record lifecycle | Meaning | Allowed handling |
+|---|---|---|
+| **Absent** | No EPOCH UAP record is stored for this empire. | Shared eligibility and bootstrap guard decide whether to create a new Initialized record. Absence alone never authorizes replay of a known prior record. |
+| **Initialized** | A newly created record passed schema and invariant checks. | Normal progression transitions are allowed. |
+| **Interrupted** | A durable operation intent exists without a durable completion marker. | Keep the last committed progression state. Resume only from that operation's checkpoint and only if its operation-specific recovery is runtime-verified; otherwise remain paused. |
+| **Damaged** | Required fields, schema, or invariants are missing or contradictory. | Quarantine read-only, preserve diagnostics, and require a versioned repair/migration policy. Never initialize over the record. |
+| **Migrated** | A known source schema was transformed and validated into the current schema. | Normal progression is allowed after migration completion is committed. Replaying the same migration key is a no-op. |
+
+The transitions are `Absent → Initialized`; `Initialized → Interrupted →
+Initialized` only after safe recovery; and a known legacy record is marked
+`Interrupted` with a migration intent, then becomes `Migrated` only after the
+conversion and validation commit. An incomplete or failed migration remains
+`Interrupted` if its checkpoint is trustworthy, otherwise it becomes
+`Damaged`. Any invalid record becomes `Damaged`. `Damaged` has no automatic
+transition out. A repair, if later designed, must be a separately versioned,
+auditable migration. These are logical transitions; their persistence and
+interruption behavior are runtime gates.
+
+The logical record contains schema version, lifecycle and lifecycle reason,
+current progression state, transition sequence, schedule generation/key and
+target, current arc/stage, active Situation/Project reference when applicable,
+pause reason and resume policy, plus a bounded idempotency ledger. These are
+logical fields, not proposed Stellaris variables or commands. Concrete storage
+and write ordering require runtime verification.
+
+### Bounded, typed idempotency ledger
+
+Use distinct key namespaces and completion markers for **transition**,
+**presentation**, **object creation**, and **effect** operations. A key is
+derived from schema version, empire record identity, stage sequence, operation
+class, and a content-defined operation ordinal. Reusing a transition key as an
+effect key is invalid. Each operation records `pending` before attempting work
+and `committed` only after its result is confirmed; an interrupted `pending`
+entry is not treated as complete and may only retry through the same key and
+operation-specific recovery rule.
+
+The ledger is bounded by a schema-declared maximum sized from the planned
+maximum operations in one active stage. Keep active-stage keys only; once a
+stage commits, compact its result into a fixed-size stage checkpoint and reject
+callbacks carrying older stage sequences. If a future design requires
+out-of-order callbacks or more retained history than the checkpoint represents,
+it must revise this policy before implementation. At capacity, fail closed:
+pause with a `ledger_full` diagnostic; never evict an unproven key or silently
+replay work. The exact bound, stable key representation, persistence, atomicity
+of pending/committed writes, and ability to distinguish an interrupted effect
+from an unexecuted effect are **RUNTIME GATES**. Do not implement rewards or
+object creation until those gates pass.
 
 | State | Entry conditions | Allowed next states | Trigger and guard | Persistent information | Abort and recovery |
 |---|---|---|---|---|---|
-| **Not scheduled** | No UAP record exists, or a deliberately migrated eligible legacy record is initialized to this state. | Scheduled; Paused / Invalidated | Country-start bootstrap or explicit one-shot migration; shared eligibility must pass and bootstrap guard must be clear. | Schema, state, transition sequence, eligibility result/reason. | Ineligible countries remain outside progression or record an ineligible reason. A duplicate dispatch is a no-op. |
-| **Scheduled** | Eligibility passed; schedule key/target persisted before a single delayed callback is queued. | Discovered; Paused / Invalidated | Callback arrives with current schedule generation, record remains Scheduled, eligibility passes, no conflicting instance exists. | Schedule key/generation, target/order, queued-once marker, state version. | Cancel/expire only via a guarded terminal invalidation. Load recovery checks key; it does not blindly queue again. |
-| **Discovered** | Valid scheduled callback passes all checks and commits discovery operation key. | Investigating; Paused / Invalidated | Discovery event outcome or automatic transition when investigation object is successfully created. | Discovery operation key, arc/stage, discovery date/sequence, active object reference if created. | If presentation fails, retain state and allow idempotent presentation retry; do not duplicate event/reward. Eligibility loss pauses. |
+| **Not scheduled** | No active schedule in a valid Initialized or Migrated record. Absence of a record is not this state. | Scheduled; Paused / Invalidated | Country-start bootstrap or explicit one-shot migration; shared eligibility must pass and bootstrap guard must be clear. | Schema, record lifecycle, state, transition sequence, eligibility result/reason. | Ineligible countries remain outside progression or record an ineligible reason. A duplicate dispatch is a no-op. |
+| **Scheduled** | Eligibility passed; generation/key/target and unconfirmed registration intent persisted before requesting a delayed callback. | Discovered; Paused / Invalidated | Callback arrives with current schedule generation, record remains Scheduled, eligibility passes, no conflicting instance exists. | Schedule key/generation, target/order, registration status/retry count, state version. | On uncertain registration, use only the bounded one-shot same-key retry described above after its runtime gate; otherwise pause. |
+| **Discovered** | Valid scheduled callback passes all checks and commits discovery operation key. | Investigating; Paused / Invalidated | Discovery event outcome or automatic transition when investigation object is successfully created. | Discovery operation key, arc/stage, discovery date/sequence, active object reference if created. | If presentation completion is uncertain, keep its typed ledger entry pending and pause unless safe replay has been verified. Eligibility loss pauses. |
 | **Investigating** | Investigation begins and required Situation or other progression object is confirmed active. | Resolved; Paused / Invalidated | Explicit success/completion callback for the active stage, with matching object and operation key. | Active stage, object identity/reference, choice/approach outcome, callbacks already consumed. | Abort/failure/invalid owner pauses with reason. Resume same stage only after object and gate are revalidated; otherwise invalidate explicitly. |
 | **Resolved** | Current investigation's success/failure choice is committed and its completion key recorded. | Investigating; Completed; Paused / Invalidated | A later arc becomes eligible and is explicitly started; final UAP completion criterion is met; or a required gate fails. | Resolution key, selected outcome, consequences applied keys, next-stage eligibility. | Replayed resolution callback is a no-op. Retry only a separately keyed, designed continuation; never reapply consequences. |
 | **Paused / Invalidated** | A gate, object, schema, or owner became invalid, or an explicit cancellation/recovery policy paused progression. Includes reason and resumability classification. | Scheduled; Discovered; Investigating; Resolved; Completed (policy-specific only) | Explicit resume/revalidation event or administrative migration; must match pause reason and current state version. | Pause reason, prior state, resumable/permanent flag, retry count/bounded policy, failed operation key. | No polling. Permanent invalidation cannot resume. Resume restores prior valid stage or a specifically defined safe checkpoint; no reward replay. |
@@ -176,12 +257,17 @@ and multiplayer behavior are verified.
 ### Transition rules
 
 - Every transition names its expected prior state, expected schema version,
-  transition sequence, and unique operation key. A mismatch means no-op or
+  transition sequence, and unique transition key. A mismatch means no-op or
   quarantine, never force-advance.
-- Commit state and the one-time key before emitting presentation or applying
-  non-repeatable effects where engine semantics permit. Since script-level
-  atomicity is **UNVERIFIED**, split object creation/effect application into
-  separately guarded operations and test interruption at each boundary.
+- Presentation, object creation, and each effect have separate operation keys
+  and completion records. Do not consider presentation complete because a
+  transition committed, object creation complete because it was requested, or
+  an effect complete because its event ran.
+- The protocol of writing `pending`, performing the operation, and writing
+  `committed` is a design contract, not an atomicity guarantee. If execution can
+  stop after the operation but before its commit marker, retry could repeat an
+  effect. Until runtime tests establish a safe recovery pattern for that
+  operation class, keep it paused for diagnosis instead of retrying it.
 - `Resolved` is an intermediate result, not necessarily terminal. It may start
   a later investigation or move to `Completed` only when the full UAP terminal
   condition is met.
@@ -196,8 +282,8 @@ and multiplayer behavior are verified.
 |---|---|---|---|
 | **Bootstrap / Initialization** | Country-start entry, duplicate guard, schema initialization, initial scheduling request. | Consumes country context; calls Eligibility and State Management. | Story/event content, class-specific story logic, global polling. |
 | **Eligibility** | One pure, shared empire gate and stable reason categories. | Input: country facts + campaign gate; output: eligible/reason. | State mutation, scheduling, player/AI differentiation. |
-| **UAP State Management** | State schema, transition validation, operation-key idempotency, migration/quarantine policy. | Input: expected state/version + operation; output: accepted/rejected transition. | Narrative presentation, situation internals, compatibility content. |
-| **Discovery Scheduling** | Target ordering/delay policy and one callback request per eligible empire. | Input: stable empire key + schedule generation; emits delivery callback. | Eligibility policy duplication, story outcomes, random mechanism before MP validation. |
+| **UAP State Management** | Record lifecycle classification; state schema, transition validation, typed bounded operation ledger, migration/quarantine policy. | Input: expected lifecycle/state/version + typed operation key; output: accepted/rejected operation and checkpoint. | Narrative presentation, situation internals, compatibility content. |
+| **Discovery Scheduling** | Target ordering/delay policy, persisted unconfirmed intent, and bounded same-key recovery request. | Input: stable empire key + schedule generation; requests delivery callback. | Eligibility policy duplication, story outcomes, unbounded retries, random mechanism before MP validation. |
 | **Event Orchestration** | Connects validated transitions to event presentation and downstream callbacks. | Consumes accepted transitions; calls Situation/Project adapters and state transitions. | Owning persistent progression state independently; hidden global scans. |
 | **Situation Management** | Adapter for starting, identifying, observing completion/abort of an active investigation situation. | Input/output through country-scoped orchestration contracts. | Core UAP state machine, schedule policy, Gigastructures references. |
 | **Special Project Integration** | Adapter for discrete research tasks and success/failure callbacks. | Input: project request/context; output: keyed result callback. | Persistent duplicate UAP state, independent eligibility rules. |
@@ -242,7 +328,10 @@ module enumerates all empires as part of routine progression.
 The following remain **UNVERIFIED** and block implementation claims: additive
 on_action registration; exactly-once hook coverage; synchronized delay/random
 semantics; event ordering and re-entrancy; persistence of country flags,
-variables, queued events, situation/project references; state/effect atomicity;
+variables, queued events, situation/project references; callback retry and
+deduplication semantics; bounded ledger persistence and pending/commit write
+ordering; detection and recovery of Interrupted versus Damaged records;
+state/effect atomicity;
 host/client desync behavior; AI progression; actual event/situation costs; and
 recovery behavior on country removal. Validate on the requested 4.5.3 runtime
 with parser logs, fresh saves, pre/post callback save-load checkpoints, all

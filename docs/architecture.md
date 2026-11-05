@@ -106,8 +106,14 @@ in [`architecture/m0-d-core-bootstrap-uap.md`](architecture/m0-d-core-bootstrap-
 Related decisions are recorded in the
 [`architecture/decisions/`](architecture/decisions/) ADRs. The compact design
 here remains a summary: evaluate eligibility in the country context, persist a
-duplicate guard before scheduling at most one delayed callback, recheck state
-and eligibility at delivery, and use explicit outcomes for later progression.
+duplicate guard and an unconfirmed scheduling intent before requesting a delayed
+callback, recheck state and eligibility at delivery, and use explicit outcomes
+for later progression. Interrupted registration has at most one same-key retry
+from a verified one-shot recovery entry point; that mechanism remains a runtime
+gate. Keep record lifecycle (Absent/Initialized/Interrupted/Damaged/Migrated)
+separate from progression state. Typed transition, presentation, object-creation,
+and effect keys live in a bounded active-stage ledger; storage and retry
+semantics remain runtime gates.
 Do not infer exact-once, random timing, persistence, or multiplayer safety from
 the source examples or the general M0-C report.
 
