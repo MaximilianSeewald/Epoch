@@ -21,7 +21,7 @@ country_event = {
 	id = epoch_m0c.2
 	title = epoch_m0c.2.name
 	desc = epoch_m0c.2.desc
-	picture = GFX_evt_unknown
+	picture = GFX_evt_black_hole
 	is_triggered_only = yes
 
 	trigger = {
