@@ -2,7 +2,10 @@
 
 **Status:** EPOCH design proposal informed by M0-B source inspection. No gameplay
 scripts are implemented here. See the [evidence matrix](evidence/m0-b-engine-verification.md)
-for the source/runtime boundary.
+for the source/runtime boundary and the [M0-C probe record](testing/m0-c-runtime-test.md)
+for the tester-reported, non-case-specific runtime status. The complete M0-D
+bootstrap and UAP state specification is in
+[`architecture/m0-d-core-bootstrap-uap.md`](architecture/m0-d-core-bootstrap-uap.md).
 
 ## Requirements
 
@@ -19,9 +22,9 @@ for the source/runtime boundary.
 
 ## Candidate approaches
 
-### A. Per-country start hook with country-local delayed event — recommended
+### A. Per-country start hook with country-local delayed event — recommended candidate
 
-**Recommended sequence:** use the source-defined `on_game_start_country` hook
+**Proposed sequence:** use the source-defined `on_game_start_country` hook
 to evaluate each country in its own context, filter to suitable player/AI
 empires, set an idempotency marker, and schedule that country's delayed
 discovery event. The callback rechecks eligibility and state before advancing.
@@ -111,21 +114,27 @@ executable.
 
 ## Proposed state model
 
-State is per empire. These labels are conceptual, not Stellaris script identifiers.
+State is per empire. The labels are conceptual, not Stellaris script
+identifiers. This summary is superseded by the full transition table and
+recovery rules in the [M0-D specification](architecture/m0-d-core-bootstrap-uap.md#uap-empire-state-machine).
 
 | State | Meaning | Transition |
 |---|---|---|
-| `not_scheduled` | No discovery schedule exists. | Initial state; eligible empire enters `scheduled`. |
-| `scheduled` | A discovery time or ordering has been assigned. | At callback, recheck the shared gate; enter `discovered` or expire safely. |
-| `discovered` | First signal has been presented; final ascension remains unrevealed. | First discovery event. |
-| `investigating` | An initial challenge or investigation is active. | Player/AI follows the same progression gate. |
-| `resolved` | Initial incident outcome and consequence are recorded. | Resolution event; later arcs may become eligible. |
-| `paused_or_invalidated` | A required gate no longer holds or progression cannot continue. | Explicit recovery/expiry; never silently strand the chain. |
+| `Not scheduled` | No schedule exists. | Eligible bootstrap or explicit migration enters `Scheduled`. |
+| `Scheduled` | One keyed delayed callback has been requested. | Valid delivery and eligibility recheck enters `Discovered`; stale/ineligible delivery pauses or invalidates. |
+| `Discovered` | First signal committed; purpose remains hidden. | Successful investigation start enters `Investigating`. |
+| `Investigating` | A keyed active investigation is being processed. | Explicit completion callback enters `Resolved`; failed gates pause. |
+| `Resolved` | Current stage outcome and one-time consequences are committed. | Later arc may enter `Investigating`; terminal UAP condition enters `Completed`. |
+| `Paused / Invalidated` | Progress cannot safely continue; reason and resumability are stored. | Explicit revalidation may resume prior stage; permanent invalidation is terminal. |
+| `Completed` | UAP terminal condition has been met. | Terminal; duplicate callbacks are no-ops. |
 
-Transitions should be idempotent so replayed callbacks cannot duplicate discovery
-or rewards. Persist state on the empire using a 4.5.3-verified mechanism. Storage,
-event-target lifetime, and save/load semantics remain unverified. Later stages
-advance through explicit outcomes rather than a permanent global monitor.
+Transitions are guarded by expected state/version and a unique operation key so
+replayed callbacks cannot duplicate discovery, object creation, or rewards.
+Concrete storage and script mechanisms remain subject to runtime verification;
+no 4.5.3 persistence or atomicity claim is made here. Later stages advance
+through explicit outcomes rather than a permanent global monitor. M0-C's general
+tester report does not change the NOT SPECIFIED status of individual runtime
+cases.
 
 ## Challenge pacing
 

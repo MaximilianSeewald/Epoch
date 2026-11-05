@@ -92,14 +92,33 @@ if 4.5.3 verification requires a different mechanism.
 
 M0-B source review found a country-local candidate: `on_game_start_country` in
 the supplied `common/on_actions/00_on_actions.txt`, alongside the no-scope
-`on_game_start` hook. Prefer evaluating eligibility in that country context and
-scheduling one delayed event for that country, instead of explicitly enumerating
-all empires from a global bootstrap. Store pending/started state on the country,
-recheck eligibility at delivery, and drive later progression through explicit
-event outcomes and completion callbacks. Vanilla source examples support
-country-start dispatch and day-delayed country events; exact-once execution,
-randomized timing, persistence, and multiplayer safety are not runtime-verified.
-See [`evidence/m0-b-engine-verification.md`](evidence/m0-b-engine-verification.md).
+`on_game_start` hook. M0-C added an isolated runtime probe and records a general
+tester-reported runtime campaign, but no case-specific outcomes for hook merge,
+country coverage, duplicate dispatch, save/load, or multiplayer. Those
+properties remain unverified in the evidence record. See
+[`evidence/m0-b-engine-verification.md`](evidence/m0-b-engine-verification.md)
+and [`testing/m0-c-runtime-test.md`](testing/m0-c-runtime-test.md).
+
+The complete proposed bootstrap, shared eligibility contract, save/load and
+running-campaign policy, empire-level UAP state machine, module interfaces,
+recovery cases, MP/performance requirements, and runtime gates are documented
+in [`architecture/m0-d-core-bootstrap-uap.md`](architecture/m0-d-core-bootstrap-uap.md).
+Related decisions are recorded in the
+[`architecture/decisions/`](architecture/decisions/) ADRs. The compact design
+here remains a summary: evaluate eligibility in the country context, persist a
+duplicate guard and an unconfirmed scheduling intent before requesting a delayed
+callback, recheck state and eligibility at delivery, and use explicit outcomes
+for later progression. Interrupted registration has at most one same-key retry
+from a verified one-shot recovery entry point; that mechanism remains a runtime
+gate. Keep record lifecycle (Absent/Initialized/Interrupted/Damaged/Migrated)
+separate from progression state. Typed transition, presentation, object-creation,
+and effect keys live in a bounded active-stage ledger; storage and retry
+semantics remain runtime gates. Existing valid Initialized/Migrated records
+continue from their stored progression, Interrupted records enter recovery, and
+Damaged records are quarantined. Only incompatible or contradictory records
+block normal bootstrap; mere record presence does not.
+Do not infer exact-once, random timing, persistence, or multiplayer safety from
+the source examples or the general M0-C report.
 
 No technology is used to initiate discovery. No starting civic, trait, origin, or
 bonus is added. The late-game purpose remains hidden during early stages. The
@@ -138,3 +157,6 @@ event targets; situations/stages; special projects; localisation encoding/key
 syntax; AI weights/automation; and multiplayer determinism/performance. Record the
 source file and a minimal in-game validation for each feature. Do not treat this
 proposal or older community examples as proof of 4.5.3 support.
+
+M0-D is documentation-only. No gameplay implementation is authorized by its
+architecture artifacts, and historical M0-B/M0-C results are not rewritten.
