@@ -102,12 +102,34 @@ handlers.
 
 Eligibility is a pure decision at a specified country scope: it reads country
 facts, returns eligible/ineligible plus a reason, and does not mutate state,
-grant content, schedule events, or depend on player status. The policy has three
-parts:
+grant content, schedule events, or depend on player status. Record lifecycle is
+a separate bootstrap disposition check, not a blanket eligibility condition.
+The policy has three parts:
 
 - **Common validity gate:** country exists, is an empire that can own
-  progression, is not in a terminal/excluded game role, and has no conflicting
-  EPOCH record.
+  progression, and is not in a terminal/excluded game role. An existing EPOCH
+  record does not by itself make the empire ineligible. The bootstrap applies
+  the following record disposition after the shared country/class/campaign
+  eligibility result:
+
+| Record disposition | Bootstrap handling |
+|---|---|
+| No record (`Absent`) | If country eligibility passes, create one valid `Initialized` record and continue from `Not scheduled`. If eligibility fails, do not create a record. |
+| Valid `Initialized` record | Validate and use its recorded progression state. Continue only the operation allowed from that state; never replace it with a fresh initial record. |
+| Valid `Migrated` record | Validate and use its migrated progression state just like an initialized record. Never repeat initialization or migration. |
+| `Interrupted` record | Route to the defined, operation-specific recovery path. Do not classify it as an eligibility conflict or start a fresh bootstrap. If recovery is unavailable or unverified, retain it as interrupted/paused. |
+| `Damaged` record | Quarantine read-only. Do not overwrite, repair implicitly, or create a replacement record. A repair requires a separately versioned, validated migration. |
+| Incompatible or contradictory record | Treat as `conflicting` only when its schema is unsupported and non-migratable, duplicate ownership/identity exists, or owner/schema/progression fields contradict one another. Block normal bootstrap, preserve the record, and diagnose. |
+
+Only an actually incompatible or contradictory record is a conflict that blocks
+normal bootstrap on conflict grounds. `Damaged` records have a separate
+read-only quarantine disposition that prevents overwriting or new-record
+initialization; quarantine does not itself change the empire's eligibility
+result or label every damaged record `conflicting`. A valid record that is
+already `Scheduled` or further along continues through its guarded
+progression/recovery path; it is not reset or rejected as ineligible. Whether
+lifecycle and invariant checks can be performed reliably against saved data is
+a **RUNTIME GATE**.
 - **Supported class gate:** regular organic, Hive Mind, or Machine Intelligence
   class, using predicates verified for the target build. Subclasses are not
   excluded unless a documented design rule requires it.
@@ -116,10 +138,10 @@ parts:
   control requirement is used to enter.
 
 The exact script predicates, semantics for newly created/subject/special
-empires, and all category coverage are **UNVERIFIED**. Implement one named
-eligibility interface and test its truth table against organic, Hive, machine,
-AI, player, and excluded-country examples. Do not maintain separate player and
-AI filters.
+empires, all category coverage, and reliable saved-record classification are
+**UNVERIFIED**. Implement one named eligibility interface and test its truth
+table against organic, Hive, machine, AI, player, excluded-country, and each
+record-lifecycle case. Do not maintain separate player and AI filters.
 
 ### Delayed entry, save/load, and running campaigns
 

@@ -113,7 +113,10 @@ from a verified one-shot recovery entry point; that mechanism remains a runtime
 gate. Keep record lifecycle (Absent/Initialized/Interrupted/Damaged/Migrated)
 separate from progression state. Typed transition, presentation, object-creation,
 and effect keys live in a bounded active-stage ledger; storage and retry
-semantics remain runtime gates.
+semantics remain runtime gates. Existing valid Initialized/Migrated records
+continue from their stored progression, Interrupted records enter recovery, and
+Damaged records are quarantined. Only incompatible or contradictory records
+block normal bootstrap; mere record presence does not.
 Do not infer exact-once, random timing, persistence, or multiplayer safety from
 the source examples or the general M0-C report.
 
