@@ -20,9 +20,14 @@ Engine details are proposals until verified against Stellaris 4.5.3.
 
 ### A. One-time bootstrap with per-empire delayed events — recommended proposal
 
-**Trigger mechanism:** A verified game-start hook invokes one bootstrap handler.
-It enumerates eligible empires once and schedules an empire-scoped discovery
-event. Each scheduled event rechecks eligibility before changing state. The exact
+**Recommended sequence:** one-time initialization, one eligibility enumeration,
+and one delayed discovery event scheduled per eligible empire. No recurring
+global polling is used in this preferred design.
+
+**Trigger mechanism:** One initialization hook invokes the bootstrap handler once.
+It performs one eligibility enumeration and schedules a per-empire delayed
+discovery event. Each scheduled event rechecks that empire's eligibility before
+changing state. The exact
 4.5.3 hook, iteration, delayed-event mechanism, and scope behavior remain
 unverified.
 
@@ -45,9 +50,10 @@ semantics require 4.5.3 verification.
 make all clients see the same schedule and outcomes. This must be proven in
 multiplayer; event scheduling cannot be assumed safe without a desync test.
 
-**Performance:** One global pass at startup, then one delayed callback per
-eligible empire and event-driven progression. Work scales with the number of
-empires once rather than repeated global polling. Actual engine cost is unmeasured.
+**Performance:** One eligibility enumeration at initialization, then one delayed
+callback per eligible empire and event-driven progression. Work scales with the
+number of empires once rather than repeated global polling. Actual engine cost is
+unmeasured.
 
 **Advantages:** Clear per-empire schedule; no persistent polling; consistent
 eligibility; visibly staggered timing.
