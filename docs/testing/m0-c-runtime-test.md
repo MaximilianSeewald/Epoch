@@ -12,8 +12,8 @@
 
 **IMPLEMENTED:** isolated content lives in `test-mods/m0-c-runtime-probe/`. It has its own descriptor, event namespace (`epoch_m0c`), on_action file, situation, and English localisation. It does not reference EPOCH Core, Gigastructures, or modify Vanilla files.
 
-1. Copy the `m0-c-runtime-probe` directory to `%USERPROFILE%\Documents\Paradox Interactive\Stellaris\mod\m0-c-runtime-probe`.
-2. Create a sibling file `%USERPROFILE%\Documents\Paradox Interactive\Stellaris\mod\m0-c-runtime-probe.mod` containing the following, replacing the path with the full path to that copied directory (forward slashes are recommended):
+1. Copy the `m0-c-runtime-probe` directory to `%USERPROFILE%\Documents\Paradox Interactive\Stellaris\mod\m0-c-runtime-probe`. Keep its internal `descriptor.mod` in place.
+2. Create the sibling launcher descriptor `%USERPROFILE%\Documents\Paradox Interactive\Stellaris\mod\m0-c-runtime-probe.mod`. It repeats the metadata in the copied folder's `descriptor.mod` and adds a `path` to the copied folder. Keep `name`, `version`, `supported_version`, and `tags` in both descriptors in sync. Use the following content, replacing the path with the full path to the copied directory (forward slashes are recommended):
 
    ```text
    name="EPOCH M0-C Runtime Probe"
@@ -26,14 +26,14 @@
 3. In the Stellaris launcher, enable only **EPOCH M0-C Runtime Probe** in a test playset. Start the installed game through Steam and confirm the main menu reports 4.5.3. User-confirmed installation: `G:\Steam\steamapps\common\Stellaris`, App-ID 281990.
 4. Start a new, small test galaxy with an organic player empire and AI empires. Do not enable the EPOCH mod or other mods. Make a backup before each save/load test.
 
-## Implemented script structure
+## Implemented script structure and source checks
 
 - `common/on_actions/epoch_m0c_on_actions.txt` declares only an `on_game_start_country` handler that queues `epoch_m0c.1`. It does not restate Vanilla's handler list. **Whether this is additively merged is NOT TESTED.**
 - `events/epoch_m0c_events.txt` uses the unique namespace `epoch_m0c`. Event `.1` uses a persistent country flag as an idempotency gate, sets it before scheduling event `.2` for 30 days later, and adds no resources or empire setup changes. Event `.2` has a second persistent flag gate, shows a recognizable popup, then starts the probe situation in the current country scope.
-- `common/situations/epoch_m0c_situations.txt` defines two stages (50 and 100) and fixed monthly progress of 25. Completion records a country flag and destroys the situation. This gives a visible progress bar and an automatic, simple completion path.
+- `common/situations/epoch_m0c_situations.txt` defines `category = neutral`, `situation_log_category = developments`, initial progress 0, two stages (50 and 100), and fixed monthly progress with `base = 25`. Completion records a country flag and destroys the situation. This gives a visible progress bar and an automatic, simple completion path if the game accepts and runs the definition.
 - The descriptor and localisation are private to this probe. No icons/assets are added; the situation and popup use the Vanilla `GFX_evt_unknown` reference.
 
-**SOURCE:** M0-B identified the Vanilla country hook at `common/on_actions/00_on_actions.txt` (the supplied source copy) and fixed-day country-event patterns at `events/on_action_events_2.txt` and `common/scripted_effects/00_scripted_effects.txt`. Vanilla situation examples in `common/situations/01_narrative_situations.txt` show stages, `monthly_progress`, `start_situation`, and `destroy_situation`. These sources support the design candidates, not every field in this probe and not mod merge semantics.
+**SOURCE (local Stellaris 4.5.3 export):** `common/situations/01_narrative_situations.txt`, `situation_gravity_well` lines 626–675, contains `category = neutral` together with `situation_log_category = developments`, `initial_progress`, `progress_direction = monodirectional`, and stage definitions. In the same file, `situation_living_snow` lines 132–145 shows `monthly_progress = { base = 5 }` and a nested modifier using `add = 5`; `situation_mysterious_labyrinth` lines 151–165 uses `monthly_progress` with a nested `add = 2.5`. `common/situations/01_overlord_situations.txt`, `shroudwalker_spy_network` lines 226–264, shows a `monthly_progress` base value of 12.5 and `on_progress_complete` calling `destroy_situation = this`. `common/situations/03_origin_situations.txt`, `situation_shroud_forged` lines 1–45, also has `category = neutral`, `initial_progress`, and stages. These are concrete source-pattern matches; the export has no `monthly_progress` value of exactly 25 using either `base = 25` or `add = 25`. The probe keeps `base = 25` by analogy to the Vanilla `base` field, but its exact parser acceptance and behavior remain unverified. `start_situation` is present in `events/situation_events.txt` lines 40–50 (M0-B source copy) and the country-root pattern still needs runtime verification. None of these source matches proves parser acceptance, hook merge behavior, or runtime behavior.
 
 ## Test cases and expected observations
 
@@ -41,7 +41,7 @@ Record the game date, empire name/ID, government type, player/AI status, enabled
 
 1. **Launcher and parser:** the launcher lists and enables the standalone descriptor. Start a new game, exit, then inspect `Documents\Paradox Interactive\Stellaris\logs\error.log` and `game.log` (or the active user-data path shown by the launcher). Record whether the mod's files are loaded, all parse errors/warnings with file and line, and whether Vanilla `on_game_start_country` behavior remains present. Expected: descriptor recognized and no probe-file parser errors. **NOT TESTED.**
 2. **Additive hook / baseline:** on a fresh save with the probe enabled, check whether the player receives the M0-C popup on the starting day (this would suggest the handler event ran, but the popup is intentionally delayed). Wait 30 in-game days. Expected: one M0-C popup at the delayed event, while normal Vanilla country-start behavior (for example starting origin setup) still occurs. Compare a no-mod control save for Vanilla behavior. **Additive registration and timing NOT TESTED.** A missing popup alone cannot distinguish a rejected/overridden hook from a parser, trigger, or event issue; use logs and the control run.
-3. **Idempotency / repeated handler:** observe flags with the console if available or inspect a debug save using a suitable save viewer. Re-fire `epoch_m0c.1` for the same country using the event console command `event epoch_m0c.1` while the game is paused. Expected: `epoch_m0c_started` prevents another schedule; `epoch_m0c_delivered` prevents a second popup/situation if `.2` is manually re-fired. Verify a second invocation produces no additional outcome. **NOT TESTED.**
+3. **Idempotency / repeated handler:** the probe has no test-only re-entry control that can safely replay the normal on_action dispatch path. Do not use `event epoch_m0c.1` or `event epoch_m0c.2` as proof: the console command may invoke an event without evaluating its normal `trigger` conditions, so it does not establish that the flag guards were executed. Static inspection shows `.1` tests `epoch_m0c_started` before setting it and scheduling `.2`, and `.2` tests `epoch_m0c_delivered` before recording delivery and starting the situation. A fresh-game observation can establish the ordinary path runs, but it cannot prove behavior under a repeated normal dispatch. Reliable repeat-dispatch idempotency therefore remains an explicit open limitation; no extra on_action or polling mechanism is added. **Runtime NOT TESTED.**
 4. **Country coverage and context:** repeat new games for a normal organic empire, a Hive Mind, and a Machine Intelligence; separately observe AI empires. Expected: each country that receives the Vanilla hook gets its own single delayed popup and its own situation attached to that country. No bonuses or country setup changes should appear. Record each class separately. **NOT TESTED.**
 5. **Delay and situation:** on a fresh save, record the date of game start and popup. Expected: one popup after 30 days, a situation visible under the same empire in the situation log, two stages (0–50 and 50–100), progress +25 monthly, completion after four monthly progress applications, then situation removal and `epoch_m0c_situation_completed`. **NOT TESTED.** Exact date tick semantics may make the visible calendar date differ by one day; record observed ticks.
 6. **Save/load before delayed event:** save after new game has started but before the 30-day event. Reload and advance past the delay. Expected: one popup and one situation, without duplicate scheduling. **NOT TESTED.**
@@ -55,7 +55,8 @@ Record the game date, empire name/ID, government type, player/AI status, enabled
 | Launcher recognition / activation | NOT TESTED | No launch performed. |
 | Parser acceptance | NOT TESTED | No `error.log` or `game.log` from this mod run supplied/collected. |
 | Additive `on_game_start_country` registration | NOT TESTED | Must compare with Vanilla control and inspect logs. |
-| Delayed event and idempotency | NOT TESTED | No in-game observation. |
+| Delayed event | NOT TESTED | No in-game observation. |
+| Idempotency under repeated normal dispatch | NOT TESTED / OPEN LIMITATION | Current probe has no reliable replay harness; console event invocation is not valid evidence that trigger conditions ran. |
 | Situation ownership, progress, completion | NOT TESTED | No in-game observation. |
 | Organic / Hive / Machine / AI coverage | NOT TESTED | No in-game observation. |
 | Save/load checkpoints | NOT TESTED | No in-game observation. |
@@ -65,7 +66,8 @@ Keep copies of `error.log` and `game.log` from each run, plus the save files and
 ## Open questions and limitations
 
 - Does Stellaris merge the mod's on_action entry with the Vanilla handler list, or replace that entry? This is the central runtime question; do not infer the answer from the source file alone.
-- Are the situation fields and progress behavior accepted exactly as written in 4.5.3? The inspected source demonstrates related fields, but this exact definition has not been parsed.
+- Are all situation fields and the exact `monthly_progress` value `base = 25` accepted and applied as written in 4.5.3? Vanilla source demonstrates the fields/patterns but not this exact value; this definition has not been parsed.
+- Repeated-dispatch idempotency is not directly testable with the present minimal probe. A future test-only re-entry mechanism would need to exercise the same guard and scheduling path without becoming a production hook or poller.
 - Does this hook execute for every tested country class and AI empire, and how does it behave on a loaded game?
 - Are country flags and queued country events persisted as expected at each save/load checkpoint?
 - No multiplayer safety, synchronization, performance, or release-readiness claim is made.

@@ -1,5 +1,6 @@
 epoch_m0c_probe_situation = {
 	picture = GFX_evt_unknown
+	category = neutral
 	situation_log_category = developments
 	initial_progress = 0
 	progress_direction = monodirectional
