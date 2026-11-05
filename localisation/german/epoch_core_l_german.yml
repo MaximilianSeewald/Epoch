@@ -1,0 +1,9 @@
+﻿l_german:
+ epoch_core.2.name:0 "Das erste Echo"
+ epoch_core.2.desc:0 "In unseren Tiefraumobservatorien ist ein schmalbandiger Impuls aufgetaucht. Er wiederholt sich in Abständen, die zu gezielt wirken, um bloßes Messrauschen zu sein. Doch jeder Versuch, ihn zurückzuverfolgen, endet im leeren Raum. Vorerst wissen wir nur, dass das Signal zuvor nicht da war."
+ epoch_core.2.a:0 "Den Impuls sichern und vorsichtig untersuchen."
+ epoch_core.2.b:0 "Die Quelle triangulieren und unsere besten Analysten darauf ansetzen."
+ epoch_first_echo_investigation:0 "Das erste Echo"
+ epoch_first_echo_investigation_desc:0 "Der Impuls ist verstummt, doch seine Abstände und schwachen Echos sind noch in den Aufzeichnungen der Observatorien zu finden. Zuerst vergleichen die Analysten die Zeitpunkte, dann grenzen sie anhand des Musters das Suchgebiet ein. Jeder Durchgang bringt neue Hinweise – und lässt den Ursprung doch knapp außerhalb der Gewissheit."
+ epoch_first_echo_phase_signal:0 "Phase I: Impulsabstände vergleichen und Messrauschen herausfiltern."
+ epoch_first_echo_phase_source:0 "Phase II: Dem Restmuster bis zu seiner stillen Quelle folgen."

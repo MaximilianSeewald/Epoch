@@ -1,0 +1,51 @@
+epoch_first_echo_investigation = {
+	picture = GFX_evt_black_hole
+	category = neutral
+	situation_log_category = developments
+	initial_progress = 0
+	progress_direction = monodirectional
+
+	desc = {
+		trigger = {
+			success_text = {
+				always = yes
+				text = epoch_first_echo_situation_desc
+			}
+		}
+	}
+
+	stages = {
+		stage_signal_analysis = {
+			icon = GFX_situation_stage_1
+			icon_background = GFX_situation_stage_frame_blue
+			end = 50
+			custom_tooltip = epoch_first_echo_phase_signal
+		}
+		stage_source_analysis = {
+			icon = GFX_situation_stage_2
+			icon_background = GFX_situation_stage_frame_blue
+			end = 100
+			custom_tooltip = epoch_first_echo_phase_source
+		}
+	}
+
+	monthly_progress = {
+		base = 25
+	}
+
+	on_progress_complete = {
+		owner = {
+			if = {
+				limit = {
+					has_country_flag = epoch_core_investigation_active
+					NOT = { has_country_flag = epoch_core_first_echo_complete }
+				}
+				set_country_flag = epoch_core_first_echo_complete
+				remove_country_flag = epoch_core_investigation_active
+				set_variable = { which = epoch_core_investigation_status value = 2 }
+				set_variable = { which = epoch_core_completion_status value = 1 }
+			}
+		}
+		destroy_situation = this
+	}
+}

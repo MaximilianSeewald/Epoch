@@ -1,0 +1,20 @@
+# Country-local entry points keep each empire's bootstrap in its own scope.
+on_game_start_country = {
+	events = {
+		epoch_core.1
+	}
+}
+
+# Also catch empires created after the initial country-start dispatch.
+on_country_created = {
+	events = {
+		epoch_core.1
+	}
+}
+
+# Re-check an empire when it becomes a normal empire country type.
+on_country_type_changed = {
+	events = {
+		epoch_core.1
+	}
+}

@@ -1,0 +1,9 @@
+﻿l_english:
+ epoch_core.2.name:0 "The First Echo"
+ epoch_core.2.desc:0 "A narrow-band pulse has appeared in our deep-space observatories. It repeats at intervals too deliberate to dismiss as instrument noise, yet every attempt to trace it ends in empty sky. For now, we know only that the signal was not there before."
+ epoch_core.2.a:0 "Archive the pulse and study it cautiously."
+ epoch_core.2.b:0 "Triangulate the source and direct our best analysts toward it."
+ epoch_first_echo_investigation:0 "The First Echo"
+ epoch_first_echo_investigation_desc:0 "The pulse has faded, but its spacing and faint echoes remain in the observatory records. Analysts compare the timing first, then use the pattern to narrow the search. Each pass reveals a little more—and leaves the origin just beyond certainty."
+ epoch_first_echo_phase_signal:0 "Phase I: Compare the pulse intervals and remove instrument noise."
+ epoch_first_echo_phase_source:0 "Phase II: Follow the residual pattern toward its silent source."

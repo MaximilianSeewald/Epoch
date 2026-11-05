@@ -1,0 +1,6 @@
+# Regular playable empires use the default country type. Hive Minds and
+# Machine Intelligences are authorities within this country type, so this one
+# shared gate gives all three empire classes identical player/AI eligibility.
+epoch_core_eligible_empire = {
+	is_country_type = default
+}

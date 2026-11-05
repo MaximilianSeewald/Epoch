@@ -1,0 +1,66 @@
+namespace = epoch_core
+
+# Shared, idempotent entry point for starting empires and newly created ones.
+country_event = {
+	id = epoch_core.1
+	hide_window = yes
+	is_triggered_only = yes
+
+	trigger = {
+		epoch_core_eligible_empire = yes
+		NOT = { has_country_flag = epoch_core_initialized }
+	}
+
+	immediate = {
+		set_country_flag = epoch_core_initialized
+		set_country_flag = epoch_core_discovery_scheduled
+		set_variable = { which = epoch_core_schema_version value = 1 }
+		set_variable = { which = epoch_core_discovery_status value = 0 }
+		set_variable = { which = epoch_core_investigation_status value = 0 }
+		set_variable = { which = epoch_core_completion_status value = 0 }
+		country_event = { id = epoch_core.2 days = 30 }
+	}
+}
+
+# A fixed delayed callback is supported by the inspected Vanilla event syntax.
+country_event = {
+	id = epoch_core.2
+	title = epoch_core.2.name
+	desc = epoch_core.2.desc
+	picture = GFX_evt_black_hole
+	is_triggered_only = yes
+
+	trigger = {
+		epoch_core_eligible_empire = yes
+		has_country_flag = epoch_core_discovery_scheduled
+		NOT = { has_country_flag = epoch_core_first_echo_discovered }
+	}
+
+	immediate = {
+		remove_country_flag = epoch_core_discovery_scheduled
+		set_country_flag = epoch_core_first_echo_discovered
+		set_variable = { which = epoch_core_discovery_status value = 1 }
+	}
+
+	option = {
+		name = epoch_core.2.a
+		set_country_flag = epoch_core_investigation_active
+		set_variable = { which = epoch_core_investigation_status value = 1 }
+		set_variable = { which = epoch_core_response_choice value = 1 }
+		start_situation = {
+			type = epoch_first_echo_investigation
+		}
+		ai_chance = { factor = 60 }
+	}
+
+	option = {
+		name = epoch_core.2.b
+		set_country_flag = epoch_core_investigation_active
+		set_variable = { which = epoch_core_investigation_status value = 1 }
+		set_variable = { which = epoch_core_response_choice value = 2 }
+		start_situation = {
+			type = epoch_first_echo_investigation
+		}
+		ai_chance = { factor = 40 }
+	}
+}
