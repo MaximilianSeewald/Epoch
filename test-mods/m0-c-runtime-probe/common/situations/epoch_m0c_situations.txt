@@ -1,5 +1,5 @@
 epoch_m0c_probe_situation = {
-	picture = GFX_evt_unknown
+	picture = GFX_evt_black_hole
 	category = neutral
 	situation_log_category = developments
 	initial_progress = 0
