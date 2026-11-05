@@ -14,7 +14,7 @@ country_event = {
 	immediate = {
 		set_country_flag = epoch_core_initialized
 		set_country_flag = epoch_core_discovery_scheduled
-		set_variable = { which = epoch_core_schema_version value = 1 }
+		set_variable = { which = epoch_core_schema_version value = 2 }
 		set_variable = { which = epoch_core_discovery_status value = 0 }
 		set_variable = { which = epoch_core_investigation_status value = 0 }
 		set_variable = { which = epoch_core_completion_status value = 0 }
@@ -44,23 +44,226 @@ country_event = {
 
 	option = {
 		name = epoch_core.2.a
+		set_country_flag = epoch_core_initial_cautious
 		set_country_flag = epoch_core_investigation_active
 		set_variable = { which = epoch_core_investigation_status value = 1 }
-		set_variable = { which = epoch_core_response_choice value = 1 }
+		set_variable = { which = epoch_core_initial_decision value = 1 }
+		set_variable = { which = epoch_core_current_path value = 1 }
 		start_situation = {
 			type = epoch_first_echo_investigation
+			effect = {
+				set_situation_flag = epoch_core_path_cautious
+			}
 		}
-		ai_chance = { factor = 60 }
+		ai_chance = { factor = 55 }
 	}
 
 	option = {
 		name = epoch_core.2.b
+		set_country_flag = epoch_core_initial_aggressive
 		set_country_flag = epoch_core_investigation_active
 		set_variable = { which = epoch_core_investigation_status value = 1 }
-		set_variable = { which = epoch_core_response_choice value = 2 }
+		set_variable = { which = epoch_core_initial_decision value = 2 }
+		set_variable = { which = epoch_core_current_path value = 2 }
 		start_situation = {
 			type = epoch_first_echo_investigation
+			effect = {
+				set_situation_flag = epoch_core_path_aggressive
+			}
 		}
+		ai_chance = { factor = 35 }
+	}
+
+	option = {
+		name = epoch_core.2.c
+		set_country_flag = epoch_core_initial_refusal
+		set_country_flag = epoch_core_refusal_pending
+		set_variable = { which = epoch_core_initial_decision value = 3 }
+		set_variable = { which = epoch_core_refusal_status value = 1 }
+		country_event = { id = epoch_core.6 days = 360 }
+		ai_chance = { factor = 10 }
+	}
+}
+
+# Situation-scoped midpoint interaction. Each empire gets its own event in its
+# own Situation scope, and the decision cannot be delivered twice.
+situation_event = {
+	id = epoch_core.3
+	title = epoch_core.3.name
+	desc = {
+		text = epoch_core.3.desc.cautious
+		trigger = { has_situation_flag = epoch_core_path_cautious }
+	}
+	desc = {
+		text = epoch_core.3.desc.aggressive
+		trigger = { has_situation_flag = epoch_core_path_aggressive }
+	}
+	picture = GFX_evt_black_hole
+	is_triggered_only = yes
+	situation = this
+
+	trigger = {
+		NOT = { has_situation_flag = epoch_core_midpoint_decision_made }
+	}
+
+	immediate = {
+		set_situation_flag = epoch_core_midpoint_decision_made
+	}
+
+	option = {
+		name = epoch_core.3.a
+		trigger = {
+			has_situation_flag = epoch_core_path_cautious
+			owner = { has_resource = { type = energy amount > 99 } }
+		}
+		owner = {
+			add_resource = { energy = -100 }
+			add_resource = { physics_research = 200 }
+			set_country_flag = epoch_core_cautious_instrument_calibrated
+		}
+		set_situation_flag = epoch_core_cautious_calibration
 		ai_chance = { factor = 40 }
+	}
+	option = {
+		name = epoch_core.3.b
+		trigger = { has_situation_flag = epoch_core_path_cautious }
+		owner = { set_country_flag = epoch_core_cautious_baseline_kept }
+		set_situation_flag = epoch_core_cautious_baseline
+		ai_chance = { factor = 60 }
+	}
+	option = {
+		name = epoch_core.3.c
+		trigger = {
+			has_situation_flag = epoch_core_path_aggressive
+			owner = { has_resource = { type = energy amount > 249 } }
+		}
+		owner = { add_resource = { energy = -250 } }
+		set_situation_flag = epoch_core_aggressive_overdrive
+		ai_chance = { factor = 35 }
+	}
+	option = {
+		name = epoch_core.3.d
+		trigger = { has_situation_flag = epoch_core_path_aggressive }
+		set_situation_flag = epoch_core_aggressive_throttled
+		owner = { set_country_flag = epoch_core_aggressive_throttled }
+		ai_chance = { factor = 65 }
+	}
+}
+
+# Cautious completion offers a quiet long-baseline watch; the original choice
+# remains stored in epoch_core_initial_decision / epoch_core_initial_cautious.
+country_event = {
+	id = epoch_core.4
+	title = epoch_core.4.name
+	desc = epoch_core.4.desc
+	picture = GFX_evt_black_hole
+	is_triggered_only = yes
+	trigger = {
+		has_country_flag = epoch_core_initial_cautious
+		has_country_flag = epoch_core_cautious_investigation_complete
+		NOT = { has_country_flag = epoch_core_cautious_followup_seen }
+	}
+	immediate = { set_country_flag = epoch_core_cautious_followup_seen }
+	option = {
+		name = epoch_core.4.a
+		set_country_flag = epoch_core_quiet_watch_established
+		set_variable = { which = epoch_core_followup_outcome value = 1 }
+		add_resource = { society_research = 100 }
+		ai_chance = { factor = 1 }
+	}
+}
+
+# Aggressive completion exposes the coordinate fragment and gives a different
+# technical reward and follow-up state.
+country_event = {
+	id = epoch_core.5
+	title = epoch_core.5.name
+	desc = epoch_core.5.desc
+	picture = GFX_evt_black_hole
+	is_triggered_only = yes
+	trigger = {
+		has_country_flag = epoch_core_initial_aggressive
+		has_country_flag = epoch_core_aggressive_investigation_complete
+		NOT = { has_country_flag = epoch_core_aggressive_followup_seen }
+	}
+	immediate = { set_country_flag = epoch_core_aggressive_followup_seen }
+	option = {
+		name = epoch_core.5.a
+		set_country_flag = epoch_core_coordinates_recovered
+		set_variable = { which = epoch_core_followup_outcome value = 2 }
+		add_resource = { engineering_research = 100 }
+		ai_chance = { factor = 1 }
+	}
+}
+
+# A refused empire receives an invitation after one year; nothing starts or
+# costs resources until the empire explicitly chooses the re-entry option.
+country_event = {
+	id = epoch_core.6
+	title = epoch_core.6.name
+	desc = epoch_core.6.desc
+	picture = GFX_evt_black_hole
+	is_triggered_only = yes
+	trigger = {
+		epoch_core_eligible_empire = yes
+		has_country_flag = epoch_core_refusal_pending
+		has_country_flag = epoch_core_initial_refusal
+		NOT = { has_country_flag = epoch_core_reentered_after_refusal }
+	}
+	immediate = {
+		remove_country_flag = epoch_core_refusal_pending
+		set_country_flag = epoch_core_refusal_offer_open
+	}
+	option = {
+		name = epoch_core.6.a
+		trigger = {
+			has_country_flag = epoch_core_refusal_offer_open
+			has_resource = { type = energy amount > 299 }
+			has_resource = { type = minerals amount > 149 }
+		}
+		add_resource = { energy = -300 minerals = -150 }
+		remove_country_flag = epoch_core_refusal_offer_open
+		set_country_flag = epoch_core_reentered_after_refusal
+		set_country_flag = epoch_core_investigation_active
+		set_variable = { which = epoch_core_current_path value = 1 }
+		set_variable = { which = epoch_core_investigation_status value = 1 }
+		set_variable = { which = epoch_core_refusal_status value = 2 }
+		start_situation = {
+			type = epoch_first_echo_investigation
+			effect = {
+				set_situation_flag = epoch_core_path_cautious
+				set_situation_flag = epoch_core_path_reentry
+			}
+		}
+		ai_chance = { factor = 25 }
+	}
+	option = {
+		name = epoch_core.6.b
+		trigger = { has_country_flag = epoch_core_refusal_offer_open }
+		remove_country_flag = epoch_core_refusal_offer_open
+		set_country_flag = epoch_core_reentry_declined
+		set_variable = { which = epoch_core_refusal_status value = 3 }
+		ai_chance = { factor = 75 }
+	}
+}
+
+country_event = {
+	id = epoch_core.7
+	title = epoch_core.7.name
+	desc = epoch_core.7.desc
+	picture = GFX_evt_black_hole
+	is_triggered_only = yes
+	trigger = {
+		has_country_flag = epoch_core_initial_refusal
+		has_country_flag = epoch_core_reentry_investigation_complete
+		NOT = { has_country_flag = epoch_core_reentry_followup_seen }
+	}
+	immediate = { set_country_flag = epoch_core_reentry_followup_seen }
+	option = {
+		name = epoch_core.7.a
+		set_country_flag = epoch_core_reentry_signal_catalogued
+		set_variable = { which = epoch_core_followup_outcome value = 3 }
+		add_resource = { society_research = 75 }
+		ai_chance = { factor = 1 }
 	}
 }

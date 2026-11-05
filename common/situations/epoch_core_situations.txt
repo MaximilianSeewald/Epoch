@@ -5,11 +5,23 @@ epoch_first_echo_investigation = {
 	initial_progress = 0
 	progress_direction = monodirectional
 
+	on_monthly = {
+		if = {
+			limit = {
+				has_situation_flag = epoch_core_path_aggressive
+				NOT = { has_situation_flag = epoch_core_aggressive_throttled }
+			}
+			owner = {
+				add_resource = { energy = -10 }
+			}
+		}
+	}
+
 	desc = {
 		trigger = {
 			success_text = {
 				always = yes
-				text = epoch_first_echo_situation_desc
+				text = epoch_first_echo_investigation_desc
 			}
 		}
 	}
@@ -20,6 +32,9 @@ epoch_first_echo_investigation = {
 			icon_background = GFX_situation_stage_frame_blue
 			end = 50
 			custom_tooltip = epoch_first_echo_phase_signal
+			on_first_enter = {
+				situation_event = { id = epoch_core.3 }
+			}
 		}
 		stage_source_analysis = {
 			icon = GFX_situation_stage_2
@@ -30,7 +45,15 @@ epoch_first_echo_investigation = {
 	}
 
 	monthly_progress = {
-		base = 25
+		base = 10
+		modifier = {
+			add = 15
+			has_situation_flag = epoch_core_path_aggressive
+		}
+		modifier = {
+			subtract = 15
+			has_situation_flag = epoch_core_aggressive_throttled
+		}
 	}
 
 	on_progress_complete = {
@@ -44,6 +67,24 @@ epoch_first_echo_investigation = {
 				remove_country_flag = epoch_core_investigation_active
 				set_variable = { which = epoch_core_investigation_status value = 2 }
 				set_variable = { which = epoch_core_completion_status value = 1 }
+				if = {
+					limit = { has_country_flag = epoch_core_reentered_after_refusal }
+					add_resource = { physics_research = 100 }
+					set_country_flag = epoch_core_reentry_investigation_complete
+					country_event = { id = epoch_core.7 days = 1 }
+				}
+				else_if = {
+					limit = { has_country_flag = epoch_core_initial_cautious }
+					add_resource = { physics_research = 150 }
+					set_country_flag = epoch_core_cautious_investigation_complete
+					country_event = { id = epoch_core.4 days = 1 }
+				}
+				else_if = {
+					limit = { has_country_flag = epoch_core_initial_aggressive }
+					add_resource = { engineering_research = 150 }
+					set_country_flag = epoch_core_aggressive_investigation_complete
+					country_event = { id = epoch_core.5 days = 1 }
+				}
 			}
 		}
 		destroy_situation = this
