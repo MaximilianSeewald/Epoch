@@ -1,0 +1,7 @@
+# Additive registration is the behavior under test. This file must not copy
+# or replace the vanilla on_game_start_country definition.
+on_game_start_country = {
+	events = {
+		epoch_m0c.1
+	}
+}

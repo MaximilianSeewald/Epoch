@@ -1,0 +1,42 @@
+namespace = epoch_m0c
+
+# Country-scope handler. The persistent flag is set before queuing the delay.
+country_event = {
+	id = epoch_m0c.1
+	hide_window = yes
+	is_triggered_only = yes
+
+	trigger = {
+		NOT = { has_country_flag = epoch_m0c_started }
+	}
+
+	immediate = {
+		set_country_flag = epoch_m0c_started
+		country_event = { id = epoch_m0c.2 days = 30 }
+	}
+}
+
+# One visible, deterministic delayed event per marked country.
+country_event = {
+	id = epoch_m0c.2
+	title = epoch_m0c.2.name
+	desc = epoch_m0c.2.desc
+	picture = GFX_evt_unknown
+	is_triggered_only = yes
+
+	trigger = {
+		has_country_flag = epoch_m0c_started
+		NOT = { has_country_flag = epoch_m0c_delivered }
+	}
+
+	immediate = {
+		set_country_flag = epoch_m0c_delivered
+		start_situation = {
+			type = epoch_m0c_probe_situation
+		}
+	}
+
+	option = {
+		name = epoch_m0c.2.a
+	}
+}
