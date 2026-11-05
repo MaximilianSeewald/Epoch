@@ -2,12 +2,23 @@
 
 **Target requested:** Stellaris 4.5.3, Steam App-ID 281990, Build-ID 26325427.
 **Inspected path:** `C:\Users\Maxim\Desktop\EPOCH_M0B_Source`.
-**Dataset limitation:** the supplied `file_manifest.csv` lists local paths and
-file lengths, but has no version/build metadata or hashes. The requested target
-version is therefore recorded as task metadata, not independently proven
-provenance. The supplied subset has 168 game-data files under `common/` and
-`events/`, plus the manifest (169 files total). No vanilla files were copied into
-EPOCH.
+**Dataset identification:** the supplied reference directory is
+`C:\Users\Maxim\Desktop\EPOCH_M0B_Source`. It has 168 game-data files under
+`common/` and `events/`, plus `file_manifest.csv` (169 files total). The manifest
+lists absolute local paths and byte lengths; it does not identify a game build.
+The complete installation at `G:\Steam\steamapps\common\Stellaris` was readable.
+All 168 manifest-listed game-data files were found under the corresponding
+relative paths and matched the installation by byte length and SHA-256. Per-file
+hashes are recorded in [`m0-b-source-sha256.csv`](m0-b-source-sha256.csv). The
+manifest itself is an inventory file, not a Vanilla file. No Vanilla files were
+copied into EPOCH.
+
+**Version/build provenance:** Stellaris 4.5.3, Steam App-ID 281990, and Build-ID
+26325427 were supplied by the user as the target. Steam metadata at
+`G:\Steam\steamapps\appmanifest_281990.acf` identifies App-ID 281990 and Build-ID
+26325427 for the installed copy. This corroborates the installed Steam metadata;
+neither the build ID nor 4.5.3 is proven by the script-file contents or their
+hashes alone.
 
 ## Status definitions
 
@@ -64,13 +75,25 @@ verified launcher behavior.
 
 ## Runtime test results
 
-**VERIFIED – RUNTIME: none.** The supplied source bundle contains no game
-executable or launcher metadata. Standard Steam executable locations
-`C:\Program Files (x86)\Steam\steamapps\common\Stellaris\stellaris.exe`,
-`C:\Program Files\Steam\steamapps\common\Stellaris\stellaris.exe`, and
-`D:\SteamLibrary\steamapps\common\Stellaris\stellaris.exe` were not present.
-No temporary test mod was created because no game runtime was available to load
-it; static guessed syntax would not satisfy the requested runtime verification.
+**Runtime status: installation present; game launch not attempted.** At
+`G:\Steam\steamapps\common\Stellaris\stellaris.exe`, the file exists and is
+44,967,544 bytes. Windows VersionInfo reports FileVersion `1.0`, ProductVersion
+`1.0`, ProductName `Stellaris`, CompanyName `Paradox Interactive`; last modified
+2026-11-04 14:42:58 +01:00. The `1.0` VersionInfo does not establish the game
+release version. Other `.exe` files found recursively in the installation:
+
+| Relative path | Bytes | Last modified | VersionInfo |
+|---|---:|---|---|
+| `stellaris.exe` | 44,967,544 | 2026-11-04 14:42:58 +01:00 | File/Product 1.0; Stellaris; Paradox Interactive |
+| `dowser.exe` | 9,459,320 | 2026-09-22 15:57:09 +02:00 | Not reported |
+| `Injector.exe` | 59,392 | 2025-05-03 20:15:41 +02:00 | 2.3.1.0 |
+| `launcher-installer-windows_2024.14.exe` | 147,210,504 | 2026-10-06 11:22:50 +02:00 | 2024.14; Paradox Launcher |
+| `crash_reporter\binaries\CrashReporter.exe` | 2,752,512 | 2026-04-28 22:05:14 +02:00 | Not reported |
+
+Codex did not launch the game. Therefore this is not a claim that launch failed
+or that runtime behavior was executable and verified. No parser, in-game,
+situation, project, save/load, AI, MP, or performance test has been run. No
+temporary test mod was created; runtime behavior remains open.
 
 Still required when the matching game installation is available: launcher
 recognition/activation; parser logs; per-country hook coverage for organic,
@@ -80,22 +103,21 @@ determinism and desync observation; performance at representative empire counts.
 
 ## Open questions
 
-1. Does the supplied source subset correspond byte-for-byte to Build-ID 26325427?
-2. Does `on_game_start_country` run exactly once for every eligible country and
+1. Does `on_game_start_country` run exactly once for every eligible country and
    how does it behave on new-game initialization versus loaded saves?
-3. Which random-delay form is accepted and synchronized in 4.5.3 multiplayer?
-4. What are the actual scope and save/load semantics for scheduled events,
+2. Which random-delay form is accepted and synchronized in 4.5.3 multiplayer?
+3. What are the actual scope and save/load semantics for scheduled events,
    country flags, situation targets, and event targets?
-5. Which AI weight/automation patterns are supported for the intended event,
+4. Which AI weight/automation patterns are supported for the intended event,
    situation approaches, and project type?
-6. What localisation encoding, descriptor dependency syntax, launcher layout,
+5. What localisation encoding, descriptor dependency syntax, launcher layout,
    Workshop paths, and load-order rules apply in the installed 4.5.3 build?
-7. What are the situation/monthly-event and delayed-event costs in a large galaxy?
+6. What are the situation/monthly-event and delayed-event costs in a large galaxy?
 
 ## Recommendation
 
-Proceed to a minimal isolated test mod only when a matching Stellaris runtime is
-available. Keep the first test limited to the country-start hook, one guarded
+Proceed to a minimal isolated test mod when ready to perform runtime verification;
+the matching installation is present. Keep the first test limited to the country-start hook, one guarded
 delayed event, and a source-supported simple situation start. Do not implement
 EPOCH gameplay mechanics until the open runtime and missing-source questions are
 closed or explicitly accepted by the Technical Lead.

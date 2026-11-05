@@ -8,15 +8,28 @@ source-level findings, status definitions, limitations, and open questions.
 | Check | Result | Evidence |
 |---|---|---|
 | Repository state | Branch is `research/m0-engine-verification`; pre-existing untracked `.codegraph/` left untouched | `git status --short --branch` |
-| Vanilla reference inventory | 168 supplied `common/` and `events/` files plus the manifest (169 files total) | `C:\Users\Maxim\Desktop\EPOCH_M0B_Source\file_manifest.csv` |
+| Vanilla reference inventory | 168 supplied `common/` and `events/` files plus the manifest (169 files total); all 168 data files SHA-256 match the corresponding installed files | [Per-file hashes](evidence/m0-b-source-sha256.csv) |
+| Install/build metadata | `stellaris.exe` present at `G:\Steam\steamapps\common\Stellaris`; Steam appmanifest shows App-ID 281990 and Build-ID 26325427 | [Evidence and VersionInfo](evidence/m0-b-engine-verification.md#runtime-test-results) |
 | Source review | on_actions, events, situations, special projects, scripted effects/triggers/variables inspected | See matrix and line anchors |
-| Static parse test | Not run; no 4.5.3 parser is provided in the source bundle | Runtime unavailable |
-| In-game/runtime tests | Not run | Game executable absent from the three standard Steam paths checked; no temporary test mod created |
-| Multiplayer/performance | Not tested | Requires an installed 4.5.3 runtime and host/client session |
+| Static parse test | Not run | A parser/runtime test was not attempted |
+| In-game/runtime tests | Not run; game launch not attempted and no temporary test mod created | Runtime is installed; its launchability and behavior remain unverified |
+| Multiplayer/performance | Not tested | Requires runtime tests, including a host/client session |
 
-The requested target is Stellaris 4.5.3, App-ID 281990, Build-ID 26325427. The
-manifest does not independently attest the dataset's version/build provenance.
+The requested target is Stellaris 4.5.3, App-ID 281990, Build-ID 26325427. These
+were user-provided target details. The installed Steam appmanifest corroborates
+App-ID and Build-ID, but neither the script files nor their hashes prove game
+version. The reference data matches the installation byte-for-byte by SHA-256.
 No tests changed Vanilla files. No gameplay content was added.
+
+## M0-B completion status
+
+- **Source-Level-Research:** complete for the supplied files and documented in
+  the evidence matrix.
+- **Runtime verification:** open. The installation and executable are present;
+  Codex did not attempt to launch the game, so no runtime claim is made.
+- **AI, UI, localisation, and packaging:** more source files and/or launcher/game
+  checks are required.
+- **Multiplayer and performance:** runtime tests are required.
 
 ## Runtime validation matrix for implementation
 
