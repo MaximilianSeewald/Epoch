@@ -1,224 +1,149 @@
-# Stellaris technical reference for EPOCH
+# Stellaris 4.5.3 technical reference
 
-**Target:** Stellaris PC 4.5.3. **Research status:** 4.5.3 game files are not
-available in this workspace. No engine feature below is claimed verified against
-that release. Verify engine-dependent details against the installed game files and
-in-game before implementation. Examples are intentionally not executable script.
+**Purpose:** M0-B source verification for EPOCH. No gameplay scripts or mechanics
+are implemented by this document.
 
-## Status labels
+## Dataset and evidence boundary
 
-- **Verified for Stellaris 4.5.3:** checked against 4.5.3 files and/or direct
-  runtime validation. No engine feature in this document currently has this status.
-- **Older/community documentation; not verified for 4.5.3:** conventions described
-  by earlier or community references that may have changed or have contextual limits.
-  Exact source files are unavailable, so concepts below are cautious summaries.
-- **Proposed EPOCH architecture:** design choices, not claims about engine support.
+The inspected local reference is `C:\Users\Maxim\Desktop\EPOCH_M0B_Source`.
+It contains 168 game-data files in a curated `common/` and `events/` subset plus
+`file_manifest.csv` (169 files total). The manifest records paths and byte lengths, but does not
+record the Stellaris version, Steam App-ID, Build-ID, file hashes, or extraction
+method. Stellaris 4.5.3, App-ID 281990, Build-ID 26325427 are the requested
+target metadata, not independently verified dataset provenance. No source files
+were copied into this repository.
 
-Version-dependent items are marked **UNVERIFIED – requires Stellaris 4.5.3 game
-files**.
+`VERIFIED – SOURCE` below means the cited definition exists in the supplied
+reference subset. It does not prove parser acceptance, runtime behavior, MP
+determinism, or provenance of the subset. `VERIFIED – RUNTIME` is reserved for
+reproducible in-game tests; none were possible in this pass. `PROPOSED` identifies
+an EPOCH design recommendation. `UNVERIFIED` identifies a gap in available
+evidence.
 
-## Repository structure and descriptors
+See [`evidence/m0-b-engine-verification.md`](evidence/m0-b-engine-verification.md)
+for the claim-by-claim source matrix and line anchors.
 
-**Verified in repository:** root-level `common/`, `events/`, `gfx/`,
-`localisation/`, and `compatibility/gigastructures/` exist. `docs/` contains the
-project documents. Placeholder-only directories use `.gitkeep`. The root
-`descriptor.mod` is the internal source descriptor. An external launcher `.mod`
-is a separate packaging artifact and should not be placed inside Workshop source
-without a documented reason. The internal descriptor previously had
-`path="mod/EPOCH"`, which pointed to a nonexistent source-tree path; that entry
-has been removed. Exact launcher packaging behavior remains to be confirmed.
+## Events, hooks, scope, and discovery
 
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files** for
-descriptor keys, recognised content directories, and external launcher behavior.
-Scaffold directory names do not prove that their eventual subfolders match engine
-conventions.
+The source defines `on_game_start` and `on_game_start_country` in
+`common/on_actions/00_on_actions.txt`. The former is explicitly commented as
+having no scope; the latter dispatches its event list per country. The global
+hook already has many handlers, so EPOCH should not perform an all-country scan
+there if a per-country hook is suitable. A country hook can evaluate that
+country's eligibility locally and schedule its own delayed event. A persistent
+country marker and a repeated eligibility check at delivery are recommended for
+idempotency and stale schedules, but save/load behavior was not runtime-tested.
 
-## Event namespaces and IDs
+Vanilla event definitions in `events/situation_events.txt` show
+`namespace = situation`, explicit event types such as `country_event`,
+`carrier_event`, and `situation_event`, an ID in the namespace, and fields such
+as `is_triggered_only`, `trigger`, `immediate`, `option`, and `after`. In the
+same file, a `country_event` starts a situation and saves its new situation as
+an event target. Delayed events appear in source as `country_event = { id = ...
+days = ... }`, including `events/on_action_events_2.txt`. Thus a per-country
+event chain and day-based delay are source-supported patterns. The exact
+variation/random-delay grammar, event execution ordering, and target lifetime
+still need parser and runtime validation before implementation.
 
-**Older/community documentation, not verified:** event definitions conventionally
-use a namespace and identifiers composed from namespace plus event name/ID.
-Prefixes reduce collisions with vanilla and other mods. IDs should be unique and
-stable because saved games and cross-event references may depend on them. Exact
-grammar, numeric/string forms, namespace declaration, and collision behavior need
-checking in 4.5.3.
+`any_country`, `every_country`, and `random_country` occur in
+`common/scripted_effects/00_scripted_effects.txt`; these establish source
+examples of country iteration, not a need to use iteration for EPOCH bootstrap.
+The proposed approach is to avoid it. Flags and reusable scripted effects and
+triggers also have examples in the supplied files; use explicit expected caller
+scope and keep effects idempotent. Do not infer persistence guarantees or exact
+scope-transition legality from names alone.
 
-**Proposed EPOCH architecture:** reserve one project prefix after confirming it
-is unused, name IDs by arc and function, and maintain an ID registry. Example
-names are not syntax claims.
+The source comment for `on_single_player_save_game_load` says it does not run
+when loading MP saves due to OOS concerns. This is a concrete reason not to use
+that hook as an MP recovery mechanism. Other MP safety claims need runtime tests.
 
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files**.
+## Situations
 
-## Event types and registration
+`common/situations/99_README_SITUATIONS.txt` documents the situation root as
+`this`/root, owner and target scope access, country `potential`, progress and
+stages, approaches, monthly events/progress, completion and failure, abort
+handling, and situation-log text overrides. It explicitly recommends destroying
+the situation from completion/failure effects. Concrete definitions in
+`common/situations/01_narrative_situations.txt` include staged thresholds,
+approach-dependent progress and event effects. `events/situation_events.txt`
+demonstrates `start_situation`, retaining the created situation as an event
+target, `set_situation_approach`, and later situation events. This is a good
+source-supported fit for a long-running, empire-owned investigation whose
+progress responds to player choices.
 
-**Older/community documentation, not verified:** Stellaris scripting has used
-multiple event categories (including country- and planet-scoped event families)
-and explicit invocation or hook-based activation. Available types, root scopes,
-required fields, and activation semantics are version- and context-sensitive.
-No speculative event block is provided.
-
-**Proposed EPOCH architecture:** use the narrowest verified scope matching the
-content. Activate events through a verified hook or explicit preceding event;
-do not rely on accidental file loading or guessed registration conventions.
-
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files** for types,
-registration, required fields, and root-scope rules.
-
-## `on_actions`
-
-**Older/community documentation, not verified:** on_actions are named engine
-callbacks that invoke scripted responses at lifecycle or gameplay hooks. Mods may
-extend some callbacks, but hook names, merge/order behavior, and permissible scope
-vary. Global callbacks can be expensive when their response repeatedly scans all
-empires.
-
-**Proposed EPOCH architecture:** identify one suitable verified initialization or
-game-start callback for a single eligibility bootstrap. Use narrow callbacks
-thereafter. Do not invent hook names, overwrite vanilla definitions, or assume
-additive merge semantics until confirmed.
-
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files**.
-
-## Scopes and scope transitions
-
-**Older/community documentation, not verified:** script scopes identify the object
-on which a trigger/effect is evaluated (for example, an empire or planet); scope
-transitions move evaluation to related objects. Legal root scopes and transitions
-depend on calling context and command.
-
-**Proposed EPOCH architecture:** document expected scope at every event/effect
-boundary; keep discovery state on the empire; transition to a planet/system only
-where needed; return explicitly to the intended root scope. Review every
-transition in source and logs.
-
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files** for scope
-names, transition commands, and context-specific validity.
-
-## Triggers and effects
-
-**Older/community documentation, not verified:** triggers test conditions for
-availability or applicability; effects change game state. Conditional blocks and
-limits exist in some contexts, but grammar and valid commands vary. Trigger checks
-may be reevaluated frequently depending on their use.
-
-**Proposed EPOCH architecture:** centralize shared eligibility/progression gates;
-keep effects idempotent; apply the same logical gates to AI and players. Avoid
-costly iteration in frequently evaluated triggers. Check every command in its
-actual root scope and context.
-
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files**. No
-script-syntax examples are asserted here.
-
-## Scripted triggers and scripted effects
-
-**Older/community documentation, not verified:** reusable named trigger/effect
-definitions are commonly used to avoid duplicated logic. Their directory
-placement, invocation form, parameter behavior, and permitted nesting must be
-verified for the target release.
-
-**Proposed EPOCH architecture:** factor shared eligibility and transitions only
-after confirming conventions. Document expected caller scope and side effects;
-avoid hidden scope dependencies.
-
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files**.
-
-## Country flags and variables
-
-**Older/community documentation, not verified:** persistent per-country markers
-and numeric values are used in Paradox scripting, but flags and variables differ
-in type, lifetime, comparison, cleanup, and save behavior.
-
-**Proposed EPOCH architecture:** persist a compact per-empire state machine for
-scheduled, discovered, investigating, resolved, and recovery states. Select a
-flag or variable only after verifying operations, persistence, reset, and save
-compatibility. Repeated events must not duplicate outcomes.
-
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files**.
-
-## Event targets
-
-**Older/community documentation, not verified:** named event targets can retain
-references to scoped objects for later script use, but validity, scope, duration,
-and persistence differ by target type and context.
-
-**Proposed EPOCH architecture:** prefer persistent empire state over long-lived
-object references. For any later planet/system target, define owner, lifetime,
-invalidation path, and multiplayer/save behavior.
-
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files**.
-
-## Situations and situation stages
-
-**Older/community documentation, not verified:** situation-style content can
-represent ongoing progress with stages, values, and effects. Definitions, update
-cadence, scope ownership, UI fields, and transitions must be checked for 4.5.3;
-automatic performance cannot be assumed.
-
-**Proposed EPOCH architecture:** use a situation for investigation only if its
-verified player-facing progress model fits. Keep updates local and event-driven
-where possible, and make stop/resolution behavior explicit.
-
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files**.
+Situation progress is monthly by design in the cited documentation and examples.
+That is per-active-situation work, not a recommendation for a recurring
+galaxy-wide empire scan. The cost and update cadence at scale were not measured.
+Approach names and effects need to cover regular, Hive Mind, and machine
+intelligences; source examples show gestalt-specific triggered descriptions but
+do not establish universal compatibility for any proposed EPOCH definition.
 
 ## Special projects
 
-**Older/community documentation, not verified:** special projects can provide a
-player/AI task with costs, progress, and completion consequences, but definitions
-and hooks depend on project type and version.
+`common/special_projects/00_projects_1.txt` shows project keys, cost, research
+duration, technology department, picture/icon, event scope, requirements, and
+`on_success`/`on_fail` effects. Examples dispatch follow-up events on success;
+some projects link into an event chain. Other supplied effects call
+`enable_special_project`. This supports a project as a focused task and an event
+as its completion continuation. A project is not itself a substitute for a
+multi-stage situation: use one when the task model is a discrete research
+assignment, and connect it through its completion event. AI selection,
+abandonment/retry, and failure behavior need additional validation for the
+chosen project type.
 
-**Proposed EPOCH architecture:** use a project for investigation/response only
-when an appropriate verified type exists. Confirm eligibility, completion scope,
-abort behavior, costs, and AI handling. Do not assume archaeology and anomaly
-interfaces are interchangeable with generic projects.
+## Script systems and eligibility
 
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files**.
+The supplied `common/scripted_effects/`, `common/scripted_triggers/`, and
+`common/scripted_variables/` files contain reusable named definitions, variable
+operations, flag checks, country traversal, event dispatch, and inline-script
+calls. These support factoring common EPOCH gates and side effects after exact
+contexts and parameter rules are verified.
 
-## Localisation format and encoding
+The supplied subset does **not** include `common/script_values/` or
+`common/inline_scripts/`; it contains references to inline scripts but not their
+definitions. It also does not contain AI personality/weight directories. Those
+systems cannot be verified comprehensively from this reference. Build one shared
+eligibility rule for organics, Hive Minds, and Machine Intelligences; assess
+specific country-type checks and AI automation once the missing sources are
+available. No start bonuses or technology-gated discovery are proposed.
 
-**Older/community documentation, not verified:** Stellaris localisation uses
-structured key/value files and language-specific folders; encoding, version
-header, quoting, escaping, and tokens are parser-sensitive.
+## AI
 
-**Proposed EPOCH architecture:** maintain English and German entries for every
-player-facing string, use stable prefixes, and validate both in game. Take exact
-4.5.3 encoding and file conventions from vanilla examples.
+The on-action and event examples establish that event chains can be started by
+hooks and that event choices can have trigger and AI-related fields in the
+source. The sampled corpus does not include the full AI weight/automation
+definitions needed to recommend exact behavior. EPOCH should provide an
+AI-safe deterministic option or verified weights for every blocking choice,
+using the same eligibility and costs as player empires. This remains PROPOSED;
+AI parity was not runtime-tested.
 
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files**, especially
-encoding, header, and token rules. `.gitattributes` line-ending normalization
-does not establish game-compatible encoding.
+## Localisation and UI
 
-## AI weights and automation
-
-**Older/community documentation, not verified:** scripted AI weights or automatic
-choices have been used for mod content, but exact blocks, choice evaluation, and
-safe fallbacks depend on content type and engine version.
-
-**Proposed EPOCH architecture:** AI has no separate discovery eligibility. Every
-decision that could stall progression needs a viable AI path using verified
-weights or deterministic automatic resolution. Avoid free rewards or penalties
-caused by missing AI behavior.
-
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files**.
+The inspected dataset has no `localisation/`, `gfx/`, or interface asset
+directories. Situation documentation names expected situation text keys and
+source definitions reference event and GFX keys, but file encoding, language
+headers, key conventions, icon availability, and actual UI rendering cannot be
+verified from this subset. Provide English and German keys for all player-facing
+content and validate them in game before release.
 
 ## Multiplayer and performance
 
-**Older/community documentation, not verified:** synchronized script execution
-and deterministic state/random changes are important for multiplayer consistency.
-Repeated global or high-frequency iteration can add cost as galaxy size grows.
-Exact synchronization guarantees and performance cannot be inferred from syntax.
+Source evidence supports event-driven chaining and a per-country game-start
+entry point. It does not prove synchronization, deterministic random draws,
+exactly-once behavior, desync safety, or performance. Avoid client-local state
+and avoid a recurring global enumeration. Keep state on the owning country,
+schedule at most one callback per eligible country, recheck eligibility at
+delivery, and make repeated dispatch harmless. Validate save/load, host/client,
+and large empire counts in runtime tests.
 
-**Proposed EPOCH architecture:** schedule each empire once, store state with that
-empire, and advance through explicit events. Use only verified synchronized
-randomization. Keep effects deterministic and idempotent; test host/client behavior
-and measure representative empire counts. Avoid local clocks and client-only state.
+## Packaging
 
-**4.5.3 status:** **UNVERIFIED – requires Stellaris 4.5.3 game files and runtime
-multiplayer/performance validation**.
-
-## Verification checklist for M0-B
-
-For each feature, locate a vanilla 4.5.3 example and containing file; record valid
-root scope/call context; inspect load/merge behavior; build the smallest isolated
-test mod; inspect parser/error logs; then test save/load, player and AI, and
-host/client behavior where relevant. Keep vanilla facts separate from community
-references and EPOCH design choices. An older guide or parse success in another
-version does not verify a claim for 4.5.3.
+No vanilla `descriptor.mod`, launcher `.mod`, Workshop metadata, or game
+installation files are present in the supplied reference. Repository
+`descriptor.mod` is EPOCH's internal descriptor; it declares
+`supported_version="4.5.*"`. This verifies only the repository text, not
+launcher recognition, external descriptor requirements, Workshop layout,
+dependency syntax, or load order. Keep the Core independently installable and
+put all Gigastructures references in the separate optional compatibility package.
+Verify descriptors and activation in the launcher/game before implementation
+or publication.

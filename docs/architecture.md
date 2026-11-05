@@ -90,16 +90,16 @@ if 4.5.3 verification requires a different mechanism.
 
 ## Discovery architecture (proposed)
 
-Use a one-time initialization bootstrap to enumerate eligible empires once after
-game start and schedule one delayed discovery event per eligible empire. Store each
-empire's pending/started state on that empire. At the scheduled event, recheck
-the shared eligibility rules, mark the discovery active, and start the first
-narrative beat. Subsequent progression is driven by explicit event outcomes and
-completion callbacks, not recurring global polling. Timing
-randomisation must be deterministic in multiplayer or derived from synchronized
-game state. The exact supported initialization hook, enumeration mechanism,
-scheduler, random functions, scope, and persistence methods are unverified until
-checked against 4.5.3 files and runtime multiplayer testing.
+M0-B source review found a country-local candidate: `on_game_start_country` in
+the supplied `common/on_actions/00_on_actions.txt`, alongside the no-scope
+`on_game_start` hook. Prefer evaluating eligibility in that country context and
+scheduling one delayed event for that country, instead of explicitly enumerating
+all empires from a global bootstrap. Store pending/started state on the country,
+recheck eligibility at delivery, and drive later progression through explicit
+event outcomes and completion callbacks. Vanilla source examples support
+country-start dispatch and day-delayed country events; exact-once execution,
+randomized timing, persistence, and multiplayer safety are not runtime-verified.
+See [`evidence/m0-b-engine-verification.md`](evidence/m0-b-engine-verification.md).
 
 No technology is used to initiate discovery. No starting civic, trait, origin, or
 bonus is added. The late-game purpose remains hidden during early stages. The
@@ -124,7 +124,13 @@ documentation.
 
 ## Implementation gate
 
-Before gameplay scripts are written, inspect the Stellaris 4.5.3 installation and
+Before gameplay scripts are written, complete the runtime and missing-source
+checks listed in [`evidence/m0-b-engine-verification.md`](evidence/m0-b-engine-verification.md).
+M0-B has source-level evidence for on_actions, event chains, situations, special
+projects, and selected script systems. The supplied dataset does not include
+localisation, UI assets, script_values, inline-script definitions, full AI
+definitions, or vanilla packaging metadata; runtime and multiplayer validation
+remain open. Before gameplay scripts are written, inspect the Stellaris 4.5.3 installation and
 verify: descriptor conventions; recognised script directories; event namespaces,
 types, and registration; on_action definitions and load behavior; scopes and scope
 transitions; triggers/effects; scripted triggers/effects; flags, variables, and
