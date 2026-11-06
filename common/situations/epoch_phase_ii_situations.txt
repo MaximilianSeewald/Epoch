@@ -7,12 +7,12 @@ epoch_resonance_protocol = {
 	permanent = yes
 	desc = { trigger = { always = yes } text = epoch_ii_situation_desc }
 	stages = {
-		stage_scar_wakes = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 20 on_first_enter = { situation_event = { id = epoch_ii.2 } } custom_tooltip = epoch_ii_stage_scar }
-		stage_scar_report = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 30 custom_tooltip = epoch_ii_stage_scar_report }
-		stage_first_hunters = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 50 on_first_enter = { situation_event = { id = epoch_ii.4 } } custom_tooltip = epoch_ii_stage_hunters }
-		stage_hunters_resolution = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 60 custom_tooltip = epoch_ii_stage_hunters_resolution }
-		stage_broken_code = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 80 on_first_enter = { situation_event = { id = epoch_ii.7 } } custom_tooltip = epoch_ii_stage_code }
-		stage_block_a_handoff = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 90 custom_tooltip = epoch_ii_stage_handoff }
+		stage_scar_wakes = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 20 custom_tooltip = epoch_ii_stage_scar }
+		stage_scar_report = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 30 on_first_enter = { situation_event = { id = epoch_ii.2 } } custom_tooltip = epoch_ii_stage_scar_report }
+		stage_first_hunters = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 50 custom_tooltip = epoch_ii_stage_hunters }
+		stage_hunters_resolution = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 60 on_first_enter = { situation_event = { id = epoch_ii.4 } } custom_tooltip = epoch_ii_stage_hunters_resolution }
+		stage_broken_code = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 80 custom_tooltip = epoch_ii_stage_code }
+		stage_block_a_handoff = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 90 on_first_enter = { situation_event = { id = epoch_ii.7 } } custom_tooltip = epoch_ii_stage_handoff }
 	}
 	monthly_progress = {
 		base = 0

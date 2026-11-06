@@ -130,9 +130,3 @@ epoch_core_permanent_scar_exacerbated_fallback = {
 	country_energy_produces_mult = -0.03
 }
 
-# Temporary Chapter 2 defense measure. Eight defensive armies represent the
-# cordon protecting the resonance site during the 150-day response window.
-epoch_ii_emergency_fortifications = {
-	icon = "gfx/interface/icons/planet_modifiers/pm_fortress_trophy.dds"
-	planet_defense_armies_add = 8
-}

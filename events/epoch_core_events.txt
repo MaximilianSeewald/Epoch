@@ -911,6 +911,7 @@ country_event = {
 		random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } destroy_situation = this }
 		set_variable = { which = epoch_core_campaign_status value = 3 }
 		set_variable = { which = epoch_core_current_phase value = 6 }
+		epoch_ii_start_invitation_clock = yes
 		country_event = { id = epoch_ii.0 days = 1 }
 		}
 		ai_chance = { factor = 70 }

@@ -52,6 +52,68 @@ epoch_core_remove_contamination_effects = {
 }
 
 # Resonance stability is an empire-local campaign variable bounded to 0–100.
+epoch_ii_start_invitation_clock = {
+	if = {
+		limit = { NOT = { has_country_flag = epoch_ii_invitation_clock_started } }
+		set_country_flag = epoch_ii_wait_scheduled
+		set_country_flag = epoch_ii_invitation_clock_started
+		random_list = {
+			1 = { set_variable = { which = epoch_ii_invitation_delay_days value = 1780 } set_timed_country_flag = { flag = epoch_ii_invitation_clock days = 1780 } country_event = { id = epoch_ii.1 days = 1780 } }
+			1 = { set_variable = { which = epoch_ii_invitation_delay_days value = 1810 } set_timed_country_flag = { flag = epoch_ii_invitation_clock days = 1810 } country_event = { id = epoch_ii.1 days = 1810 } }
+			1 = { set_variable = { which = epoch_ii_invitation_delay_days value = 1840 } set_timed_country_flag = { flag = epoch_ii_invitation_clock days = 1840 } country_event = { id = epoch_ii.1 days = 1840 } }
+			1 = { set_variable = { which = epoch_ii_invitation_delay_days value = 1870 } set_timed_country_flag = { flag = epoch_ii_invitation_clock days = 1870 } country_event = { id = epoch_ii.1 days = 1870 } }
+			1 = { set_variable = { which = epoch_ii_invitation_delay_days value = 1900 } set_timed_country_flag = { flag = epoch_ii_invitation_clock days = 1900 } country_event = { id = epoch_ii.1 days = 1900 } }
+			1 = { set_variable = { which = epoch_ii_invitation_delay_days value = 1930 } set_timed_country_flag = { flag = epoch_ii_invitation_clock days = 1930 } country_event = { id = epoch_ii.1 days = 1930 } }
+			1 = { set_variable = { which = epoch_ii_invitation_delay_days value = 1960 } set_timed_country_flag = { flag = epoch_ii_invitation_clock days = 1960 } country_event = { id = epoch_ii.1 days = 1960 } }
+		}
+	}
+}
+
+# Keep chapter targets inside the campaign owner's current territory. A lost
+# Phase-I world falls back to the capital or another owned planet.
+epoch_ii_refresh_campaign_target = {
+	if = {
+		limit = { OR = { NOT = { exists = event_target:epoch_ii_target_planet@root } event_target:epoch_ii_target_planet@root = { NOT = { is_owned_by = root } } } }
+		if = {
+			limit = { exists = capital_scope }
+			capital_scope = { save_global_event_target_as = epoch_ii_target_planet@root solar_system = { save_global_event_target_as = epoch_ii_target_system@root } }
+			remove_country_flag = epoch_ii_no_owned_campaign_planet
+		}
+		else_if = {
+			limit = { any_owned_planet = { always = yes } }
+			random_owned_planet = { save_global_event_target_as = epoch_ii_target_planet@root solar_system = { save_global_event_target_as = epoch_ii_target_system@root } }
+			remove_country_flag = epoch_ii_no_owned_campaign_planet
+		}
+		else = { set_country_flag = epoch_ii_no_owned_campaign_planet }
+	}
+}
+
+# A resolved withdrawal or successful signal lure de-escalates only the
+# campaign owner's relation and orders the living fleet toward empty space.
+# The fleet remains in the galaxy and can still be fought by the player.
+epoch_ii_disengage_nullwarden_fleet = {
+	if = {
+		limit = { exists = event_target:epoch_ii_nullwarden_fleet@root }
+		event_target:epoch_ii_nullwarden_country@root = { set_faction_hostility = { target = root set_hostile = no set_neutral = yes } }
+		event_target:epoch_ii_nullwarden_fleet@root = {
+			clear_orders = yes
+			set_fleet_stance = evasive
+			random_system = {
+				limit = {
+					has_owner = no
+					distance = { source = prev.solar_system use_bypasses = no min_jumps = 2 max_jumps = 4 }
+				}
+				save_global_event_target_as = epoch_ii_retreat_system@root
+			}
+			if = {
+				limit = { exists = event_target:epoch_ii_retreat_system@root }
+				queue_actions = { move_to = event_target:epoch_ii_retreat_system@root }
+			}
+			else = { set_fleet_stance = passive }
+		}
+	}
+}
+
 epoch_ii_clamp_resonance_stability = {
 	if = {
 		limit = { check_variable = { which = epoch_ii_resonance_stability value > 100 } }
@@ -66,8 +128,7 @@ epoch_ii_clamp_resonance_stability = {
 epoch_ii_close_campaign = {
 	set_country_flag = epoch_ii_closed_by_choice
 	remove_country_flag = epoch_ii_active
-	if = { limit = { exists = event_target:epoch_ii_nullwarden_fleet@root } event_target:epoch_ii_nullwarden_fleet@root = { destroy_fleet = this } }
-	if = { limit = { exists = event_target:epoch_ii_target_planet@root } event_target:epoch_ii_target_planet@root = { remove_modifier = epoch_ii_emergency_fortifications } }
+	epoch_ii_disengage_nullwarden_fleet = yes
 	abort_special_project = { type = EPOCH_II_SCAR_SURVEY }
 	abort_special_project = { type = EPOCH_II_SIGNAL_DIVERSION }
 	abort_special_project = { type = EPOCH_II_CODE_ARCHIVE }
