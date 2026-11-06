@@ -47,16 +47,30 @@ epoch_first_echo_investigation = {
 	monthly_progress = {
 		base = 10
 		modifier = {
-			add = 15
+			add = 10
 			has_situation_flag = epoch_core_path_aggressive
+		}
+		modifier = {
+			add = 10
+			has_situation_flag = epoch_core_aggressive_overdrive
 		}
 		modifier = {
 			subtract = 15
 			has_situation_flag = epoch_core_aggressive_throttled
 		}
+		modifier = {
+			add = 5
+			has_situation_flag = epoch_core_cautious_calibration
+		}
 	}
 
 	on_progress_complete = {
+		# Carry the choice into country state before the Situation is destroyed.
+		# This also preserves Overdrive already selected in an older save.
+		if = {
+			limit = { has_situation_flag = epoch_core_aggressive_overdrive }
+			owner = { set_country_flag = epoch_core_aggressive_overdrive_committed }
+		}
 		owner = {
 			if = {
 				limit = {
