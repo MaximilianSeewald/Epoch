@@ -23,9 +23,10 @@ epoch_core_silent_structure = {
 		from.planet = { owner = { is_same_value = root.owner } }
 	}
 	visible = {
-		default_site_visible_trigger = yes
+		# The site is created only on the owner's world; the owner-local flag is
+		# sufficient for visibility and avoids the vanilla helper's missing-site
+		# invalid source-scope switch during visibility checks.
 		has_country_flag = epoch_core_structure_site_created
-		from.planet = { owner = { is_same_value = root } }
 	}
 
 	stage = {

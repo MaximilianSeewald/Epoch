@@ -141,7 +141,10 @@ $requiredSituationLocKeys = @(
 	'epoch_first_echo_investigation', 'epoch_first_echo_investigation_type',
 	'epoch_first_echo_investigation_desc', 'epoch_first_echo_investigation_monthly_change_tooltip',
 	'stage_signal_analysis', 'stage_source_analysis',
-	'epoch_first_echo_phase_signal', 'epoch_first_echo_phase_source'
+	'epoch_first_echo_phase_echo', 'epoch_first_echo_phase_expedition',
+	'epoch_first_echo_phase_contamination', 'epoch_first_echo_phase_structure',
+	'epoch_first_echo_phase_report', 'epoch_echo_cautious_approach',
+	'epoch_echo_aggressive_approach'
 )
 foreach ($key in $requiredSituationLocKeys) { Assert-Check $allLocKeys.ContainsKey($key) "Missing situation/stage localization key $key" }
 $textRefs = [regex]::Matches($events + "`n" + $situations, '(?:title|desc|text|name|custom_tooltip)\s*=\s*(epoch_core\.[A-Za-z0-9_.]+|epoch_first_echo_[A-Za-z0-9_]+|stage_(?:signal_analysis|source_analysis))')
@@ -157,8 +160,18 @@ foreach ($key in $modifierKeys) {
 	Assert-Check $allLocKeys.ContainsKey($key) "Missing EN/DE modifier localization $key"
 	Assert-Check $allLocKeys.ContainsKey("${key}_desc") "Missing EN/DE modifier description localization ${key}_desc"
 }
+foreach ($key in @('epoch_core_contamination_active_organic','epoch_core_contamination_active_hive','epoch_core_contamination_active_machine','epoch_core_contamination_worsened_organic','epoch_core_contamination_worsened_hive','epoch_core_contamination_worsened_machine','epoch_core_contamination_studied_organic','epoch_core_contamination_studied_hive','epoch_core_contamination_studied_machine','epoch_core_silent_structure','epoch_core_structure_secured','epoch_core_structure_investigated','epoch_core_structure_ruins','epoch_core_permanent_scar_organic','epoch_core_permanent_scar_hive','epoch_core_permanent_scar_machine','epoch_core_permanent_scar_exacerbated')) {
+	$modifierBlock = Get-Block $modifiers "(?m)^$key\s*=\s*\{" $key
+	Assert-Check ($null -ne $modifierBlock -and $modifierBlock -match 'icon\s*=\s*"gfx/interface/icons/planet_modifiers/[^\"]+\.dds"' -and $modifierBlock -notmatch 'GFX_evt_|unknown|placeholder') "$key must use an explicit thematic planet-view icon"
+}
 $projectUses = @([regex]::Matches($events, 'name\s*=\s*"(EPOCH_[A-Z0-9_]+)"') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
 foreach ($key in $projectUses) { Assert-Check ($key -in $projectKeys) "Event references undefined project $key" }
+$localizedPlayerText = @()
+foreach ($language in @('english', 'german')) {
+	$relative = "localisation/$language/epoch_core_l_$language.yml"
+	$localizedPlayerText += @([System.IO.File]::ReadAllLines((Join-Path $Root $relative), [System.Text.Encoding]::UTF8) | Where-Object { $_ -match '^\s*[A-Za-z0-9_.]+:\d+\s+"' } | ForEach-Object { $_ -replace '^\s*[A-Za-z0-9_.]+:\d+\s+"', '' -replace '"\s*$', '' })
+}
+Assert-Check (($localizedPlayerText -join "`n") -notmatch '(?i)epoch_core|epoch_first_echo|EPOCH_|event.flag|set_country_flag|set_variable|debug|phase\s*(?:i|1)\b|kampagnenstatus|kampagnen-flagge') 'Player-facing localisations must not expose internal IDs, flags, variables, debugging, or phase labels'
 
 # Event ID coverage across event calls, project callbacks and on_action entries.
 $eventDefinitions = @([regex]::Matches($events, '(?m)^\s*id\s*=\s*epoch_core\.(\d+)\s*$') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
@@ -169,16 +182,18 @@ foreach ($id in $eventRefs) { Assert-Check ($id -in $eventDefinitions) "Referenc
 Assert-Check ($onActions -match 'on_survey_planet\s*=\s*\{[\s\S]*?epoch_core\.15' -and $onActions -match 'on_game_start_country\s*=\s*\{[\s\S]*?epoch_core\.1') 'Vanilla survey and country-start hooks must dispatch defined EPOCH entry events'
 
 # Situation and stage references must exist and the midpoint event must enter
-# only after the first ship-project callback advances progress to 50.
+# only after the first ship-project callback advances progress to the next
+# real milestone; the same situation remains active through the campaign.
 $situationBlock = Get-Block $situations '(?m)^\s*epoch_first_echo_investigation\s*=\s*\{' 'First Echo situation'
 Assert-Check ($null -ne $situationBlock) 'First Echo situation definition is missing'
 $sourceStage = Get-Block $situationBlock '(?m)^\s*stage_source_analysis\s*=\s*\{' 'source-analysis stage'
 Assert-Check ($null -ne $sourceStage -and $sourceStage -match 'on_first_enter\s*=\s*\{\s*situation_event\s*=\s*\{\s*id\s*=\s*epoch_core\.3') 'epoch_core.3 must fire on entering the second stage'
 $signalStage = Get-Block $situationBlock '(?m)^\s*stage_signal_analysis\s*=\s*\{' 'signal-analysis stage'
 Assert-Check ($signalStage -notmatch 'situation_event\s*=\s*\{\s*id\s*=\s*epoch_core\.3') 'epoch_core.3 must not fire when the Situation is first created'
-Assert-Check ($situationBlock -match 'stage_signal_analysis\s*=\s*\{[\s\S]*?end\s*=\s*50' -and $situationBlock -match 'stage_source_analysis\s*=\s*\{[\s\S]*?end\s*=\s*100') 'First Echo stage definitions or boundaries are missing'
+Assert-Check (@([regex]::Matches($situationBlock, '(?m)^\s*stage_[a-z_]+\s*=\s*\{')).Count -eq 5 -and $situationBlock -match 'stage_signal_analysis\s*=\s*\{[\s\S]*?end\s*=\s*20' -and $situationBlock -match 'stage_source_analysis\s*=\s*\{[\s\S]*?end\s*=\s*40' -and $situationBlock -match 'stage_contamination\s*=\s*\{[\s\S]*?end\s*=\s*60' -and $situationBlock -match 'stage_excavation\s*=\s*\{[\s\S]*?end\s*=\s*80' -and $situationBlock -match 'stage_report\s*=\s*\{[\s\S]*?end\s*=\s*100') 'The unified Phase I Situation must have five milestone stages through its final report'
 Assert-Check ($situationBlock -match 'monthly_progress\s*=\s*\{\s*base\s*=\s*0\s*\}') 'Situation must not progress without a completed ship project'
 Assert-Check ($situationBlock -match 'on_progress_complete\s*=\s*\{[\s\S]*?destroy_situation\s*=\s*this') 'Situation completion must close the situation'
+Assert-Check ($situationBlock -match 'epoch_echo_cautious_approach[\s\S]*?energy\s*=\s*2' -and $situationBlock -match 'epoch_echo_aggressive_approach[\s\S]*?energy\s*=\s*5') 'Situation approaches must have distinct, visible upkeep costs'
 
 # Trace every project/callback/decision edge, including the country-scope bridge
 # used to avoid a Situation -> Country context switch when enabling projects.
@@ -203,10 +218,14 @@ Assert-Check ($contaminationProject -match 'on_fail\s*=\s*\{\s*ship_event\s*=\s*
 $missingProject = Get-Block $projects '(?m)^\s*special_project\s*=\s*\{\s*key\s*=\s*"EPOCH_MISSING_EXPEDITION"' 'missing expedition project'
 Assert-Check ($missingProject -match 'on_fail\s*=\s*\{\s*ship_event\s*=\s*\{\s*id\s*=\s*epoch_core\.28') 'Expedition project failure must resolve to its non-destructive fallback'
 $firstCallback = Get-EventBlock $events 10
-Assert-Check ($firstCallback -match 'add_situation_progress\s*=\s*50') 'epoch_core.10 must advance the owned situation by 50'
+Assert-Check ($firstCallback -match 'add_situation_progress\s*=\s*20' -and $firstCallback -notmatch 'destroy_ship\s*=') 'The first First Echo callback must advance the campaign milestone without removing its ship'
 $opening = Get-EventBlock $events 2
 Assert-Check ($opening -match 'name\s*=\s*epoch_core\.2\.a[\s\S]*EPOCH_FIRST_ECHO_CAUTIOUS' -and $opening -match 'name\s*=\s*epoch_core\.2\.b[\s\S]*EPOCH_FIRST_ECHO_AGGRESSIVE') 'The two opening investigation choices must start their corresponding projects'
 Assert-Check ($opening -match 'name\s*=\s*epoch_core\.2\.c[\s\S]*set_country_flag\s*=\s*epoch_core_campaign_opted_out' -and $opening -notmatch 'name\s*=\s*epoch_core\.2\.c[\s\S]*start_situation|name\s*=\s*epoch_core\.2\.c[\s\S]*enable_special_project') 'Refusal must start no Situation or project'
+Assert-Check ((Get-EventBlock $events 2) -match 'name\s*=\s*epoch_core\.2\.a[\s\S]*hidden_effect\s*=\s*\{' -and (Get-EventBlock $events 2) -match 'name\s*=\s*epoch_core\.2\.c[\s\S]*hidden_effect\s*=\s*\{') 'Opening decisions must hide internal campaign-state effects from event tooltips'
+Assert-Check ((Get-EventBlock $events 3) -match 'hidden_effect\s*=\s*\{[\s\S]*set_situation_approach' -and (Get-EventBlock $events 20) -match 'hidden_effect\s*=\s*\{[\s\S]*enable_special_project') 'Interactive approach and contamination options must hide internal effects while presenting player-facing choices'
+foreach ($id in @(4,5,6,7,20,22,23,40,41,42,43)) { Assert-Check ((Get-EventBlock $events $id) -match 'hidden_effect\s*=\s*\{') "Player-facing event epoch_core.$id must execute internal effects through the hidden-effect pattern" }
+Assert-Check (($englishLoc + $germanLoc) -match '500 Energy, 300 Minerals' -and ($englishLoc + $germanLoc) -match '500 Energie, 300 Mineralien') 'The visible containment choice must state its actual stockpile cost in English and German'
 $discovery = Get-EventBlock $events 15
 Assert-Check ($discovery -match 'NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_campaign_opted_out\s*\}' -and $discovery -match 'NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_first_echo_discovered\s*\}' -and $discovery -match 'save_global_event_target_as\s*=\s*epoch_core_signal_system@root\.owner') 'Discovery must respect refusal, remain one-shot and save a persistent country-specific system target'
 Assert-Check ($discovery -match 'epoch_core_expedition_origin_system@root\.owner' -and $discovery -match 'epoch_core_expedition_destination@root\.owner') 'Survey discovery must save an owner-specific expedition route'
@@ -219,7 +238,7 @@ foreach ($key in @('EPOCH_ECHO_CALIBRATION','EPOCH_ECHO_BASELINE','EPOCH_ECHO_OV
 	Assert-Check ($bridge -match "name\s*=\s*`"$key`"[\s\S]*owner\s*=\s*root") "Country-scope bridge is missing correctly-owned project $key"
 }
 $secondCallback = Get-EventBlock $events 11
-Assert-Check ($secondCallback -match 'add_situation_progress\s*=\s*50' -and $secondCallback -match 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.4' -and $secondCallback -match 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.5') 'epoch_core.11 must complete the situation and queue the path-specific follow-up'
+Assert-Check ($secondCallback -match 'add_situation_progress\s*=\s*20' -and $secondCallback -notmatch 'destroy_situation\s*=|destroy_ship\s*=' -and $secondCallback -match 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.4' -and $secondCallback -match 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.5') 'epoch_core.11 must complete First Echo, advance one milestone, and queue the path-specific follow-up without ending the situation'
 foreach ($id in @(4,5)) {
 	$followup = Get-EventBlock $events $id
 	Assert-Check ($followup -match 'epoch_core_active_campaign_empire\s*=\s*yes' -and $followup -match 'epoch_core_(?:cautious|aggressive)_investigation_complete' -and $followup -match 'NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_expedition_project_enabled\s*\}') "epoch_core.$id follow-up trigger is inconsistent"
@@ -227,6 +246,8 @@ foreach ($id in @(4,5)) {
 }
 $outbound = Get-EventBlock $events 12
 Assert-Check ($outbound -match 'set_country_flag\s*=\s*epoch_core_expedition_contact_lost' -and $outbound -match 'save_global_event_target_as\s*=\s*epoch_core_expedition_ship@root\.owner' -and $outbound -match 'destroy_ship\s*=\s*this' -and $outbound -match 'save_global_event_target_as\s*=\s*epoch_core_expedition_scientist@root\.owner' -and $outbound -match 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.6') 'epoch_core.12 must track the project-performing ship and scientist, remove that ship, and queue the search decision'
+Assert-Check ($outbound.IndexOf('save_global_event_target_as = epoch_core_expedition_ship@root.owner') -lt $outbound.IndexOf('save_global_event_target_as = epoch_core_expedition_scientist@root.owner') -and $outbound.IndexOf('save_global_event_target_as = epoch_core_expedition_scientist@root.owner') -lt $outbound.IndexOf('destroy_ship = this')) 'Missing Expedition must save both exact performing-ship and fleet-scientist references before destroying the ship'
+foreach ($id in @(10,11,13,21,26,28,30,31,32)) { Assert-Check ((Get-EventBlock $events $id) -notmatch 'destroy_ship\s*=') "Non-Missing-Expedition callback epoch_core.$id must not remove a ship" }
 Assert-Check ($outbound -match 'fleet\s*=\s*\{\s*leader\s*=\s*\{\s*set_leader_flag\s*=\s*epoch_core_missing_expedition\s*save_global_event_target_as\s*=\s*epoch_core_expedition_scientist@root\.owner') 'The assigned expedition scientist must be flagged and saved from the project ship''s fleet before that ship is destroyed'
 $expeditionChoice = Get-EventBlock $events 6
 foreach ($key in @('EPOCH_EXPEDITION_RESCUE','EPOCH_EXPEDITION_SALVAGE','EPOCH_EXPEDITION_SURVEY')) { Assert-Check ($expeditionChoice -match "name\s*=\s*`"$key`"") "epoch_core.6 is missing $key" }
@@ -248,11 +269,14 @@ $structureFiles = @(Get-ChildItem -LiteralPath (Join-Path $Root 'common') -Recur
 $structureMechanics = $events + "`n" + ($structureFiles -join "`n")
 $silentSite = Get-Block $archaeologicalSites '(?m)^epoch_core_silent_structure\s*=\s*\{' 'Silent Structure archaeology definition'
 Assert-Check ($null -ne $silentSite -and $silentSite -match 'stages\s*=\s*4' -and @([regex]::Matches($silentSite, '(?m)^\s*stage\s*=\s*\{')).Count -eq 4 -and $silentSite -match 'event\s*=\s*epoch_core\.40' -and $silentSite -match 'event\s*=\s*epoch_core\.43') 'The Silent Structure must define a native four-stage Archaeological Site'
+Assert-Check (@([regex]::Matches($silentSite, '(?m)^\s*difficulty\s*=\s*[2-5]\s*$')).Count -eq 4 -and $silentSite -match 'difficulty\s*=\s*2[\s\S]*difficulty\s*=\s*3[\s\S]*difficulty\s*=\s*4[\s\S]*difficulty\s*=\s*5') 'All four excavation chapters must require regular archaeology progress at increasing but playable difficulty'
 foreach ($id in @(40,41,42,43)) {
 	$chapter = Get-EventBlock $events $id
 	Assert-Check ($null -ne $chapter -and $chapter -match 'archaeology\s*=\s*yes' -and $chapter -match 'is_triggered_only\s*=\s*yes' -and $chapter -match 'ai_chance\s*=') "Archaeology chapter epoch_core.$id must use a native callback and provide AI decisions"
 }
 Assert-Check ($structureEvent -match 'create_archaeological_site\s*=\s*epoch_core_silent_structure' -and $structureEvent -match 'epoch_core_structure_site_created' -and $structureMechanics -match 'destroy_archaeological_site\s*=\s*this') 'The structure event must create the site on a saved world, and destruction must remove the native site object'
+$siteVisibility = Get-Block $silentSite '(?m)^\s*visible\s*=\s*\{' 'Silent Structure visibility trigger'
+Assert-Check ($siteVisibility -match 'has_country_flag\s*=\s*epoch_core_structure_site_created' -and $siteVisibility -notmatch 'default_site_visible_trigger|from\.planet') 'Site visibility must stay owner-scoped without the failing helper scope switch'
 Assert-Check ((Get-EventBlock $events 43) -match 'set_site_progress_locked\s*=\s*yes' -and (Get-EventBlock $events 43) -match 'destroy_archaeological_site\s*=\s*this' -and (Get-EventBlock $events 43) -match 'epoch_core_structure_investigated') 'Final structure decisions must respectively preserve, destroy, or complete the native site'
 $activeContaminationEffect = Get-Block $scriptedEffects '(?m)^epoch_core_apply_contamination_active\s*=\s*\{' 'class-specific active contamination effect'
 $worsenedContaminationEffect = Get-Block $scriptedEffects '(?m)^epoch_core_apply_contamination_worsened\s*=\s*\{' 'class-specific worsened contamination effect'
@@ -271,7 +295,7 @@ foreach ($modifierKey in @('epoch_core_permanent_scar_organic', 'epoch_core_perm
 	Assert-Check ($events -match "add_modifier\s*=\s*\{\s*modifier\s*=\s*$modifierKey\s+days\s*=\s*-1") "$modifierKey must be applied permanently"
 	Assert-Check ($events -notmatch "remove_modifier\s*=\s*$modifierKey") "$modifierKey must never be removed by campaign events"
 }
-foreach ($timer in @(33,34,35,36,37,38)) {
+foreach ($timer in @(33,34,35,37,38)) {
 	$timerBlock = Get-EventBlock $events $timer
 	Assert-Check ($null -ne $timerBlock -and $timerBlock -match 'epoch_core_active_campaign_empire\s*=\s*yes') "One-shot recovery timer epoch_core.$timer must be campaign-gated"
 }
@@ -290,6 +314,7 @@ foreach ($id in @(4,5)) {
 }
 Assert-Check ((Get-EventBlock $events 28) -match 'epoch_core_expedition_project_enabled' -and (Get-EventBlock $events 28) -match 'epoch_core_expedition_project_failed' -and (Get-EventBlock $events 28) -notmatch 'destroy_ship\s*=') 'Expedition project failure must preserve the player''s ship and resolve through a recoverable path'
 Assert-Check ((Get-EventBlock $events 37) -match 'epoch_core_expedition_mission_timed_out' -and (Get-EventBlock $events 37) -notmatch 'epoch_core_expedition_object_lost|destroy_ship\s*=') 'Expedition timeout must not claim or cause loss of a ship that was never identified'
+Assert-Check ($events -notmatch 'epoch_core\.36|epoch_core_structure_excavation_timed_out|days\s*=\s*2190' -and $events -notmatch 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.36') 'No calendar timeout may destroy or prematurely conclude a site that is still being excavated'
 Assert-Check ((Get-EventBlock $events 22) -match 'exists\s*=\s*event_target:epoch_core_world@root' -and (Get-EventBlock $events 22) -match 'save_global_event_target_as\s*=\s*epoch_core_world@root') 'Structure event must fall back to a local capital if the saved world target is missing'
 Assert-Check ((Get-EventBlock $events 23) -match 'exists\s*=\s*capital_scope' -and (Get-EventBlock $events 23) -match 'epoch_core_permanent_scar_fallback') 'Conclusion must preserve a permanent consequence if the empire has no capital'
 Assert-Check ($onActions -match 'on_country_created\s*=\s*\{[\s\S]*?epoch_core\.1' -and $onActions -match 'on_country_type_changed\s*=\s*\{[\s\S]*?epoch_core\.1') 'Newly created or converted empires must receive the same guarded enrollment dispatch'
