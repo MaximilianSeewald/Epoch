@@ -4,3 +4,12 @@
 epoch_core_eligible_empire = {
 	is_country_type = default
 }
+
+# Every active campaign event and object must use this gate. A phase-boundary
+# exit sets the permanent opt-out flag and campaign status; no re-entry path
+# clears either value. Global consequences can use separate eligibility logic.
+epoch_core_active_campaign_empire = {
+	epoch_core_eligible_empire = yes
+	has_country_flag = epoch_core_campaign_active
+	NOT = { has_country_flag = epoch_core_campaign_opted_out }
+}

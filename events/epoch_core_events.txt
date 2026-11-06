@@ -1,6 +1,13 @@
 namespace = epoch_core
 
 # Shared, idempotent entry point for starting empires and newly created ones.
+# Campaign state: 0 = awaiting the opening choice, 1 = active, 2 = permanently
+# opted out. campaign_exit_phase is 0 before a phase exit, or the phase number
+# after which the empire left. A future phase-end exit must remove the active
+# flag, set the permanent opt-out flag, set status 2, and record the current
+# phase; old choice variables and flags remain intact. The First Echo is an
+# introduction within Phase I, so this slice does not create a phase-end
+# continue/exit prompt or placeholder content for Phase II.
 country_event = {
 	id = epoch_core.1
 	hide_window = yes
@@ -8,16 +15,21 @@ country_event = {
 
 	trigger = {
 		epoch_core_eligible_empire = yes
+		NOT = { has_country_flag = epoch_core_campaign_opted_out }
 		NOT = { has_country_flag = epoch_core_initialized }
 	}
 
 	immediate = {
 		set_country_flag = epoch_core_initialized
 		set_country_flag = epoch_core_discovery_scheduled
-		set_variable = { which = epoch_core_schema_version value = 2 }
+		set_variable = { which = epoch_core_schema_version value = 3 }
 		set_variable = { which = epoch_core_discovery_status value = 0 }
 		set_variable = { which = epoch_core_investigation_status value = 0 }
 		set_variable = { which = epoch_core_completion_status value = 0 }
+		set_variable = { which = epoch_core_campaign_status value = 0 }
+		set_variable = { which = epoch_core_current_phase value = 0 }
+		set_variable = { which = epoch_core_campaign_exit_phase value = 0 }
+		set_variable = { which = epoch_core_phase_1_entry_decision value = 0 }
 		country_event = { id = epoch_core.2 days = 30 }
 	}
 }
@@ -32,6 +44,7 @@ country_event = {
 
 	trigger = {
 		epoch_core_eligible_empire = yes
+		NOT = { has_country_flag = epoch_core_campaign_opted_out }
 		has_country_flag = epoch_core_discovery_scheduled
 		NOT = { has_country_flag = epoch_core_first_echo_discovered }
 	}
@@ -45,7 +58,11 @@ country_event = {
 	option = {
 		name = epoch_core.2.a
 		set_country_flag = epoch_core_initial_cautious
+		set_country_flag = epoch_core_campaign_active
 		set_country_flag = epoch_core_investigation_active
+		set_variable = { which = epoch_core_campaign_status value = 1 }
+		set_variable = { which = epoch_core_current_phase value = 1 }
+		set_variable = { which = epoch_core_phase_1_entry_decision value = 1 }
 		set_variable = { which = epoch_core_investigation_status value = 1 }
 		set_variable = { which = epoch_core_initial_decision value = 1 }
 		set_variable = { which = epoch_core_current_path value = 1 }
@@ -61,7 +78,11 @@ country_event = {
 	option = {
 		name = epoch_core.2.b
 		set_country_flag = epoch_core_initial_aggressive
+		set_country_flag = epoch_core_campaign_active
 		set_country_flag = epoch_core_investigation_active
+		set_variable = { which = epoch_core_campaign_status value = 1 }
+		set_variable = { which = epoch_core_current_phase value = 1 }
+		set_variable = { which = epoch_core_phase_1_entry_decision value = 2 }
 		set_variable = { which = epoch_core_investigation_status value = 1 }
 		set_variable = { which = epoch_core_initial_decision value = 2 }
 		set_variable = { which = epoch_core_current_path value = 2 }
@@ -77,10 +98,12 @@ country_event = {
 	option = {
 		name = epoch_core.2.c
 		set_country_flag = epoch_core_initial_refusal
-		set_country_flag = epoch_core_refusal_pending
+		set_country_flag = epoch_core_campaign_opted_out
+		set_variable = { which = epoch_core_campaign_status value = 2 }
+		set_variable = { which = epoch_core_phase_1_entry_decision value = 3 }
+		set_variable = { which = epoch_core_campaign_exit_phase value = 0 }
 		set_variable = { which = epoch_core_initial_decision value = 3 }
 		set_variable = { which = epoch_core_refusal_status value = 1 }
-		country_event = { id = epoch_core.6 days = 360 }
 		ai_chance = { factor = 10 }
 	}
 }
@@ -104,6 +127,7 @@ situation_event = {
 
 	trigger = {
 		NOT = { has_situation_flag = epoch_core_midpoint_decision_made }
+		owner = { epoch_core_active_campaign_empire = yes }
 	}
 
 	immediate = {
@@ -118,7 +142,6 @@ situation_event = {
 		}
 		owner = {
 			add_resource = { energy = -100 }
-			add_resource = { physics_research = 200 }
 			set_country_flag = epoch_core_cautious_instrument_calibrated
 		}
 		set_situation_flag = epoch_core_cautious_calibration
@@ -150,8 +173,8 @@ situation_event = {
 	}
 }
 
-# Cautious completion offers a quiet long-baseline watch; the original choice
-# remains stored in epoch_core_initial_decision / epoch_core_initial_cautious.
+# Cautious completion records a quiet long-baseline watch and exposes its clue.
+# The original choice remains stored for later phase events.
 country_event = {
 	id = epoch_core.4
 	title = epoch_core.4.name
@@ -159,6 +182,7 @@ country_event = {
 	picture = GFX_evt_black_hole
 	is_triggered_only = yes
 	trigger = {
+		epoch_core_active_campaign_empire = yes
 		has_country_flag = epoch_core_initial_cautious
 		has_country_flag = epoch_core_cautious_investigation_complete
 		NOT = { has_country_flag = epoch_core_cautious_followup_seen }
@@ -168,13 +192,11 @@ country_event = {
 		name = epoch_core.4.a
 		set_country_flag = epoch_core_quiet_watch_established
 		set_variable = { which = epoch_core_followup_outcome value = 1 }
-		add_resource = { society_research = 100 }
 		ai_chance = { factor = 1 }
 	}
 }
-
-# Aggressive completion exposes the coordinate fragment and gives a different
-# technical reward and follow-up state.
+# Aggressive completion exposes a coordinate fragment and a distinct follow-up
+# state, preserving the path's knowledge trade-off without an early reward.
 country_event = {
 	id = epoch_core.5
 	title = epoch_core.5.name
@@ -182,6 +204,7 @@ country_event = {
 	picture = GFX_evt_black_hole
 	is_triggered_only = yes
 	trigger = {
+		epoch_core_active_campaign_empire = yes
 		has_country_flag = epoch_core_initial_aggressive
 		has_country_flag = epoch_core_aggressive_investigation_complete
 		NOT = { has_country_flag = epoch_core_aggressive_followup_seen }
@@ -191,79 +214,6 @@ country_event = {
 		name = epoch_core.5.a
 		set_country_flag = epoch_core_coordinates_recovered
 		set_variable = { which = epoch_core_followup_outcome value = 2 }
-		add_resource = { engineering_research = 100 }
-		ai_chance = { factor = 1 }
-	}
-}
-
-# A refused empire receives an invitation after one year; nothing starts or
-# costs resources until the empire explicitly chooses the re-entry option.
-country_event = {
-	id = epoch_core.6
-	title = epoch_core.6.name
-	desc = epoch_core.6.desc
-	picture = GFX_evt_black_hole
-	is_triggered_only = yes
-	trigger = {
-		epoch_core_eligible_empire = yes
-		has_country_flag = epoch_core_refusal_pending
-		has_country_flag = epoch_core_initial_refusal
-		NOT = { has_country_flag = epoch_core_reentered_after_refusal }
-	}
-	immediate = {
-		remove_country_flag = epoch_core_refusal_pending
-		set_country_flag = epoch_core_refusal_offer_open
-	}
-	option = {
-		name = epoch_core.6.a
-		trigger = {
-			has_country_flag = epoch_core_refusal_offer_open
-			has_resource = { type = energy amount > 299 }
-			has_resource = { type = minerals amount > 149 }
-		}
-		add_resource = { energy = -300 minerals = -150 }
-		remove_country_flag = epoch_core_refusal_offer_open
-		set_country_flag = epoch_core_reentered_after_refusal
-		set_country_flag = epoch_core_investigation_active
-		set_variable = { which = epoch_core_current_path value = 1 }
-		set_variable = { which = epoch_core_investigation_status value = 1 }
-		set_variable = { which = epoch_core_refusal_status value = 2 }
-		start_situation = {
-			type = epoch_first_echo_investigation
-			effect = {
-				set_situation_flag = epoch_core_path_cautious
-				set_situation_flag = epoch_core_path_reentry
-			}
-		}
-		ai_chance = { factor = 25 }
-	}
-	option = {
-		name = epoch_core.6.b
-		trigger = { has_country_flag = epoch_core_refusal_offer_open }
-		remove_country_flag = epoch_core_refusal_offer_open
-		set_country_flag = epoch_core_reentry_declined
-		set_variable = { which = epoch_core_refusal_status value = 3 }
-		ai_chance = { factor = 75 }
-	}
-}
-
-country_event = {
-	id = epoch_core.7
-	title = epoch_core.7.name
-	desc = epoch_core.7.desc
-	picture = GFX_evt_black_hole
-	is_triggered_only = yes
-	trigger = {
-		has_country_flag = epoch_core_initial_refusal
-		has_country_flag = epoch_core_reentry_investigation_complete
-		NOT = { has_country_flag = epoch_core_reentry_followup_seen }
-	}
-	immediate = { set_country_flag = epoch_core_reentry_followup_seen }
-	option = {
-		name = epoch_core.7.a
-		set_country_flag = epoch_core_reentry_signal_catalogued
-		set_variable = { which = epoch_core_followup_outcome value = 3 }
-		add_resource = { society_research = 75 }
 		ai_chance = { factor = 1 }
 	}
 }

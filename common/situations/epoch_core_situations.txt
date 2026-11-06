@@ -68,20 +68,12 @@ epoch_first_echo_investigation = {
 				set_variable = { which = epoch_core_investigation_status value = 2 }
 				set_variable = { which = epoch_core_completion_status value = 1 }
 				if = {
-					limit = { has_country_flag = epoch_core_reentered_after_refusal }
-					add_resource = { physics_research = 100 }
-					set_country_flag = epoch_core_reentry_investigation_complete
-					country_event = { id = epoch_core.7 days = 1 }
-				}
-				else_if = {
 					limit = { has_country_flag = epoch_core_initial_cautious }
-					add_resource = { physics_research = 150 }
 					set_country_flag = epoch_core_cautious_investigation_complete
 					country_event = { id = epoch_core.4 days = 1 }
 				}
 				else_if = {
 					limit = { has_country_flag = epoch_core_initial_aggressive }
-					add_resource = { engineering_research = 150 }
 					set_country_flag = epoch_core_aggressive_investigation_complete
 					country_event = { id = epoch_core.5 days = 1 }
 				}
