@@ -500,6 +500,17 @@ situation_event = {
 		if = { limit = { current_stage = stage_ch6_resolution owner = { NOT = { has_country_flag = epoch_ii_ch6_research_prompted } } } situation_event = { id = epoch_ii.70 } }
 		if = { limit = { current_stage = stage_ch6_resolution owner = { NOT = { has_country_flag = epoch_ii_ch6_prompted } } } situation_event = { id = epoch_ii.71 } }
 		# A removed saved target is not proof of victory. Only the fleet-destruction callback resolves combat.
+		if = { limit = { owner = { has_country_flag = epoch_ii_second_force_retreat_pending } } owner = { epoch_ii_disengage_second_nullwarden_fleet = yes } }
+		if = { limit = { owner = { has_country_flag = epoch_ii_ch6_resolved NOR = { has_country_flag = epoch_ii_block_b_report_sent } } } owner = { country_event = { id = epoch_ii.72 } } }
+		if = {
+			limit = {
+				owner = {
+					OR = { has_country_flag = epoch_ii_ch6_combat_success_pending has_country_flag = epoch_ii_ch6_trap_success_pending has_country_flag = epoch_ii_ch6_science_success_pending has_country_flag = epoch_ii_ch6_withdrawal_pending }
+					NOR = { has_country_flag = epoch_ii_ch6_resolved }
+				}
+			}
+			owner = { country_event = { id = epoch_ii.86 } }
+		}
 	}
 }
 
@@ -599,8 +610,9 @@ situation_event = {
 	situation = this
 	trigger = { owner = { has_country_flag = epoch_ii_ch5_research_done NOT = { has_country_flag = epoch_ii_ch5_nodes_ready } } }
 	immediate = { owner = { set_country_flag = epoch_ii_ch5_expedition_prompted epoch_ii_refresh_campaign_target = yes if = { limit = { exists = event_target:epoch_ii_target_system@root } event_target:epoch_ii_target_system@root = { closest_system = { limit = { has_access_fleet = root NOT = { is_same_value = event_target:epoch_ii_target_system@root } } save_global_event_target_as = epoch_ii_delayed_node@root } } if = { limit = { exists = event_target:epoch_ii_delayed_node@root } event_target:epoch_ii_delayed_node@root = { closest_system = { limit = { has_access_fleet = root NOT = { is_same_value = event_target:epoch_ii_target_system@root } NOT = { is_same_value = event_target:epoch_ii_delayed_node@root } } save_global_event_target_as = epoch_ii_interrupted_node@root } } } } } }
-	option = { name = epoch_ii.65.a trigger = { owner = { exists = event_target:epoch_ii_delayed_node@root exists = event_target:epoch_ii_interrupted_node@root } } hidden_effect = { owner = { set_country_flag = epoch_ii_expedition_project_route set_country_flag = epoch_ii_delayed_reflection_node set_country_flag = epoch_ii_interrupted_signal_node country_event = { id = epoch_ii.83 } } } ai_chance = { factor = 40 } }
-	option = { name = epoch_ii.65.b hidden_effect = { owner = { set_country_flag = epoch_ii_archive_route_used set_country_flag = epoch_ii_ch5_nodes_ready add_resource = { physics_research = 100 energy = -500 } } } ai_chance = { factor = 60 } }
+	option = { name = epoch_ii.65.a trigger = { owner = { exists = event_target:epoch_ii_delayed_node@root exists = event_target:epoch_ii_interrupted_node@root } } hidden_effect = { owner = { set_country_flag = epoch_ii_expedition_project_route set_country_flag = epoch_ii_delayed_reflection_node set_country_flag = epoch_ii_interrupted_signal_node country_event = { id = epoch_ii.83 } } } ai_chance = { factor = 100 } }
+	option = { name = epoch_ii.65.b trigger = { owner = { resource_stockpile_compare = { resource = energy value >= 500 } } } hidden_effect = { owner = { set_country_flag = epoch_ii_archive_route_used set_country_flag = epoch_ii_expedition_data_archived set_country_flag = epoch_ii_ch5_nodes_ready add_resource = { physics_research = 100 energy = -500 } } } ai_chance = { factor = 5 } }
+	option = { name = epoch_ii.65.c trigger = { owner = { OR = { NOT = { exists = event_target:epoch_ii_delayed_node@root } NOT = { exists = event_target:epoch_ii_interrupted_node@root } } resource_stockpile_compare = { resource = energy value < 500 } } } hidden_effect = { owner = { set_country_flag = epoch_ii_archive_route_used set_country_flag = epoch_ii_expedition_data_archived set_country_flag = epoch_ii_ch5_nodes_ready change_variable = { which = epoch_ii_resonance_stability value = -20 } epoch_ii_clamp_resonance_stability = yes } } ai_chance = { factor = 100 } }
 }
 
 situation_event = {
@@ -630,7 +642,8 @@ situation_event = {
 		}
 	}
 	option = { name = epoch_ii.66.a trigger = { owner = { exists = event_target:epoch_ii_silent_system@root } } hidden_effect = { owner = { country_event = { id = epoch_ii.82 } } } ai_chance = { factor = 70 } }
-	option = { name = epoch_ii.66.b hidden_effect = { owner = { set_country_flag = epoch_ii_silent_project_archived set_country_flag = epoch_ii_silent_project_done country_event = { id = epoch_ii.67 days = 1 } } } ai_chance = { factor = 30 } }
+	option = { name = epoch_ii.66.b trigger = { owner = { resource_stockpile_compare = { resource = energy value >= 500 } } } hidden_effect = { owner = { add_resource = { energy = -500 } set_country_flag = epoch_ii_silent_project_archived set_country_flag = epoch_ii_silent_project_done country_event = { id = epoch_ii.67 days = 1 } } } ai_chance = { factor = 25 } }
+	option = { name = epoch_ii.66.c trigger = { owner = { resource_stockpile_compare = { resource = energy value < 500 } } } hidden_effect = { owner = { set_country_flag = epoch_ii_silent_project_archived set_country_flag = epoch_ii_silent_project_done change_variable = { which = epoch_ii_resonance_stability value = -15 } epoch_ii_clamp_resonance_stability = yes country_event = { id = epoch_ii.67 days = 1 } } } ai_chance = { factor = 100 } }
 }
 
 country_event = {
@@ -642,7 +655,7 @@ country_event = {
 	trigger = { has_country_flag = epoch_ii_silent_project_done NOT = { has_country_flag = epoch_ii_ch5_silence_prompted } }
 	immediate = { set_country_flag = epoch_ii_ch5_silence_prompted }
 	option = { name = epoch_ii.67.a hidden_effect = { set_country_flag = epoch_ii_silent_system_dark set_country_flag = epoch_ii_ch5_resolved change_variable = { which = epoch_ii_resonance_stability value = 4 } epoch_ii_clamp_resonance_stability = yes if = { limit = { NOT = { has_country_flag = epoch_ii_silent_system_archived } } add_resource = { physics_research = 150 } } } ai_chance = { factor = 34 } }
-	option = { name = epoch_ii.67.b hidden_effect = { set_country_flag = epoch_ii_silent_system_repeated set_country_flag = epoch_ii_ch5_resolved change_variable = { which = epoch_ii_resonance_stability value = -10 } epoch_ii_clamp_resonance_stability = yes add_resource = { physics_research = 400 } } ai_chance = { factor = 33 } }
+	option = { name = epoch_ii.67.b hidden_effect = { set_country_flag = epoch_ii_silent_system_repeated set_country_flag = epoch_ii_ch5_resolved change_variable = { which = epoch_ii_resonance_stability value = -10 } epoch_ii_clamp_resonance_stability = yes if = { limit = { NOT = { has_country_flag = epoch_ii_silent_system_archived } } add_resource = { physics_research = 400 } } } ai_chance = { factor = 33 } }
 	option = { name = epoch_ii.67.c hidden_effect = { set_country_flag = epoch_ii_silent_system_broadcast set_country_flag = epoch_ii_ch5_resolved set_country_flag = epoch_ii_network_exposed add_resource = { physics_research = 300 alloys = 150 } } ai_chance = { factor = 33 } }
 }
 
@@ -684,6 +697,7 @@ situation_event = {
 				}
 				if = {
 					limit = { exists = event_target:epoch_ii_nullwarden_country@root }
+					event_target:epoch_ii_nullwarden_country@root = { set_faction_hostility = { target = root set_hostile = yes } }
 					set_country_flag = epoch_ii_second_force_spawned
 					create_fleet = {
 						name = "NAME_EPOCH_Second_Force"
@@ -710,7 +724,7 @@ situation_event = {
 	option = { name = epoch_ii.71.a trigger = { owner = { exists = event_target:epoch_ii_second_fleet@root } } hidden_effect = { owner = { set_country_flag = epoch_ii_ch6_combat_started change_variable = { which = epoch_ii_resonance_stability value = -8 } epoch_ii_clamp_resonance_stability = yes } } ai_chance = { factor = 0 } }
 	option = { name = epoch_ii.71.b trigger = { owner = { has_country_flag = epoch_ii_two_real_systems_surveyed exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } OR = { AND = { has_technology = tech_epoch_adaptive_resonance_armor resource_stockpile_compare = { resource = alloys value >= 300 } } AND = { NOT = { has_technology = tech_epoch_adaptive_resonance_armor } resource_stockpile_compare = { resource = alloys value >= 400 } } } resource_stockpile_compare = { resource = energy value >= 300 } } } hidden_effect = { owner = { if = { limit = { has_technology = tech_epoch_adaptive_resonance_armor } add_resource = { alloys = -300 energy = -300 } } else = { add_resource = { alloys = -400 energy = -300 } } set_country_flag = epoch_ii_ch6_trap_started country_event = { id = epoch_ii.84 } } } ai_chance = { factor = 0 } }
 	option = { name = epoch_ii.71.c trigger = { owner = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } OR = { AND = { has_technology = tech_epoch_phased_sensors resource_stockpile_compare = { resource = energy value >= 350 } } AND = { NOT = { has_technology = tech_epoch_phased_sensors } resource_stockpile_compare = { resource = energy value >= 500 } } } } } hidden_effect = { owner = { set_country_flag = epoch_ii_ch6_science_started if = { limit = { has_technology = tech_epoch_phased_sensors } add_resource = { energy = -350 } } else = { add_resource = { energy = -500 } } country_event = { id = epoch_ii.85 } } } ai_chance = { factor = 0 } }
-	option = { name = epoch_ii.71.d hidden_effect = { owner = { abort_special_project = { type = EPOCH_II_NODE_TRAP } abort_special_project = { type = EPOCH_II_SCIENCE_COUNTERMEASURE } set_country_flag = epoch_ii_ch6_withdrawal set_country_flag = epoch_ii_ch6_resolved set_country_flag = epoch_ii_node_lost set_country_flag = epoch_ii_convergence_data_low add_resource = { physics_research = 100 alloys = -200 } change_variable = { which = epoch_ii_resonance_stability value = -15 } epoch_ii_clamp_resonance_stability = yes if = { limit = { exists = event_target:epoch_ii_second_fleet@root } event_target:epoch_ii_second_fleet@root = { clear_orders = yes set_fleet_stance = evasive owner = { set_faction_hostility = { target = root set_hostile = no set_neutral = yes } } } } } } ai_chance = { factor = 100 } }
+	option = { name = epoch_ii.71.d hidden_effect = { owner = { set_country_flag = epoch_ii_ch6_withdrawal_pending country_event = { id = epoch_ii.86 } } } ai_chance = { factor = 100 } }
 }
 
 country_event = {
@@ -733,20 +747,80 @@ country_event = {
 	trigger = {
 		from = {
 			has_country_flag = epoch_ii_ch6_combat_started
-			NOT = { has_country_flag = epoch_ii_ch6_resolved }
+			NOR = { has_country_flag = epoch_ii_ch6_resolved has_country_flag = epoch_ii_ch6_combat_success_pending has_country_flag = epoch_ii_ch6_trap_success_pending has_country_flag = epoch_ii_ch6_science_success_pending has_country_flag = epoch_ii_ch6_withdrawal_pending }
 			fromfrom = { is_same_value = event_target:epoch_ii_second_fleet@from }
 		}
 	}
 	immediate = {
-		from = {
-			set_country_flag = epoch_ii_ch6_resolved
+		from = { set_country_flag = epoch_ii_ch6_combat_success_pending country_event = { id = epoch_ii.86 } }
+	}
+}
+
+country_event = {
+	id = epoch_ii.86
+	hide_window = yes
+	is_triggered_only = yes
+	trigger = {
+		has_country_flag = epoch_ii_active
+		NOR = { has_country_flag = epoch_ii_ch6_resolved }
+		OR = { has_country_flag = epoch_ii_ch6_combat_success_pending has_country_flag = epoch_ii_ch6_trap_success_pending has_country_flag = epoch_ii_ch6_science_success_pending has_country_flag = epoch_ii_ch6_withdrawal_pending }
+	}
+	immediate = {
+		set_country_flag = epoch_ii_ch6_resolved
+		remove_country_flag = epoch_ii_ch6_trap_resolved
+		remove_country_flag = epoch_ii_ch6_science_resolved
+		remove_country_flag = epoch_ii_ch6_withdrawal
+		remove_country_flag = epoch_ii_second_force_destroyed
+		remove_country_flag = epoch_ii_second_force_neutralized
+		remove_country_flag = epoch_ii_second_force_withdrawn
+		remove_country_flag = epoch_ii_node_lost
+		remove_country_flag = epoch_ii_convergence_data_high
+		remove_country_flag = epoch_ii_convergence_data_medium
+		remove_country_flag = epoch_ii_convergence_data_low
+		abort_special_project = { type = EPOCH_II_NODE_TRAP }
+		abort_special_project = { type = EPOCH_II_SCIENCE_COUNTERMEASURE }
+		if = {
+			limit = { has_country_flag = epoch_ii_ch6_combat_success_pending }
 			set_country_flag = epoch_ii_second_force_destroyed
 			set_country_flag = epoch_ii_convergence_data_high
 			add_resource = { physics_research = 400 alloys = 200 }
 			change_variable = { which = epoch_ii_resonance_stability value = 8 }
-			epoch_ii_clamp_resonance_stability = yes
-			country_event = { id = epoch_ii.72 }
 		}
+		else_if = {
+			limit = { has_country_flag = epoch_ii_ch6_trap_success_pending }
+			set_country_flag = epoch_ii_ch6_trap_resolved
+			set_country_flag = epoch_ii_second_force_neutralized
+			set_country_flag = epoch_ii_convergence_data_high
+			add_resource = { physics_research = 300 alloys = 150 }
+			change_variable = { which = epoch_ii_resonance_stability value = -4 }
+			epoch_ii_disengage_second_nullwarden_fleet = yes
+		}
+		else_if = {
+			limit = { has_country_flag = epoch_ii_ch6_science_success_pending }
+			set_country_flag = epoch_ii_ch6_science_resolved
+			set_country_flag = epoch_ii_second_force_neutralized
+			set_country_flag = epoch_ii_convergence_data_medium
+			add_resource = { physics_research = 250 }
+			change_variable = { which = epoch_ii_resonance_stability value = 5 }
+			epoch_ii_disengage_second_nullwarden_fleet = yes
+		}
+		else_if = {
+			limit = { has_country_flag = epoch_ii_ch6_withdrawal_pending }
+			set_country_flag = epoch_ii_ch6_withdrawal
+			set_country_flag = epoch_ii_node_lost
+			set_country_flag = epoch_ii_second_force_withdrawn
+			set_country_flag = epoch_ii_convergence_data_low
+			add_resource = { physics_research = 100 alloys = -200 }
+			change_variable = { which = epoch_ii_resonance_stability value = -15 }
+			epoch_ii_disengage_second_nullwarden_fleet = yes
+		}
+		epoch_ii_clamp_resonance_stability = yes
+		remove_country_flag = epoch_ii_ch6_combat_success_pending
+		remove_country_flag = epoch_ii_ch6_trap_success_pending
+		remove_country_flag = epoch_ii_ch6_science_success_pending
+		remove_country_flag = epoch_ii_ch6_withdrawal_pending
+		remove_country_flag = epoch_ii_ch6_recovery_prompted
+		country_event = { id = epoch_ii.72 }
 	}
 }
 
@@ -817,14 +891,46 @@ ship_event = {
 	id = epoch_ii.74
 	hide_window = yes
 	is_triggered_only = yes
-	immediate = { owner = { set_country_flag = epoch_ii_reflection_project_complete if = { limit = { has_country_flag = epoch_ii_interrupted_project_complete } set_country_flag = epoch_ii_ch5_nodes_ready set_country_flag = epoch_ii_two_real_systems_surveyed add_resource = { physics_research = 350 society_research = 200 } } } }
+	immediate = {
+		owner = {
+			if = {
+				limit = { has_country_flag = epoch_ii_active NOR = { has_country_flag = epoch_ii_reflection_project_complete } }
+				set_country_flag = epoch_ii_reflection_project_complete
+				if = {
+					limit = { has_country_flag = epoch_ii_interrupted_project_complete NOR = { has_country_flag = epoch_ii_two_real_systems_surveyed } }
+					set_country_flag = epoch_ii_ch5_nodes_ready
+					set_country_flag = epoch_ii_two_real_systems_surveyed
+					set_country_flag = epoch_ii_expedition_data_complete
+					remove_country_flag = epoch_ii_expedition_data_partial
+					remove_country_flag = epoch_ii_expedition_data_archived
+					add_resource = { physics_research = 350 society_research = 200 }
+				}
+			}
+		}
+	}
 }
 
 ship_event = {
 	id = epoch_ii.75
 	hide_window = yes
 	is_triggered_only = yes
-	immediate = { owner = { set_country_flag = epoch_ii_interrupted_project_complete if = { limit = { has_country_flag = epoch_ii_reflection_project_complete } set_country_flag = epoch_ii_ch5_nodes_ready set_country_flag = epoch_ii_two_real_systems_surveyed add_resource = { physics_research = 350 society_research = 200 } } } }
+	immediate = {
+		owner = {
+			if = {
+				limit = { has_country_flag = epoch_ii_active NOR = { has_country_flag = epoch_ii_interrupted_project_complete } }
+				set_country_flag = epoch_ii_interrupted_project_complete
+				if = {
+					limit = { has_country_flag = epoch_ii_reflection_project_complete NOR = { has_country_flag = epoch_ii_two_real_systems_surveyed } }
+					set_country_flag = epoch_ii_ch5_nodes_ready
+					set_country_flag = epoch_ii_two_real_systems_surveyed
+					set_country_flag = epoch_ii_expedition_data_complete
+					remove_country_flag = epoch_ii_expedition_data_partial
+					remove_country_flag = epoch_ii_expedition_data_archived
+					add_resource = { physics_research = 350 society_research = 200 }
+				}
+			}
+		}
+	}
 }
 
 ship_event = {
@@ -840,25 +946,56 @@ country_event = {
 	desc = epoch_ii.77.desc
 	picture = GFX_evt_ship_in_orbit
 	is_triggered_only = yes
-	trigger = { has_country_flag = epoch_ii_active NOT = { has_country_flag = epoch_ii_ch5_resolved } }
-	option = { name = epoch_ii.77.retry_reflection trigger = { NOT = { has_country_flag = epoch_ii_reflection_project_complete } exists = event_target:epoch_ii_delayed_node@root event_target:epoch_ii_delayed_node@root = { has_access_fleet = root } resource_stockpile_compare = { resource = energy value >= 200 } } hidden_effect = { add_resource = { energy = -200 } event_target:epoch_ii_delayed_node@root = { enable_special_project = { name = EPOCH_II_NODE_REFLECTION location = this owner = root } } } ai_chance = { factor = 20 } }
-	option = { name = epoch_ii.77.retry_interrupted trigger = { NOT = { has_country_flag = epoch_ii_interrupted_project_complete } exists = event_target:epoch_ii_interrupted_node@root event_target:epoch_ii_interrupted_node@root = { has_access_fleet = root } resource_stockpile_compare = { resource = energy value >= 200 } } hidden_effect = { add_resource = { energy = -200 } event_target:epoch_ii_interrupted_node@root = { enable_special_project = { name = EPOCH_II_NODE_INTERRUPTED location = this owner = root } } } ai_chance = { factor = 20 } }
-	option = { name = epoch_ii.77.retry_silent trigger = { NOT = { has_country_flag = epoch_ii_silent_project_done } exists = event_target:epoch_ii_silent_system@root event_target:epoch_ii_silent_system@root = { has_access_fleet = root } resource_stockpile_compare = { resource = energy value >= 200 } } hidden_effect = { add_resource = { energy = -200 } event_target:epoch_ii_silent_system@root = { enable_special_project = { name = EPOCH_II_SILENT_SYSTEM location = this owner = root } } } ai_chance = { factor = 20 } }
-	option = { name = epoch_ii.77.a hidden_effect = { abort_special_project = { type = EPOCH_II_NODE_REFLECTION } abort_special_project = { type = EPOCH_II_NODE_INTERRUPTED } abort_special_project = { type = EPOCH_II_SILENT_SYSTEM } set_country_flag = epoch_ii_archive_route_used set_country_flag = epoch_ii_ch5_nodes_ready set_country_flag = epoch_ii_silent_project_started set_country_flag = epoch_ii_convergence_data_low add_resource = { physics_research = 100 energy = -500 } change_variable = { which = epoch_ii_resonance_stability value = -5 } epoch_ii_clamp_resonance_stability = yes if = { limit = { NOT = { has_country_flag = epoch_ii_silent_project_done } } set_country_flag = epoch_ii_silent_project_done set_country_flag = epoch_ii_silent_system_archived country_event = { id = epoch_ii.67 days = 1 } } } ai_chance = { factor = 60 } }
+	trigger = { has_country_flag = epoch_ii_active NOR = { has_country_flag = epoch_ii_ch5_resolved has_country_flag = epoch_ii_ch5_recovery_prompted } }
+	immediate = { set_country_flag = epoch_ii_ch5_recovery_prompted }
+	option = { name = epoch_ii.77.retry_reflection trigger = { NOR = { has_country_flag = epoch_ii_reflection_project_complete has_country_flag = epoch_ii_reflection_retry_used } exists = event_target:epoch_ii_delayed_node@root event_target:epoch_ii_delayed_node@root = { has_access_fleet = root } resource_stockpile_compare = { resource = energy value >= 200 } } hidden_effect = { add_resource = { energy = -200 } set_country_flag = epoch_ii_reflection_retry_used remove_country_flag = epoch_ii_ch5_recovery_prompted event_target:epoch_ii_delayed_node@root = { enable_special_project = { name = EPOCH_II_NODE_REFLECTION location = this owner = root } } } ai_chance = { factor = 20 } }
+	option = { name = epoch_ii.77.retry_interrupted trigger = { NOR = { has_country_flag = epoch_ii_interrupted_project_complete has_country_flag = epoch_ii_interrupted_retry_used } exists = event_target:epoch_ii_interrupted_node@root event_target:epoch_ii_interrupted_node@root = { has_access_fleet = root } resource_stockpile_compare = { resource = energy value >= 200 } } hidden_effect = { add_resource = { energy = -200 } set_country_flag = epoch_ii_interrupted_retry_used remove_country_flag = epoch_ii_ch5_recovery_prompted event_target:epoch_ii_interrupted_node@root = { enable_special_project = { name = EPOCH_II_NODE_INTERRUPTED location = this owner = root } } } ai_chance = { factor = 20 } }
+	option = { name = epoch_ii.77.retry_silent trigger = { NOR = { has_country_flag = epoch_ii_silent_project_done has_country_flag = epoch_ii_silent_retry_used } exists = event_target:epoch_ii_silent_system@root event_target:epoch_ii_silent_system@root = { has_access_fleet = root } resource_stockpile_compare = { resource = energy value >= 200 } } hidden_effect = { add_resource = { energy = -200 } set_country_flag = epoch_ii_silent_retry_used remove_country_flag = epoch_ii_ch5_recovery_prompted event_target:epoch_ii_silent_system@root = { enable_special_project = { name = EPOCH_II_SILENT_SYSTEM location = this owner = root } } } ai_chance = { factor = 20 } }
+	option = {
+		name = epoch_ii.77.a
+		trigger = { resource_stockpile_compare = { resource = energy value >= 500 } }
+		hidden_effect = {
+			set_country_flag = epoch_ii_archive_route_used
+			set_country_flag = epoch_ii_ch5_nodes_ready
+			add_resource = { physics_research = 100 energy = -500 }
+			change_variable = { which = epoch_ii_resonance_stability value = -5 }
+			epoch_ii_clamp_resonance_stability = yes
+			if = { limit = { has_country_flag = epoch_ii_two_real_systems_surveyed } set_country_flag = epoch_ii_expedition_data_complete }
+			else_if = { limit = { OR = { has_country_flag = epoch_ii_reflection_project_complete has_country_flag = epoch_ii_interrupted_project_complete } } set_country_flag = epoch_ii_expedition_data_partial }
+			else = { set_country_flag = epoch_ii_expedition_data_archived }
+			if = { limit = { has_country_flag = epoch_ii_silent_project_started NOR = { has_country_flag = epoch_ii_silent_project_done } } set_country_flag = epoch_ii_silent_project_done set_country_flag = epoch_ii_silent_system_archived country_event = { id = epoch_ii.67 days = 1 } }
+		}
+		ai_chance = { factor = 60 }
+	}
+	option = {
+		name = epoch_ii.77.emergency
+		trigger = { resource_stockpile_compare = { resource = energy value < 500 } }
+		hidden_effect = {
+			set_country_flag = epoch_ii_archive_route_used
+			set_country_flag = epoch_ii_ch5_nodes_ready
+			change_variable = { which = epoch_ii_resonance_stability value = -20 }
+			epoch_ii_clamp_resonance_stability = yes
+			if = { limit = { has_country_flag = epoch_ii_two_real_systems_surveyed } set_country_flag = epoch_ii_expedition_data_complete }
+			else_if = { limit = { OR = { has_country_flag = epoch_ii_reflection_project_complete has_country_flag = epoch_ii_interrupted_project_complete } } set_country_flag = epoch_ii_expedition_data_partial }
+			else = { set_country_flag = epoch_ii_expedition_data_archived }
+			if = { limit = { has_country_flag = epoch_ii_silent_project_started NOR = { has_country_flag = epoch_ii_silent_project_done } } set_country_flag = epoch_ii_silent_project_done set_country_flag = epoch_ii_silent_system_archived country_event = { id = epoch_ii.67 days = 1 } }
+		}
+		ai_chance = { factor = 100 }
+	}
 }
 
 ship_event = {
 	id = epoch_ii.78
 	hide_window = yes
 	is_triggered_only = yes
-	immediate = { owner = { set_country_flag = epoch_ii_ch6_trap_resolved set_country_flag = epoch_ii_ch6_resolved set_country_flag = epoch_ii_convergence_data_high add_resource = { physics_research = 300 alloys = 150 } change_variable = { which = epoch_ii_resonance_stability value = -4 } epoch_ii_clamp_resonance_stability = yes if = { limit = { exists = event_target:epoch_ii_second_fleet@root } event_target:epoch_ii_second_fleet@root = { clear_orders = yes set_fleet_stance = evasive owner = { set_faction_hostility = { target = root set_hostile = no set_neutral = yes } } } } } }
+		immediate = { owner = { if = { limit = { has_country_flag = epoch_ii_active has_country_flag = epoch_ii_ch6_trap_started NOR = { has_country_flag = epoch_ii_ch6_resolved has_country_flag = epoch_ii_ch6_combat_success_pending has_country_flag = epoch_ii_ch6_trap_success_pending has_country_flag = epoch_ii_ch6_science_success_pending has_country_flag = epoch_ii_ch6_withdrawal_pending } } set_country_flag = epoch_ii_ch6_trap_success_pending country_event = { id = epoch_ii.86 } } } }
 }
 
 ship_event = {
 	id = epoch_ii.79
 	hide_window = yes
 	is_triggered_only = yes
-	immediate = { owner = { set_country_flag = epoch_ii_ch6_science_resolved set_country_flag = epoch_ii_ch6_resolved set_country_flag = epoch_ii_convergence_data_medium add_resource = { physics_research = 250 } change_variable = { which = epoch_ii_resonance_stability value = 5 } epoch_ii_clamp_resonance_stability = yes if = { limit = { exists = event_target:epoch_ii_second_fleet@root } event_target:epoch_ii_second_fleet@root = { clear_orders = yes set_fleet_stance = evasive owner = { set_faction_hostility = { target = root set_hostile = no set_neutral = yes } } } } } }
+		immediate = { owner = { if = { limit = { has_country_flag = epoch_ii_active has_country_flag = epoch_ii_ch6_science_started NOR = { has_country_flag = epoch_ii_ch6_resolved has_country_flag = epoch_ii_ch6_combat_success_pending has_country_flag = epoch_ii_ch6_trap_success_pending has_country_flag = epoch_ii_ch6_science_success_pending has_country_flag = epoch_ii_ch6_withdrawal_pending } } set_country_flag = epoch_ii_ch6_science_success_pending country_event = { id = epoch_ii.86 } } } }
 }
 
 country_event = {
@@ -867,9 +1004,10 @@ country_event = {
 	desc = epoch_ii.80.desc
 	picture = GFX_evt_hostile_fleet
 	is_triggered_only = yes
-	trigger = { has_country_flag = epoch_ii_active OR = { has_country_flag = epoch_ii_ch6_trap_started has_country_flag = epoch_ii_ch6_science_started } NOT = { has_country_flag = epoch_ii_ch6_resolved } }
-	option = { name = epoch_ii.80.a trigger = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } resource_stockpile_compare = { resource = energy value >= 200 } } hidden_effect = { add_resource = { energy = -200 } if = { limit = { has_country_flag = epoch_ii_ch6_trap_started } event_target:epoch_ii_target_planet@root = { enable_special_project = { name = EPOCH_II_NODE_TRAP location = this owner = root } } } else = { event_target:epoch_ii_target_planet@root = { enable_special_project = { name = EPOCH_II_SCIENCE_COUNTERMEASURE location = this owner = root } } } } ai_chance = { factor = 25 } }
-	option = { name = epoch_ii.80.b hidden_effect = { abort_special_project = { type = EPOCH_II_NODE_TRAP } abort_special_project = { type = EPOCH_II_SCIENCE_COUNTERMEASURE } set_country_flag = epoch_ii_ch6_withdrawal set_country_flag = epoch_ii_ch6_resolved set_country_flag = epoch_ii_node_lost set_country_flag = epoch_ii_convergence_data_low if = { limit = { exists = event_target:epoch_ii_second_fleet@root } event_target:epoch_ii_second_fleet@root = { clear_orders = yes set_fleet_stance = evasive owner = { set_faction_hostility = { target = root set_hostile = no set_neutral = yes } } } } } ai_chance = { factor = 75 } }
+	trigger = { has_country_flag = epoch_ii_active OR = { has_country_flag = epoch_ii_ch6_trap_started has_country_flag = epoch_ii_ch6_science_started } NOR = { has_country_flag = epoch_ii_ch6_resolved has_country_flag = epoch_ii_ch6_recovery_prompted } }
+	immediate = { set_country_flag = epoch_ii_ch6_recovery_prompted }
+	option = { name = epoch_ii.80.a trigger = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } resource_stockpile_compare = { resource = energy value >= 200 } OR = { AND = { has_country_flag = epoch_ii_ch6_trap_started NOR = { has_country_flag = epoch_ii_ch6_trap_retry_used } } AND = { has_country_flag = epoch_ii_ch6_science_started NOR = { has_country_flag = epoch_ii_ch6_science_retry_used } } } } hidden_effect = { add_resource = { energy = -200 } remove_country_flag = epoch_ii_ch6_recovery_prompted if = { limit = { has_country_flag = epoch_ii_ch6_trap_started NOR = { has_country_flag = epoch_ii_ch6_trap_retry_used } } set_country_flag = epoch_ii_ch6_trap_retry_used event_target:epoch_ii_target_planet@root = { enable_special_project = { name = EPOCH_II_NODE_TRAP location = this owner = root } } } else_if = { limit = { has_country_flag = epoch_ii_ch6_science_started NOR = { has_country_flag = epoch_ii_ch6_science_retry_used } } set_country_flag = epoch_ii_ch6_science_retry_used event_target:epoch_ii_target_planet@root = { enable_special_project = { name = EPOCH_II_SCIENCE_COUNTERMEASURE location = this owner = root } } } } ai_chance = { factor = 25 } }
+	option = { name = epoch_ii.80.b hidden_effect = { remove_country_flag = epoch_ii_ch6_recovery_prompted set_country_flag = epoch_ii_ch6_withdrawal_pending country_event = { id = epoch_ii.86 } } ai_chance = { factor = 75 } }
 }
 
 ship_event = {

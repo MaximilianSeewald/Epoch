@@ -106,6 +106,13 @@ check(!silentPrompt.includes('hide_window = yes') && /option = \{ name = epoch_i
 check(/has_country_flag = epoch_ii_silent_project_done NOT = \{ has_country_flag = epoch_ii_ch5_silence_prompted \}/.test(events) && /set_country_flag = epoch_ii_ch5_expedition_prompted/.test(events), 'The two Chapter 5 prompts use independent idempotence flags');
 check(/epoch_ii_archive_route_used/.test(events) && /physics_research = 100 energy = -500/.test(events), 'Archive fallback has a measurable energy cost and reduced yield');
 check(/epoch_ii\.77\.retry_reflection/.test(events) && /epoch_ii\.77\.retry_interrupted/.test(events) && /epoch_ii\.77\.retry_silent/.test(events) && /resource_stockpile_compare = \{ resource = energy value >= 200 \}/.test(events), 'Each failed expedition has an energy-costed retry without losing the completed site');
+check(/option = \{ name = epoch_ii\.65\.b trigger = \{ owner = \{ resource_stockpile_compare = \{ resource = energy value >= 500 \}/.test(events), 'The voluntary archive option is shown only when its 500 Energy cost is payable');
+check(/epoch_ii\.65\.c[\s\S]{0,500}value < 500[\s\S]{0,500}value = -20/.test(events), 'When a destination is missing and Energy is short, a costly stability-loss fallback keeps the stage moving');
+check(/name = epoch_ii\.77\.a[\s\S]{0,200}value >= 500/.test(events) && /name = epoch_ii\.77\.emergency[\s\S]{0,300}value < 500[\s\S]{0,500}value = -20/.test(events), 'Chapter 5 recovery has separately gated paid and low-resource emergency archive routes');
+check(!/id = epoch_ii\.77[\s\S]*?abort_special_project = \{ type = EPOCH_II_NODE_REFLECTION \}/.test(events), 'Archiving a failed site does not cancel or erase another still-active successful expedition');
+check(/epoch_ii_expedition_data_partial/.test(events) && /epoch_ii_expedition_data_archived/.test(events) && /epoch_ii_expedition_data_complete/.test(events), 'Chapter 5 records complete, partial, and archive-only data quality for later chapters');
+check(/id = epoch_ii\.74[\s\S]*?NOR = \{ has_country_flag = epoch_ii_reflection_project_complete \}[\s\S]*?epoch_ii_expedition_data_complete/.test(events) && /id = epoch_ii\.75[\s\S]*?NOR = \{ has_country_flag = epoch_ii_interrupted_project_complete \}[\s\S]*?epoch_ii_expedition_data_complete/.test(events), 'Repeated project success callbacks cannot grant expedition rewards twice, and a later second success upgrades partial data');
+check(/name = epoch_ii\.66\.b trigger = \{ owner = \{ resource_stockpile_compare = \{ resource = energy value >= 500/.test(events) && /name = epoch_ii\.66\.c trigger = \{ owner = \{ resource_stockpile_compare = \{ resource = energy value < 500/.test(events), 'Silent-system archive choice charges Energy or imposes a stability penalty when Energy is short');
 check(/any_system_planet = \{ is_planet_class = pc_barren is_colonizable = no \}/.test(events) && /epoch_ii_silent_system@root/.test(events), 'The silent-system project selects an actual accessible system with a barren body');
 check(/tech_epoch_phased_sensors = \{[\s\S]*?cost = @tier2cost2[\s\S]*?prerequisites = \{ "tech_epoch_resonance_spectroscopy" "tech_sensors_2" \}/.test(tech), 'Phased Sensors is a normal research item with an acyclic vanilla dependency');
 check(/tech_epoch_contamination_neutral_infrastructure = \{[\s\S]*?area = society[\s\S]*?potential = \{ has_country_flag = epoch_ii_containment_neutral_infrastructure_lead \}/.test(tech) && /add_research_option = tech_epoch_contamination_neutral_infrastructure/.test(events) && !/research_technology = tech_epoch_contamination_neutral_infrastructure/.test(events), 'Contamination-Neutral Infrastructure is offered for ordinary research, never granted');
@@ -117,6 +124,8 @@ check((chapterFiveOffer.match(/add_research_option = tech_epoch_phased_sensors/g
 check(/create_fleet = \{[\s\S]{0,100}name = "NAME_EPOCH_Second_Force"/.test(events) && /epoch_ii_second_fleet@root/.test(events) && /NAME_EPOCH_Heavy_Suppressor/.test(events) && /MEDIUM_DISRUPTOR_1/.test(read('common/global_ship_designs/epoch_nullwarden_designs.txt')), 'Chapter 6 creates a larger armed hostile force with heavy disruptor hulls');
 check(/epoch_ii_nullwarden_engagement_recorded/.test(events) && /epoch_ii_nullwarden_diverted/.test(events) && /epoch_ii_network_exposed/.test(events), 'Second encounter reads first battle, diversion, and broadcast records');
 check(/NOT = \{ exists = event_target:epoch_ii_nullwarden_country@root \}[\s\S]*?create_country = \{[\s\S]*?type = epoch_nullwarden/.test(events), 'Chapter 6 recreates a missing campaign-specific enemy country');
+check(/event_target:epoch_ii_nullwarden_country@root = \{ set_faction_hostility = \{ target = root set_hostile = yes \} \}/.test(events), 'The second encounter restores hostility on a reused country toward this campaign empire only');
+check(/set_owner = event_target:epoch_ii_nullwarden_country@root/.test(events) && /set_faction_hostility = \{ target = root set_hostile = yes \}/.test(events), 'Replacement country, second fleet, and campaign-specific hostility stay correctly linked');
 check(/NOT = \{ has_country_flag = epoch_ii_second_force_spawned \}[\s\S]*?set_country_flag = epoch_ii_second_force_spawned[\s\S]*?save_global_event_target_as = epoch_ii_second_fleet@root/.test(events), 'Fleet spawn flag prevents duplicate fleets after reload or repeated dispatch');
 check(/epoch_ii_silent_system_broadcast[\s\S]{0,500}NAME_EPOCH_Heavy_Suppressor/.test(events) && /which = epoch_ii_resonance_stability value < 30/.test(events), 'Broadcast exposure and low stability increase the tangible second-force threat');
 check(/has_technology = tech_epoch_adaptive_resonance_armor[\s\S]{0,500}alloys = -300/.test(events) && /has_technology = tech_epoch_phased_sensors[\s\S]{0,500}energy = -350/.test(events), 'Armor and sensor research reduce costs of matching countermeasures');
@@ -127,9 +136,24 @@ const combatAt = events.indexOf('id = epoch_ii.81');
 const combatStart = events.lastIndexOf('country_event = {', combatAt);
 const combatResolution = events.slice(combatStart, events.indexOf('\n}', combatAt));
 check(/on_fleet_destroyed_victim/.test(onActions) && /from = \{[\s\S]*?has_country_flag = epoch_ii_ch6_combat_started[\s\S]*?fromfrom = \{ is_same_value = event_target:epoch_ii_second_fleet@from \}/.test(combatResolution), 'Combat callback matches this attacking empire\'s saved second-force fleet');
-check(/from = \{[\s\S]*?set_country_flag = epoch_ii_ch6_resolved[\s\S]*?set_country_flag = epoch_ii_second_force_destroyed[\s\S]*?add_resource = \{ physics_research = 400 alloys = 200 \}/.test(combatResolution), 'Combat outcome is idempotent and flags resolution before rewards in the campaign owner scope');
+check(/from = \{ set_country_flag = epoch_ii_ch6_combat_success_pending country_event = \{ id = epoch_ii\.86 \} \}/.test(combatResolution), 'Fleet destruction submits one guarded pending result to the shared resolver');
+const resolverAt = [...events.matchAll(/^\s*id = epoch_ii\.86\s*$/gm)][0]?.index ?? -1;
+const resolverStart = events.lastIndexOf('country_event = {', resolverAt);
+const resolver = events.slice(resolverStart, events.indexOf('\n}', resolverAt));
+check(/has_country_flag = epoch_ii_active[\s\S]*?NOR = \{ has_country_flag = epoch_ii_ch6_resolved \}[\s\S]*?OR = \{[\s\S]*?epoch_ii_ch6_withdrawal_pending/.test(resolver), 'Shared Chapter 6 resolver requires an active, unresolved campaign and a pending route result');
+check(/set_country_flag = epoch_ii_ch6_resolved[\s\S]*?remove_country_flag = epoch_ii_convergence_data_high[\s\S]*?else_if = \{[\s\S]*?epoch_ii_ch6_trap_success_pending[\s\S]*?else_if = \{[\s\S]*?epoch_ii_ch6_science_success_pending[\s\S]*?else_if = \{[\s\S]*?epoch_ii_ch6_withdrawal_pending/.test(resolver), 'Resolution is set once, prior outcomes are cleared, and only one mutually exclusive route is applied');
+check(/set_country_flag = epoch_ii_second_force_destroyed[\s\S]*?add_resource = \{ physics_research = 400 alloys = 200 \}/.test(resolver), 'Combat reward is awarded by the shared resolver after its one-time guard');
+check(/NOR = \{ has_country_flag = epoch_ii_ch6_resolved has_country_flag = epoch_ii_ch6_combat_success_pending/.test(combatResolution), 'Repeated fleet-destruction callbacks cannot enqueue a second or conflicting result');
 check(!/NOT = \{ exists = event_target:epoch_ii_second_fleet@root \}[\s\S]{0,250}epoch_ii_second_force_destroyed/.test(events), 'A missing event target alone cannot award combat victory');
 check(/epoch_ii_block_b_report_sent/.test(events) && /NOT = \{ has_country_flag = epoch_ii_block_b_report_sent \}/.test(events), 'Repeated callbacks cannot create a duplicate Block B report');
+for (const id of ['epoch_ii.78','epoch_ii.79']) {
+  const at = events.indexOf(`id = ${id}`);
+  const start = events.lastIndexOf('ship_event = {', at);
+  const body = events.slice(start, events.indexOf('\n}', at));
+  check(body.includes('country_event = { id = epoch_ii.86 }') && !body.includes('set_country_flag = epoch_ii_ch6_resolved'), `${id} submits guarded project success instead of resolving or rewarding directly`);
+}
+check(/id = epoch_ii\.80[\s\S]*?epoch_ii_ch6_recovery_prompted[\s\S]*?epoch_ii_ch6_trap_retry_used[\s\S]*?epoch_ii_ch6_science_retry_used/.test(events), 'Project failure opens one recovery prompt and each project can be retried only once');
+check(/owner = \{ country_event = \{ id = epoch_ii\.86 \} \}/.test(events.slice(0, events.indexOf('# Block B'))), 'A saved pending result is recovered after load by the monthly Situation callback');
 for (const id of ['epoch_ii.9','epoch_ii.60','epoch_ii.61','epoch_ii.64','epoch_ii.65','epoch_ii.66','epoch_ii.70','epoch_ii.71']) {
   const at = events.indexOf(`id = ${id}`, id === 'epoch_ii.9' ? 0 : events.indexOf('# Block B'));
   const start = events.lastIndexOf('situation_event = {', at);
@@ -138,7 +162,7 @@ for (const id of ['epoch_ii.9','epoch_ii.60','epoch_ii.61','epoch_ii.64','epoch_
   check(start >= 0 && /trigger = \{ owner = \{/.test(body) && countryFlagsAreOwnerScoped(body), `${id} reads country flags from country scope, not Situation scope`);
 }
 check(/EPOCH_II_NODE_TRAP/.test(projects) && /EPOCH_II_SCIENCE_COUNTERMEASURE/.test(projects), 'Trap and science responses require separate staffed projects');
-check(/epoch_ii_ch6_withdrawal/.test(events) && /set_fleet_stance = evasive/.test(events) && !/destroy_fleet\s*=|destroy_ship\s*=/.test(events), 'Withdrawal keeps a surviving enemy fleet alive and records the lost node');
+check(/epoch_ii_ch6_withdrawal/.test(resolver) && /set_fleet_stance = evasive/.test(effects) && !/destroy_fleet\s*=|destroy_ship\s*=/.test(events + effects), 'Withdrawal keeps the living enemy fleet and records its distinct loss outcome');
 check(/epoch_ii_convergence_data_(high|medium|low)/.test(events), 'Military outcomes preserve distinct convergence-data quality');
 
 for (const id of ['epoch_ii.60.name','epoch_ii.60.a','epoch_ii.61.name','epoch_ii.62.name','epoch_ii.63.b','epoch_ii.64.name','epoch_ii.65.name','epoch_ii.67.name','epoch_ii.68.name','epoch_ii.70.name','epoch_ii.71.a','epoch_ii.72.a']) {
@@ -147,10 +171,47 @@ for (const id of ['epoch_ii.60.name','epoch_ii.60.a','epoch_ii.61.name','epoch_i
 for (const key of ['d_epoch_resonance_latent','d_epoch_resonance_active','d_epoch_resonance_unstable','d_epoch_resonance_controlled','building_epoch_resonance_laboratory','tech_epoch_phased_sensors','EPOCH_II_NODE_REFLECTION','EPOCH_II_NODE_INTERRUPTED','EPOCH_II_SILENT_SYSTEM','EPOCH_II_NODE_TRAP','EPOCH_II_SCIENCE_COUNTERMEASURE']) {
   check(en.includes(`${key}:0`) && de.includes(`${key}:0`), `German and English localization contain ${key}`);
 }
-for (const key of ['tech_epoch_contamination_neutral_infrastructure','building_epoch_containment_infrastructure','epoch_ii.66.a','epoch_ii.66.b','epoch_ii.77.retry_reflection','epoch_ii.77.retry_interrupted']) {
+for (const key of ['tech_epoch_contamination_neutral_infrastructure','building_epoch_containment_infrastructure','epoch_ii.65.c','epoch_ii.66.a','epoch_ii.66.b','epoch_ii.66.c','epoch_ii.77.retry_reflection','epoch_ii.77.retry_interrupted','epoch_ii.77.emergency','epoch_ii.80.a']) {
   check(en.includes(`${key}:0`) && de.includes(`${key}:0`), `German and English localization contain ${key}`);
 }
 check(en.includes('epoch_ii.77.retry_silent:0') && de.includes('epoch_ii.77.retry_silent:0'), 'German and English localization contain the silent-site retry');
+for (const key of ['epoch_ii.65.c','epoch_ii.66.c','epoch_ii.77.emergency','epoch_ii.80.a']) {
+  check(en.includes(`${key}:0`) && de.includes(`${key}:0`), `German and English localization contain ${key}`);
+}
+
+// Explicit review scenarios: route availability, partial expedition quality,
+// one-time outcomes, and living-fleet handling after every noncombat result.
+function ch5Options(systems, energy) {
+  const both = systems.delayed && systems.interrupted;
+  return {
+    survey: both,
+    paidArchive: energy >= 500,
+    emergencyArchive: !both && energy < 500,
+  };
+}
+check(ch5Options({ delayed: true, interrupted: true }, 500).survey, 'When both distinct systems are available, staffed expedition remains available');
+check(ch5Options({ delayed: true, interrupted: true }, 100).survey && !ch5Options({ delayed: true, interrupted: true }, 100).paidArchive, 'Low Energy cannot make an archive route a free substitute for an available two-site expedition');
+check(ch5Options({ delayed: true, interrupted: false }, 900).paidArchive && !ch5Options({ delayed: true, interrupted: false }, 900).survey, 'One unavailable site leaves a paid, nonblocking archive fallback');
+check(ch5Options({ delayed: true, interrupted: false }, 100).emergencyArchive, 'One unavailable site with insufficient Energy has a stability-costed fallback');
+function expeditionQuality(completed) {
+  return completed.size === 2 ? 'complete' : completed.size === 1 ? 'partial' : 'archived';
+}
+check(expeditionQuality(new Set(['reflection'])) === 'partial' && expeditionQuality(new Set(['reflection','interrupted'])) === 'complete', 'A completed survey survives its partner\'s cancellation and upgrades to complete only if the partner later succeeds');
+function resolveRoute(state, result) {
+  if (state.resolved) return state;
+  state.resolved = true;
+  state.route = result;
+  state.resultFlags = new Set([`epoch_ii_ch6_${result === 'combat' ? 'combat' : result}_resolved`]);
+  state.rewards++;
+  return state;
+}
+for (const route of ['combat','trap','science','withdrawal']) {
+  const resolved = resolveRoute(resolveRoute({ resolved: false, rewards: 0, resultFlags: new Set() }, route), route);
+  check(resolved.rewards === 1 && resolved.resultFlags.size === 1, `${route} repeated success/kill callback resolves once without conflicting outcome flags`);
+}
+const secondRetreat = block(effects, 'epoch_ii_disengage_second_nullwarden_fleet');
+check((secondRetreat.match(/queue_actions = \{ move_to = event_target:epoch_ii_second_retreat_system@root \}/g) || []).length === 1 && /epoch_ii_second_force_route_queued/.test(secondRetreat), 'A living second fleet receives one idempotent route order to an accessible system');
+check(/epoch_ii_second_force_neutralized/.test(resolver) && /epoch_ii_second_force_withdrawn/.test(resolver) && /set_neutral = yes/.test(secondRetreat), 'Trap/science neutralization and withdrawal remain distinct while surviving fleets are de-escalated');
 
 // Model the required path and the cases where the expedition or combat object
 // disappears. This mirrors the source gates above and catches blocked routes.

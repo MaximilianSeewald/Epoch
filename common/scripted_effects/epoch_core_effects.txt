@@ -180,6 +180,67 @@ epoch_ii_disengage_nullwarden_fleet = {
 	}
 }
 
+# The Chapter 6 fleet has its own saved target and idempotency flags, but uses
+# the same neutralize-then-retreat policy as the Block A force.
+epoch_ii_disengage_second_nullwarden_fleet = {
+	if = {
+		limit = { exists = event_target:epoch_ii_second_fleet@root }
+		event_target:epoch_ii_second_fleet@root = { owner = { save_global_event_target_as = epoch_ii_second_nullwarden_country@root } }
+		if = {
+			limit = { NOT = { has_country_flag = epoch_ii_second_force_disengage_issued } }
+			event_target:epoch_ii_second_fleet@root = {
+				owner = { set_faction_hostility = { target = root set_hostile = no set_neutral = yes } }
+				clear_orders = yes
+				set_fleet_stance = evasive
+			}
+			set_country_flag = epoch_ii_second_force_disengage_issued
+			set_country_flag = epoch_ii_second_force_retreat_pending
+		}
+		if = {
+			limit = { has_country_flag = epoch_ii_second_force_route_queued exists = event_target:epoch_ii_second_retreat_system@root event_target:epoch_ii_second_retreat_system@root = { has_access_fleet = event_target:epoch_ii_second_nullwarden_country@root } }
+			event_target:epoch_ii_second_fleet@root = {
+				if = {
+					limit = { solar_system = { is_same_value = event_target:epoch_ii_second_retreat_system@root } }
+					set_fleet_stance = passive
+					root = { remove_country_flag = epoch_ii_second_force_retreat_pending remove_country_flag = epoch_ii_second_force_route_queued remove_country_flag = epoch_ii_second_force_no_safe_route set_country_flag = epoch_ii_second_force_disengage_complete }
+				}
+			}
+		}
+		else = {
+			remove_country_flag = epoch_ii_second_force_route_queued
+			remove_country_flag = epoch_ii_second_retreat_destination_found
+			event_target:epoch_ii_second_fleet@root = {
+				set_fleet_stance = evasive
+				random_system = {
+					limit = { has_owner = no has_access_fleet = event_target:epoch_ii_second_nullwarden_country@root distance = { source = prev.solar_system use_bypasses = no min_jumps = 2 max_jumps = 4 } NOT = { is_same_value = event_target:epoch_ii_target_system@root } }
+					save_global_event_target_as = epoch_ii_second_retreat_system@root
+					root = { set_country_flag = epoch_ii_second_retreat_destination_found }
+				}
+				if = {
+					limit = { root = { NOT = { has_country_flag = epoch_ii_second_retreat_destination_found } } }
+					closest_system = {
+						limit = { has_access_fleet = event_target:epoch_ii_second_nullwarden_country@root NOT = { is_same_value = prev.solar_system } NOT = { is_same_value = event_target:epoch_ii_target_system@root } }
+						save_global_event_target_as = epoch_ii_second_retreat_system@root
+						root = { set_country_flag = epoch_ii_second_retreat_destination_found }
+					}
+				}
+				if = {
+					limit = { root = { has_country_flag = epoch_ii_second_retreat_destination_found } }
+					queue_actions = { move_to = event_target:epoch_ii_second_retreat_system@root }
+					root = { remove_country_flag = epoch_ii_second_force_no_safe_route set_country_flag = epoch_ii_second_force_route_queued set_country_flag = epoch_ii_second_force_retreat_pending }
+				}
+				else = { set_fleet_stance = evasive root = { set_country_flag = epoch_ii_second_force_no_safe_route set_country_flag = epoch_ii_second_force_retreat_pending } }
+			}
+		}
+	}
+	else = {
+		remove_country_flag = epoch_ii_second_force_retreat_pending
+		remove_country_flag = epoch_ii_second_force_route_queued
+		remove_country_flag = epoch_ii_second_force_no_safe_route
+		set_country_flag = epoch_ii_second_force_disengage_complete
+	}
+}
+
 epoch_ii_clamp_resonance_stability = {
 	if = {
 		limit = { check_variable = { which = epoch_ii_resonance_stability value > 100 } }
