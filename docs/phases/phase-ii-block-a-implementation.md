@@ -12,8 +12,13 @@ the persisted timer and delayed event share that exact due date. A yearly
 owner-local recovery can restore a lost event only after the timer expires.
 Duplicate queued invitations are inert, and the Phase I opt-out blocks entry.
 The dispatcher has independent flags for the original contamination site,
-capital scar, legacy scar-feature conversion, and invitation schedule. Nothing
-restarts Phase I.
+capital scar, legacy scar-feature conversion, and invitation schedule. Migration
+revision 2 clears the earlier implementation's premature completion markers.
+Missing or foreign original-site references are provisional non-applicable
+states retried by the yearly owner-local dispatcher; they do not set the
+completion flag. Legacy scar conversion revisits only currently owned planets
+and checks deposits before adding them, so a formerly foreign scar can be
+represented after reacquisition. Nothing restarts Phase I.
 
 The original contamination site and the Phase I conclusion capital remain
 separate records. Block A adds presentation-only planet-feature deposits for
@@ -25,9 +30,9 @@ deposit-equivalent economic effects. If both records name one planet, it can
 carry both features. New saves keep the conclusion-capital target even if the
 world later changes hands. For older saves without that target, the once-per-
 empire fallback scans only planets owned by that empire for the old permanent
-scar modifier. A scar on a world already transferred away before migration
-remains represented by its original modifier and does not receive a new visual
-feature. No old gameplay choice or modifier is rewritten.
+scar modifier. A scar on a transferred world is left untouched while foreign
+and picked up by a later owned-planet scan if reacquired. No old gameplay
+choice or modifier is rewritten.
 
 On invitation, the recorded site is activated if still owned by the campaign
 empire. Otherwise an owned capital (or another owned planet) anchors the
@@ -42,6 +47,13 @@ chapter resolution flag is set. Monthly callbacks only update the bounded
 do not resolve projects or award research. Approaches differ in progress,
 upkeep, research benefit, and their once-per-approach stability shift.
 
+Chapter 3 follows the 60–80 research stage without requiring its own completion
+flag. At 80, the handoff stage opens the Chapter 3 decision and waits there
+while a project or recovery route is pending. The actual result report sets
+`epoch_ii_ch3_resolved`; only then can progress reach 90 and complete Block A.
+The flow model runs the six source thresholds through Chapter 1, two Chapter 2
+resolutions, the Chapter 3 project, cancellation, and missing-target recovery.
+
 | Chapter | Player action | Completion record |
 |---|---|---|
 | 1 — The Scar Wakes | Choose an approach, then complete the staffed Science Ship survey or use the archive recovery route | `epoch_ii_ch1_resolved` |
@@ -51,8 +63,11 @@ upkeep, research benefit, and their once-per-approach stability shift.
 Chapter 2 distinguishes destroyed wrecks from surviving signal traces. A
 military loss is an explicit, costly withdrawal outcome and does not end the
 campaign. Surviving Nullwarden fleets change stance, stop targeting the owner,
-and move toward an unowned system; scripts never destroy a living fleet or
-remove it on a timer. Chapter 3 awards research leads, not free technologies.
+and move toward an accessible system away from the campaign target; scripts
+never destroy a living fleet or remove it on a timer. If no route is available,
+the fleet remains passive and the owner-local yearly recovery retries the
+route. A destroyed fleet, missing saved country target, or repeated resolution
+is handled idempotently. Chapter 3 awards research leads, not free technologies.
 Resonance Spectroscopy is a repeatable Physics research with a country Physics
 research bonus. Adaptive Resonance Armor requires Spectroscopy and standard
 armor research, then unlocks a working small-ship armor component. No Chapter 4
@@ -85,12 +100,15 @@ and only a successful project diverts the live force.
 `scripts/test_phase_ii_block_a.cjs` checks braces, event-kind references,
 stage gates, migration guards, localization references, real project callback
 types, fleet ownership/design references, technology leads, and the component
-definition. `scripts/test_epoch_regressions.ps1` runs this with the Phase I
-regressions and `git diff --check` is run separately.
+definition. `scripts/test_phase_ii_flow_model.cjs` simulates source thresholds,
+wait gates, migration retries, and retreat states. `scripts/test_epoch_regressions.ps1`
+runs these with the Phase I regressions; `git diff --check` is run separately.
 
 These checks do not validate the Clausewitz parser, actual event scopes, game
-UI, AI project assignment, save/load behavior, multiplayer, combat balance, or
-planet-feature rendering. No game launch or in-game test was performed, in
-keeping with the Phase II development rule. Historical log summaries in the
-existing validation report are pre-fix evidence and are not validation of this
-implementation.
+UI, AI project assignment, save/load behavior, multiplayer, combat balance,
+route execution by the fleet pathfinder, or planet-feature rendering. The
+retreat route checks use the installed Vanilla 4.5.3 `has_access_fleet`,
+`closest_system`, and `queue_actions` patterns, but actual path completion
+still needs an in-game run. No game launch or in-game test was performed.
+Historical log summaries in the existing validation report are pre-fix
+evidence and are not validation of this implementation.

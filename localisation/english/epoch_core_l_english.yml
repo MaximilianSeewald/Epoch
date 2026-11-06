@@ -354,3 +354,5 @@
  epoch_ii.18.withdraw:0 "Seal the source, secure the signal trace, and withdraw."
  epoch_ii.11.failed.desc:0 "The reconstruction did not produce a stable pattern. The research team can try again or complete the chapter through a costly archive comparison."
  epoch_ii.11.cancelled.desc:0 "The reconstruction was cancelled before completion. The project can be restarted or the chapter can be closed through an archive comparison."
+ epoch_ii.11.no_site:0 "Use the surviving remote records to close the chapter without a local research site."
+ epoch_ii.11.limited_archive:0 "Close the chapter with an incomplete archive reconstruction."

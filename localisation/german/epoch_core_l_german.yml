@@ -354,3 +354,5 @@
  epoch_ii.18.withdraw:0 "Die Quelle versiegeln, die Signalspur sichern und abziehen."
  epoch_ii.11.failed.desc:0 "Die Rekonstruktion ergab kein stabiles Muster. Das Forschungsteam kann es erneut versuchen oder das Kapitel durch einen kostspieligen Archivvergleich abschließen."
  epoch_ii.11.cancelled.desc:0 "Die Rekonstruktion wurde vor ihrem Abschluss abgebrochen. Das Projekt kann neu gestartet oder das Kapitel durch einen Archivvergleich beendet werden."
+ epoch_ii.11.no_site:0 "Das Kapitel anhand der erhaltenen Fernaufzeichnungen ohne lokalen Forschungsstandort abschließen."
+ epoch_ii.11.limited_archive:0 "Das Kapitel mit einer unvollständigen Archivrekonstruktion abschließen."

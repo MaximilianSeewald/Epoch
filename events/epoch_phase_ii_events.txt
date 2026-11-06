@@ -1,7 +1,7 @@
 namespace = epoch_ii
 
-# Yearly owner-local recovery: one-shot flags prevent duplicate waits, deposits,
-# situations, and invitation events. No global country iteration is used.
+# Yearly owner-local recovery: flags guard invitation dispatch; deposit migration
+# is idempotent and retries missing/foreign references. No global scan is used.
 country_event = {
 	id = epoch_ii.0
 	hide_window = yes
@@ -13,6 +13,20 @@ country_event = {
 		NOT = { has_country_flag = epoch_core_campaign_opted_out }
 	}
 	immediate = {
+		if = {
+			limit = { NOT = { has_country_flag = epoch_ii_planet_migration_v2 } }
+			# 0a226e1 treated missing and foreign references as final. Re-open
+			# those records so this version can retry after ownership/reference changes.
+			remove_country_flag = epoch_ii_contamination_migrated
+			remove_country_flag = epoch_ii_capital_migrated
+			remove_country_flag = epoch_ii_legacy_scar_features_migrated
+			remove_country_flag = epoch_ii_contamination_feature_not_applicable
+			remove_country_flag = epoch_ii_capital_feature_not_applicable
+			remove_country_flag = epoch_ii_legacy_scar_feature_not_applicable
+			remove_country_flag = epoch_ii_legacy_scar_feature_found
+			remove_country_flag = epoch_ii_capital_legacy_feature_found
+			set_country_flag = epoch_ii_planet_migration_v2
+		}
 		if = {
 			limit = { NOT = { has_country_flag = epoch_ii_contamination_migrated } }
 			if = {
@@ -30,14 +44,16 @@ country_event = {
 						set_planet_flag = epoch_ii_contamination_feature_added
 					}
 					set_country_flag = epoch_ii_contamination_site_recorded
+					set_country_flag = epoch_ii_contamination_migrated
+					remove_country_flag = epoch_ii_contamination_feature_not_applicable
 				}
 				else = { set_country_flag = epoch_ii_contamination_feature_not_applicable }
 			}
 			else = { set_country_flag = epoch_ii_contamination_feature_not_applicable }
-			set_country_flag = epoch_ii_contamination_migrated
 		}
 		if = {
 			limit = { NOT = { has_country_flag = epoch_ii_capital_migrated } }
+			remove_country_flag = epoch_ii_capital_legacy_feature_found
 			if = {
 				limit = { exists = event_target:epoch_ii_conclusion_capital@root }
 				if = {
@@ -47,47 +63,50 @@ country_event = {
 							limit = { has_modifier = epoch_core_permanent_scar_machine }
 							if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_machine } } add_deposit = d_epoch_conclusion_scar_machine }
 							set_planet_flag = epoch_ii_conclusion_feature_added
+							root = { set_country_flag = epoch_ii_capital_legacy_feature_found }
 						}
 						else_if = {
 							limit = { has_modifier = epoch_core_permanent_scar_hive }
 							if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_hive } } add_deposit = d_epoch_conclusion_scar_hive }
 							set_planet_flag = epoch_ii_conclusion_feature_added
+							root = { set_country_flag = epoch_ii_capital_legacy_feature_found }
 						}
 						else_if = {
 							limit = { has_modifier = epoch_core_permanent_scar_organic }
 							if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_organic } } add_deposit = d_epoch_conclusion_scar_organic }
 							set_planet_flag = epoch_ii_conclusion_feature_added
+							root = { set_country_flag = epoch_ii_capital_legacy_feature_found }
 						}
-						else = { root = { set_country_flag = epoch_ii_capital_feature_not_applicable } }
 					}
+					if = { limit = { has_country_flag = epoch_ii_capital_legacy_feature_found } set_country_flag = epoch_ii_capital_migrated set_country_flag = epoch_ii_capital_scar_recorded remove_country_flag = epoch_ii_capital_feature_not_applicable }
+					else = { set_country_flag = epoch_ii_capital_migrated set_country_flag = epoch_ii_capital_feature_not_applicable }
 				}
 				else = { set_country_flag = epoch_ii_capital_feature_not_applicable }
-				set_country_flag = epoch_ii_capital_scar_recorded
 			}
 			else = {
 				# Legacy Phase-I saves lack the saved capital target. Search only
 				# this empire's owned planets for the permanent scar marker.
 				every_owned_planet = {
-					if = { limit = { has_modifier = epoch_core_permanent_scar_machine } if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_machine } } add_deposit = d_epoch_conclusion_scar_machine } set_planet_flag = epoch_ii_conclusion_feature_added root = { set_country_flag = epoch_ii_legacy_scar_feature_found } }
-					else_if = { limit = { has_modifier = epoch_core_permanent_scar_hive } if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_hive } } add_deposit = d_epoch_conclusion_scar_hive } set_planet_flag = epoch_ii_conclusion_feature_added root = { set_country_flag = epoch_ii_legacy_scar_feature_found } }
-					else_if = { limit = { has_modifier = epoch_core_permanent_scar_organic } if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_organic } } add_deposit = d_epoch_conclusion_scar_organic } set_planet_flag = epoch_ii_conclusion_feature_added root = { set_country_flag = epoch_ii_legacy_scar_feature_found } }
+					if = { limit = { has_modifier = epoch_core_permanent_scar_machine } if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_machine } } add_deposit = d_epoch_conclusion_scar_machine } set_planet_flag = epoch_ii_conclusion_feature_added root = { set_country_flag = epoch_ii_capital_legacy_feature_found } }
+					else_if = { limit = { has_modifier = epoch_core_permanent_scar_hive } if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_hive } } add_deposit = d_epoch_conclusion_scar_hive } set_planet_flag = epoch_ii_conclusion_feature_added root = { set_country_flag = epoch_ii_capital_legacy_feature_found } }
+					else_if = { limit = { has_modifier = epoch_core_permanent_scar_organic } if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_organic } } add_deposit = d_epoch_conclusion_scar_organic } set_planet_flag = epoch_ii_conclusion_feature_added root = { set_country_flag = epoch_ii_capital_legacy_feature_found } }
 				}
-				if = { limit = { NOT = { has_country_flag = epoch_ii_legacy_scar_feature_found } } set_country_flag = epoch_ii_capital_feature_not_applicable }
+				if = { limit = { has_country_flag = epoch_ii_capital_legacy_feature_found } set_country_flag = epoch_ii_capital_migrated set_country_flag = epoch_ii_capital_scar_recorded remove_country_flag = epoch_ii_capital_feature_not_applicable }
+				else = { set_country_flag = epoch_ii_capital_feature_not_applicable }
 			}
-			set_country_flag = epoch_ii_capital_migrated
 		}
-		if = {
-			limit = { NOT = { has_country_flag = epoch_ii_legacy_scar_features_migrated } }
-			if = { limit = { NOT = { has_country_flag = epoch_ii_legacy_scar_feature_found } }
-				every_owned_planet = {
-					if = { limit = { has_modifier = epoch_core_permanent_scar_organic } if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_organic } } add_deposit = d_epoch_conclusion_scar_organic } set_planet_flag = epoch_ii_conclusion_feature_added root = { set_country_flag = epoch_ii_legacy_scar_feature_found } }
-					else_if = { limit = { has_modifier = epoch_core_permanent_scar_hive } if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_hive } } add_deposit = d_epoch_conclusion_scar_hive } set_planet_flag = epoch_ii_conclusion_feature_added root = { set_country_flag = epoch_ii_legacy_scar_feature_found } }
-					else_if = { limit = { has_modifier = epoch_core_permanent_scar_machine } if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_machine } } add_deposit = d_epoch_conclusion_scar_machine } set_planet_flag = epoch_ii_conclusion_feature_added root = { set_country_flag = epoch_ii_legacy_scar_feature_found } }
-				}
-			}
-			if = { limit = { NOT = { has_country_flag = epoch_ii_legacy_scar_feature_found } } set_country_flag = epoch_ii_legacy_scar_feature_not_applicable }
-			set_country_flag = epoch_ii_legacy_scar_features_migrated
+		# Scan only this empire's current planets, every year. Deposits are
+		# idempotent, and a previously foreign scar is picked up if reacquired.
+		remove_country_flag = epoch_ii_legacy_scar_feature_found
+		every_owned_planet = {
+			if = { limit = { has_modifier = epoch_core_permanent_scar_organic } if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_organic } } add_deposit = d_epoch_conclusion_scar_organic } set_planet_flag = epoch_ii_conclusion_feature_added root = { set_country_flag = epoch_ii_legacy_scar_feature_found } }
+			else_if = { limit = { has_modifier = epoch_core_permanent_scar_hive } if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_hive } } add_deposit = d_epoch_conclusion_scar_hive } set_planet_flag = epoch_ii_conclusion_feature_added root = { set_country_flag = epoch_ii_legacy_scar_feature_found } }
+			else_if = { limit = { has_modifier = epoch_core_permanent_scar_machine } if = { limit = { NOT = { has_deposit = d_epoch_conclusion_scar_machine } } add_deposit = d_epoch_conclusion_scar_machine } set_planet_flag = epoch_ii_conclusion_feature_added root = { set_country_flag = epoch_ii_legacy_scar_feature_found } }
 		}
+		if = { limit = { has_country_flag = epoch_ii_legacy_scar_feature_found } remove_country_flag = epoch_ii_legacy_scar_feature_not_applicable }
+		else = { set_country_flag = epoch_ii_legacy_scar_feature_not_applicable }
+		set_country_flag = epoch_ii_legacy_scar_features_migrated
+		if = { limit = { has_country_flag = epoch_ii_nullwarden_retreat_pending } epoch_ii_disengage_nullwarden_fleet = yes }
 		if = { limit = { NOT = { has_country_flag = epoch_ii_invitation_clock_started } } epoch_ii_start_invitation_clock = yes }
 		else_if = {
 			limit = { NOR = { has_country_flag = epoch_ii_invited has_country_flag = epoch_ii_invitation_clock has_country_flag = epoch_ii_invite_recovery_armed } }
@@ -364,7 +383,7 @@ country_event = {
 	picture = GFX_evt_black_hole
 	is_triggered_only = yes
 	trigger = { has_country_flag = epoch_ii_active NOT = { has_country_flag = epoch_ii_ch3_resolved } }
-	option = { name = epoch_ii.7.report.a hidden_effect = { set_country_flag = epoch_ii_counterpattern_recorded set_country_flag = epoch_ii_ch3_resolved set_country_flag = epoch_ii_block_a_handoff set_country_flag = epoch_ii_spectroscopy_lead set_country_flag = epoch_ii_armor_lead add_research_option = tech_epoch_resonance_spectroscopy add_research_option = tech_epoch_adaptive_resonance_armor } ai_chance = { factor = 100 } }
+	option = { name = epoch_ii.7.report.a hidden_effect = { remove_country_flag = epoch_ii_c3_recovery_open remove_country_flag = epoch_ii_c3_project_failed remove_country_flag = epoch_ii_c3_project_cancelled remove_country_flag = epoch_ii_c3_project_enabled remove_country_flag = epoch_ii_c3_project_started set_country_flag = epoch_ii_counterpattern_recorded set_country_flag = epoch_ii_ch3_resolved set_country_flag = epoch_ii_block_a_handoff set_country_flag = epoch_ii_spectroscopy_lead set_country_flag = epoch_ii_armor_lead add_research_option = tech_epoch_resonance_spectroscopy add_research_option = tech_epoch_adaptive_resonance_armor } ai_chance = { factor = 100 } }
 	option = { name = epoch_ii.refuse hidden_effect = { epoch_ii_close_campaign = yes } ai_chance = { factor = 0 } }
 }
 
@@ -490,9 +509,11 @@ country_event = {
 	picture = GFX_evt_ship_in_orbit
 	is_triggered_only = yes
 	trigger = { has_country_flag = epoch_ii_active has_country_flag = epoch_ii_c3_project_enabled NOR = { has_country_flag = epoch_ii_ch3_resolved has_country_flag = epoch_ii_c3_recovery_open } }
-	immediate = { remove_country_flag = epoch_ii_c3_project_enabled remove_country_flag = epoch_ii_c3_project_started set_country_flag = epoch_ii_c3_project_failed set_country_flag = epoch_ii_c3_recovery_open change_variable = { which = epoch_ii_resonance_stability value = -10 } epoch_ii_clamp_resonance_stability = yes add_resource = { energy = -200 } }
+	immediate = { remove_country_flag = epoch_ii_c3_project_enabled remove_country_flag = epoch_ii_c3_project_started set_country_flag = epoch_ii_c3_project_failed set_country_flag = epoch_ii_c3_recovery_open change_variable = { which = epoch_ii_resonance_stability value = -10 } epoch_ii_clamp_resonance_stability = yes add_resource = { energy = -200 } epoch_ii_refresh_campaign_target = yes if = { limit = { has_country_flag = epoch_ii_no_owned_campaign_planet } set_country_flag = epoch_ii_c3_target_unavailable } }
 	option = { name = epoch_ii.project.retry hidden_effect = { remove_country_flag = epoch_ii_c3_recovery_open remove_country_flag = epoch_ii_c3_project_failed country_event = { id = epoch_ii.21 days = 1 } } ai_chance = { factor = 0 } }
 	option = { name = epoch_ii.11.a trigger = { resource_stockpile_compare = { resource = energy value >= 500 } resource_stockpile_compare = { resource = alloys value >= 200 } } hidden_effect = { add_resource = { energy = -500 alloys = -200 } set_country_flag = epoch_ii_c3_remote set_country_flag = epoch_ii_counterpattern_recorded set_country_flag = epoch_ii_spectroscopy_lead set_country_flag = epoch_ii_armor_lead country_event = { id = epoch_ii.17 } } ai_chance = { factor = 100 } }
+	option = { name = epoch_ii.11.limited_archive hidden_effect = { set_country_flag = epoch_ii_c3_remote set_country_flag = epoch_ii_counterpattern_recorded set_country_flag = epoch_ii_spectroscopy_lead set_country_flag = epoch_ii_armor_lead country_event = { id = epoch_ii.17 } } ai_chance = { factor = 1 } }
+	option = { name = epoch_ii.11.no_site trigger = { has_country_flag = epoch_ii_c3_target_unavailable } hidden_effect = { set_country_flag = epoch_ii_c3_remote set_country_flag = epoch_ii_counterpattern_recorded set_country_flag = epoch_ii_spectroscopy_lead set_country_flag = epoch_ii_armor_lead country_event = { id = epoch_ii.17 } } ai_chance = { factor = 100 } }
 	option = { name = epoch_ii.refuse hidden_effect = { epoch_ii_close_campaign = yes } ai_chance = { factor = 0 } }
 }
 
@@ -503,9 +524,11 @@ country_event = {
 	picture = GFX_evt_ship_in_orbit
 	is_triggered_only = yes
 	trigger = { has_country_flag = epoch_ii_active has_country_flag = epoch_ii_c3_project_enabled NOR = { has_country_flag = epoch_ii_ch3_resolved has_country_flag = epoch_ii_c3_recovery_open } }
-	immediate = { remove_country_flag = epoch_ii_c3_project_enabled remove_country_flag = epoch_ii_c3_project_started set_country_flag = epoch_ii_c3_project_cancelled set_country_flag = epoch_ii_c3_recovery_open }
+	immediate = { remove_country_flag = epoch_ii_c3_project_enabled remove_country_flag = epoch_ii_c3_project_started set_country_flag = epoch_ii_c3_project_cancelled set_country_flag = epoch_ii_c3_recovery_open epoch_ii_refresh_campaign_target = yes if = { limit = { has_country_flag = epoch_ii_no_owned_campaign_planet } set_country_flag = epoch_ii_c3_target_unavailable } }
 	option = { name = epoch_ii.project.retry hidden_effect = { remove_country_flag = epoch_ii_c3_recovery_open remove_country_flag = epoch_ii_c3_project_cancelled country_event = { id = epoch_ii.21 days = 1 } } ai_chance = { factor = 0 } }
 	option = { name = epoch_ii.11.a trigger = { resource_stockpile_compare = { resource = energy value >= 500 } resource_stockpile_compare = { resource = alloys value >= 200 } } hidden_effect = { add_resource = { energy = -500 alloys = -200 } set_country_flag = epoch_ii_c3_remote set_country_flag = epoch_ii_counterpattern_recorded set_country_flag = epoch_ii_spectroscopy_lead set_country_flag = epoch_ii_armor_lead country_event = { id = epoch_ii.17 } } ai_chance = { factor = 100 } }
+	option = { name = epoch_ii.11.limited_archive hidden_effect = { set_country_flag = epoch_ii_c3_remote set_country_flag = epoch_ii_counterpattern_recorded set_country_flag = epoch_ii_spectroscopy_lead set_country_flag = epoch_ii_armor_lead country_event = { id = epoch_ii.17 } } ai_chance = { factor = 1 } }
+	option = { name = epoch_ii.11.no_site trigger = { has_country_flag = epoch_ii_c3_target_unavailable } hidden_effect = { set_country_flag = epoch_ii_c3_remote set_country_flag = epoch_ii_counterpattern_recorded set_country_flag = epoch_ii_spectroscopy_lead set_country_flag = epoch_ii_armor_lead country_event = { id = epoch_ii.17 } } ai_chance = { factor = 100 } }
 	option = { name = epoch_ii.refuse hidden_effect = { epoch_ii_close_campaign = yes } ai_chance = { factor = 0 } }
 }
 
