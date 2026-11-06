@@ -22,7 +22,7 @@ The closing decision is always expressed as an in-world act, such as sealing the
 | Section | Purpose and required play |
 |---|---|
 | 1. First Echo | Discovery follows actual science-ship exploration and is staggered per empire. Each empire owns its situation, projects, target system, choices, and outcomes. At least two approaches impose meaningfully different time/risk/cost and alter later paths. The mystery remains unresolved. |
-| 2. Missing Expedition | A campaign-owned expedition vessel and crew/leader are tied to a known owner, origin, and mission destination. The disappearance must alter the ship object (loss, removal, or another observable state change). A player-owned pre-existing ship must never be removed. Search uses projects and/or other native mechanics. Rescue, recovery, survey, and abandonment must yield conditional, non-guaranteed outcomes, including loss. First Echo choices alter available routes, cost, or risk. |
+| 2. Missing Expedition | The player selects an existing owned science ship with a scientist in the fleet and sends it to the saved destination's Special Project. The completion callback identifies the ship that actually performed the project; that ship is removed and its scientist reference is recorded. A player-owned pre-existing ship must never be removed unless it was the ship that completed this project. Search uses projects and/or other native mechanics. Rescue, recovery, survey, and abandonment must yield conditional, non-guaranteed outcomes, including loss. First Echo choices alter available routes, cost, or risk. AI completion and ship loss before callback remain verification requirements. |
 | 3. First Contamination | One concrete owned planet/facility/object receives a native, gameplay-affecting state. Organics, hive minds, and machines receive thematic variants within the same stage. Investigation and containment are actionable; neglect can worsen or spread the effect. Prior Echo and expedition outcomes affect severity, options, and cost. |
 | 4. The Silent Structure | Earlier clues resolve into an owned/located structure or equivalent world object with a common but unexplained signature. Investigation, securing, and destruction are distinct actions with durable, different results. Contamination and prior choices affect access and consequences. |
 | 5. Phase I Conclusion | An uncertain closing assessment reflects the actual outcomes of sections 1–4 and prepares (but does not implement) Phase II. The player chooses continuation or an in-world act that internally means permanent exit. Exit blocks all later EPOCH events, situations, projects, invitations, and automatic re-entry for that empire. Existing consequences, including at least one permanent negative gameplay effect, persist; galaxy-wide effects caused by other empires may still be observed indirectly. |
@@ -43,19 +43,48 @@ Every blocking player decision has an AI-safe route using the same prerequisites
 
 ## Vanilla evidence and verification rules
 
-**Implementation snapshot:** `epoch_core_events.txt` now contains the five-stage
-progression draft; `epoch_core_effects.txt` and `epoch_core_designs.txt` add the
-dedicated expedition ship, scientist, and route; special projects and static
-modifiers supply investigation and persistent planet consequences. This is an
-implementation draft, not a Phase I completion claim. The full ship lifecycle,
-object-target callback scopes, AI project automation, save/load, multiplayer,
-and in-game behavior remain subject to the verification gates below.
+**Implementation snapshot:** `epoch_core_events.txt` connects all five
+sections. Missing Expedition is enabled at the saved destination as a native
+Special Project; the player assigns an owned Science Ship and scientist, and
+the ship-scoped success callback saves that exact ship and fleet leader before
+destroying the ship. Search outcomes resolve the saved scientist as recovered
+or lost. Project failure and timeout leave the assigned ship intact. The
+Silent Structure is a native four-stage Archaeological Site, with staffed
+Science Ship requirements, four archaeology callbacks, conditional chapter
+choices, and distinct secure, destroy, and investigate outcomes. Contamination
+uses permanent planet modifiers with separate organic, Hive Mind, and machine
+effects; neglect worsens the source world and attempts one guarded spread to
+another owned world. Phase I conclusion applies a permanent class-specific
+planet scar, intensified by recorded campaign outcomes, before offering
+continuation or an in-world permanent closure choice.
 
-The supplied M0-B source subset identifies `on_survey_planet` as **Ship scope** with **From = Planet** (`common/on_actions/00_on_actions.txt`, around lines 1129–1137). This does not establish `root.owner`, `solar_system`, or any other transition as valid. `on_planet_surveyed` instead documents Root = Planet, From = Country, and FromFrom = surveying fleet if present; it can fire without a ship through intel. Therefore discovery requiring an actual science ship must use the ship-scoped survey hook and explicitly test its legal scope transitions.
+**Vanilla source verification:** the target installation is Stellaris 4.5.3
+(build 26325427). Its `common/special_projects/00_projects_1.txt` and
+`common/on_actions/00_on_actions.txt` confirm `event_scope = ship_event` and
+that special-project success dispatches in the performing ship scope. The
+installed `common/archaeological_site_types/99_README_ARC_SITES.txt` documents
+site `potential`/`allow` as fleet scope with `from` the site and `visible` as
+country scope with `from` the site; `00_base_game_arc_sites.txt` supplies
+matching multi-stage definitions. Vanilla archaeology callbacks use
+`archaeology = yes`, `set_site_progress_locked = yes`, and site destruction is
+demonstrated in `events/paragon_events_3.txt`. Vanilla files also contain the
+planet job-output modifiers, ship/fleet leader flags, `kill_leader`,
+`abort_special_project`, and `exists = archaeological_site` used here.
 
-The curated M0-B subset contains examples of `create_fleet`, nested `create_ship`, `create_leader`, and `enable_special_project`. The installed 4.5.3 source adds concrete ship-design examples (`common/global_ship_designs/event_ship_designs_anomalies.txt`), ship creation at `events/anomaly_events_1.txt` around event 211, scientist creation at `events/anomaly_events_1.txt` around line 2465, and ship destruction examples in `common/scripted_effects/02_machine_age_effects.txt`. These establish source patterns for design, creation, and destruction; they do not establish that a new EPOCH vessel can complete its whole assignment and recovery path in runtime. Record exact source examples and test the created vessel end-to-end before marking this requirement done.
+These sources establish script patterns, not EPOCH parser or runtime success.
+The project definition cannot pre-bind a ship; native project assignment lets
+the player select the ship, and the success callback identifies the ship that
+actually completed it. AI assignment/completion, interrupted ship or leader
+behavior, dynamic event-target persistence, archaeological-site UI/progress,
+save/load, multiplayer, and end-to-end in-game behavior have not been run in
+Stellaris. Regression results are static checks only; no Phase I completion
+claim is made until those runtime and integration criteria are verified.
 
-Special-project definitions and situation callbacks are source-supported patterns, not proof of EPOCH parser or runtime behavior. Verify project prerequisites, cost/duration semantics, callback scopes, situation scope transitions, save/load, missing-object behavior, event-target ownership, and `save_global_event_target_as` owner-key syntax against the target build and runtime. No unsupported scope assumption is accepted as verified.
+The earlier supplied M0-B subset identifies `on_survey_planet` as **Ship scope** with **From = Planet** (`common/on_actions/00_on_actions.txt:1129–1137`). The installed 4.5.3 source confirms the same hook and documents `on_planet_surveyed` separately as Root = Planet, From = Country, with FromFrom as the surveying fleet when present; the latter can also fire from intel changes without a ship. EPOCH therefore uses the ship-scoped survey hook. Its nested `from.solar_system`, owner-keyed target names, and saved target lifecycle are source-pattern-supported but still need EPOCH runtime coverage.
+
+The installed project definitions and special-project on_action comments confirm `event_scope = ship_event` callbacks use the performing ship context. They do not add an explicit pre-assignment ship reference to the project definition; the player's choice occurs through native project assignment. The EPOCH callback stores that ship and its fleet leader before destroying the ship. This proves source-supported callback scope and exact callback target, not leader survival behavior, project cancellation ordering when the ship is lost, or saved-target persistence. Those lifecycle points remain unverified until runtime coverage.
+
+Special-project definitions, situation callbacks, archaeological-site definitions, planet modifiers, and their effects are source-supported patterns, not proof of EPOCH parser or runtime behavior. The site uses the documented fleet/site/country scope split and four native stages. Verify EPOCH parser acceptance, project prerequisites, callback timing, AI project/site assignment, scientist state after ship removal, timed fallbacks, save/load, missing-object behavior, and simultaneous-empires isolation against the target build. No unsupported runtime assumption is accepted as verified.
 
 Record status as `VERIFIED – SOURCE`, `VERIFIED – RUNTIME`, `PROPOSED`, or `UNVERIFIED`; never describe static assertions as proof of in-game behavior. If a native mechanism cannot be made reliable, document the tested limitation and use a technically viable gameplay substitute with equivalent observable results.
 
@@ -65,7 +94,7 @@ Phase I is complete only when all are true:
 
 1. This binding specification and linked architecture docs match the shipped implementation.
 2. All five sections are playable, connected, and finishable, including failure and absent-object paths.
-3. The expedition is a real empire-owned created ship/team with a verified lifecycle; its disappearance changes the world object; rescue, loss, and recovery can differ and are not guaranteed.
+3. The player's chosen science ship and scientist perform the destination project; that exact ship's disappearance and scientist state are verified, with differentiated rescue, loss, and recovery outcomes.
 4. Contamination changes a real game object and relevant gameplay values; investigation, containment, worsening, and spread have consequential outcomes.
 5. The Silent Structure is a concrete find; investigation, control, and destruction change persistent game state and later outcomes.
 6. Prior decisions/results flow into later sections and the final assessment.

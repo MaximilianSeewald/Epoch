@@ -20,6 +20,12 @@ copied into EPOCH.
 neither the build ID nor 4.5.3 is proven by the script-file contents or their
 hashes alone.
 
+The EPOCH implementation has since moved from the generated expedition-vessel
+prototype described by some historical rows below to a player-assigned native
+Special Project, and now defines its own native archaeology site. Rows marked
+as Vanilla patterns remain evidence about engine scripts; they do not describe
+the current EPOCH implementation unless stated explicitly.
+
 ## Status definitions
 
 - **VERIFIED – SOURCE:** the named pattern or definition is present at the cited
@@ -39,13 +45,14 @@ Line numbers refer to the supplied source files and are one-based.
 | `on_survey_planet` scope and source | VERIFIED – SOURCE | `common/on_actions/00_on_actions.txt:1129-1137` explicitly says a ship surveyed a planet, `Scope = Ship`, `From = Planet`; the hook dispatch list follows. | Use this event for discovery that requires an actual science-ship survey. Do not assume `solar_system`, `owner`, or other scope transitions without explicit evidence/runtime validation. |
 | Related `on_planet_surveyed` scopes | VERIFIED – SOURCE | `common/on_actions/00_on_actions.txt:1202-1208` says Root = Planet, From = Country, and can also occur without a ship through intel changes. | This hook alone cannot establish a ship-caused survey. Its planet/country scopes differ from `on_survey_planet`. |
 | Ship/fleet/leader creation examples | VERIFIED – SOURCE | `common/scripted_effects/00_scripted_effects.txt:978-1002` contains nested `create_fleet` / `create_ship` and owner assignment; the installed source has more lifecycle examples. | Use the complete installed source for exact patterns; source presence does not itself prove an EPOCH vessel's full runtime lifecycle. |
-| Science-ship design and creation | VERIFIED – SOURCE | Installed `common/global_ship_designs/event_ship_designs_anomalies.txt:150-164` defines a science design from `DEFAULT_SCIENCESHIP_SECTION`; `events/anomaly_events_1.txt:2884-2920` creates an event science ship using `create_ship_design`, `create_ship`, and `set_location`. | A campaign-owned science ship can be created from a dedicated global design. Validate a dedicated design and object-target lifetime in the EPOCH runtime campaign. |
-| Scientist creation and ship destruction | VERIFIED – SOURCE | Installed `events/anomaly_events_1.txt:2465-...` contains `create_leader` with class scientist; `common/scripted_effects/02_machine_age_effects.txt:1264` demonstrates `destroy_ship = this`. | These are source patterns only. Leader assignment, created ship's special-project flow, loss, and recovery require EPOCH runtime validation. |
-| Science-ship fleet auto movement | VERIFIED – SOURCE | Installed `common/scripted_effects/caravaneer_scripted_effects.txt:1845-1855` and `:1898-1908` use `auto_move_to_planet` with an event-target planet. | This is the source pattern used for expedition routing; target validity and pathing in the campaign still require runtime checks. |
+| Vanilla science-ship design/creation patterns | VERIFIED – SOURCE | Installed `common/global_ship_designs/event_ship_designs_anomalies.txt:150-164` defines an event science design; `events/anomaly_events_1.txt:2884-2920` creates one. | Historical EPOCH prototype ship-design code has been removed. The current expedition uses native project assignment to an existing ship. |
+| Vanilla leader creation and ship destruction patterns | VERIFIED – SOURCE | Installed `events/anomaly_events_1.txt:2465-...` contains `create_leader` with class scientist; `common/scripted_effects/02_machine_age_effects.txt:1264` demonstrates `destroy_ship = this`. | These examples establish available engine effects. Current EPOCH does not create an expedition scientist; its callback stores the assigned leader and destroys `this` ship. Post-destruction leader state remains a runtime question. |
+| Native project ship and leader requirements | VERIFIED – SOURCE | Installed `common/special_projects/00_projects_1.txt` includes projects with `requirements = { shipclass_science_ship = 1 leader = scientist }`, `event_scope = ship_event`, and ship-event success/failure callbacks; `common/on_actions/00_on_actions.txt` describes the performing ship in the success on_action. | EPOCH uses this native assignment path. The ship callback saves the actual performer; automatic AI assignment and callback behavior after interruption remain runtime checks. |
+| Archaeological-site structure and scopes | VERIFIED – SOURCE | Installed `common/archaeological_site_types/99_README_ARC_SITES.txt` documents the site schema and scopes; `00_base_game_arc_sites.txt` contains multi-stage sites. Vanilla event examples use `archaeology = yes` and `set_site_progress_locked = yes`; `events/paragon_events_3.txt` destroys a site by `destroy_archaeological_site = this`. | EPOCH defines a four-stage site with science-ship/scientist requirements and distinct final outcomes. Parser acceptance, UI, AI excavation, and save/load remain unverified. |
 | Owner-keyed persistent global event targets | VERIFIED – SOURCE | Installed `common/scripted_effects/nomads_effects.txt:6360-6374` saves and reads `comms_signal_system@root`; `common/scripted_effects/02_machine_age_effects.txt:187` saves `cybercreedspecies@root.owner`, with reads at `:245` and `:452`. | The installed source supports both owner/context key forms used by EPOCH. Concurrent-empire isolation and save/load persistence of EPOCH's specific targets remain runtime checks. |
 | Special project enable location and owner fields | VERIFIED – SOURCE | Installed `common/inline_scripts/contracts/FindResourceInternal.txt:45-49` enables a project with an event-target planet location and `owner = ROOT`; its project definition is `common/inline_scripts/special_projects/find_resource_internal_project.txt:2-12`. | EPOCH uses the same location/owner form. This does not prove that the campaign vessel will be selected or that AI will complete it. |
 | Unexpected ship destruction callback | VERIFIED – SOURCE | Installed `common/on_actions/00_on_actions.txt:1390-1405` documents `This` as owner of destroyed ship 1, `FromFrom` as ship 1, and defines `on_ship_destroyed_victim`. | EPOCH filters the destroyed ship's flag before recording an unexpected expedition loss. Mod on_action merge behavior and target validity during dispatch remain runtime checks. |
-| Assigning a created leader to a fleet | VERIFIED – SOURCE | Installed `common/scripted_effects/00_scripted_effects.txt:1244-1252` creates ships inside a fleet and assigns `last_created_leader`. | EPOCH creates a scientist for the expedition and assigns the owner-keyed leader to its created fleet; exact runtime ship-class/leader compatibility remains to be tested. |
+| Assigning a created leader to a fleet | VERIFIED – SOURCE | Installed `common/scripted_effects/00_scripted_effects.txt:1244-1252` creates ships inside a fleet and assigns `last_created_leader`. | Vanilla pattern only; current EPOCH does not create or assign a campaign scientist. |
 | Randomized and permanent effects | VERIFIED – SOURCE | Installed event/effect scripts use `random_list`; static modifier definitions include `planet_jobs_produces_mult`, stability, resource output, and other effects. Effects use `add_modifier` with `days = -1`; resource checks use `resource_stockpile_compare` and `has_resource`. | Source supports the syntax patterns used for conditional expedition outcomes, persistent planet scars, and the containment cost gate. Determinism, UI presentation, and persistence in EPOCH save/load need runtime verification. |
 | Aborting a special project | VERIFIED – SOURCE | Installed `events/biogenesis_origin_events.txt`, `events/country_events_1.txt`, and multiple scripted effects use `abort_special_project = { type = ... }`. | One-shot, empire-local timeouts use this effect to close inactive projects before the next phase; confirm callback ordering and object cleanup in runtime. |
 | A global game-start hook exists and has no scope | VERIFIED – SOURCE | `common/on_actions/00_on_actions.txt:1-29`, `on_game_start`; `common/on_actions/00_on_actions.txt:80-83` explicitly describes another no-scope hook as “No scope, like on_game_start” | A global hook cannot directly be assumed to be empire-scoped. Avoid a global callback that scans every country if the per-country hook suffices. |
@@ -70,13 +77,11 @@ Line numbers refer to the supplied source files and are one-based.
 
 ## Architecture assessment
 
-**PROPOSED:** first test a country-local `on_game_start_country` handler. It
-should filter to appropriate empire types, set a persistent idempotency marker,
-then schedule at most one delayed event for that country. The delayed event
-should recheck the shared eligibility rule and marker before starting content.
-This design does not require a recurring global scan and the source confirms the
-per-country hook and delayed country-event patterns. Avoid claiming exactly-once,
-randomized staggering, save compatibility, or MP safety until runtime tests pass.
+The current implementation uses a country-local `on_game_start_country`
+bootstrap, guarded survey discovery, and delayed one-shot country callbacks.
+This is supported by the source patterns above and the EPOCH regression suite;
+exact-once behavior, new-game/load coverage, randomized staggering, save
+compatibility, and MP safety still require runtime tests.
 
 Use a situation for persistent, multi-stage progression and approaches. Use a
 special project for a discrete research assignment; its success callback can
@@ -107,8 +112,7 @@ or that runtime behavior was executable and verified. No parser, in-game,
 situation, project, save/load, AI, MP, or performance test has been run. No
 temporary test mod was created; runtime behavior remains open.
 
-Still required when the matching game installation is available: launcher
-recognition/activation; parser logs; per-country hook coverage for organic,
+Still required: launcher recognition/activation; parser logs; per-country hook coverage for organic,
 Hive Mind, and machine empires; delay and scope behavior; situation start,
 progress, completion/abort; project start/completion; save/load; AI; host/client
 determinism and desync observation; performance at representative empire counts.
@@ -128,8 +132,7 @@ determinism and desync observation; performance at representative empire counts.
 
 ## Recommendation
 
-Proceed to a minimal isolated test mod when ready to perform runtime verification;
-the matching installation is present. Keep the first test limited to the country-start hook, one guarded
-delayed event, and a source-supported simple situation start. Do not implement
-EPOCH gameplay mechanics until the open runtime and missing-source questions are
-closed or explicitly accepted by the Technical Lead.
+Proceed to integrated EPOCH runtime verification when ready. Prioritize parser
+logs and a complete campaign for each empire class, then interruption, save/load,
+AI, multiplayer, and representative galaxy-size checks. Source and static
+regression evidence do not substitute for those runtime results.

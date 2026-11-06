@@ -8,12 +8,64 @@ epoch_core_contamination_worsened = {
 	planet_jobs_produces_mult = -0.10
 }
 
+epoch_core_contamination_active_organic = {
+	planet_stability_add = -3
+	planet_jobs_food_produces_mult = -0.05
+}
+
+epoch_core_contamination_active_hive = {
+	planet_stability_add = -3
+	planet_jobs_unity_produces_mult = -0.05
+}
+
+epoch_core_contamination_active_machine = {
+	planet_stability_add = -3
+	planet_jobs_energy_produces_mult = -0.05
+}
+
+epoch_core_contamination_worsened_organic = {
+	planet_stability_add = -8
+	planet_jobs_food_produces_mult = -0.10
+	planet_jobs_produces_mult = -0.05
+}
+
+epoch_core_contamination_worsened_hive = {
+	planet_stability_add = -8
+	planet_jobs_unity_produces_mult = -0.10
+	planet_jobs_produces_mult = -0.05
+}
+
+epoch_core_contamination_worsened_machine = {
+	planet_stability_add = -8
+	planet_jobs_energy_produces_mult = -0.10
+	planet_jobs_produces_mult = -0.05
+}
+
+epoch_core_contamination_studied_organic = {
+	planet_stability_add = -1
+	planet_jobs_food_produces_mult = -0.02
+}
+
+epoch_core_contamination_studied_hive = {
+	planet_stability_add = -1
+	planet_jobs_unity_produces_mult = -0.02
+}
+
+epoch_core_contamination_studied_machine = {
+	planet_stability_add = -1
+	planet_jobs_energy_produces_mult = -0.02
+}
+
 epoch_core_silent_structure = {
 	planet_jobs_physics_research_produces_mult = 0.05
 }
 
 epoch_core_structure_secured = {
 	planet_jobs_engineering_research_produces_mult = 0.05
+}
+
+epoch_core_structure_investigated = {
+	planet_jobs_society_research_produces_mult = 0.05
 }
 
 epoch_core_structure_ruins = {

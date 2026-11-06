@@ -1,0 +1,64 @@
+epoch_core_silent_structure = {
+	desc = epoch_core_silent_structure_desc
+	picture = GFX_evt_relic_world
+	stages = 4
+	weight = 0
+	max_instances = 999
+	situation_log_category = empire_concerns
+
+	# Site callbacks use this=fleet, from=site. Only the campaign owner may
+	# excavate the site on their own world with a staffed Science Ship.
+	potential = {
+		owner = {
+			epoch_core_active_campaign_empire = yes
+			has_country_flag = epoch_core_structure_site_created
+		}
+		from.planet = { owner = { is_same_value = root.owner } }
+	}
+	allow = {
+		is_ship_class = shipclass_science_ship
+		exists = leader
+		leader = { leader_class = scientist }
+		owner = { epoch_core_active_campaign_empire = yes }
+		from.planet = { owner = { is_same_value = root.owner } }
+	}
+	visible = {
+		default_site_visible_trigger = yes
+		has_country_flag = epoch_core_structure_site_created
+		from.planet = { owner = { is_same_value = root } }
+	}
+
+	stage = {
+		difficulty = 2
+		icon = GFX_archaeology_runes_D1
+		event = epoch_core.40
+	}
+	stage = {
+		difficulty = 3
+		icon = GFX_archaeology_runes_D3
+		event = epoch_core.41
+	}
+	stage = {
+		difficulty = 4
+		icon = GFX_archaeology_runes_D6
+		event = epoch_core.42
+	}
+	stage = {
+		difficulty = 5
+		icon = GFX_archaeology_runes_D2
+		event = epoch_core.43
+	}
+
+	# Repeated failed rolls have one guarded, permanent cost on the actual site
+	# world. The campaign flag makes this escalation idempotent.
+	on_roll_failed = {
+		from.planet = {
+			if = {
+				limit = { NOT = { has_planet_flag = epoch_core_structure_excavation_hazard } }
+				set_planet_flag = epoch_core_structure_excavation_hazard
+				add_modifier = { modifier = epoch_core_structure_ruins days = -1 }
+			}
+		}
+		owner = { set_country_flag = epoch_core_structure_excavation_setback }
+	}
+}

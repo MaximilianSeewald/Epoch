@@ -207,8 +207,7 @@ country_event = {
 		name = epoch_core.4.a
 		set_country_flag = epoch_core_quiet_watch_established
 		set_country_flag = epoch_core_expedition_project_enabled
-		epoch_core_create_expedition = yes
-		event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_MISSING_EXPEDITION" location = this owner = root } }
+		event_target:epoch_core_expedition_destination@root = { enable_special_project = { name = "EPOCH_MISSING_EXPEDITION" location = this owner = root } }
 		country_event = { id = epoch_core.37 days = 730 }
 		ai_chance = { factor = 1 }
 	}
@@ -229,8 +228,7 @@ country_event = {
 		name = epoch_core.5.a
 		set_country_flag = epoch_core_coordinates_recovered
 		set_country_flag = epoch_core_expedition_project_enabled
-		epoch_core_create_expedition = yes
-		event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_MISSING_EXPEDITION" location = this owner = root } }
+		event_target:epoch_core_expedition_destination@root = { enable_special_project = { name = "EPOCH_MISSING_EXPEDITION" location = this owner = root } }
 		country_event = { id = epoch_core.37 days = 730 }
 		ai_chance = { factor = 1 }
 	}
@@ -399,19 +397,25 @@ ship_event = {
 		owner = {
 			set_country_flag = epoch_core_expedition_contact_lost
 			set_variable = { which = epoch_core_expedition_status value = 1 }
-			if = {
-				limit = { exists = event_target:epoch_core_expedition_ship@root.owner }
-				set_country_flag = epoch_core_expedition_scripted_loss
-				event_target:epoch_core_expedition_ship@root.owner = { destroy_ship = this }
-			}
+			set_country_flag = epoch_core_expedition_ship_selected
+			set_country_flag = epoch_core_expedition_scripted_loss
 			set_country_flag = epoch_core_expedition_object_lost
 			country_event = { id = epoch_core.6 days = 1 }
 		}
+		set_ship_flag = epoch_core_expedition_vessel
+		save_global_event_target_as = epoch_core_expedition_ship@root.owner
+		fleet = {
+			leader = {
+				set_leader_flag = epoch_core_missing_expedition
+				save_global_event_target_as = epoch_core_expedition_scientist@root.owner
+			}
+		}
+		destroy_ship = this
 	}
 }
 
-# Project failure still removes only the campaign-owned vessel and opens a
-# recoverable search path.
+# A failed project leaves the player's science ship intact and opens a
+# recoverable search path; only successful completion marks it missing.
 ship_event = {
 	id = epoch_core.28
 	hide_window = yes
@@ -420,38 +424,14 @@ ship_event = {
 	immediate = {
 		owner = {
 			if = {
-				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_expedition_ship_created }
+				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_expedition_project_enabled }
 				set_country_flag = epoch_core_expedition_contact_lost
 				set_country_flag = epoch_core_expedition_scripted_loss
-				set_country_flag = epoch_core_expedition_object_lost
+				set_country_flag = epoch_core_expedition_project_failed
 				set_variable = { which = epoch_core_expedition_status value = 1 }
-				if = {
-					limit = { exists = event_target:epoch_core_expedition_ship@root.owner }
-					event_target:epoch_core_expedition_ship@root.owner = { destroy_ship = this }
-				}
 				country_event = { id = epoch_core.6 days = 1 }
 			}
 		}
-	}
-}
-
-# Catch a loss that occurs outside the project's own success/failure callback.
-country_event = {
-	id = epoch_core.29
-	hide_window = yes
-	is_triggered_only = yes
-	trigger = {
-		epoch_core_active_campaign_empire = yes
-		has_country_flag = epoch_core_expedition_ship_created
-		NOT = { has_country_flag = epoch_core_expedition_scripted_loss }
-		NOT = { has_country_flag = epoch_core_expedition_contact_lost }
-		fromfrom = { has_ship_flag = epoch_core_expedition_vessel }
-	}
-	immediate = {
-		set_country_flag = epoch_core_expedition_contact_lost
-		set_country_flag = epoch_core_expedition_object_lost
-		set_country_flag = epoch_core_expedition_unexpected_loss
-		country_event = { id = epoch_core.6 days = 1 }
 	}
 }
 
@@ -524,7 +504,24 @@ country_event = {
 	location = event_target:epoch_core_signal_system@root
 	is_triggered_only = yes
 	trigger = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_expedition_outcome_recorded NOT = { has_country_flag = epoch_core_expedition_later_clue_seen } }
-	immediate = { set_country_flag = epoch_core_expedition_later_clue_seen }
+	immediate = {
+		set_country_flag = epoch_core_expedition_later_clue_seen
+		if = {
+			limit = { has_country_flag = epoch_core_expedition_survivors_found }
+			if = {
+				limit = { exists = event_target:epoch_core_expedition_scientist@root }
+				event_target:epoch_core_expedition_scientist@root = { remove_leader_flag = epoch_core_missing_expedition }
+				set_country_flag = epoch_core_expedition_scientist_recovered
+			}
+		}
+		else = {
+			if = {
+				limit = { exists = event_target:epoch_core_expedition_scientist@root }
+				event_target:epoch_core_expedition_scientist@root = { kill_leader = { show_notification = no } }
+				set_country_flag = epoch_core_expedition_scientist_lost
+			}
+		}
+	}
 	option = {
 		name = epoch_core.7.a
 		if = { limit = { has_country_flag = epoch_core_expedition_survivors_found } set_country_flag = epoch_core_expedition_survivor_testimony_saved }
@@ -561,7 +558,7 @@ country_event = {
 		set_country_flag = epoch_core_contamination_started
 		set_variable = { which = epoch_core_current_phase value = 3 }
 		capital_scope = {
-			add_modifier = { modifier = epoch_core_contamination_active days = -1 }
+			epoch_core_apply_contamination_active = yes
 			save_global_event_target_as = epoch_core_world@root
 		}
 		if = {
@@ -573,8 +570,8 @@ country_event = {
 				}
 			}
 			event_target:epoch_core_world@root = {
-				remove_modifier = epoch_core_contamination_active
-				add_modifier = { modifier = epoch_core_contamination_worsened days = -1 }
+				epoch_core_remove_contamination_effects = yes
+				epoch_core_apply_contamination_worsened = yes
 			}
 			set_country_flag = epoch_core_contamination_worsened
 		}
@@ -593,10 +590,7 @@ country_event = {
 			resource_stockpile_compare = { resource = minerals value >= 300 }
 		}
 		add_resource = { energy = -500 minerals = -300 }
-		event_target:epoch_core_world@root = {
-			remove_modifier = epoch_core_contamination_active
-			remove_modifier = epoch_core_contamination_worsened
-		}
+		event_target:epoch_core_world@root = { epoch_core_remove_contamination_effects = yes }
 		set_country_flag = epoch_core_contamination_contained
 		country_event = { id = epoch_core.22 days = 1 }
 		ai_chance = { factor = 35 }
@@ -604,9 +598,22 @@ country_event = {
 	option = {
 		name = epoch_core.20.c
 		set_country_flag = epoch_core_contamination_neglected
-		event_target:epoch_core_world@root = {
-			remove_modifier = epoch_core_contamination_active
-			add_modifier = { modifier = epoch_core_contamination_worsened days = -1 }
+		if = {
+			limit = { NOT = { has_country_flag = epoch_core_contamination_spread_attempted } }
+			set_country_flag = epoch_core_contamination_spread_attempted
+			event_target:epoch_core_world@root = {
+				epoch_core_remove_contamination_effects = yes
+				epoch_core_apply_contamination_worsened = yes
+			}
+			random_owned_planet = {
+				limit = {
+					NOT = { is_same_value = event_target:epoch_core_world@root }
+					NOT = { has_planet_flag = epoch_core_contamination_spread }
+				}
+				set_planet_flag = epoch_core_contamination_spread
+				epoch_core_apply_contamination_worsened = yes
+				owner = { set_country_flag = epoch_core_contamination_spread_recorded }
+			}
 		}
 		country_event = { id = epoch_core.22 days = 1 }
 		ai_chance = { factor = 10 }
@@ -624,6 +631,13 @@ ship_event = {
 				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_contamination_study_ordered NOT = { has_country_flag = epoch_core_contamination_study_resolved } }
 				set_country_flag = epoch_core_contamination_study_resolved
 				set_country_flag = epoch_core_contamination_study_complete
+				if = {
+					limit = { exists = event_target:epoch_core_world@root }
+					event_target:epoch_core_world@root = {
+						epoch_core_remove_contamination_effects = yes
+						epoch_core_apply_contamination_studied = yes
+					}
+				}
 				add_resource = { society_research = 350 physics_research = 200 }
 				country_event = { id = epoch_core.22 days = 1 }
 			}
@@ -643,8 +657,8 @@ ship_event = {
 				set_country_flag = epoch_core_contamination_study_failed
 				set_country_flag = epoch_core_contamination_worsened
 				event_target:epoch_core_world@root = {
-					remove_modifier = epoch_core_contamination_active
-					add_modifier = { modifier = epoch_core_contamination_worsened days = -1 }
+					epoch_core_remove_contamination_effects = yes
+					epoch_core_apply_contamination_worsened = yes
 				}
 				country_event = { id = epoch_core.22 days = 1 }
 			}
@@ -652,8 +666,8 @@ ship_event = {
 	}
 }
 
-# Section 4: the structure is attached to the affected world as a persistent
-# game modifier. The choices produce distinct mechanical outcomes.
+# Section 4: the discovery creates a native archaeological site on the affected
+# world, or on another owned world if that planet already hosts a site.
 country_event = {
 	id = epoch_core.22
 	title = epoch_core.22.name
@@ -676,78 +690,41 @@ country_event = {
 	immediate = {
 		set_country_flag = epoch_core_structure_found
 		set_variable = { which = epoch_core_current_phase value = 4 }
-		if = {
-			limit = { exists = event_target:epoch_core_world@root }
-			event_target:epoch_core_world@root = { add_modifier = { modifier = epoch_core_silent_structure days = -1 } }
-		}
-		else = {
-			capital_scope = {
-				add_modifier = { modifier = epoch_core_silent_structure days = -1 }
-				save_global_event_target_as = epoch_core_world@root
-			}
-		}
 	}
 	option = {
 		name = epoch_core.22.a
 		set_country_flag = epoch_core_structure_study_ordered
-		event_target:epoch_core_world@root = { enable_special_project = { name = "EPOCH_STRUCTURE_ANALYSIS" location = this owner = root } }
-		country_event = { id = epoch_core.36 days = 730 }
-		ai_chance = { factor = 45 }
-	}
-	option = {
-		name = epoch_core.22.b
-		set_country_flag = epoch_core_structure_secured
-		add_resource = { physics_research = 250 unity = 250 }
-		event_target:epoch_core_world@root = { add_modifier = { modifier = epoch_core_structure_secured days = -1 } }
-		set_country_flag = epoch_core_structure_choice_recorded
-		country_event = { id = epoch_core.23 days = 1 }
-		ai_chance = { factor = 35 }
-	}
-	option = {
-		name = epoch_core.22.c
-		set_country_flag = epoch_core_structure_destroyed
-		event_target:epoch_core_world@root = {
-			remove_modifier = epoch_core_silent_structure
-			add_modifier = { modifier = epoch_core_structure_ruins days = -1 }
-		}
-		set_country_flag = epoch_core_structure_choice_recorded
-		country_event = { id = epoch_core.23 days = 1 }
-		ai_chance = { factor = 20 }
-	}
-}
-
-ship_event = {
-	id = epoch_core.24
-	hide_window = yes
-	is_triggered_only = yes
-	immediate = {
-		owner = {
-			if = {
-				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_structure_study_ordered NOT = { has_country_flag = epoch_core_structure_study_resolved } }
-				set_country_flag = epoch_core_structure_study_resolved
-				set_country_flag = epoch_core_structure_investigated
-				set_country_flag = epoch_core_structure_choice_recorded
-				add_resource = { engineering_research = 400 physics_research = 250 }
-				country_event = { id = epoch_core.23 days = 1 }
+		if = {
+			limit = {
+				exists = event_target:epoch_core_world@root
+				event_target:epoch_core_world@root = { NOT = { exists = archaeological_site } }
+			}
+			event_target:epoch_core_world@root = {
+				create_archaeological_site = epoch_core_silent_structure
+				add_modifier = { modifier = epoch_core_silent_structure days = -1 }
+				owner = { set_country_flag = epoch_core_structure_site_created }
 			}
 		}
-	}
-}
-
-ship_event = {
-	id = epoch_core.27
-	hide_window = yes
-	is_triggered_only = yes
-	immediate = {
-		owner = {
-			if = {
-				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_structure_study_ordered NOT = { has_country_flag = epoch_core_structure_study_resolved } }
-				set_country_flag = epoch_core_structure_study_resolved
-				set_country_flag = epoch_core_structure_investigation_failed
-				set_country_flag = epoch_core_structure_choice_recorded
-				country_event = { id = epoch_core.23 days = 1 }
+		if = {
+			limit = { NOT = { has_country_flag = epoch_core_structure_site_created } }
+			random_owned_planet = {
+				limit = { NOT = { exists = archaeological_site } }
+				create_archaeological_site = epoch_core_silent_structure
+				add_modifier = { modifier = epoch_core_silent_structure days = -1 }
+				save_global_event_target_as = epoch_core_world@root
+				owner = { set_country_flag = epoch_core_structure_site_created }
 			}
 		}
+		if = {
+			limit = { has_country_flag = epoch_core_structure_site_created }
+			country_event = { id = epoch_core.36 days = 2190 }
+		}
+		else = {
+			set_country_flag = epoch_core_structure_investigation_failed
+			set_country_flag = epoch_core_structure_choice_recorded
+			country_event = { id = epoch_core.23 days = 1 }
+		}
+		ai_chance = { factor = 1 }
 	}
 }
 
@@ -993,8 +970,8 @@ country_event = {
 		if = {
 			limit = { exists = event_target:epoch_core_world@root }
 			event_target:epoch_core_world@root = {
-				remove_modifier = epoch_core_contamination_active
-				add_modifier = { modifier = epoch_core_contamination_worsened days = -1 }
+				epoch_core_remove_contamination_effects = yes
+				epoch_core_apply_contamination_worsened = yes
 			}
 		}
 		country_event = { id = epoch_core.22 days = 1 }
@@ -1007,15 +984,23 @@ country_event = {
 	is_triggered_only = yes
 	trigger = {
 		epoch_core_active_campaign_empire = yes
-		has_country_flag = epoch_core_structure_study_ordered
-		NOT = { has_country_flag = epoch_core_structure_study_resolved }
+		has_country_flag = epoch_core_structure_site_created
+				NOT = { has_country_flag = epoch_core_structure_choice_recorded }
 	}
 	immediate = {
-		set_country_flag = epoch_core_structure_study_resolved
 		set_country_flag = epoch_core_structure_investigation_failed
 		set_country_flag = epoch_core_structure_choice_recorded
-		set_country_flag = epoch_core_structure_study_timed_out
-		abort_special_project = { type = EPOCH_STRUCTURE_ANALYSIS }
+		set_country_flag = epoch_core_structure_excavation_timed_out
+		if = {
+			limit = { exists = event_target:epoch_core_world@root }
+			event_target:epoch_core_world@root = {
+				if = {
+					limit = { exists = archaeological_site archaeological_site = { is_site_type = epoch_core_silent_structure } }
+					archaeological_site = { destroy_archaeological_site = this }
+				}
+				remove_modifier = epoch_core_silent_structure
+			}
+		}
 		country_event = { id = epoch_core.23 days = 1 }
 	}
 }
@@ -1026,18 +1011,13 @@ country_event = {
 	is_triggered_only = yes
 	trigger = {
 		epoch_core_active_campaign_empire = yes
-		has_country_flag = epoch_core_expedition_ship_created
+		has_country_flag = epoch_core_expedition_project_enabled
 		NOT = { has_country_flag = epoch_core_expedition_contact_lost }
 	}
 	immediate = {
 		set_country_flag = epoch_core_expedition_scripted_loss
 		set_country_flag = epoch_core_expedition_contact_lost
 		abort_special_project = { type = EPOCH_MISSING_EXPEDITION }
-		if = {
-			limit = { exists = event_target:epoch_core_expedition_ship@root }
-			event_target:epoch_core_expedition_ship@root = { destroy_ship = this }
-		}
-		set_country_flag = epoch_core_expedition_object_lost
 		set_country_flag = epoch_core_expedition_mission_timed_out
 		country_event = { id = epoch_core.6 days = 1 }
 	}
@@ -1062,5 +1042,149 @@ country_event = {
 		set_variable = { which = epoch_core_expedition_result value = 3 }
 		set_variable = { which = epoch_core_expedition_status value = 4 }
 		country_event = { id = epoch_core.7 days = 1 }
+	}
+}
+
+# Native Archaeological Site chapters. These fleet-scoped callbacks run only
+# after Stellaris records actual excavation progress at the owned site.
+fleet_event = {
+	id = epoch_core.40
+	title = epoch_core.40.name
+	desc = epoch_core.40.desc
+	picture = GFX_evt_relic_world
+	location = from
+	archaeology = yes
+	is_triggered_only = yes
+	option = {
+		name = epoch_core.40.a
+		owner = { set_country_flag = epoch_core_structure_mapping_careful }
+		ai_chance = { factor = 65 }
+	}
+	option = {
+		name = epoch_core.40.b
+		owner = {
+			set_country_flag = epoch_core_structure_mapping_forced
+			set_country_flag = epoch_core_structure_risk_increased
+		}
+		from.planet = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } }
+		ai_chance = { factor = 35 }
+	}
+}
+
+fleet_event = {
+	id = epoch_core.41
+	title = epoch_core.41.name
+	desc = {
+		text = epoch_core.41.desc.spread
+		trigger = { owner = { has_country_flag = epoch_core_contamination_spread_recorded } }
+	}
+	desc = {
+		text = epoch_core.41.desc.contained
+		trigger = { owner = { has_country_flag = epoch_core_contamination_contained } }
+	}
+	desc = { text = epoch_core.41.desc.standard trigger = { always = yes } }
+	picture = GFX_evt_relic_world
+	location = from
+	archaeology = yes
+	is_triggered_only = yes
+	option = {
+		name = epoch_core.41.a
+		owner = { set_country_flag = epoch_core_structure_contamination_compared }
+		from.planet = { add_modifier = { modifier = epoch_core_structure_secured days = -1 } }
+		ai_chance = { factor = 60 }
+	}
+	option = {
+		name = epoch_core.41.b
+		owner = {
+			set_country_flag = epoch_core_structure_contamination_disturbed
+			set_country_flag = epoch_core_structure_risk_increased
+		}
+		from.planet = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } }
+		ai_chance = { factor = 40 }
+	}
+}
+
+fleet_event = {
+	id = epoch_core.42
+	title = epoch_core.42.name
+	desc = {
+		text = epoch_core.42.desc.degraded
+		trigger = { owner = { has_country_flag = epoch_core_signal_trace_degraded } }
+	}
+	desc = {
+		text = epoch_core.42.desc.recovered
+		trigger = { owner = { has_country_flag = epoch_core_expedition_recorder_recovered } }
+	}
+	desc = { text = epoch_core.42.desc.standard trigger = { always = yes } }
+	picture = GFX_evt_relic_world
+	location = from
+	archaeology = yes
+	is_triggered_only = yes
+	option = {
+		name = epoch_core.42.a
+		owner = { set_country_flag = epoch_core_structure_echo_matched }
+		add_resource = { physics_research = 150 society_research = 150 }
+		ai_chance = { factor = 60 }
+	}
+	option = {
+		name = epoch_core.42.b
+		owner = {
+			set_country_flag = epoch_core_structure_echo_unresolved
+			set_country_flag = epoch_core_structure_risk_increased
+		}
+		from.planet = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } }
+		ai_chance = { factor = 40 }
+	}
+}
+
+fleet_event = {
+	id = epoch_core.43
+	title = epoch_core.43.name
+	desc = {
+		text = epoch_core.43.desc.risk
+		trigger = { owner = { has_country_flag = epoch_core_structure_risk_increased } }
+	}
+	desc = {
+		text = epoch_core.43.desc.careful
+		trigger = { owner = { has_country_flag = epoch_core_structure_mapping_careful } }
+	}
+	desc = { text = epoch_core.43.desc.standard trigger = { always = yes } }
+	picture = GFX_evt_relic_world
+	location = from
+	archaeology = yes
+	is_triggered_only = yes
+	option = {
+		name = epoch_core.43.a
+		from = { set_site_progress_locked = yes }
+		from.planet = { add_modifier = { modifier = epoch_core_structure_secured days = -1 } }
+		owner = {
+			set_country_flag = epoch_core_structure_secured
+			set_country_flag = epoch_core_structure_choice_recorded
+			country_event = { id = epoch_core.23 days = 1 }
+		}
+		ai_chance = { factor = 35 }
+	}
+	option = {
+		name = epoch_core.43.b
+		from.planet = {
+			add_modifier = { modifier = epoch_core_structure_ruins days = -1 }
+			archaeological_site = { destroy_archaeological_site = this }
+		}
+		owner = {
+			set_country_flag = epoch_core_structure_destroyed
+			set_country_flag = epoch_core_structure_choice_recorded
+			country_event = { id = epoch_core.23 days = 1 }
+		}
+		ai_chance = { factor = 20 }
+	}
+	option = {
+		name = epoch_core.43.c
+		from.planet = { add_modifier = { modifier = epoch_core_structure_investigated days = -1 } }
+		owner = {
+			set_country_flag = epoch_core_structure_investigated
+			set_country_flag = epoch_core_structure_choice_recorded
+			country_event = { id = epoch_core.23 days = 1 }
+		}
+		ai_chance = { factor = 45 }
 	}
 }

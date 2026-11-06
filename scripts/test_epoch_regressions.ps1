@@ -41,7 +41,7 @@ function Get-Block([string]$Text, [string]$Pattern, [string]$Label) {
 }
 
 function Get-EventBlock([string]$Text, [int]$Id) {
-	return Get-Block $Text "(?m)^[ \t]*(?:country_event|ship_event|situation_event)[ \t]*=[ \t]*\{[ \t]*\r?\n[ \t]*id[ \t]*=[ \t]*epoch_core\.$Id[ \t]*\r?$" "epoch_core.$Id"
+	return Get-Block $Text "(?m)^[ \t]*(?:country_event|ship_event|fleet_event|situation_event)[ \t]*=[ \t]*\{[ \t]*\r?\n[ \t]*id[ \t]*=[ \t]*epoch_core\.$Id[ \t]*\r?$" "epoch_core.$Id"
 }
 
 function Test-BraceBalance([string]$Text) {
@@ -60,28 +60,28 @@ function Test-BraceBalance([string]$Text) {
 
 $eventPath = 'events/epoch_core_events.txt'
 $situationPath = 'common/situations/epoch_core_situations.txt'
+$archaeologicalSitePath = 'common/archaeological_site_types/epoch_core_sites.txt'
 $projectPath = 'common/special_projects/epoch_core_projects.txt'
 $modifierPath = 'common/static_modifiers/epoch_core_modifiers.txt'
 $scriptedEffectsPath = 'common/scripted_effects/epoch_core_effects.txt'
-$shipDesignPath = 'common/global_ship_designs/epoch_core_designs.txt'
 $onActionPath = 'common/on_actions/epoch_core_on_actions.txt'
 $phaseSpecPath = 'docs/phases/phase-i-first-contact.md'
 $events = Read-ProjectFile $eventPath
 $situations = Read-ProjectFile $situationPath
+$archaeologicalSites = Read-ProjectFile $archaeologicalSitePath
 $projects = Read-ProjectFile $projectPath
 $modifiers = Read-ProjectFile $modifierPath
 $scriptedEffects = Read-ProjectFile $scriptedEffectsPath
-$shipDesign = Read-ProjectFile $shipDesignPath
 $onActions = Read-ProjectFile $onActionPath
 $phaseSpec = Read-ProjectFile $phaseSpecPath
 
 foreach ($entry in @(
 	@{ Path = $eventPath; Text = $events },
 	@{ Path = $situationPath; Text = $situations },
+	@{ Path = $archaeologicalSitePath; Text = $archaeologicalSites },
 	@{ Path = $projectPath; Text = $projects },
 	@{ Path = $modifierPath; Text = $modifiers },
 	@{ Path = $scriptedEffectsPath; Text = $scriptedEffects },
-	@{ Path = $shipDesignPath; Text = $shipDesign },
 	@{ Path = $onActionPath; Text = $onActions }
 )) {
 	Assert-Check (Test-BraceBalance $entry.Text) "$($entry.Path) has unbalanced braces or quotes"
@@ -157,7 +157,6 @@ foreach ($key in $modifierKeys) {
 	Assert-Check $allLocKeys.ContainsKey($key) "Missing EN/DE modifier localization $key"
 	Assert-Check $allLocKeys.ContainsKey("${key}_desc") "Missing EN/DE modifier description localization ${key}_desc"
 }
-foreach ($key in @('NAME_EPOCH_Expedition', 'NAME_EPOCH_Expedition_Ship')) { Assert-Check $allLocKeys.ContainsKey($key) "Missing EN/DE expedition name localization $key" }
 $projectUses = @([regex]::Matches($events, 'name\s*=\s*"(EPOCH_[A-Z0-9_]+)"') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
 foreach ($key in $projectUses) { Assert-Check ($key -in $projectKeys) "Event references undefined project $key" }
 
@@ -168,9 +167,6 @@ Assert-Check ($eventDefinitionCount -eq $eventDefinitions.Count) 'Event IDs must
 $eventRefs = @([regex]::Matches($events + "`n" + $projects + "`n" + $onActions, '\bepoch_core\.(\d+)\b') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
 foreach ($id in $eventRefs) { Assert-Check ($id -in $eventDefinitions) "Reference to undefined event epoch_core.$id" }
 Assert-Check ($onActions -match 'on_survey_planet\s*=\s*\{[\s\S]*?epoch_core\.15' -and $onActions -match 'on_game_start_country\s*=\s*\{[\s\S]*?epoch_core\.1') 'Vanilla survey and country-start hooks must dispatch defined EPOCH entry events'
-Assert-Check ($onActions -match 'on_ship_destroyed_victim\s*=\s*\{[\s\S]*?epoch_core\.29') 'Unexpected expedition destruction must be routed through the vanilla victim hook'
-$unexpectedLoss = Get-EventBlock $events 29
-Assert-Check ($unexpectedLoss -match 'fromfrom\s*=\s*\{\s*has_ship_flag\s*=\s*epoch_core_expedition_vessel' -and $unexpectedLoss -match 'NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_expedition_scripted_loss' -and $unexpectedLoss -match 'epoch_core_expedition_contact_lost') 'Unexpected loss handler must filter to the campaign vessel and avoid duplicate scripted loss'
 
 # Situation and stage references must exist and the midpoint event must enter
 # only after the first ship-project callback advances progress to 50.
@@ -192,7 +188,7 @@ $expectedCallbacks = @{
 	'EPOCH_ECHO_OVERDRIVE' = 11; 'EPOCH_ECHO_THROTTLED' = 11
 	'EPOCH_MISSING_EXPEDITION' = 12
 	'EPOCH_EXPEDITION_RESCUE' = 13; 'EPOCH_EXPEDITION_SALVAGE' = 13; 'EPOCH_EXPEDITION_SURVEY' = 13
-	'EPOCH_CONTAMINATION_STUDY' = 21; 'EPOCH_STRUCTURE_ANALYSIS' = 24
+	'EPOCH_CONTAMINATION_STUDY' = 21
 }
 foreach ($projectKey in $expectedCallbacks.Keys) {
 	$block = Get-Block $projects "(?m)^\s*special_project\s*=\s*\{\s*key\s*=\s*`"$([regex]::Escape($projectKey))`"" $projectKey
@@ -203,11 +199,9 @@ foreach ($projectKey in $expectedCallbacks.Keys) {
 	Assert-Check ($block -match '(?:cost|days_to_research)\s*=') "$projectKey must define one valid project duration/cost mode"
 }
 $contaminationProject = Get-Block $projects '(?m)^\s*special_project\s*=\s*\{\s*key\s*=\s*"EPOCH_CONTAMINATION_STUDY"' 'contamination project'
-$structureProject = Get-Block $projects '(?m)^\s*special_project\s*=\s*\{\s*key\s*=\s*"EPOCH_STRUCTURE_ANALYSIS"' 'structure project'
 Assert-Check ($contaminationProject -match 'on_fail\s*=\s*\{\s*ship_event\s*=\s*\{\s*id\s*=\s*epoch_core\.26') 'Contamination project failure must resolve to a guarded fallback'
-Assert-Check ($structureProject -match 'on_fail\s*=\s*\{\s*ship_event\s*=\s*\{\s*id\s*=\s*epoch_core\.27') 'Structure project failure must resolve to a guarded fallback'
 $missingProject = Get-Block $projects '(?m)^\s*special_project\s*=\s*\{\s*key\s*=\s*"EPOCH_MISSING_EXPEDITION"' 'missing expedition project'
-Assert-Check ($missingProject -match 'on_fail\s*=\s*\{\s*ship_event\s*=\s*\{\s*id\s*=\s*epoch_core\.28') 'Expedition project failure must resolve to the owned-vessel loss path'
+Assert-Check ($missingProject -match 'on_fail\s*=\s*\{\s*ship_event\s*=\s*\{\s*id\s*=\s*epoch_core\.28') 'Expedition project failure must resolve to its non-destructive fallback'
 $firstCallback = Get-EventBlock $events 10
 Assert-Check ($firstCallback -match 'add_situation_progress\s*=\s*50') 'epoch_core.10 must advance the owned situation by 50'
 $opening = Get-EventBlock $events 2
@@ -216,10 +210,7 @@ Assert-Check ($opening -match 'name\s*=\s*epoch_core\.2\.c[\s\S]*set_country_fla
 $discovery = Get-EventBlock $events 15
 Assert-Check ($discovery -match 'NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_campaign_opted_out\s*\}' -and $discovery -match 'NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_first_echo_discovered\s*\}' -and $discovery -match 'save_global_event_target_as\s*=\s*epoch_core_signal_system@root\.owner') 'Discovery must respect refusal, remain one-shot and save a persistent country-specific system target'
 Assert-Check ($discovery -match 'epoch_core_expedition_origin_system@root\.owner' -and $discovery -match 'epoch_core_expedition_destination@root\.owner') 'Survey discovery must save an owner-specific expedition route'
-$expeditionFactory = Get-Block $scriptedEffects '(?m)^epoch_core_create_expedition\s*=\s*\{' 'expedition factory'
-Assert-Check ($expeditionFactory -match 'create_leader\s*=\s*\{[\s\S]*class\s*=\s*scientist' -and $expeditionFactory -match 'create_fleet\s*=\s*\{[\s\S]*create_ship\s*=\s*\{' -and $expeditionFactory -match 'assign_leader\s*=\s*event_target:epoch_core_expedition_scientist@root') 'Expedition factory must create an owned ship with a scientist'
-Assert-Check ($expeditionFactory -match 'set_location\s*=\s*event_target:epoch_core_expedition_origin_system@root' -and $expeditionFactory -match 'auto_move_to_planet\s*=\s*\{[\s\S]*epoch_core_expedition_destination@root') 'Created expedition must travel from its origin to its mission destination'
-Assert-Check ($shipDesign -match 'ship_size\s*=\s*science' -and $shipDesign -match 'DEFAULT_SCIENCESHIP_SECTION') 'Expedition ship must use a science-ship design'
+Assert-Check ($scriptedEffects -notmatch 'create_(?:leader|fleet|ship)\s*=') 'Missing Expedition must not create a substitute leader, fleet, or ship'
 $midpoint = Get-EventBlock $events 3
 Assert-Check ($midpoint -match 'situation\s*=\s*this' -and $midpoint -match 'owner\s*=\s*\{[\s\S]*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.16') 'epoch_core.3 must use Situation scope and dispatch its country-scope bridge'
 $bridge = Get-EventBlock $events 16
@@ -232,10 +223,11 @@ Assert-Check ($secondCallback -match 'add_situation_progress\s*=\s*50' -and $sec
 foreach ($id in @(4,5)) {
 	$followup = Get-EventBlock $events $id
 	Assert-Check ($followup -match 'epoch_core_active_campaign_empire\s*=\s*yes' -and $followup -match 'epoch_core_(?:cautious|aggressive)_investigation_complete' -and $followup -match 'NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_expedition_project_enabled\s*\}') "epoch_core.$id follow-up trigger is inconsistent"
-	Assert-Check ($followup -match 'set_country_flag\s*=\s*epoch_core_expedition_project_enabled[\s\S]*EPOCH_MISSING_EXPEDITION') "epoch_core.$id must enable the missing-expedition project from its option"
+	Assert-Check ($followup -match 'set_country_flag\s*=\s*epoch_core_expedition_project_enabled[\s\S]*epoch_core_expedition_destination@root[\s\S]*EPOCH_MISSING_EXPEDITION') "epoch_core.$id must enable the missing-expedition project at its saved destination"
 }
 $outbound = Get-EventBlock $events 12
-Assert-Check ($outbound -match 'set_country_flag\s*=\s*epoch_core_expedition_contact_lost' -and $outbound -match 'epoch_core_expedition_ship@root\.owner\s*=\s*\{\s*destroy_ship\s*=\s*this' -and $outbound -match 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.6') 'epoch_core.12 must destroy only the saved expedition ship and queue the search decision'
+Assert-Check ($outbound -match 'set_country_flag\s*=\s*epoch_core_expedition_contact_lost' -and $outbound -match 'save_global_event_target_as\s*=\s*epoch_core_expedition_ship@root\.owner' -and $outbound -match 'destroy_ship\s*=\s*this' -and $outbound -match 'save_global_event_target_as\s*=\s*epoch_core_expedition_scientist@root\.owner' -and $outbound -match 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.6') 'epoch_core.12 must track the project-performing ship and scientist, remove that ship, and queue the search decision'
+Assert-Check ($outbound -match 'fleet\s*=\s*\{\s*leader\s*=\s*\{\s*set_leader_flag\s*=\s*epoch_core_missing_expedition\s*save_global_event_target_as\s*=\s*epoch_core_expedition_scientist@root\.owner') 'The assigned expedition scientist must be flagged and saved from the project ship''s fleet before that ship is destroyed'
 $expeditionChoice = Get-EventBlock $events 6
 foreach ($key in @('EPOCH_EXPEDITION_RESCUE','EPOCH_EXPEDITION_SALVAGE','EPOCH_EXPEDITION_SURVEY')) { Assert-Check ($expeditionChoice -match "name\s*=\s*`"$key`"") "epoch_core.6 is missing $key" }
 Assert-Check ($expeditionChoice -match 'epoch_core_expedition_search_abandoned[\s\S]*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.7') 'Abandoning the search must queue the final report'
@@ -244,14 +236,28 @@ Assert-Check ($resultCallback -match 'epoch_core_expedition_outcome_recorded' -a
 Assert-Check ($resultCallback -match 'random_list\s*=\s*\{[\s\S]*epoch_core_expedition_survivors_found[\s\S]*epoch_core_expedition_recorder_recovered[\s\S]*epoch_core_expedition_search_failed' -and $resultCallback -match 'epoch_core_signal_trace_degraded') 'Expedition outcome must be non-guaranteed and depend on earlier signal quality'
 $finalEvent = Get-EventBlock $events 7
 Assert-Check ($finalEvent -match 'epoch_core_active_campaign_empire\s*=\s*yes' -and $finalEvent -match 'epoch_core_expedition_outcome_recorded') 'epoch_core.7 must accept recorded expedition outcomes'
+Assert-Check ($finalEvent -match 'NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_expedition_later_clue_seen\s*\}' -and $finalEvent -match 'epoch_core_expedition_survivors_found[\s\S]*remove_leader_flag\s*=\s*epoch_core_missing_expedition[\s\S]*epoch_core_expedition_scientist_recovered' -and $finalEvent -match 'else\s*=\s*\{[\s\S]*kill_leader\s*=\s*\{\s*show_notification\s*=\s*no\s*\}[\s\S]*epoch_core_expedition_scientist_lost') 'The recorded expedition outcome must resolve the saved scientist once as recovered or lost'
 
 # New Phase I stages must apply actual planet mechanics, preserve uncertainty,
 # and impose a permanent path-sensitive cost before the final decision.
 $contaminationEvent = Get-EventBlock $events 20
 $structureEvent = Get-EventBlock $events 22
 $conclusionEvent = Get-EventBlock $events 23
-Assert-Check ($contaminationEvent -match 'epoch_core_contamination_active' -and $contaminationEvent -match 'epoch_core_contamination_worsened' -and $contaminationEvent -match 'enable_special_project.*EPOCH_CONTAMINATION_STUDY') 'Contamination must affect a planet, worsen on neglect, and offer investigation'
-Assert-Check ($structureEvent -match 'epoch_core_silent_structure' -and $structureEvent -match 'EPOCH_STRUCTURE_ANALYSIS' -and $structureEvent -match 'epoch_core_structure_secured' -and $structureEvent -match 'epoch_core_structure_ruins') 'The Silent Structure must offer investigation, securing, and destruction with distinct effects'
+Assert-Check ($contaminationEvent -match 'epoch_core_apply_contamination_active' -and $contaminationEvent -match 'epoch_core_apply_contamination_worsened' -and $contaminationEvent -match 'enable_special_project.*EPOCH_CONTAMINATION_STUDY' -and $contaminationEvent -match 'random_owned_planet\s*=\s*\{[\s\S]*?epoch_core_apply_contamination_worsened\s*=\s*yes') 'Contamination must affect a planet, worsen on neglect, spread to another owned world when possible, and offer investigation'
+$structureFiles = @(Get-ChildItem -LiteralPath (Join-Path $Root 'common') -Recurse -File -Filter '*.txt' | ForEach-Object { [System.IO.File]::ReadAllText($_.FullName, [System.Text.Encoding]::UTF8) })
+$structureMechanics = $events + "`n" + ($structureFiles -join "`n")
+$silentSite = Get-Block $archaeologicalSites '(?m)^epoch_core_silent_structure\s*=\s*\{' 'Silent Structure archaeology definition'
+Assert-Check ($null -ne $silentSite -and $silentSite -match 'stages\s*=\s*4' -and @([regex]::Matches($silentSite, '(?m)^\s*stage\s*=\s*\{')).Count -eq 4 -and $silentSite -match 'event\s*=\s*epoch_core\.40' -and $silentSite -match 'event\s*=\s*epoch_core\.43') 'The Silent Structure must define a native four-stage Archaeological Site'
+foreach ($id in @(40,41,42,43)) {
+	$chapter = Get-EventBlock $events $id
+	Assert-Check ($null -ne $chapter -and $chapter -match 'archaeology\s*=\s*yes' -and $chapter -match 'is_triggered_only\s*=\s*yes' -and $chapter -match 'ai_chance\s*=') "Archaeology chapter epoch_core.$id must use a native callback and provide AI decisions"
+}
+Assert-Check ($structureEvent -match 'create_archaeological_site\s*=\s*epoch_core_silent_structure' -and $structureEvent -match 'epoch_core_structure_site_created' -and $structureMechanics -match 'destroy_archaeological_site\s*=\s*this') 'The structure event must create the site on a saved world, and destruction must remove the native site object'
+Assert-Check ((Get-EventBlock $events 43) -match 'set_site_progress_locked\s*=\s*yes' -and (Get-EventBlock $events 43) -match 'destroy_archaeological_site\s*=\s*this' -and (Get-EventBlock $events 43) -match 'epoch_core_structure_investigated') 'Final structure decisions must respectively preserve, destroy, or complete the native site'
+$activeContaminationEffect = Get-Block $scriptedEffects '(?m)^epoch_core_apply_contamination_active\s*=\s*\{' 'class-specific active contamination effect'
+$worsenedContaminationEffect = Get-Block $scriptedEffects '(?m)^epoch_core_apply_contamination_worsened\s*=\s*\{' 'class-specific worsened contamination effect'
+Assert-Check ($activeContaminationEffect -match 'is_machine_empire\s*=\s*yes[\s\S]*epoch_core_contamination_active_machine' -and $activeContaminationEffect -match 'is_hive_empire\s*=\s*yes[\s\S]*epoch_core_contamination_active_hive' -and $activeContaminationEffect -match 'epoch_core_contamination_active_organic') 'Active contamination must use separate organic, Hive, and machine gameplay modifiers'
+Assert-Check ($worsenedContaminationEffect -match 'is_machine_empire\s*=\s*yes[\s\S]*epoch_core_contamination_worsened_machine' -and $worsenedContaminationEffect -match 'is_hive_empire\s*=\s*yes[\s\S]*epoch_core_contamination_worsened_hive' -and $worsenedContaminationEffect -match 'epoch_core_contamination_worsened_organic') 'Worsened contamination must use separate organic, Hive, and machine gameplay modifiers'
 Assert-Check ($conclusionEvent -match 'epoch_core_permanent_scar_organic' -and $conclusionEvent -match 'epoch_core_permanent_scar_hive' -and $conclusionEvent -match 'epoch_core_permanent_scar_machine') 'Conclusion must apply a class-specific permanent consequence'
 Assert-Check ($conclusionEvent -match 'epoch_core_permanent_scar_exacerbated' -and $conclusionEvent -match 'epoch_core_expedition_loss_recorded' -and $conclusionEvent -match 'epoch_core_contamination_neglected' -and $conclusionEvent -match 'epoch_core_structure_destroyed') 'Permanent consequence severity must reflect the campaign path'
 Assert-Check ($conclusionEvent -match 'days\s*=\s*-1' -and $conclusionEvent -match 'epoch_core_phase_ii_ready' -and $conclusionEvent -match 'epoch_core_campaign_opted_out') 'Permanent consequence must be applied before in-world continuation/closure options'
@@ -274,16 +280,16 @@ Assert-Check ($conclusionChoiceText -notmatch '(?i)campaign|participat|phase|ein
 Assert-Check (($englishLoc + $germanLoc) -notmatch '(?i)UAP|Universal Ascension|original purpose|ursprüngliche zivilisation|ursprüngliche Zweck|eigentliche Zweck') 'Phase I closing text must not reveal the later purpose or UAP'
 
 # AI routes and absent-object recovery must be explicit at each blocking step.
-foreach ($id in @(2,3,4,5,6,7,20,22,23)) {
+foreach ($id in @(2,3,4,5,6,7,20,22,23,40,41,42,43)) {
 	$decisionEvent = Get-EventBlock $events $id
 	Assert-Check ($null -ne $decisionEvent -and $decisionEvent -match 'ai_chance\s*=\s*\{\s*factor\s*=') "Blocking event epoch_core.$id must provide AI decision weights"
 }
 foreach ($id in @(4,5)) {
 	$followup = Get-EventBlock $events $id
-	Assert-Check ($followup -match 'epoch_core_create_expedition\s*=\s*yes' -and $followup -match 'set_country_flag\s*=\s*epoch_core_expedition_project_enabled') "AI follow-up epoch_core.$id must use the normal owned expedition route"
+	Assert-Check ($followup -match 'epoch_core_expedition_project_enabled' -and $followup -match 'epoch_core_expedition_destination@root') "AI follow-up epoch_core.$id must use the destination-anchored player ship project"
 }
-Assert-Check ((Get-EventBlock $events 12) -match 'exists\s*=\s*event_target:epoch_core_expedition_ship@root\.owner') 'Expedition success must safely handle a missing saved ship'
-Assert-Check ((Get-EventBlock $events 28) -match 'exists\s*=\s*event_target:epoch_core_expedition_ship@root\.owner') 'Expedition project failure must safely handle a missing saved ship'
+Assert-Check ((Get-EventBlock $events 28) -match 'epoch_core_expedition_project_enabled' -and (Get-EventBlock $events 28) -match 'epoch_core_expedition_project_failed' -and (Get-EventBlock $events 28) -notmatch 'destroy_ship\s*=') 'Expedition project failure must preserve the player''s ship and resolve through a recoverable path'
+Assert-Check ((Get-EventBlock $events 37) -match 'epoch_core_expedition_mission_timed_out' -and (Get-EventBlock $events 37) -notmatch 'epoch_core_expedition_object_lost|destroy_ship\s*=') 'Expedition timeout must not claim or cause loss of a ship that was never identified'
 Assert-Check ((Get-EventBlock $events 22) -match 'exists\s*=\s*event_target:epoch_core_world@root' -and (Get-EventBlock $events 22) -match 'save_global_event_target_as\s*=\s*epoch_core_world@root') 'Structure event must fall back to a local capital if the saved world target is missing'
 Assert-Check ((Get-EventBlock $events 23) -match 'exists\s*=\s*capital_scope' -and (Get-EventBlock $events 23) -match 'epoch_core_permanent_scar_fallback') 'Conclusion must preserve a permanent consequence if the empire has no capital'
 Assert-Check ($onActions -match 'on_country_created\s*=\s*\{[\s\S]*?epoch_core\.1' -and $onActions -match 'on_country_type_changed\s*=\s*\{[\s\S]*?epoch_core\.1') 'Newly created or converted empires must receive the same guarded enrollment dispatch'
@@ -291,13 +297,13 @@ Assert-Check ($onActions -match 'on_country_created\s*=\s*\{[\s\S]*?epoch_core\.
 # Saved system targets must be persistent and country-keyed for concurrent empires.
 Assert-Check ($events -match 'save_global_event_target_as\s*=\s*epoch_core_signal_system@root\.owner' -and $events -notmatch 'save_event_target_as\s*=\s*epoch_core_signal_system') 'Signal system must be saved as a persistent owner-keyed global event target'
 Assert-Check ($events -match 'event_target:epoch_core_signal_system@root\s*=\s*\{\s*enable_special_project') 'Country-scoped follow-ups must enable projects at the owning empire system'
-Assert-Check ($scriptedEffects -match 'save_global_event_target_as\s*=\s*epoch_core_expedition_ship@root' -and $scriptedEffects -match 'save_global_event_target_as\s*=\s*epoch_core_expedition_scientist@root') 'Expedition ship and scientist must be saved against the current owner'
+Assert-Check ($events -match 'save_global_event_target_as\s*=\s*epoch_core_expedition_ship@root\.owner' -and $events -match 'save_global_event_target_as\s*=\s*epoch_core_expedition_scientist@root\.owner') 'Expedition callback must save the actual performing ship and assigned scientist against its owner'
 Assert-Check ($events -match 'save_global_event_target_as\s*=\s*epoch_core_world@root' -and $events -match 'event_target:epoch_core_world@root') 'Contamination and structure world targets must be keyed to their campaign owner'
 $optOutGuards = @(
 	(Get-EventBlock $events 15), (Get-EventBlock $events 2), (Get-EventBlock $events 3),
 	(Get-EventBlock $events 4), (Get-EventBlock $events 5), (Get-EventBlock $events 6),
 	(Get-EventBlock $events 7), (Get-EventBlock $events 20), (Get-EventBlock $events 22),
-	(Get-EventBlock $events 23), (Get-EventBlock $events 29)
+	(Get-EventBlock $events 23)
 )
 foreach ($guardedEvent in $optOutGuards) {
 	Assert-Check ($guardedEvent -match 'epoch_core_active_campaign_empire\s*=\s*yes|NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_campaign_opted_out') 'Every public progression or enrollment handler must re-check active campaign/opt-out state'

@@ -150,13 +150,13 @@ documentation.
 ## Implementation and verification gate
 
 Gameplay implementation is governed by the binding [Phase I specification](phases/phase-i-first-contact.md).
-The evidence matrix records what the supplied 4.5.3 source subset supports and
-what remains unverified. Source inspection may guide implementation, but each
-scope-sensitive or lifecycle-sensitive mechanism must be verified against the
-target game files and tested in game before being reported as runtime-complete.
-The supplied dataset omits localisation/UI assets, ship-size/design definitions,
-script values, inline-script definitions, full AI definitions, and packaging
-metadata; it also cannot establish runtime, save/load, or multiplayer behavior.
+The evidence matrix records what the supplied M0-B 4.5.3 source subset and the
+later verified full local installation support. Source inspection may guide
+implementation, but each scope-sensitive or lifecycle-sensitive mechanism
+must be tested in game before being reported as runtime-complete. The original
+subset omits localisation/UI assets, ship-size/design definitions, script
+values, inline-script definitions, full AI definitions, and packaging metadata;
+neither source set establishes runtime, save/load, or multiplayer behavior.
 
 M0-D's historical architecture artifacts remain documentation-only records of
 that milestone. They do not limit the implementation scope of current Phase I
