@@ -1,0 +1,119 @@
+special_project = {
+	key = "EPOCH_FIRST_ECHO_CAUTIOUS"
+	cost = 250
+	days_to_research = 180
+	tech_department = society_technology
+	picture = GFX_evt_black_hole
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_core.10 } }
+	on_fail = { }
+}
+
+special_project = {
+	key = "EPOCH_FIRST_ECHO_AGGRESSIVE"
+	cost = 450
+	days_to_research = 60
+	tech_department = physics_technology
+	picture = GFX_evt_black_hole
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_core.10 } }
+	on_fail = { }
+}
+
+special_project = {
+	key = "EPOCH_ECHO_CALIBRATION"
+	cost = 200
+	days_to_research = 150
+	tech_department = society_technology
+	picture = GFX_evt_black_hole
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_core.11 } }
+	on_fail = { }
+}
+
+special_project = {
+	key = "EPOCH_ECHO_BASELINE"
+	cost = 100
+	days_to_research = 240
+	tech_department = society_technology
+	picture = GFX_evt_black_hole
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_core.11 } }
+	on_fail = { }
+}
+
+special_project = {
+	key = "EPOCH_ECHO_OVERDRIVE"
+	cost = 350
+	days_to_research = 30
+	tech_department = physics_technology
+	picture = GFX_evt_black_hole
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_core.11 } }
+	on_fail = { }
+}
+
+special_project = {
+	key = "EPOCH_ECHO_THROTTLED"
+	cost = 150
+	days_to_research = 90
+	tech_department = physics_technology
+	picture = GFX_evt_black_hole
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_core.11 } }
+	on_fail = { }
+}
+
+special_project = {
+	key = "EPOCH_MISSING_EXPEDITION"
+	cost = 250
+	days_to_research = 90
+	tech_department = society_technology
+	picture = GFX_evt_ship_in_orbit
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_core.12 } }
+	on_fail = { }
+}
+
+special_project = {
+	key = "EPOCH_EXPEDITION_RESCUE"
+	cost = 400
+	days_to_research = 180
+	tech_department = society_technology
+	picture = GFX_evt_ship_in_orbit
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_core.13 } }
+	on_fail = { }
+}
+
+special_project = {
+	key = "EPOCH_EXPEDITION_SALVAGE"
+	cost = 200
+	days_to_research = 60
+	tech_department = engineering_technology
+	picture = GFX_evt_space_debris
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_core.13 } }
+	on_fail = { }
+}
+
+special_project = {
+	key = "EPOCH_EXPEDITION_SURVEY"
+	cost = 100
+	days_to_research = 240
+	tech_department = physics_technology
+	picture = GFX_evt_black_hole
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_core.13 } }
+	on_fail = { }
+}

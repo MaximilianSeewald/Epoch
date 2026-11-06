@@ -18,3 +18,10 @@ on_country_type_changed = {
 		epoch_core.1
 	}
 }
+
+# The signal is attached to the system a Science Ship actually surveys.
+on_survey_planet = {
+	events = {
+		epoch_core.15
+	}
+}
