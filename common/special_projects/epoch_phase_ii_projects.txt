@@ -72,3 +72,73 @@ special_project = {
 	on_fail = { country_event = { id = epoch_ii.11 } }
 	on_cancel = { country_event = { id = epoch_ii.25 } }
 }
+
+special_project = {
+	key = "EPOCH_II_NODE_REFLECTION"
+	days_to_research = 180
+	timelimit = 1080
+	tech_department = physics_technology
+	picture = GFX_evt_black_hole
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }
+	on_success = { ship_event = { id = epoch_ii.74 } }
+	on_fail = { country_event = { id = epoch_ii.77 } }
+	on_cancel = { country_event = { id = epoch_ii.77 } }
+}
+
+special_project = {
+	key = "EPOCH_II_NODE_INTERRUPTED"
+	days_to_research = 180
+	timelimit = 1080
+	tech_department = society_technology
+	picture = GFX_evt_ship_in_orbit
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }
+	on_success = { ship_event = { id = epoch_ii.75 } }
+	on_fail = { country_event = { id = epoch_ii.77 } }
+	on_cancel = { country_event = { id = epoch_ii.77 } }
+}
+
+special_project = {
+	key = "EPOCH_II_SILENT_SYSTEM"
+	days_to_research = 240
+	timelimit = 1080
+	tech_department = physics_technology
+	picture = GFX_evt_black_hole
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }
+	on_success = { ship_event = { id = epoch_ii.76 } }
+	on_fail = { country_event = { id = epoch_ii.77 } }
+	on_cancel = { country_event = { id = epoch_ii.77 } }
+}
+
+special_project = {
+	key = "EPOCH_II_NODE_TRAP"
+	days_to_research = 180
+	timelimit = 1080
+	tech_department = engineering_technology
+	picture = GFX_evt_hostile_fleet
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
+	on_success = { ship_event = { id = epoch_ii.78 } }
+	on_fail = { country_event = { id = epoch_ii.80 } }
+	on_cancel = { country_event = { id = epoch_ii.80 } }
+}
+
+special_project = {
+	key = "EPOCH_II_SCIENCE_COUNTERMEASURE"
+	days_to_research = 240
+	timelimit = 1080
+	tech_department = physics_technology
+	picture = GFX_evt_hostile_fleet
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
+	on_success = { ship_event = { id = epoch_ii.79 } }
+	on_fail = { country_event = { id = epoch_ii.80 } }
+	on_cancel = { country_event = { id = epoch_ii.80 } }
+}

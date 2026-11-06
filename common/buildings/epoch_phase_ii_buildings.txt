@@ -1,0 +1,32 @@
+building_epoch_resonance_laboratory = {
+	base_buildtime = 360
+	base_cap_amount = 1
+	category = research
+	planet_limit = { base = 1 }
+	potential = { exists = owner owner = { has_country_flag = epoch_ii_lab_unlocked } }
+	allow = { has_owner = yes }
+	cost = { minerals = 600 }
+	upkeep = { energy = 5 rare_crystals = 1 }
+	planet_modifier = { planet_jobs_physics_research_produces_mult = 0.05 }
+	triggered_planet_modifier = {
+		potential = { has_planet_flag = epoch_ii_controlled_resonance }
+		planet_jobs_physics_research_produces_mult = 0.10
+		planet_stability_add = 1
+	}
+	triggered_planet_modifier = {
+		potential = { has_planet_flag = epoch_ii_unstable_resonance }
+		planet_jobs_physics_research_produces_mult = 0.15
+		planet_stability_add = -3
+	}
+	triggered_planet_modifier = {
+		potential = { has_planet_flag = epoch_ii_active_resonance }
+		planet_jobs_physics_research_produces_mult = 0.10
+		planet_stability_add = -1
+	}
+	triggered_planet_modifier = {
+		potential = { has_planet_flag = epoch_ii_latent_resonance }
+		planet_jobs_physics_research_produces_mult = 0.05
+	}
+	prerequisites = { tech_epoch_resonance_spectroscopy }
+	ai_weight = { weight = 1 }
+}

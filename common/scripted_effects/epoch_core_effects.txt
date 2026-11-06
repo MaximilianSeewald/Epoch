@@ -191,6 +191,36 @@ epoch_ii_clamp_resonance_stability = {
 	}
 }
 
+# Resonance statuses use separate deposits and modifiers from Phase-I records.
+# Removing a status never touches the capital scar or contamination outcome.
+epoch_ii_clear_site_state = {
+	remove_planet_flag = epoch_ii_latent_resonance
+	remove_planet_flag = epoch_ii_active_resonance
+	remove_planet_flag = epoch_ii_unstable_resonance
+	remove_planet_flag = epoch_ii_controlled_resonance
+	remove_deposit = d_epoch_resonance_latent
+	remove_deposit = d_epoch_resonance_active
+	remove_deposit = d_epoch_resonance_unstable
+	remove_deposit = d_epoch_resonance_controlled
+	remove_modifier = epoch_ii_resonance_latent
+	remove_modifier = epoch_ii_resonance_active
+	remove_modifier = epoch_ii_resonance_unstable
+	remove_modifier = epoch_ii_resonance_controlled
+}
+
+epoch_ii_set_site_latent = {
+	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_latent_resonance add_deposit = d_epoch_resonance_latent add_modifier = { modifier = epoch_ii_resonance_latent days = -1 } } }
+}
+epoch_ii_set_site_active = {
+	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_active_resonance add_deposit = d_epoch_resonance_active add_modifier = { modifier = epoch_ii_resonance_active days = -1 } } }
+}
+epoch_ii_set_site_unstable = {
+	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_unstable_resonance add_deposit = d_epoch_resonance_unstable add_modifier = { modifier = epoch_ii_resonance_unstable days = -1 } } }
+}
+epoch_ii_set_site_controlled = {
+	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_controlled_resonance add_deposit = d_epoch_resonance_controlled add_modifier = { modifier = epoch_ii_resonance_controlled days = -1 } } }
+}
+
 epoch_ii_close_campaign = {
 	set_country_flag = epoch_ii_closed_by_choice
 	remove_country_flag = epoch_ii_active
