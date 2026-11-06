@@ -47,6 +47,7 @@ check(/EPOCH_II_SCAR_SURVEY[\s\S]*?requirements\s*=\s*\{\s*shipclass_science_shi
 check(/on_fail\s*=\s*\{\s*country_event\s*=\s*\{\s*id\s*=\s*epoch_ii\.8/s.test(projects), 'Failed or canceled projects must open a recovery route');
 check(/create_country\s*=\s*\{[\s\S]*?type\s*=\s*epoch_nullwarden[\s\S]*?set_faction_hostility\s*=\s*\{\s*target\s*=\s*root/s.test(events), 'Nullwarden country must be hostile only to its campaign owner');
 check(/set_owner\s*=\s*event_target:epoch_ii_nullwarden_country@root[\s\S]*?create_ship\s*=\s*\{[\s\S]*?NAME_EPOCH_Unknown_Skirmisher/s.test(events), 'Nullwardens must be an actual separately owned fleet of ships');
+check(/custom_military_power\s*=\s*120/.test(ships), 'Nullwarden corvette power must stay at the bounded early-game design value');
 check(/destroy_fleet\s*=\s*this/.test(events), 'Fleet removal must occur only through explicit defense or withdrawal decisions');
 check(/potential\s*=\s*\{\s*has_country_flag\s*=\s*epoch_ii_spectroscopy_lead\s*\}/.test(tech), 'Spectroscopy must require the Chapter 3 lead');
 check(/SMALL_EPOCH_RESONANCE_ARMOR[\s\S]*?ship_armor_add\s*=\s*8[\s\S]*?ship_hull_add\s*=\s*8/.test(component), 'Adaptive armor must have a defined functional ship component');

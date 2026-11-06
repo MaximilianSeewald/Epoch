@@ -62,7 +62,8 @@ Block A Situation.
 Each campaign owner creates one hostile-only Nullwarden country and one fleet.
 The fleet consists of two event-design corvettes, increasing to four when the
 campaign owner has Destroyers technology. The design has mass-driver weapons,
-shield and armor defenses, and a defined power value. It targets only that
+shield and armor defenses, and a bounded custom military power of 120 per
+corvette. It targets only that
 owner's saved campaign system and planet. The fleet has no independent pulse
 or colony behavior. The combat route gives the player 150 days to engage before
 an explicit win/withdrawal decision. The defensive route costs alloys and
