@@ -26,11 +26,4 @@ on_survey_planet = {
 	}
 }
 
-# Check for a real missing-site block so the campaign can offer its explicit
-# remote-study/archive decision. This pulse never grants progress itself.
-on_monthly_pulse_country = {
-	events = {
-		epoch_core.44
-	}
-}
 

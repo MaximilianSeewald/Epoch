@@ -436,21 +436,37 @@ ship_event = {
 	}
 }
 
-# A failed project leaves the player's science ship intact and opens a
-# recoverable search path; only successful completion marks it missing.
+# A failed project leaves the player's science ship intact. The player may
+# retry the survey or explicitly abandon it; neither outcome implies a loss.
 country_event = {
 	id = epoch_core.28
 	title = epoch_core.28.name
 	desc = epoch_core.28.desc
 	picture = GFX_evt_black_hole
-	hide_window = yes
 	is_triggered_only = yes
 	trigger = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_expedition_project_enabled NOT = { has_country_flag = epoch_core_expedition_contact_lost } }
 	immediate = {
-		set_country_flag = epoch_core_expedition_contact_lost
 		set_country_flag = epoch_core_expedition_project_failed
-		set_variable = { which = epoch_core_expedition_status value = 1 }
-		country_event = { id = epoch_core.6 days = 1 }
+		set_variable = { which = epoch_core_expedition_status value = 0 }
+	}
+	option = {
+		name = epoch_core.28.a
+		trigger = { exists = event_target:epoch_core_expedition_destination@root }
+		hidden_effect = {
+			set_country_flag = epoch_core_expedition_project_enabled
+			event_target:epoch_core_expedition_destination@root = { enable_special_project = { name = "EPOCH_MISSING_EXPEDITION" location = this owner = root } }
+		}
+		ai_chance = { factor = 70 }
+	}
+	option = {
+		name = epoch_core.28.b
+		hidden_effect = {
+			set_country_flag = epoch_core_expedition_project_abandoned
+			set_country_flag = epoch_core_expedition_outcome_recorded
+			set_variable = { which = epoch_core_expedition_status value = 4 }
+			country_event = { id = epoch_core.7 days = 1 }
+		}
+		ai_chance = { factor = 30 }
 	}
 }
 
@@ -519,6 +535,7 @@ country_event = {
 	}
 	desc = { text = epoch_core.7.desc.failed trigger = { has_country_flag = epoch_core_expedition_search_failed } }
 	desc = { text = epoch_core.7.desc.abandoned trigger = { has_country_flag = epoch_core_expedition_search_abandoned } }
+	desc = { text = epoch_core.7.desc.project_abandoned trigger = { has_country_flag = epoch_core_expedition_project_abandoned } }
 	picture = GFX_evt_black_hole
 	location = event_target:epoch_core_signal_system@root
 	is_triggered_only = yes
@@ -533,7 +550,8 @@ country_event = {
 				set_country_flag = epoch_core_expedition_scientist_recovered
 			}
 		}
-		else = {
+		else_if = {
+			limit = { has_country_flag = epoch_core_expedition_contact_lost NOT = { has_country_flag = epoch_core_expedition_project_abandoned } }
 			if = {
 				limit = { exists = event_target:epoch_core_expedition_scientist@root }
 				event_target:epoch_core_expedition_scientist@root = { kill_leader = { show_notification = no } }
@@ -547,7 +565,7 @@ country_event = {
 		if = { limit = { has_country_flag = epoch_core_expedition_survivors_found } set_country_flag = epoch_core_expedition_survivor_testimony_saved }
 		if = { limit = { has_country_flag = epoch_core_expedition_recorder_recovered } set_country_flag = epoch_core_expedition_distortion_trace_saved }
 		if = { limit = { has_country_flag = epoch_core_expedition_spatial_wake_saved } set_country_flag = epoch_core_expedition_spatial_wake_archived }
-		if = { limit = { has_country_flag = epoch_core_expedition_search_abandoned } set_country_flag = epoch_core_expedition_loss_recorded }
+		if = { limit = { has_country_flag = epoch_core_expedition_search_abandoned NOT = { has_country_flag = epoch_core_expedition_project_abandoned } } set_country_flag = epoch_core_expedition_loss_recorded }
 		random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
 		country_event = { id = epoch_core.20 days = 1 }
 		}
@@ -913,9 +931,10 @@ country_event = {
 		name = epoch_core.31.b
 		hidden_effect = {
 			set_country_flag = epoch_core_echo_first_resolved
-			if = { limit = { has_country_flag = epoch_core_initial_cautious } set_country_flag = epoch_core_cautious_baseline_kept }
-			else_if = { limit = { has_country_flag = epoch_core_initial_aggressive } set_country_flag = epoch_core_aggressive_throttled }
-			random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
+			set_country_flag = epoch_core_campaign_opted_out
+			remove_country_flag = epoch_core_campaign_active
+			remove_country_flag = epoch_core_investigation_active
+			random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } destroy_situation = this }
 		}
 		ai_chance = { factor = 30 }
 	}

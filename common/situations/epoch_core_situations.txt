@@ -51,20 +51,16 @@ epoch_first_echo_investigation = {
 	# Progress advances only when a project, expedition decision, contamination
 	# resolution, or final excavation choice records a real campaign milestone.
 	monthly_progress = { base = 0 }
+	# Only this active campaign checks whether its owned excavation site vanished.
+	on_monthly = {
+		owner = { country_event = { id = epoch_core.44 } }
+	}
 
 	approach = {
 		name = epoch_echo_cautious_approach
 		icon = GFX_situation_approach_research
 		icon_background = GFX_situation_approach_bg_green
 		potential = { owner = { has_country_flag = epoch_core_campaign_active } }
-		on_select = {
-			owner = {
-				remove_country_flag = epoch_core_approach_intensive
-				remove_country_flag = epoch_core_approach_containment
-				remove_country_flag = epoch_core_approach_minimal
-				set_country_flag = epoch_core_approach_cautious
-			}
-		}
 		modifier = { country_physics_research_produces_mult = 0.02 }
 		resources = {
 			category = situations
@@ -80,15 +76,6 @@ epoch_first_echo_investigation = {
 		icon = GFX_situation_approach_fist
 		icon_background = GFX_situation_approach_bg_red
 		potential = { owner = { has_country_flag = epoch_core_campaign_active } }
-		on_select = {
-			owner = {
-				remove_country_flag = epoch_core_approach_cautious
-				remove_country_flag = epoch_core_approach_containment
-				remove_country_flag = epoch_core_approach_minimal
-				set_country_flag = epoch_core_approach_intensive
-				set_country_flag = epoch_core_structure_risk_increased
-			}
-		}
 		resources = {
 			category = situations
 			upkeep = { trigger = { current_stage = stage_signal_analysis } energy = 5 }
@@ -104,14 +91,6 @@ epoch_first_echo_investigation = {
 		icon = GFX_situation_approach_research
 		icon_background = GFX_situation_approach_bg_green
 		potential = { owner = { has_country_flag = epoch_core_contamination_started } }
-		on_select = {
-			owner = {
-				remove_country_flag = epoch_core_approach_cautious
-				remove_country_flag = epoch_core_approach_intensive
-				remove_country_flag = epoch_core_approach_minimal
-				set_country_flag = epoch_core_approach_containment
-			}
-		}
 		modifier = { country_society_research_produces_mult = 0.02 }
 		resources = {
 			category = situations
@@ -125,15 +104,6 @@ epoch_first_echo_investigation = {
 		icon = GFX_situation_approach_fist
 		icon_background = GFX_situation_approach_bg_red
 		potential = { owner = { has_country_flag = epoch_core_campaign_active } }
-		on_select = {
-			owner = {
-				remove_country_flag = epoch_core_approach_cautious
-				remove_country_flag = epoch_core_approach_intensive
-				remove_country_flag = epoch_core_approach_containment
-				set_country_flag = epoch_core_approach_minimal
-				set_country_flag = epoch_core_structure_risk_increased
-			}
-		}
 		resources = {
 			category = situations
 			upkeep = { trigger = { current_stage = stage_signal_analysis } energy = 1 }

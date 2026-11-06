@@ -43,18 +43,11 @@ epoch_core_silent_structure = {
 		event = epoch_core.43
 	}
 
-	# Repeated failed rolls have one guarded, permanent cost on the actual site
-	# world. The campaign flag makes this escalation idempotent.
+	# Keep Vanilla's native failed-roll score/clue handling. This callback runs
+	# from fleet -> archaeological site; do not assume the site can switch to a
+	# planet scope here.
 	on_roll_failed = {
-		from = {
-			planet_owner = {
-				if = {
-					limit = { NOT = { has_planet_flag = epoch_core_structure_excavation_hazard } }
-					set_planet_flag = epoch_core_structure_excavation_hazard
-					add_modifier = { modifier = epoch_core_structure_ruins days = -1 }
-				}
-			}
-		}
+		from = { standard_archaeological_site_on_roll_failed = { RANDOM_EVENTS = no_events } }
 		owner = { set_country_flag = epoch_core_structure_excavation_setback }
 	}
 }
