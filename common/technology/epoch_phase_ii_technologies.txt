@@ -31,3 +31,15 @@ tech_epoch_phased_sensors = {
 	weight = @tier2weight2
 	ai_weight = { weight = 1 }
 }
+
+tech_epoch_contamination_neutral_infrastructure = {
+	cost = @tier2cost2
+	area = society
+	tier = 2
+	category = { statecraft biology }
+	prerequisites = { "tech_epoch_resonance_spectroscopy" }
+	potential = { has_country_flag = epoch_ii_containment_neutral_infrastructure_lead }
+	weight = @tier2weight2
+	modifier = { country_society_research_produces_mult = 0.03 }
+	ai_weight = { weight = 1 }
+}

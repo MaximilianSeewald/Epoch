@@ -462,3 +462,13 @@
  epoch_ii.80.desc:0 "The countermeasure project failed or was cancelled. The fleet remains alive and hostile until another project succeeds or the empire withdraws."
  epoch_ii.80.a:0 "Spend another 200 energy and retry with a staffed Science Ship."
  epoch_ii.80.b:0 "Withdraw, preserve the records, and concede the node."
+
+tech_epoch_contamination_neutral_infrastructure:0 "Contamination-Neutral Infrastructure"
+tech_epoch_contamination_neutral_infrastructure_desc:0 "A modular standards package lets ordinary industrial and research networks isolate contaminated processes instead of feeding them. Its buildings help on any world, with added containment or resonance-specific productivity effects where Phase II has changed the site."
+building_epoch_containment_infrastructure:0 "Containment Infrastructure"
+building_epoch_containment_infrastructure_desc:0 "A practical standards and isolation center that improves Society research across the empire and responds to local resonance states. Unstable sites are more productive but reduce stability."
+epoch_ii.66.a:0 "Dispatch a staffed Science Ship to the silent system."
+epoch_ii.66.b:0 "Use the archive route and mark this system unresolved."
+epoch_ii.77.retry_reflection:0 "Pay 200 Energy to repeat the delayed-reflection survey."
+epoch_ii.77.retry_interrupted:0 "Pay 200 Energy to repeat the interrupted-signal survey."
+epoch_ii.77.retry_silent:0 "Pay 200 Energy to repeat the silent-system survey."

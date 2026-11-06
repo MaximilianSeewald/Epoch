@@ -13,13 +13,13 @@ epoch_resonance_protocol = {
 		stage_hunters_resolution = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 60 on_first_enter = { situation_event = { id = epoch_ii.4 } } custom_tooltip = epoch_ii_stage_hunters_resolution }
 		stage_broken_code = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 80 custom_tooltip = epoch_ii_stage_code }
 		stage_block_a_handoff = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 90 on_first_enter = { situation_event = { id = epoch_ii.7 } } custom_tooltip = epoch_ii_stage_handoff }
-		stage_ch4_research = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 100 on_first_enter = { situation_event = { id = epoch_ii.60 } } custom_tooltip = epoch_ii_stage_ch4_research }
-		stage_ch4_incidents = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 110 on_first_enter = { situation_event = { id = epoch_ii.61 } } custom_tooltip = epoch_ii_stage_ch4_action }
-		stage_ch5_research = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 120 on_first_enter = { situation_event = { id = epoch_ii.64 } } custom_tooltip = epoch_ii_stage_ch5_research }
-		stage_ch5_expedition = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_blue end = 130 on_first_enter = { situation_event = { id = epoch_ii.65 } } custom_tooltip = epoch_ii_stage_ch5_action }
+		stage_ch4_research = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 100 custom_tooltip = epoch_ii_stage_ch4_research }
+		stage_ch4_incidents = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 110 on_first_enter = { situation_event = { id = epoch_ii.60 } } custom_tooltip = epoch_ii_stage_ch4_action }
+		stage_ch5_research = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 120 custom_tooltip = epoch_ii_stage_ch5_research }
+		stage_ch5_expedition = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_blue end = 130 on_first_enter = { situation_event = { id = epoch_ii.64 } } custom_tooltip = epoch_ii_stage_ch5_action }
 		stage_ch5_silence = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_red end = 140 on_first_enter = { situation_event = { id = epoch_ii.66 } } custom_tooltip = epoch_ii_stage_silent_system }
-		stage_ch6_research = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 150 on_first_enter = { situation_event = { id = epoch_ii.70 } } custom_tooltip = epoch_ii_stage_ch6_research }
-		stage_ch6_resolution = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 170 on_first_enter = { situation_event = { id = epoch_ii.71 } } custom_tooltip = epoch_ii_stage_ch6_action }
+		stage_ch6_research = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 150 custom_tooltip = epoch_ii_stage_ch6_research }
+		stage_ch6_resolution = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 170 on_first_enter = { situation_event = { id = epoch_ii.70 } } custom_tooltip = epoch_ii_stage_ch6_action }
 	}
 	monthly_progress = {
 		base = 0
@@ -50,22 +50,18 @@ epoch_resonance_protocol = {
 		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_block_a_handoff owner = { has_country_flag = epoch_ii_ch3_resolved } situation_progress < 90 }
 		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_block_a_handoff owner = { has_country_flag = epoch_ii_ch3_resolved } situation_progress < 90 }
 		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_block_a_handoff owner = { has_country_flag = epoch_ii_ch3_resolved } situation_progress < 90 }
-		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_block_a_handoff owner = { has_country_flag = epoch_ii_ch3_resolved } situation_progress < 100 }
-		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_block_a_handoff owner = { has_country_flag = epoch_ii_ch3_resolved } situation_progress < 100 }
-		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_block_a_handoff owner = { has_country_flag = epoch_ii_ch3_resolved } situation_progress < 100 }
-		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_block_a_handoff owner = { has_country_flag = epoch_ii_ch3_resolved } situation_progress < 100 }
-		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch4_research owner = { has_country_flag = epoch_ii_ch4_research_done } situation_progress < 110 }
-		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch4_research owner = { has_country_flag = epoch_ii_ch4_research_done } situation_progress < 110 }
-		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch4_research owner = { has_country_flag = epoch_ii_ch4_research_done } situation_progress < 110 }
-		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch4_research owner = { has_country_flag = epoch_ii_ch4_research_done } situation_progress < 110 }
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch4_research situation_progress < 110 }
+		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch4_research situation_progress < 110 }
+		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch4_research situation_progress < 110 }
+		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch4_research situation_progress < 110 }
 		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch4_incidents owner = { has_country_flag = epoch_ii_ch4_resolved } situation_progress < 120 }
 		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch4_incidents owner = { has_country_flag = epoch_ii_ch4_resolved } situation_progress < 120 }
 		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch4_incidents owner = { has_country_flag = epoch_ii_ch4_resolved } situation_progress < 120 }
 		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch4_incidents owner = { has_country_flag = epoch_ii_ch4_resolved } situation_progress < 120 }
-		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch5_research owner = { has_country_flag = epoch_ii_ch5_research_done } situation_progress < 130 }
-		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch5_research owner = { has_country_flag = epoch_ii_ch5_research_done } situation_progress < 130 }
-		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch5_research owner = { has_country_flag = epoch_ii_ch5_research_done } situation_progress < 130 }
-		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch5_research owner = { has_country_flag = epoch_ii_ch5_research_done } situation_progress < 130 }
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch5_research situation_progress < 130 }
+		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch5_research situation_progress < 130 }
+		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch5_research situation_progress < 130 }
+		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch5_research situation_progress < 130 }
 		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch5_expedition owner = { has_country_flag = epoch_ii_ch5_nodes_ready } situation_progress < 140 }
 		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch5_expedition owner = { has_country_flag = epoch_ii_ch5_nodes_ready } situation_progress < 140 }
 		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch5_expedition owner = { has_country_flag = epoch_ii_ch5_nodes_ready } situation_progress < 140 }
@@ -74,10 +70,10 @@ epoch_resonance_protocol = {
 		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch5_silence owner = { has_country_flag = epoch_ii_ch5_resolved } situation_progress < 150 }
 		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch5_silence owner = { has_country_flag = epoch_ii_ch5_resolved } situation_progress < 150 }
 		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch5_silence owner = { has_country_flag = epoch_ii_ch5_resolved } situation_progress < 150 }
-		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch6_research owner = { has_country_flag = epoch_ii_ch6_research_done } situation_progress < 160 }
-		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch6_research owner = { has_country_flag = epoch_ii_ch6_research_done } situation_progress < 160 }
-		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch6_research owner = { has_country_flag = epoch_ii_ch6_research_done } situation_progress < 160 }
-		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch6_research owner = { has_country_flag = epoch_ii_ch6_research_done } situation_progress < 160 }
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch6_research situation_progress < 160 }
+		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch6_research situation_progress < 160 }
+		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch6_research situation_progress < 160 }
+		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch6_research situation_progress < 160 }
 		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch6_resolution owner = { has_country_flag = epoch_ii_ch6_resolved } situation_progress < 170 }
 		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch6_resolution owner = { has_country_flag = epoch_ii_ch6_resolved } situation_progress < 170 }
 		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch6_resolution owner = { has_country_flag = epoch_ii_ch6_resolved } situation_progress < 170 }

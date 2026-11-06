@@ -462,3 +462,13 @@
  epoch_ii.80.desc:0 "Das Gegenmaßnahmenprojekt ist fehlgeschlagen oder wurde abgebrochen. Die Flotte lebt weiter und bleibt feindlich, bis ein weiterer Einsatz gelingt oder das Reich sich zurückzieht."
  epoch_ii.80.a:0 "Weitere 200 Energie investieren und den Einsatz mit einem bemannten Wissenschaftsschiff wiederholen."
  epoch_ii.80.b:0 "Abziehen, die Aufzeichnungen sichern und den Knoten aufgeben."
+
+tech_epoch_contamination_neutral_infrastructure:0 "Kontaminationsneutrale Infrastruktur"
+tech_epoch_contamination_neutral_infrastructure_desc:0 "Ein modulares Normenpaket isoliert kontaminierte Prozesse in gewöhnlichen Industrie- und Forschungsnetzen, statt sie weiter zu versorgen. Die Gebäude helfen auf jeder Welt und bieten zusätzliche Eindämmungs- oder Resonanzeffekte an von Phase II veränderten Standorten."
+building_epoch_containment_infrastructure:0 "Eindämmungsinfrastruktur"
+building_epoch_containment_infrastructure_desc:0 "Ein praktisches Normen- und Isolationszentrum, das die Gesellschaftsforschung des Reiches verbessert und auf lokale Resonanzzustände reagiert. Instabile Standorte liefern mehr Forschung, senken aber die Stabilität."
+epoch_ii.66.a:0 "Ein bemanntes Wissenschaftsschiff zum stillen System entsenden."
+epoch_ii.66.b:0 "Den Archivpfad nutzen und das System als ungeklärt markieren."
+epoch_ii.77.retry_reflection:0 "200 Energie ausgeben, um die Reflexionsvermessung zu wiederholen."
+epoch_ii.77.retry_interrupted:0 "200 Energie ausgeben, um die Vermessung des unterbrochenen Signals zu wiederholen."
+epoch_ii.77.retry_silent:0 "200 Energie ausgeben, um die Vermessung des stillen Systems zu wiederholen."
