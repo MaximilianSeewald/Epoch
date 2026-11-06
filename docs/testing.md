@@ -13,11 +13,11 @@ save/load persistence.
 
 ## Expected Phase I project and vessel sequence
 
-1. A science ship completes exactly one First Echo project (`EPOCH_FIRST_ECHO_CAUTIOUS` or `EPOCH_FIRST_ECHO_AGGRESSIVE`). Its ship callback advances the shared situation by one milestone and leaves the ship and scientist in service.
+1. The Situation advances to its first hard boundary before exactly one First Echo project (`EPOCH_FIRST_ECHO_CAUTIOUS` or `EPOCH_FIRST_ECHO_AGGRESSIVE`) is released. Its ship callback opens the follow-up decision; the second selected project must also resolve before the next phase can progress.
 2. The player selects an owned science ship with a scientist for `EPOCH_MISSING_EXPEDITION`. Only the ship whose successful project callback is `epoch_core.12` is saved as the expedition vessel and destroyed; its fleet scientist is saved before that destruction.
 3. Rescue, salvage, and survey projects callback to `epoch_core.13`; these are search ships and must remain in service. Failure callbacks and timeouts record a search outcome without deleting any ship. Only a survivor outcome clears the saved expedition scientist's missing marker; other recorded outcomes resolve that scientist as lost.
-4. The contamination study is performed by a staffed science ship; success/failure changes contamination and advances the same situation. No unrelated science ship is selected or destroyed by these callbacks.
-5. A staffed science ship excavates all four native chapters at the Silent Structure. The site is retained when secured, removed only by the player's explicit destroy choice, and never removed by a calendar timeout. The final chapter decision records the outcome, completes the situation, and opens the closing report.
+4. The contamination study is performed by a staffed science ship after its Situation threshold; success or an explicit alternative resolution unlocks excavation only after the current progress boundary. No unrelated science ship is selected or destroyed by these callbacks.
+5. A staffed science ship excavates all four native chapters at the Silent Structure after its threshold. The site is retained when secured, removed only by the player's explicit destroy choice, and never removed by a calendar timeout. The final chapter decision resolves that phase; the closing report waits for its own Situation threshold.
 
 The sequence above is the expected script behavior. It is not a runtime confirmation. The existing Stellaris log files supplied during regression runs contain EPOCH-related script errors, including an invalid `from.planet` scope switch inside Vanilla's visibility helper when it was called for the archaeological site. This helper has been removed from that owner-only visibility check; rerun the game and review fresh logs after this update before claiming parser acceptance.
 

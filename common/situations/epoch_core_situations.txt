@@ -6,24 +6,11 @@ epoch_first_echo_investigation = {
 	progress_direction = monodirectional
 	permanent = yes
 
-	desc = {
-		trigger = { owner = { has_country_flag = epoch_core_situation_waiting_objective } }
-		text = epoch_first_echo_waiting_objective
-	}
-	desc = {
-		trigger = { owner = { has_country_flag = epoch_core_situation_waiting_progress } }
-		text = epoch_first_echo_waiting_progress
-	}
-	desc = {
-		trigger = { owner = { has_country_flag = epoch_core_situation_active_progress } }
-		text = epoch_first_echo_status_active
-	}
 	desc = { trigger = { always = yes } text = epoch_first_echo_investigation_desc }
 
-	# Each stage boundary is a progress gate. Monthly ticks stop at the stage's
-	# base threshold. If its objective is still open, the scriptable stage end is
-	# five points farther away, so the Situation waits without entering the next
-	# stage. The final permanent stage waits for its final decision at 100%.
+	# Each phase has a fixed progress boundary. While its objective is unresolved,
+	# the scriptable stage end is five points beyond the nominal phase mark; that
+	# endpoint is also the objective release threshold and hard progress stop.
 	stages = {
 		stage_signal_analysis = {
 			icon = GFX_situation_stage_1
@@ -69,33 +56,32 @@ epoch_first_echo_investigation = {
 		}
 	}
 
-	# The selected approach is the only source of passive progress. All approach
-	# rates are phase-specific and the maximum tick is below the five-point
-	# blocked-stage cushion.
+	# The selected approach is the only source of passive progress. The objective
+	# release thresholds match the unresolved stage ends: 15, 25, 35, 45, and 50.
 	monthly_progress = {
 		base = 0
-		modifier = { add = 2.5 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_signal_analysis situation_progress < 10 }
-		modifier = { add = 2.5 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_source_analysis situation_progress < 20 }
-		modifier = { add = 2.0 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_contamination situation_progress < 30 }
-		modifier = { add = 2.0 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_excavation situation_progress < 40 }
+	modifier = { add = 2.5 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_signal_analysis situation_progress < 15 }
+	modifier = { add = 2.5 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_source_analysis situation_progress < 25 }
+	modifier = { add = 2.0 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_contamination situation_progress < 35 }
+	modifier = { add = 2.0 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_excavation situation_progress < 45 }
 		modifier = { add = 1.5 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_report situation_progress < 50 }
-		modifier = { add = 4.5 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_signal_analysis situation_progress < 10 }
-		modifier = { add = 4.5 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_source_analysis situation_progress < 20 }
-		modifier = { add = 4.0 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_contamination situation_progress < 30 }
-		modifier = { add = 4.0 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_excavation situation_progress < 40 }
+	modifier = { add = 4.5 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_signal_analysis situation_progress < 15 }
+	modifier = { add = 4.5 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_source_analysis situation_progress < 25 }
+	modifier = { add = 4.0 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_contamination situation_progress < 35 }
+	modifier = { add = 4.0 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_excavation situation_progress < 45 }
 		modifier = { add = 3.0 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_report situation_progress < 50 }
-		modifier = { add = 3.0 desc = epoch_echo_progress_containment current_situation_approach = epoch_echo_containment_approach current_stage = stage_contamination situation_progress < 30 }
-		modifier = { add = 1.75 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_signal_analysis situation_progress < 10 }
-		modifier = { add = 1.75 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_source_analysis situation_progress < 20 }
-		modifier = { add = 1.5 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_contamination situation_progress < 30 }
-		modifier = { add = 1.5 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_excavation situation_progress < 40 }
+	modifier = { add = 3.0 desc = epoch_echo_progress_containment current_situation_approach = epoch_echo_containment_approach current_stage = stage_contamination situation_progress < 35 }
+	modifier = { add = 1.75 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_signal_analysis situation_progress < 15 }
+	modifier = { add = 1.75 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_source_analysis situation_progress < 25 }
+	modifier = { add = 1.5 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_contamination situation_progress < 35 }
+	modifier = { add = 1.5 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_excavation situation_progress < 45 }
 		modifier = { add = 1.0 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_report situation_progress < 50 }
 	}
 
 	# Situation on_monthly is an on_action: it dispatches situation events, not
 	# inline effects. The situation event bridges safely into country scope.
 	on_monthly = {
-		events = { epoch_core.47 }
+		events = { epoch_core.47 epoch_core.48 }
 	}
 
 	approach = {
