@@ -182,18 +182,20 @@ $eventRefs = @([regex]::Matches($events + "`n" + $projects + "`n" + $onActions, 
 foreach ($id in $eventRefs) { Assert-Check ($id -in $eventDefinitions) "Reference to undefined event epoch_core.$id" }
 Assert-Check ($onActions -match 'on_survey_planet\s*=\s*\{[\s\S]*?epoch_core\.15' -and $onActions -match 'on_game_start_country\s*=\s*\{[\s\S]*?epoch_core\.1') 'Vanilla survey and country-start hooks must dispatch defined EPOCH entry events'
 
-# Situation and stage references must exist and the midpoint event must enter
-# only after the first ship-project callback advances progress to the next
-# real milestone; the same situation remains active through the campaign.
+# Situation boundaries need both approach progress and a saved, phase-specific
+# objective. The first ship-project callback opens the next First Echo choice;
+# it does not itself award progress.
 $situationBlock = Get-Block $situations '(?m)^\s*epoch_first_echo_investigation\s*=\s*\{' 'First Echo situation'
 Assert-Check ($null -ne $situationBlock) 'First Echo situation definition is missing'
 $sourceStage = Get-Block $situationBlock '(?m)^\s*stage_source_analysis\s*=\s*\{' 'source-analysis stage'
-Assert-Check ($null -ne $sourceStage -and $sourceStage -match 'on_first_enter\s*=\s*\{\s*situation_event\s*=\s*\{\s*id\s*=\s*epoch_core\.3') 'epoch_core.3 must fire on entering the second stage'
+$firstCallback = Get-EventBlock $events 10
+Assert-Check ($null -ne $sourceStage -and $sourceStage -notmatch 'situation_event\s*=\s*\{\s*id\s*=\s*epoch_core\.3' -and $firstCallback -match 'situation_event\s*=\s*\{\s*id\s*=\s*epoch_core\.3') 'epoch_core.3 must follow the first successful First Echo project, not a stage threshold'
 $signalStage = Get-Block $situationBlock '(?m)^\s*stage_signal_analysis\s*=\s*\{' 'signal-analysis stage'
 Assert-Check ($signalStage -notmatch 'situation_event\s*=\s*\{\s*id\s*=\s*epoch_core\.3') 'epoch_core.3 must not fire when the Situation is first created'
-Assert-Check (@([regex]::Matches($situationBlock, '(?m)^\s*stage_[a-z_]+\s*=\s*\{')).Count -eq 5 -and $situationBlock -match 'stage_signal_analysis\s*=\s*\{[\s\S]*?end\s*=\s*20' -and $situationBlock -match 'stage_source_analysis\s*=\s*\{[\s\S]*?end\s*=\s*40' -and $situationBlock -match 'stage_contamination\s*=\s*\{[\s\S]*?end\s*=\s*60' -and $situationBlock -match 'stage_excavation\s*=\s*\{[\s\S]*?end\s*=\s*80' -and $situationBlock -match 'stage_report\s*=\s*\{[\s\S]*?end\s*=\s*100') 'The unified Phase I Situation must have five milestone stages through its final report'
-Assert-Check ($situationBlock -match 'monthly_progress\s*=\s*\{\s*base\s*=\s*0\s*\}') 'Situation must not progress without a completed ship project'
-Assert-Check ($situationBlock -match 'on_progress_complete\s*=\s*\{[\s\S]*?destroy_situation\s*=\s*this') 'Situation completion must close the situation'
+Assert-Check (@([regex]::Matches($situationBlock, '(?m)^\s*stage_[a-z_]+\s*=\s*\{')).Count -eq 5 -and $situationBlock -match 'stage_signal_analysis\s*=\s*\{[\s\S]*?base\s*=\s*10[\s\S]*?add\s*=\s*5' -and $situationBlock -match 'stage_source_analysis\s*=\s*\{[\s\S]*?base\s*=\s*20[\s\S]*?add\s*=\s*5' -and $situationBlock -match 'stage_contamination\s*=\s*\{[\s\S]*?base\s*=\s*30[\s\S]*?add\s*=\s*5' -and $situationBlock -match 'stage_excavation\s*=\s*\{[\s\S]*?base\s*=\s*40[\s\S]*?add\s*=\s*5' -and $situationBlock -match 'stage_report\s*=\s*\{[\s\S]*?end\s*=\s*50') 'All five Situation phases need a scriptable objective-gated end value'
+Assert-Check ($situationBlock -match 'permanent\s*=\s*yes' -and $situationBlock -match 'on_progress_complete\s*=\s*\{[\s\S]*epoch_core_conclusion_decision_resolved[\s\S]*destroy_situation\s*=\s*this') 'The final stage must remain at full progress until its conclusion choice is recorded'
+Assert-Check ($situationBlock -match 'monthly_progress\s*=\s*\{\s*base\s*=\s*0[\s\S]*current_situation_approach[\s\S]*situation_progress\s*<\s*10') 'Situation progress must come from the selected approach and stop at the phase threshold'
+Assert-Check ($events -notmatch 'add_situation_progress\s*=') 'Project and choice callbacks must not award manual progress or complete projects automatically'
 Assert-Check ($situationBlock -match 'epoch_echo_cautious_approach[\s\S]*?energy\s*=\s*2' -and $situationBlock -match 'epoch_echo_aggressive_approach[\s\S]*?energy\s*=\s*5') 'Situation approaches must have distinct, visible upkeep costs'
 foreach ($approach in @('epoch_echo_cautious_approach','epoch_echo_aggressive_approach','epoch_echo_containment_approach','epoch_echo_minimal_approach')) {
 	$approachBlock = Get-Block $situationBlock "(?m)^\s*approach\s*=\s*\{\s*name\s*=\s*$approach\b" $approach
@@ -206,7 +208,7 @@ $intensiveApproach = Get-Block $situationBlock '(?m)^\s*approach\s*=\s*\{\s*name
 $containmentApproach = Get-Block $situationBlock '(?m)^\s*approach\s*=\s*\{\s*name\s*=\s*epoch_echo_containment_approach\b' 'containment approach'
 $minimalApproach = Get-Block $situationBlock '(?m)^\s*approach\s*=\s*\{\s*name\s*=\s*epoch_echo_minimal_approach\b' 'minimal approach'
 Assert-Check ($cautiousApproach -match 'country_physics_research_produces_mult\s*=\s*0\.02' -and $intensiveApproach -match 'country_engineering_research_produces_mult\s*=\s*0\.03' -and $containmentApproach -match 'country_society_research_produces_mult\s*=\s*0\.02' -and $minimalApproach -match 'country_physics_research_produces_mult\s*=\s*-0\.02' -and $situationBlock -notmatch 'on_select\s*=|set_country_flag\s*=\s*epoch_core_structure_risk_increased') 'Approaches must use their live modifiers/upkeep without turning temporary selections into permanent structural risk'
-Assert-Check ($situationBlock -match 'on_monthly\s*=\s*\{\s*owner\s*=\s*\{\s*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.44\s*\}\s*\}\s*\}' -and $onActions -notmatch 'on_monthly_pulse_country') 'Only the active EPOCH Situation may run the guarded missing-site check; no global monthly country pulse is needed'
+Assert-Check ($situationBlock -match 'on_monthly\s*=\s*\{\s*events\s*=\s*\{\s*epoch_core\.47\s*\}\s*\}' -and (Get-EventBlock $events 47) -match 'situation\s*=\s*this[\s\S]*owner\s*=\s*\{\s*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.44' -and $onActions -notmatch 'on_monthly_pulse_country') 'A valid Situation on_monthly event must bridge to the guarded missing-site check without a global country pulse'
 
 # Trace every project/callback/decision edge, including the country-scope bridge
 # used to avoid a Situation -> Country context switch when enabling projects.
@@ -222,7 +224,7 @@ foreach ($projectKey in $expectedCallbacks.Keys) {
 	$block = Get-Block $projects "(?m)^\s*special_project\s*=\s*\{\s*key\s*=\s*`"$([regex]::Escape($projectKey))`"" $projectKey
 	Assert-Check ($null -ne $block) "Project definition missing: $projectKey"
 	$callback = $expectedCallbacks[$projectKey]
-	Assert-Check ($block -match "event_scope\s*=\s*ship_event[\s\S]*on_success\s*=\s*\{\s*from\s*=\s*\{\s*ship_event\s*=\s*\{\s*id\s*=\s*epoch_core\.$callback\s*\}\s*\}\s*\}") "$projectKey must call ship event epoch_core.$callback from the performing ship scope"
+	Assert-Check ($block -match "event_scope\s*=\s*ship_event[\s\S]*on_success\s*=\s*\{\s*ship_event\s*=\s*\{\s*id\s*=\s*epoch_core\.$callback\s*\}\s*\}") "$projectKey must call ship event epoch_core.$callback directly in the Vanilla performing-ship scope"
 	Assert-Check ($block -notmatch 'cost\s*=\s*[^\r\n]+[\s\S]*days_to_research\s*=|days_to_research\s*=\s*[^\r\n]+[\s\S]*cost\s*=') "$projectKey cannot define both cost and days_to_research"
 	Assert-Check ($block -match '(?:cost|days_to_research)\s*=') "$projectKey must define one valid project duration/cost mode"
 }
@@ -230,8 +232,7 @@ $contaminationProject = Get-Block $projects '(?m)^\s*special_project\s*=\s*\{\s*
 Assert-Check ($contaminationProject -match 'on_fail\s*=\s*\{\s*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.26') 'Contamination project failure must open an explicit retry/abandon decision'
 $missingProject = Get-Block $projects '(?m)^\s*special_project\s*=\s*\{\s*key\s*=\s*"EPOCH_MISSING_EXPEDITION"' 'missing expedition project'
 Assert-Check ($missingProject -match 'on_fail\s*=\s*\{\s*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.28') 'Expedition project failure must open a recovery decision without destroying a ship'
-$firstCallback = Get-EventBlock $events 10
-Assert-Check ($firstCallback -match 'add_situation_progress\s*=\s*20' -and $firstCallback -notmatch 'destroy_ship\s*=') 'The first First Echo callback must advance the campaign milestone without removing its ship'
+Assert-Check ($firstCallback -match 'epoch_core_echo_first_resolved' -and $firstCallback -match 'situation_event\s*=\s*\{\s*id\s*=\s*epoch_core\.3' -and $firstCallback -notmatch 'add_situation_progress|destroy_ship\s*=') 'The first First Echo callback must open the follow-up choice without fabricating progress or removing its ship'
 $opening = Get-EventBlock $events 2
 Assert-Check ($opening -match 'name\s*=\s*epoch_core\.2\.a[\s\S]*EPOCH_FIRST_ECHO_CAUTIOUS' -and $opening -match 'name\s*=\s*epoch_core\.2\.b[\s\S]*EPOCH_FIRST_ECHO_AGGRESSIVE') 'The two opening investigation choices must start their corresponding projects'
 Assert-Check ($opening -match 'name\s*=\s*epoch_core\.2\.c[\s\S]*set_country_flag\s*=\s*epoch_core_campaign_opted_out' -and $opening -notmatch 'name\s*=\s*epoch_core\.2\.c[\s\S]*start_situation|name\s*=\s*epoch_core\.2\.c[\s\S]*enable_special_project') 'Refusal must start no Situation or project'
@@ -251,7 +252,37 @@ foreach ($key in @('EPOCH_ECHO_CALIBRATION','EPOCH_ECHO_BASELINE','EPOCH_ECHO_OV
 	Assert-Check ($bridge -match "name\s*=\s*`"$key`"[\s\S]*owner\s*=\s*root") "Country-scope bridge is missing correctly-owned project $key"
 }
 $secondCallback = Get-EventBlock $events 11
-Assert-Check ($secondCallback -match 'add_situation_progress\s*=\s*20' -and $secondCallback -notmatch 'destroy_situation\s*=|destroy_ship\s*=' -and $secondCallback -match 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.4' -and $secondCallback -match 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.5') 'epoch_core.11 must complete First Echo, advance one milestone, and queue the path-specific follow-up without ending the situation'
+Assert-Check ($secondCallback -match 'set_country_flag\s*=\s*epoch_core_first_echo_complete' -and $secondCallback -notmatch 'add_situation_progress|destroy_situation\s*=|destroy_ship\s*=' -and $secondCallback -match 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.4' -and $secondCallback -match 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.5') 'epoch_core.11 must record the First Echo objective and queue the path-specific follow-up'
+$phaseGates = @(
+	@{ Stage = 'stage_signal_analysis'; Base = 10; Objective = 'epoch_core_first_echo_complete'; Setter = 'epoch_core_first_echo_complete'; Alternative = 'epoch_core_echo_second_abandoned' },
+	@{ Stage = 'stage_source_analysis'; Base = 20; Objective = 'epoch_core_expedition_phase_resolved'; Setter = 'epoch_core_expedition_phase_resolved'; Alternative = '' },
+	@{ Stage = 'stage_contamination'; Base = 30; Objective = 'epoch_core_contamination_phase_resolved'; Setter = 'epoch_core_contamination_phase_resolved'; Alternative = '' },
+	@{ Stage = 'stage_excavation'; Base = 40; Objective = 'epoch_core_structure_phase_resolved'; Setter = 'epoch_core_structure_phase_resolved'; Alternative = '' },
+	@{ Stage = 'stage_report'; Base = 50; Objective = 'epoch_core_conclusion_decision_resolved'; Setter = 'epoch_core_conclusion_decision_resolved'; Alternative = '' }
+)
+foreach ($gate in $phaseGates) {
+	$stageBlock = Get-Block $situationBlock "(?m)^\s*$($gate.Stage)\s*=\s*\{" $gate.Stage
+	if ($gate.Stage -eq 'stage_report') {
+		Assert-Check ($null -ne $stageBlock -and $stageBlock -match 'end\s*=\s*50' -and $situationBlock -match 'permanent\s*=\s*yes' -and (Get-EventBlock $events 47) -match 'current_stage\s*=\s*stage_report[\s\S]*epoch_core_conclusion_decision_resolved') 'The final permanent stage must stop at its objective gate without ending early'
+	} else {
+		Assert-Check ($null -ne $stageBlock -and $stageBlock -match "base\s*=\s*$($gate.Base)" -and $stageBlock -match 'add\s*=\s*5' -and $stageBlock -match [regex]::Escape($gate.Objective)) "$($gate.Stage) needs an objective-dependent boundary above its progress threshold"
+	}
+	Assert-Check ($situationBlock -match "current_stage\s*=\s*$($gate.Stage)\s+situation_progress\s*<\s*$($gate.Base)") "$($gate.Stage) approach progress must stop at its threshold and leave a gap below the blocked boundary"
+	Assert-Check ($events -match "set_country_flag\s*=\s*$($gate.Setter)") "$($gate.Stage) needs a saved objective flag set by a real resolution callback"
+	foreach ($order in @(@{ Progress = $gate.Base; Objective = $false; Expected = $false }, @{ Progress = $gate.Base - 1; Objective = $true; Expected = $false }, @{ Progress = $gate.Base; Objective = $true; Expected = $true })) {
+		$dynamicEnd = if ($order.Objective) { $gate.Base } else { $gate.Base + 5 }
+		$transition = ($order.Progress -ge $dynamicEnd) -and ($order.Progress -lt ($gate.Base + 5))
+		Assert-Check ($transition -eq $order.Expected) "$($gate.Stage) must pass progress-first, objective-first, and both-ready gate ordering"
+	}
+}
+Assert-Check ((Get-EventBlock $events 32) -match 'epoch_core_echo_second_abandoned' -and (Get-EventBlock $events 32) -notmatch 'add_situation_progress') 'Only an explicit First Echo abandonment resolves that alternative; a failed project alone does not'
+Assert-Check ((Get-EventBlock $events 28) -match 'epoch_core_expedition_project_abandoned' -and (Get-EventBlock $events 28) -notmatch 'epoch_core_expedition_phase_resolved|add_situation_progress') 'An expedition project failure alone must not satisfy its stage gate'
+Assert-Check ((Get-Block (Get-EventBlock $events 26) '(?m)^\s*immediate\s*=\s*\{' 'contamination failure effects') -notmatch 'epoch_core_contamination_phase_resolved' -and (Get-EventBlock $events 26) -match 'name\s*=\s*epoch_core\.26\.b[\s\S]*epoch_core_contamination_phase_resolved') 'Failed contamination work satisfies the gate only through the explicit abandon option'
+Assert-Check ((Get-Block (Get-EventBlock $events 46) '(?m)^\s*option\s*=\s*\{\s*name\s*=\s*epoch_core\.46\.a' 'remote retry option') -notmatch 'epoch_core_structure_phase_resolved' -and (Get-EventBlock $events 46) -match 'name\s*=\s*epoch_core\.46\.b[\s\S]*epoch_core_structure_phase_resolved') 'Failed remote study satisfies the structure gate only through explicit archive resolution'
+Assert-Check ((Get-EventBlock $events 23) -match 'name\s*=\s*epoch_core\.23\.a[\s\S]*epoch_core_conclusion_decision_resolved' -and (Get-EventBlock $events 23) -match 'name\s*=\s*epoch_core\.23\.b[\s\S]*epoch_core_conclusion_decision_resolved') 'Both final decisions must resolve the conclusion gate; exit also closes the Situation'
+Assert-Check ($situationBlock -match 'permanent\s*=\s*yes' -and (Get-EventBlock $events 47) -match 'current_stage\s*=\s*stage_report\s+situation_progress\s*>=\s*50\s+owner\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_conclusion_decision_resolved\s*\}[\s\S]*destroy_situation\s*=\s*this') 'Saveable final progress may wait at 100% until the decision flag appears, then close once'
+Assert-Check (($phaseGates | ForEach-Object { $_.Objective; $_.Alternative } | Where-Object { $_ }) -notmatch '^$' -and $events -notmatch 'set_variable\s*=\s*\{\s*which\s*=\s*epoch_core_(?:first_echo_complete|expedition_phase_resolved|contamination_phase_resolved|structure_phase_resolved|conclusion_decision_resolved)') 'Phase gates must use persistent campaign flags rather than transient local test state'
+Assert-Check ((Get-EventBlock $events 31) -match 'epoch_core_campaign_opted_out[\s\S]*destroy_situation\s*=\s*this' -and (Get-EventBlock $events 23) -match 'epoch_core_campaign_opted_out[\s\S]*destroy_situation\s*=\s*this') 'Both campaign exit routes must destroy the saved Situation to avoid a deadlock'
 foreach ($id in @(4,5)) {
 	$followup = Get-EventBlock $events $id
 	Assert-Check ($followup -match 'epoch_core_active_campaign_empire\s*=\s*yes' -and $followup -match 'epoch_core_(?:cautious|aggressive)_investigation_complete' -and $followup -match 'NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_expedition_project_enabled\s*\}') "epoch_core.$id follow-up trigger is inconsistent"
@@ -301,6 +332,18 @@ if (Test-Path -LiteralPath (Join-Path $VanillaRoot 'common/archaeological_site_t
 	Assert-Check ($vanillaSite -match 'allow\s*=\s*\{[\s\S]*exists\s*=\s*leader[\s\S]*leader_class\s*=\s*scientist[\s\S]*visible\s*=\s*\{\s*default_site_visible_trigger\s*=\s*yes') 'Installed Vanilla reference site must demonstrate fleet scientist eligibility and default visibility'
 	Assert-Check ($vanillaSite -match 'on_roll_failed\s*=\s*\{\s*from\s*=\s*\{\s*standard_archaeological_site_on_roll_failed\s*=') 'Installed Vanilla site must demonstrate native failed-roll handling from the archaeological-site scope'
 } else { Write-Output "VANILLA SOURCE CHECK skipped: no archaeological-site source under $VanillaRoot." }
+$vanillaSituationPath = Join-Path $VanillaRoot 'common/situations/12_biogenesis_situations.txt'
+$vanillaProjectPath = Join-Path $VanillaRoot 'common/special_projects/00_projects_1.txt'
+if ((Test-Path -LiteralPath $vanillaSituationPath) -and (Test-Path -LiteralPath $vanillaProjectPath)) {
+	$vanillaSituations = [System.IO.File]::ReadAllText($vanillaSituationPath, [System.Text.Encoding]::UTF8)
+	$vanillaProjects = [System.IO.File]::ReadAllText($vanillaProjectPath, [System.Text.Encoding]::UTF8)
+	$vanillaPredatorSituation = Get-Block $vanillaSituations '(?m)^evolutionary_predators_situation\s*=\s*\{' 'Vanilla scriptable Situation'
+	$vanillaScriptableStage = Get-Block $vanillaPredatorSituation '(?m)^\s*stage_1\s*=\s*\{' 'Vanilla scriptable Situation stage'
+	$vanillaShipProject = Get-Block $vanillaProjects '(?m)^\s*special_project\s*=\s*\{\s*key\s*=\s*"GAS_GIANT_SIGNAL"' 'Vanilla ship-scope project callback'
+	Assert-Check ($vanillaScriptableStage -match 'end\s*=\s*\{\s*base\s*=\s*1000[\s\S]*mult\s*=') 'Installed Vanilla 4.5.3 must demonstrate a scriptable Situation stage end'
+	Assert-Check ($vanillaSituations -match 'on_monthly\s*=\s*\{[\s\S]*?events\s*=\s*\{') 'Installed Vanilla situations must use an events list for Situation on_monthly dispatch'
+	Assert-Check ($vanillaShipProject -match 'event_scope\s*=\s*ship_event[\s\S]*on_success\s*=\s*\{\s*ship_event\s*=\s*\{\s*id\s*=\s*anomaly\.5001') 'Installed Vanilla project callback must directly dispatch a ship_event in ship scope'
+} else { Write-Output "VANILLA SITUATION/PROJECT SOURCE CHECK skipped: no source under $VanillaRoot." }
 Assert-Check ((Get-EventBlock $events 22) -notmatch 'add_situation_progress\s*=\s*20' -and (Get-EventBlock $events 22) -match 'epoch_core_structure_site_creation_failed[\s\S]*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.44') 'Creating the archaeological site must not count as excavation progress; missing sites open recovery choices'
 Assert-Check ((Get-EventBlock $events 44) -match 'EPOCH_STRUCTURE_REMOTE_STUDY[\s\S]*epoch_core_structure_choice_recorded' -and (Get-EventBlock $events 44) -match 'epoch_core.44.b[\s\S]*epoch_core_structure_choice_recorded') 'A destroyed or missing site must offer remote study or explicit closure'
 Assert-Check ((Get-EventBlock $events 43) -match 'name\s*=\s*epoch_core\.43\.a[\s\S]*from\s*=\s*\{\s*set_site_progress_locked\s*=\s*yes' -and (Get-EventBlock $events 43) -match 'destroy_archaeological_site\s*=\s*this' -and (Get-EventBlock $events 43) -match 'epoch_core_structure_investigated') 'The final callback must terminally lock the secured site, destroy it only on the destruction path, or record investigation'

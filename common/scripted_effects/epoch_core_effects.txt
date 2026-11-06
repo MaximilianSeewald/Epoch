@@ -37,6 +37,7 @@ epoch_core_apply_contamination_studied = {
 }
 
 epoch_core_remove_contamination_effects = {
+	remove_modifier = epoch_core_containment_buffered
 	remove_modifier = epoch_core_contamination_active
 	remove_modifier = epoch_core_contamination_worsened
 	remove_modifier = epoch_core_contamination_active_organic

@@ -65,7 +65,7 @@ Line numbers refer to the supplied source files and are one-based.
 | MP save-load hook has an OOS warning | VERIFIED – SOURCE | `common/on_actions/00_on_actions.txt:80-83`, comment says `on_single_player_save_game_load` does not run when loading MP saves due to OOS concerns | Do not use this hook as the multiplayer recovery path. This warning is not a general guarantee about other hooks. |
 | Mod on_action merge/override behavior | UNVERIFIED | Supplied files show vanilla hook definitions, not mod merge rules or a loaded test mod | Verify how to register an additional handler without replacing vanilla handlers before relying on this candidate. |
 | Situation root, owner/target, and log-facing text | VERIFIED – SOURCE | `common/situations/99_README_SITUATIONS.txt:14-36` | Situation is suitable to model long-running state, with explicit attention to scopes and UI text. |
-| Situation stages, progress, monthly updates, approaches, outcomes, abort | VERIFIED – SOURCE | `common/situations/99_README_SITUATIONS.txt:40-64`, `:156-190`, `:241-248`; concrete `common/situations/01_narrative_situations.txt:1-146` | Suitable for multi-stage investigation and choice-dependent progress. Monthly per-situation update cost at scale is unmeasured. |
+| Situation stages, scriptable ends, approach progress, monthly events | VERIFIED – SOURCE | `common/situations/99_README_SITUATIONS.txt:40-64`, `:156-190`, `:241-248`; installed `common/situations/12_biogenesis_situations.txt:706-711` uses a scriptable `end = { base ... mult ... }`; `01_narrative_situations.txt:124-137` uses `on_monthly = { events = { ... } }`. | EPOCH uses approach-scoped monthly progress, stage-specific scriptable end thresholds, and a Situation event dispatch. Its exact parser and stage re-evaluation behavior remain runtime checks. |
 | Situation choices set approaches; triggered situation events use situation scope | VERIFIED – SOURCE | `events/situation_events.txt:89-145` (`situation_event`, `situation = this`, `set_situation_approach`); `:849-916` creates a situation and sets chosen approach | Connect choice events to the live situation; test scope transitions and AI outcomes in runtime. |
 | Special project fields and completion callbacks | VERIFIED – SOURCE | `common/special_projects/00_projects_1.txt:2-23` (key, costs, requirements, event scope, success/fail); `:116-145` (event chain and follow-up events) | Projects fit discrete research tasks; use success callback to continue event/situation flow. |
 | Project availability effect exists in supplied effects | VERIFIED – SOURCE | `common/scripted_effects/02_machine_age_effects.txt:1617`, `enable_special_project` definitions | Source pattern supports activating a defined project from other script. Exact parameters and scope depend on the specific definition. |
@@ -78,11 +78,24 @@ Line numbers refer to the supplied source files and are one-based.
 ## Architecture assessment
 
 The current implementation uses a country-local `on_game_start_country`
-bootstrap, guarded survey discovery, project success callbacks, and a country
-monthly pulse that only detects a genuinely missing archaeological site and
-offers a recovery choice. No pulse grants progress or resolves a waiting
-project. Exact-once behavior, new-game/load coverage, randomized staggering,
-save compatibility, and MP safety still require runtime tests.
+bootstrap, guarded survey discovery, and native project success callbacks.
+The campaign Situation owns five phase gates: the selected approach supplies
+monthly progress up to each phase's threshold, while a saved objective flag
+lowers that stage's scriptable end. A Situation-owned monthly event bridges to
+the guarded missing-site recovery check and updates player-facing wait state;
+it never grants progress or resolves a project. Exact-once stage re-evaluation,
+new-game/load behavior, AI, save compatibility, and MP safety still require
+runtime tests.
+
+The documented monthly progress rates are cautious `2.5/2.5/2/2/1.5`,
+intensive `4.5/4.5/4/4/3`, minimal `1.75/1.75/1.5/1.5/1`, and containment
+`3` in the contamination phase only (phase order 1–5). Situation energy upkeep
+by phase is cautious `2/3/2/3/2`, intensive `5/6/6/7/5`, containment `4`
+plus `1` mineral during contamination, and minimal `1/1/1/1/1`. Phase progress
+thresholds are `10/20/30/40/50`; when the objective flag is still absent, each
+of the first four stage ends gains five points while monthly approach progress
+stops at the threshold. Intensive risk checks are one-shot per phase; the
+containment buffer refreshes for 30 days while that approach is active.
 
 Use a situation for persistent, multi-stage progression and approaches. Use a
 special project for a discrete research assignment; its success callback can

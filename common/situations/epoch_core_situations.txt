@@ -4,56 +4,98 @@ epoch_first_echo_investigation = {
 	situation_log_category = developments
 	initial_progress = 0
 	progress_direction = monodirectional
+	permanent = yes
 
 	desc = {
-		trigger = {
-			success_text = {
-				always = yes
-				text = epoch_first_echo_investigation_desc
-			}
-		}
+		trigger = { owner = { has_country_flag = epoch_core_situation_waiting_objective } }
+		text = epoch_first_echo_waiting_objective
 	}
+	desc = {
+		trigger = { owner = { has_country_flag = epoch_core_situation_waiting_progress } }
+		text = epoch_first_echo_waiting_progress
+	}
+	desc = {
+		trigger = { owner = { has_country_flag = epoch_core_situation_active_progress } }
+		text = epoch_first_echo_status_active
+	}
+	desc = { trigger = { always = yes } text = epoch_first_echo_investigation_desc }
 
+	# Each stage boundary is a progress gate. Monthly ticks stop at the stage's
+	# base threshold. If its objective is still open, the scriptable stage end is
+	# five points farther away, so the Situation waits without entering the next
+	# stage. The final permanent stage waits for its final decision at 100%.
 	stages = {
 		stage_signal_analysis = {
 			icon = GFX_situation_stage_1
 			icon_background = GFX_situation_stage_frame_blue
-			end = 20
+			end = {
+				base = 10
+				modifier = { add = 5 owner = { NOT = { OR = { has_country_flag = epoch_core_first_echo_complete has_country_flag = epoch_core_echo_second_abandoned } } } }
+			}
 			custom_tooltip = epoch_first_echo_phase_echo
 		}
 		stage_source_analysis = {
 			icon = GFX_situation_stage_2
 			icon_background = GFX_situation_stage_frame_blue
-			end = 40
+			end = {
+				base = 20
+				modifier = { add = 5 owner = { NOT = { has_country_flag = epoch_core_expedition_phase_resolved } } }
+			}
 			custom_tooltip = epoch_first_echo_phase_expedition
-			on_first_enter = { situation_event = { id = epoch_core.3 } }
 		}
 		stage_contamination = {
 			icon = GFX_situation_stage_3
 			icon_background = GFX_situation_stage_frame_blue
-			end = 60
+			end = {
+				base = 30
+				modifier = { add = 5 owner = { NOT = { has_country_flag = epoch_core_contamination_phase_resolved } } }
+			}
 			custom_tooltip = epoch_first_echo_phase_contamination
 		}
 		stage_excavation = {
 			icon = GFX_situation_stage_4
 			icon_background = GFX_situation_stage_frame_blue
-			end = 80
+			end = {
+				base = 40
+				modifier = { add = 5 owner = { NOT = { has_country_flag = epoch_core_structure_phase_resolved } } }
+			}
 			custom_tooltip = epoch_first_echo_phase_structure
 		}
 		stage_report = {
 			icon = GFX_situation_stage_5
 			icon_background = GFX_situation_stage_frame_blue
-			end = 100
+			end = 50
 			custom_tooltip = epoch_first_echo_phase_report
 		}
 	}
 
-	# Progress advances only when a project, expedition decision, contamination
-	# resolution, or final excavation choice records a real campaign milestone.
-	monthly_progress = { base = 0 }
-	# Only this active campaign checks whether its owned excavation site vanished.
+	# The selected approach is the only source of passive progress. All approach
+	# rates are phase-specific and the maximum tick is below the five-point
+	# blocked-stage cushion.
+	monthly_progress = {
+		base = 0
+		modifier = { add = 2.5 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_signal_analysis situation_progress < 10 }
+		modifier = { add = 2.5 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_source_analysis situation_progress < 20 }
+		modifier = { add = 2.0 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_contamination situation_progress < 30 }
+		modifier = { add = 2.0 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_excavation situation_progress < 40 }
+		modifier = { add = 1.5 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_report situation_progress < 50 }
+		modifier = { add = 4.5 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_signal_analysis situation_progress < 10 }
+		modifier = { add = 4.5 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_source_analysis situation_progress < 20 }
+		modifier = { add = 4.0 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_contamination situation_progress < 30 }
+		modifier = { add = 4.0 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_excavation situation_progress < 40 }
+		modifier = { add = 3.0 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_report situation_progress < 50 }
+		modifier = { add = 3.0 desc = epoch_echo_progress_containment current_situation_approach = epoch_echo_containment_approach current_stage = stage_contamination situation_progress < 30 }
+		modifier = { add = 1.75 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_signal_analysis situation_progress < 10 }
+		modifier = { add = 1.75 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_source_analysis situation_progress < 20 }
+		modifier = { add = 1.5 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_contamination situation_progress < 30 }
+		modifier = { add = 1.5 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_excavation situation_progress < 40 }
+		modifier = { add = 1.0 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_report situation_progress < 50 }
+	}
+
+	# Situation on_monthly is an on_action: it dispatches situation events, not
+	# inline effects. The situation event bridges safely into country scope.
 	on_monthly = {
-		owner = { country_event = { id = epoch_core.44 } }
+		events = { epoch_core.47 }
 	}
 
 	approach = {
@@ -65,9 +107,10 @@ epoch_first_echo_investigation = {
 		resources = {
 			category = situations
 			upkeep = { trigger = { current_stage = stage_signal_analysis } energy = 2 }
-			upkeep = { trigger = { current_stage = stage_source_analysis } energy = 2 }
+			upkeep = { trigger = { current_stage = stage_source_analysis } energy = 3 }
 			upkeep = { trigger = { current_stage = stage_contamination } energy = 2 }
-			upkeep = { trigger = { current_stage = stage_excavation } energy = 2 }
+			upkeep = { trigger = { current_stage = stage_excavation } energy = 3 }
+			upkeep = { trigger = { current_stage = stage_report } energy = 2 }
 		}
 		ai_weight = { weight = 1 }
 	}
@@ -76,26 +119,26 @@ epoch_first_echo_investigation = {
 		icon = GFX_situation_approach_fist
 		icon_background = GFX_situation_approach_bg_red
 		potential = { owner = { has_country_flag = epoch_core_campaign_active } }
+		modifier = { country_engineering_research_produces_mult = 0.03 }
 		resources = {
 			category = situations
 			upkeep = { trigger = { current_stage = stage_signal_analysis } energy = 5 }
-			upkeep = { trigger = { current_stage = stage_source_analysis } energy = 5 }
+			upkeep = { trigger = { current_stage = stage_source_analysis } energy = 6 }
 			upkeep = { trigger = { current_stage = stage_contamination } energy = 6 }
-			upkeep = { trigger = { current_stage = stage_excavation } energy = 5 }
+			upkeep = { trigger = { current_stage = stage_excavation } energy = 7 }
+			upkeep = { trigger = { current_stage = stage_report } energy = 5 }
 		}
-		modifier = { country_engineering_research_produces_mult = 0.03 }
 		ai_weight = { weight = 1 }
 	}
 	approach = {
 		name = epoch_echo_containment_approach
 		icon = GFX_situation_approach_research
 		icon_background = GFX_situation_approach_bg_green
-		potential = { owner = { has_country_flag = epoch_core_contamination_started } }
+		potential = { owner = { has_country_flag = epoch_core_contamination_started NOT = { has_country_flag = epoch_core_contamination_phase_resolved } } }
 		modifier = { country_society_research_produces_mult = 0.02 }
 		resources = {
 			category = situations
 			upkeep = { trigger = { current_stage = stage_contamination } energy = 4 minerals = 1 }
-			upkeep = { trigger = { current_stage = stage_excavation } energy = 2 }
 		}
 		ai_weight = { weight = 1 }
 	}
@@ -104,21 +147,23 @@ epoch_first_echo_investigation = {
 		icon = GFX_situation_approach_fist
 		icon_background = GFX_situation_approach_bg_red
 		potential = { owner = { has_country_flag = epoch_core_campaign_active } }
+		modifier = { country_physics_research_produces_mult = -0.02 }
 		resources = {
 			category = situations
 			upkeep = { trigger = { current_stage = stage_signal_analysis } energy = 1 }
 			upkeep = { trigger = { current_stage = stage_source_analysis } energy = 1 }
 			upkeep = { trigger = { current_stage = stage_contamination } energy = 1 }
 			upkeep = { trigger = { current_stage = stage_excavation } energy = 1 }
+			upkeep = { trigger = { current_stage = stage_report } energy = 1 }
 		}
-		modifier = { country_physics_research_produces_mult = -0.02 }
 		ai_weight = { weight = 1 }
 	}
 
 	on_progress_complete = {
-		owner = {
-			set_country_flag = epoch_core_phase_i_situation_complete
+		if = {
+			limit = { owner = { has_country_flag = epoch_core_conclusion_decision_resolved } }
+			owner = { set_country_flag = epoch_core_phase_i_situation_complete }
+			destroy_situation = this
 		}
-		destroy_situation = this
 	}
 }

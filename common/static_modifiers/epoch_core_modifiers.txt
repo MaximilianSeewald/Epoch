@@ -4,6 +4,13 @@ epoch_core_contamination_active = {
 	planet_jobs_produces_mult = -0.05
 }
 
+# Temporary buffering applied only while the containment approach is selected.
+epoch_core_containment_buffered = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_natural_beauty.dds"
+	planet_stability_add = 2
+	planet_jobs_produces_mult = 0.02
+}
+
 epoch_core_contamination_worsened = {
 	icon = "gfx/interface/icons/planet_modifiers/pm_irradiated.dds"
 	planet_stability_add = -8
