@@ -48,8 +48,10 @@ sections. Missing Expedition is enabled at the saved destination as a native
 Special Project; the player assigns an owned Science Ship and scientist, and
 the ship-scoped success callback saves that exact ship and fleet leader before
 destroying the ship. Search outcomes resolve the saved scientist as recovered
-or lost. Project failure and timeout leave the assigned ship intact. The
-Silent Structure is a native four-stage Archaeological Site, with staffed
+or lost. Project failure/cancellation now asks the player or AI to retry or
+explicitly abandon; no calendar timeout resolves it. A missing or destroyed
+archaeological site prompts a remote-study or archive choice. The Silent
+Structure is a native four-stage Archaeological Site, with staffed
 Science Ship requirements, four archaeology callbacks, conditional chapter
 choices, and distinct secure, destroy, and investigate outcomes. Contamination
 uses permanent planet modifiers with separate organic, Hive Mind, and machine
@@ -64,8 +66,11 @@ continuation or an in-world permanent closure choice.
 that special-project success dispatches in the performing ship scope. The
 installed `common/archaeological_site_types/99_README_ARC_SITES.txt` documents
 site `potential`/`allow` as fleet scope with `from` the site and `visible` as
-country scope with `from` the site; `00_base_game_arc_sites.txt` supplies
-matching multi-stage definitions. Vanilla archaeology callbacks use
+country scope with `from` the site. The complete vanilla `site_ruins_of_shallash`
+definition in `00_base_game_arc_sites.txt` demonstrates four difficulty stages,
+a scientist requirement in `allow`, `default_site_visible_trigger`, and no
+`potential` filter. EPOCH now follows that allow/visible pattern and omits the
+invalid `from.planet` switch recorded in the pre-fix `error.log`. Vanilla archaeology callbacks use
 `archaeology = yes`, `set_site_progress_locked = yes`, and site destruction is
 demonstrated in `events/paragon_events_3.txt`. Vanilla files also contain the
 planet job-output modifiers, ship/fleet leader flags, `kill_leader`,
@@ -84,7 +89,7 @@ The earlier supplied M0-B subset identifies `on_survey_planet` as **Ship scope**
 
 The installed project definitions and special-project on_action comments confirm `event_scope = ship_event` callbacks use the performing ship context. They do not add an explicit pre-assignment ship reference to the project definition; the player's choice occurs through native project assignment. The EPOCH callback stores that ship and its fleet leader before destroying the ship. This proves source-supported callback scope and exact callback target, not leader survival behavior, project cancellation ordering when the ship is lost, or saved-target persistence. Those lifecycle points remain unverified until runtime coverage.
 
-Special-project definitions, situation callbacks, archaeological-site definitions, planet modifiers, and their effects are source-supported patterns, not proof of EPOCH parser or runtime behavior. The site uses the documented fleet/site/country scope split and four native stages. Verify EPOCH parser acceptance, project prerequisites, callback timing, AI project/site assignment, scientist state after ship removal, timed fallbacks, save/load, missing-object behavior, and simultaneous-empires isolation against the target build. No unsupported runtime assumption is accepted as verified.
+Special-project definitions, situation callbacks, archaeological-site definitions, planet modifiers, and their effects are source-supported patterns, not proof of EPOCH parser or runtime behavior. The site uses the documented fleet/site/country scope split and four native stages. Verify EPOCH parser acceptance, project prerequisites, callback timing, AI project/site assignment, scientist state after ship removal, save/load, missing-object recovery, and simultaneous-empires isolation against the target build. No unsupported runtime assumption is accepted as verified.
 
 Record status as `VERIFIED – SOURCE`, `VERIFIED – RUNTIME`, `PROPOSED`, or `UNVERIFIED`; never describe static assertions as proof of in-game behavior. If a native mechanism cannot be made reliable, document the tested limitation and use a technically viable gameplay substitute with equivalent observable results.
 

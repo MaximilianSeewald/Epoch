@@ -54,7 +54,7 @@ Line numbers refer to the supplied source files and are one-based.
 | Unexpected ship destruction callback | VERIFIED – SOURCE | Installed `common/on_actions/00_on_actions.txt:1390-1405` documents `This` as owner of destroyed ship 1, `FromFrom` as ship 1, and defines `on_ship_destroyed_victim`. | EPOCH filters the destroyed ship's flag before recording an unexpected expedition loss. Mod on_action merge behavior and target validity during dispatch remain runtime checks. |
 | Assigning a created leader to a fleet | VERIFIED – SOURCE | Installed `common/scripted_effects/00_scripted_effects.txt:1244-1252` creates ships inside a fleet and assigns `last_created_leader`. | Vanilla pattern only; current EPOCH does not create or assign a campaign scientist. |
 | Randomized and permanent effects | VERIFIED – SOURCE | Installed event/effect scripts use `random_list`; static modifier definitions include `planet_jobs_produces_mult`, stability, resource output, and other effects. Effects use `add_modifier` with `days = -1`; resource checks use `resource_stockpile_compare` and `has_resource`. | Source supports the syntax patterns used for conditional expedition outcomes, persistent planet scars, and the containment cost gate. Determinism, UI presentation, and persistence in EPOCH save/load need runtime verification. |
-| Aborting a special project | VERIFIED – SOURCE | Installed `events/biogenesis_origin_events.txt`, `events/country_events_1.txt`, and multiple scripted effects use `abort_special_project = { type = ... }`. | One-shot, empire-local timeouts use this effect to close inactive projects before the next phase; confirm callback ordering and object cleanup in runtime. |
+| Aborting/canceling a special project | VERIFIED – SOURCE | Installed special-project definitions expose `on_cancel`; country-scope failure/cancel callbacks and `abort_special_project = { type = ... }` are used by Vanilla. | EPOCH no longer schedules calendar fallbacks. Real project failure or cancellation opens a retry/explicit-abandon decision; callback order and object cleanup remain runtime checks. |
 | A global game-start hook exists and has no scope | VERIFIED – SOURCE | `common/on_actions/00_on_actions.txt:1-29`, `on_game_start`; `common/on_actions/00_on_actions.txt:80-83` explicitly describes another no-scope hook as “No scope, like on_game_start” | A global hook cannot directly be assumed to be empire-scoped. Avoid a global callback that scans every country if the per-country hook suffices. |
 | Country game-start hook dispatches a list of country initialization events | VERIFIED – SOURCE | `common/on_actions/00_on_actions.txt:31-78`, `on_game_start_country` | Strong candidate for country-local bootstrap/eligibility, avoiding a separate global enumeration. Whether a mod can extend this vanilla hook without replacing it, plus exact-once and coverage, requires validation. |
 | Event namespace, event ID, event types, trigger-only use, options, immediate/after | VERIFIED – SOURCE | `events/situation_events.txt:5`, `:10-86` (`namespace = situation`, `carrier_event`, `situation.5`, `is_triggered_only`, options and `after`); `:89-145` (`situation_event`) | Reserve a unique EPOCH namespace and use the event type matching the actual root scope. Validate parser and ID collision behavior in game. |
@@ -78,10 +78,11 @@ Line numbers refer to the supplied source files and are one-based.
 ## Architecture assessment
 
 The current implementation uses a country-local `on_game_start_country`
-bootstrap, guarded survey discovery, and delayed one-shot country callbacks.
-This is supported by the source patterns above and the EPOCH regression suite;
-exact-once behavior, new-game/load coverage, randomized staggering, save
-compatibility, and MP safety still require runtime tests.
+bootstrap, guarded survey discovery, project success callbacks, and a country
+monthly pulse that only detects a genuinely missing archaeological site and
+offers a recovery choice. No pulse grants progress or resolves a waiting
+project. Exact-once behavior, new-game/load coverage, randomized staggering,
+save compatibility, and MP safety still require runtime tests.
 
 Use a situation for persistent, multi-stage progression and approaches. Use a
 special project for a discrete research assignment; its success callback can

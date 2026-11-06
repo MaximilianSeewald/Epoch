@@ -58,7 +58,6 @@ country_event = {
 		start_situation = { type = epoch_first_echo_investigation }
 		random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } set_situation_approach = epoch_echo_cautious_approach }
 		event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_FIRST_ECHO_CAUTIOUS" location = this owner = root } }
-		country_event = { id = epoch_core.33 days = 730 }
 		}
 		ai_chance = { factor = 55 }
 	}
@@ -77,7 +76,6 @@ country_event = {
 		start_situation = { type = epoch_first_echo_investigation }
 		random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } set_situation_approach = epoch_echo_aggressive_approach }
 		event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_FIRST_ECHO_AGGRESSIVE" location = this owner = root } }
-		country_event = { id = epoch_core.33 days = 730 }
 		}
 		ai_chance = { factor = 35 }
 	}
@@ -185,28 +183,24 @@ country_event = {
 			limit = { has_country_flag = epoch_core_cautious_instrument_calibrated }
 			set_country_flag = epoch_core_echo_second_project_pending
 			event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_ECHO_CALIBRATION" location = this owner = root } }
-			country_event = { id = epoch_core.34 days = 730 }
 			set_country_flag = epoch_core_second_stage_project_enabled
 		}
 		else_if = {
 			limit = { has_country_flag = epoch_core_cautious_baseline_kept }
 			set_country_flag = epoch_core_echo_second_project_pending
 			event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_ECHO_BASELINE" location = this owner = root } }
-			country_event = { id = epoch_core.34 days = 730 }
 			set_country_flag = epoch_core_second_stage_project_enabled
 		}
 		else_if = {
 			limit = { has_country_flag = epoch_core_aggressive_overdrive_committed }
 			set_country_flag = epoch_core_echo_second_project_pending
 			event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_ECHO_OVERDRIVE" location = this owner = root } }
-			country_event = { id = epoch_core.34 days = 730 }
 			set_country_flag = epoch_core_second_stage_project_enabled
 		}
 		else_if = {
 			limit = { has_country_flag = epoch_core_aggressive_throttled }
 			set_country_flag = epoch_core_echo_second_project_pending
 			event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_ECHO_THROTTLED" location = this owner = root } }
-			country_event = { id = epoch_core.34 days = 730 }
 			set_country_flag = epoch_core_second_stage_project_enabled
 		}
 	}
@@ -219,7 +213,7 @@ country_event = {
 	picture = GFX_evt_black_hole
 	location = event_target:epoch_core_signal_system@root
 	is_triggered_only = yes
-	trigger = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_cautious_investigation_complete NOT = { has_country_flag = epoch_core_expedition_project_enabled } }
+	trigger = { epoch_core_active_campaign_empire = yes OR = { has_country_flag = epoch_core_cautious_investigation_complete has_country_flag = epoch_core_cautious_investigation_abandoned } NOT = { has_country_flag = epoch_core_expedition_project_enabled } }
 	immediate = {
 		set_country_flag = epoch_core_cautious_followup_seen
 	}
@@ -229,7 +223,6 @@ country_event = {
 		set_country_flag = epoch_core_quiet_watch_established
 		set_country_flag = epoch_core_expedition_project_enabled
 		event_target:epoch_core_expedition_destination@root = { enable_special_project = { name = "EPOCH_MISSING_EXPEDITION" location = this owner = root } }
-		country_event = { id = epoch_core.37 days = 730 }
 		}
 		ai_chance = { factor = 1 }
 	}
@@ -242,7 +235,7 @@ country_event = {
 	picture = GFX_evt_black_hole
 	location = event_target:epoch_core_signal_system@root
 	is_triggered_only = yes
-	trigger = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_aggressive_investigation_complete NOT = { has_country_flag = epoch_core_expedition_project_enabled } }
+	trigger = { epoch_core_active_campaign_empire = yes OR = { has_country_flag = epoch_core_aggressive_investigation_complete has_country_flag = epoch_core_aggressive_investigation_abandoned } NOT = { has_country_flag = epoch_core_expedition_project_enabled } }
 	immediate = {
 		set_country_flag = epoch_core_aggressive_followup_seen
 	}
@@ -252,7 +245,6 @@ country_event = {
 		set_country_flag = epoch_core_coordinates_recovered
 		set_country_flag = epoch_core_expedition_project_enabled
 		event_target:epoch_core_expedition_destination@root = { enable_special_project = { name = "EPOCH_MISSING_EXPEDITION" location = this owner = root } }
-		country_event = { id = epoch_core.37 days = 730 }
 		}
 		ai_chance = { factor = 1 }
 	}
@@ -284,7 +276,6 @@ country_event = {
 		hidden_effect = {
 		event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_EXPEDITION_RESCUE" location = this owner = root } }
 		set_country_flag = epoch_core_expedition_rescue_ordered
-		country_event = { id = epoch_core.38 days = 730 }
 		}
 		ai_chance = { factor = 55 }
 	}
@@ -293,7 +284,6 @@ country_event = {
 		hidden_effect = {
 		event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_EXPEDITION_SALVAGE" location = this owner = root } }
 		set_country_flag = epoch_core_expedition_salvage_ordered
-		country_event = { id = epoch_core.38 days = 730 }
 		}
 		ai_chance = { factor = 30 }
 	}
@@ -302,7 +292,6 @@ country_event = {
 		hidden_effect = {
 		event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_EXPEDITION_SURVEY" location = this owner = root } }
 		set_country_flag = epoch_core_expedition_survey_ordered
-		country_event = { id = epoch_core.38 days = 730 }
 		}
 		ai_chance = { factor = 10 }
 	}
@@ -313,7 +302,7 @@ country_event = {
 		set_variable = { which = epoch_core_expedition_result value = 5 }
 		set_variable = { which = epoch_core_expedition_status value = 4 }
 		set_country_flag = epoch_core_expedition_outcome_recorded
-		country_event = { id = epoch_core.7 days = 180 }
+		country_event = { id = epoch_core.7 days = 1 }
 		}
 		ai_chance = { factor = 5 }
 	}
@@ -449,22 +438,19 @@ ship_event = {
 
 # A failed project leaves the player's science ship intact and opens a
 # recoverable search path; only successful completion marks it missing.
-ship_event = {
+country_event = {
 	id = epoch_core.28
+	title = epoch_core.28.name
+	desc = epoch_core.28.desc
+	picture = GFX_evt_black_hole
 	hide_window = yes
 	is_triggered_only = yes
-	trigger = { owner = { epoch_core_active_campaign_empire = yes NOT = { has_country_flag = epoch_core_expedition_contact_lost } } }
+	trigger = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_expedition_project_enabled NOT = { has_country_flag = epoch_core_expedition_contact_lost } }
 	immediate = {
-		owner = {
-			if = {
-				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_expedition_project_enabled }
-				set_country_flag = epoch_core_expedition_contact_lost
-				set_country_flag = epoch_core_expedition_scripted_loss
-				set_country_flag = epoch_core_expedition_project_failed
-				set_variable = { which = epoch_core_expedition_status value = 1 }
-				country_event = { id = epoch_core.6 days = 1 }
-			}
-		}
+		set_country_flag = epoch_core_expedition_contact_lost
+		set_country_flag = epoch_core_expedition_project_failed
+		set_variable = { which = epoch_core_expedition_status value = 1 }
+		country_event = { id = epoch_core.6 days = 1 }
 	}
 }
 
@@ -511,7 +497,7 @@ ship_event = {
 			else_if = { limit = { has_country_flag = epoch_core_expedition_survey_ordered } set_country_flag = epoch_core_expedition_spatial_wake_saved set_variable = { which = epoch_core_expedition_result value = 4 } add_resource = { physics_research = 200 society_research = 200 engineering_research = 200 } }
 			set_country_flag = epoch_core_expedition_outcome_recorded
 			set_variable = { which = epoch_core_expedition_status value = 4 }
-			country_event = { id = epoch_core.7 days = 180 }
+			country_event = { id = epoch_core.7 days = 1 }
 		}
 	}
 }
@@ -539,7 +525,6 @@ country_event = {
 	trigger = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_expedition_outcome_recorded NOT = { has_country_flag = epoch_core_expedition_later_clue_seen } }
 	immediate = {
 		set_country_flag = epoch_core_expedition_later_clue_seen
-				random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
 		if = {
 			limit = { has_country_flag = epoch_core_expedition_survivors_found }
 			if = {
@@ -563,6 +548,7 @@ country_event = {
 		if = { limit = { has_country_flag = epoch_core_expedition_recorder_recovered } set_country_flag = epoch_core_expedition_distortion_trace_saved }
 		if = { limit = { has_country_flag = epoch_core_expedition_spatial_wake_saved } set_country_flag = epoch_core_expedition_spatial_wake_archived }
 		if = { limit = { has_country_flag = epoch_core_expedition_search_abandoned } set_country_flag = epoch_core_expedition_loss_recorded }
+		random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
 		country_event = { id = epoch_core.20 days = 1 }
 		}
 		ai_chance = { factor = 1 }
@@ -592,7 +578,6 @@ country_event = {
 	}
 	immediate = {
 		set_country_flag = epoch_core_contamination_started
-				random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
 		set_variable = { which = epoch_core_current_phase value = 3 }
 		capital_scope = {
 			epoch_core_apply_contamination_active = yes
@@ -615,15 +600,16 @@ country_event = {
 	}
 	option = {
 		name = epoch_core.20.a
+		custom_tooltip = epoch_core.20.a.tooltip
 		hidden_effect = {
 		set_country_flag = epoch_core_contamination_study_ordered
 		event_target:epoch_core_world@root = { enable_special_project = { name = "EPOCH_CONTAMINATION_STUDY" location = this owner = root } }
-		country_event = { id = epoch_core.35 days = 730 }
 		}
 		ai_chance = { factor = 55 }
 	}
 	option = {
 		name = epoch_core.20.b
+		custom_tooltip = epoch_core.20.b.tooltip
 		trigger = {
 			resource_stockpile_compare = { resource = energy value >= 500 }
 			resource_stockpile_compare = { resource = minerals value >= 300 }
@@ -632,12 +618,14 @@ country_event = {
 		add_resource = { energy = -500 minerals = -300 }
 		event_target:epoch_core_world@root = { epoch_core_remove_contamination_effects = yes }
 		set_country_flag = epoch_core_contamination_contained
+		random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
 		country_event = { id = epoch_core.22 days = 1 }
 		}
 		ai_chance = { factor = 35 }
 	}
 	option = {
 		name = epoch_core.20.c
+		custom_tooltip = epoch_core.20.c.tooltip
 		hidden_effect = {
 		set_country_flag = epoch_core_contamination_neglected
 		if = {
@@ -657,6 +645,7 @@ country_event = {
 				owner = { set_country_flag = epoch_core_contamination_spread_recorded }
 			}
 		}
+		random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
 		country_event = { id = epoch_core.22 days = 1 }
 		}
 		ai_chance = { factor = 10 }
@@ -674,6 +663,7 @@ ship_event = {
 				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_contamination_study_ordered NOT = { has_country_flag = epoch_core_contamination_study_resolved } }
 				set_country_flag = epoch_core_contamination_study_resolved
 				set_country_flag = epoch_core_contamination_study_complete
+				random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
 				if = {
 					limit = { exists = event_target:epoch_core_world@root }
 					event_target:epoch_core_world@root = {
@@ -688,24 +678,35 @@ ship_event = {
 	}
 }
 
-ship_event = {
+country_event = {
 	id = epoch_core.26
-	hide_window = yes
+	title = epoch_core.26.name
+	desc = epoch_core.26.desc
+	picture = GFX_evt_black_hole
 	is_triggered_only = yes
+	trigger = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_contamination_study_ordered NOT = { has_country_flag = epoch_core_contamination_study_resolved } }
 	immediate = {
-		owner = {
-			if = {
-				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_contamination_study_ordered NOT = { has_country_flag = epoch_core_contamination_study_resolved } }
-				set_country_flag = epoch_core_contamination_study_resolved
-				set_country_flag = epoch_core_contamination_study_failed
-				set_country_flag = epoch_core_contamination_worsened
-				event_target:epoch_core_world@root = {
-					epoch_core_remove_contamination_effects = yes
-					epoch_core_apply_contamination_worsened = yes
-				}
-				country_event = { id = epoch_core.22 days = 1 }
-			}
+		set_country_flag = epoch_core_contamination_study_failed
+		set_country_flag = epoch_core_contamination_worsened
+		event_target:epoch_core_world@root = {
+			epoch_core_remove_contamination_effects = yes
+			epoch_core_apply_contamination_worsened = yes
 		}
+	}
+	option = {
+		name = epoch_core.26.a
+		hidden_effect = { event_target:epoch_core_world@root = { enable_special_project = { name = "EPOCH_CONTAMINATION_STUDY" location = this owner = root } } }
+		ai_chance = { factor = 70 }
+	}
+	option = {
+		name = epoch_core.26.b
+		hidden_effect = {
+			set_country_flag = epoch_core_contamination_study_resolved
+			set_country_flag = epoch_core_contamination_neglected
+			random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
+			country_event = { id = epoch_core.22 days = 1 }
+		}
+		ai_chance = { factor = 30 }
 	}
 }
 
@@ -760,13 +761,9 @@ country_event = {
 			}
 		}
 		if = {
-			limit = { has_country_flag = epoch_core_structure_site_created }
-			random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
-		}
-		else = {
-			set_country_flag = epoch_core_structure_investigation_failed
-			set_country_flag = epoch_core_structure_choice_recorded
-			country_event = { id = epoch_core.23 days = 1 }
+			limit = { NOT = { has_country_flag = epoch_core_structure_site_created } }
+			set_country_flag = epoch_core_structure_site_creation_failed
+			country_event = { id = epoch_core.44 days = 1 }
 		}
 		}
 		ai_chance = { factor = 1 }
@@ -832,6 +829,7 @@ country_event = {
 					has_country_flag = epoch_core_expedition_search_failed
 					has_country_flag = epoch_core_contamination_neglected
 					has_country_flag = epoch_core_structure_destroyed
+					 has_country_flag = epoch_core_structure_risk_increased
 				}
 			}
 			if = {
@@ -864,206 +862,94 @@ country_event = {
 	}
 }
 
-# Recover from projects that fail rather than leaving an empire stuck.
-ship_event = {
+# A failed project is a real block, so offer a staffed retry or an explicit
+# abandonment decision. No failure callback records a completed investigation.
+country_event = {
 	id = epoch_core.30
-	hide_window = yes
+	title = epoch_core.30.name
+	desc = epoch_core.30.desc
+	picture = GFX_evt_black_hole
 	is_triggered_only = yes
-	immediate = {
-		owner = {
-			if = {
-				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_expedition_investigation_started NOT = { has_country_flag = epoch_core_expedition_outcome_recorded } }
-				set_country_flag = epoch_core_expedition_search_failed
-				set_variable = { which = epoch_core_expedition_result value = 3 }
-				set_country_flag = epoch_core_expedition_outcome_recorded
-				country_event = { id = epoch_core.7 days = 1 }
-			}
+	trigger = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_expedition_investigation_started NOT = { has_country_flag = epoch_core_expedition_outcome_recorded } }
+	immediate = { set_country_flag = epoch_core_expedition_project_failed }
+	option = {
+		name = epoch_core.30.a
+		hidden_effect = {
+			if = { limit = { has_country_flag = epoch_core_expedition_rescue_ordered } event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_EXPEDITION_RESCUE" location = this owner = root } } }
+			else_if = { limit = { has_country_flag = epoch_core_expedition_salvage_ordered } event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_EXPEDITION_SALVAGE" location = this owner = root } } }
+			else_if = { limit = { has_country_flag = epoch_core_expedition_survey_ordered } event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_EXPEDITION_SURVEY" location = this owner = root } } }
 		}
+		ai_chance = { factor = 70 }
+	}
+	option = {
+		name = epoch_core.30.b
+		hidden_effect = {
+			set_country_flag = epoch_core_expedition_search_failed
+			set_variable = { which = epoch_core_expedition_result value = 3 }
+			set_country_flag = epoch_core_expedition_outcome_recorded
+			country_event = { id = epoch_core.7 days = 1 }
+		}
+		ai_chance = { factor = 30 }
 	}
 }
 
-ship_event = {
+country_event = {
 	id = epoch_core.31
-	hide_window = yes
+	title = epoch_core.31.name
+	desc = epoch_core.31.desc
+	picture = GFX_evt_black_hole
 	is_triggered_only = yes
-	trigger = { owner = { epoch_core_active_campaign_empire = yes NOT = { has_country_flag = epoch_core_echo_first_resolved } } }
-	immediate = {
-		owner = {
+	trigger = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_echo_first_project_pending NOT = { has_country_flag = epoch_core_echo_first_resolved } }
+	immediate = { set_country_flag = epoch_core_echo_first_project_failed }
+	option = {
+		name = epoch_core.31.a
+		hidden_effect = {
+			if = { limit = { has_country_flag = epoch_core_initial_cautious } event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_FIRST_ECHO_CAUTIOUS" location = this owner = root } } }
+			else_if = { limit = { has_country_flag = epoch_core_initial_aggressive } event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_FIRST_ECHO_AGGRESSIVE" location = this owner = root } } }
+		}
+		ai_chance = { factor = 70 }
+	}
+	option = {
+		name = epoch_core.31.b
+		hidden_effect = {
 			set_country_flag = epoch_core_echo_first_resolved
-			if = {
-				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_initial_cautious }
-				set_country_flag = epoch_core_cautious_baseline_kept
-				set_country_flag = epoch_core_echo_first_project_failed
-			}
-			else_if = {
-				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_initial_aggressive }
-				set_country_flag = epoch_core_aggressive_throttled
-				set_country_flag = epoch_core_echo_first_project_failed
-			}
-			random_situation = {
-				limit = { is_situation_type = epoch_first_echo_investigation }
-				add_situation_progress = 20
-			}
+			if = { limit = { has_country_flag = epoch_core_initial_cautious } set_country_flag = epoch_core_cautious_baseline_kept }
+			else_if = { limit = { has_country_flag = epoch_core_initial_aggressive } set_country_flag = epoch_core_aggressive_throttled }
+			random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
 		}
+		ai_chance = { factor = 30 }
 	}
 }
 
-ship_event = {
+country_event = {
 	id = epoch_core.32
-	hide_window = yes
+	title = epoch_core.32.name
+	desc = epoch_core.32.desc
+	picture = GFX_evt_black_hole
 	is_triggered_only = yes
-	trigger = { owner = { epoch_core_active_campaign_empire = yes NOT = { has_country_flag = epoch_core_echo_second_resolved } } }
-	immediate = {
-		owner = {
+	trigger = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_echo_second_project_pending NOT = { has_country_flag = epoch_core_echo_second_resolved } }
+	immediate = { set_country_flag = epoch_core_echo_second_project_failed }
+	option = {
+		name = epoch_core.32.a
+		hidden_effect = {
+			if = { limit = { has_country_flag = epoch_core_cautious_instrument_calibrated } event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_ECHO_CALIBRATION" location = this owner = root } } }
+			else_if = { limit = { has_country_flag = epoch_core_cautious_baseline_kept } event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_ECHO_BASELINE" location = this owner = root } } }
+			else_if = { limit = { has_country_flag = epoch_core_aggressive_overdrive_committed } event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_ECHO_OVERDRIVE" location = this owner = root } } }
+			else_if = { limit = { has_country_flag = epoch_core_aggressive_throttled } event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_ECHO_THROTTLED" location = this owner = root } } }
+		}
+		ai_chance = { factor = 70 }
+	}
+	option = {
+		name = epoch_core.32.b
+		hidden_effect = {
 			set_country_flag = epoch_core_echo_second_resolved
-			if = {
-				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_initial_cautious }
-				set_country_flag = epoch_core_cautious_investigation_complete
-				set_country_flag = epoch_core_first_echo_complete
-				set_variable = { which = epoch_core_investigation_status value = 2 }
-				set_variable = { which = epoch_core_completion_status value = 1 }
-				country_event = { id = epoch_core.4 days = 1 }
-			}
-			else_if = {
-				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_initial_aggressive }
-				set_country_flag = epoch_core_aggressive_investigation_complete
-				set_country_flag = epoch_core_first_echo_complete
-				set_variable = { which = epoch_core_investigation_status value = 2 }
-				set_variable = { which = epoch_core_completion_status value = 1 }
-				country_event = { id = epoch_core.5 days = 1 }
-			}
+			set_country_flag = epoch_core_echo_second_abandoned
 			remove_country_flag = epoch_core_investigation_active
-			random_situation = {
-				limit = { is_situation_type = epoch_first_echo_investigation }
-				add_situation_progress = 20
-			}
+			random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
+			if = { limit = { has_country_flag = epoch_core_initial_cautious } set_country_flag = epoch_core_cautious_investigation_abandoned country_event = { id = epoch_core.4 days = 1 } }
+			else_if = { limit = { has_country_flag = epoch_core_initial_aggressive } set_country_flag = epoch_core_aggressive_investigation_abandoned country_event = { id = epoch_core.5 days = 1 } }
 		}
-	}
-}
-
-# Empire-local, one-shot recovery callbacks keep the AI and interrupted saves
-# from waiting indefinitely on a project. They are scheduled only when the
-# corresponding project is enabled; callbacks become inert after completion.
-country_event = {
-	id = epoch_core.33
-	hide_window = yes
-	is_triggered_only = yes
-	trigger = {
-		epoch_core_active_campaign_empire = yes
-		has_country_flag = epoch_core_echo_first_project_pending
-		NOT = { has_country_flag = epoch_core_echo_first_resolved }
-	}
-	immediate = {
-		set_country_flag = epoch_core_echo_first_resolved
-		set_country_flag = epoch_core_echo_first_project_timed_out
-		abort_special_project = { type = EPOCH_FIRST_ECHO_CAUTIOUS }
-		abort_special_project = { type = EPOCH_FIRST_ECHO_AGGRESSIVE }
-		random_situation = {
-			limit = { is_situation_type = epoch_first_echo_investigation }
-			add_situation_progress = 20
-		}
-	}
-}
-
-country_event = {
-	id = epoch_core.34
-	hide_window = yes
-	is_triggered_only = yes
-	trigger = {
-		epoch_core_active_campaign_empire = yes
-		has_country_flag = epoch_core_echo_second_project_pending
-		NOT = { has_country_flag = epoch_core_echo_second_resolved }
-	}
-	immediate = {
-		set_country_flag = epoch_core_echo_second_resolved
-		set_country_flag = epoch_core_echo_second_project_timed_out
-		abort_special_project = { type = EPOCH_ECHO_CALIBRATION }
-		abort_special_project = { type = EPOCH_ECHO_BASELINE }
-		abort_special_project = { type = EPOCH_ECHO_OVERDRIVE }
-		abort_special_project = { type = EPOCH_ECHO_THROTTLED }
-		if = {
-			limit = { has_country_flag = epoch_core_initial_cautious }
-			set_country_flag = epoch_core_cautious_investigation_complete
-			country_event = { id = epoch_core.4 days = 1 }
-		}
-		else_if = {
-			limit = { has_country_flag = epoch_core_initial_aggressive }
-			set_country_flag = epoch_core_aggressive_investigation_complete
-			country_event = { id = epoch_core.5 days = 1 }
-		}
-		set_country_flag = epoch_core_first_echo_complete
-		set_variable = { which = epoch_core_investigation_status value = 2 }
-		set_variable = { which = epoch_core_completion_status value = 1 }
-		remove_country_flag = epoch_core_investigation_active
-		random_situation = {
-			limit = { is_situation_type = epoch_first_echo_investigation }
-			add_situation_progress = 20
-		}
-	}
-}
-
-country_event = {
-	id = epoch_core.35
-	hide_window = yes
-	is_triggered_only = yes
-	trigger = {
-		epoch_core_active_campaign_empire = yes
-		has_country_flag = epoch_core_contamination_study_ordered
-		NOT = { has_country_flag = epoch_core_contamination_study_resolved }
-	}
-	immediate = {
-		set_country_flag = epoch_core_contamination_study_resolved
-		set_country_flag = epoch_core_contamination_study_timed_out
-		abort_special_project = { type = EPOCH_CONTAMINATION_STUDY }
-		set_country_flag = epoch_core_contamination_worsened
-		if = {
-			limit = { exists = event_target:epoch_core_world@root }
-			event_target:epoch_core_world@root = {
-				epoch_core_remove_contamination_effects = yes
-				epoch_core_apply_contamination_worsened = yes
-			}
-		}
-		country_event = { id = epoch_core.22 days = 1 }
-	}
-}
-
-country_event = {
-	id = epoch_core.37
-	hide_window = yes
-	is_triggered_only = yes
-	trigger = {
-		epoch_core_active_campaign_empire = yes
-		has_country_flag = epoch_core_expedition_project_enabled
-		NOT = { has_country_flag = epoch_core_expedition_contact_lost }
-	}
-	immediate = {
-		set_country_flag = epoch_core_expedition_scripted_loss
-		set_country_flag = epoch_core_expedition_contact_lost
-		abort_special_project = { type = EPOCH_MISSING_EXPEDITION }
-		set_country_flag = epoch_core_expedition_mission_timed_out
-		country_event = { id = epoch_core.6 days = 1 }
-	}
-}
-
-country_event = {
-	id = epoch_core.38
-	hide_window = yes
-	is_triggered_only = yes
-	trigger = {
-		epoch_core_active_campaign_empire = yes
-		has_country_flag = epoch_core_expedition_investigation_started
-		NOT = { has_country_flag = epoch_core_expedition_outcome_recorded }
-	}
-	immediate = {
-		set_country_flag = epoch_core_expedition_search_failed
-		set_country_flag = epoch_core_expedition_outcome_recorded
-		set_country_flag = epoch_core_expedition_search_timed_out
-		abort_special_project = { type = EPOCH_EXPEDITION_RESCUE }
-		abort_special_project = { type = EPOCH_EXPEDITION_SALVAGE }
-		abort_special_project = { type = EPOCH_EXPEDITION_SURVEY }
-		set_variable = { which = epoch_core_expedition_result value = 3 }
-		set_variable = { which = epoch_core_expedition_status value = 4 }
-		country_event = { id = epoch_core.7 days = 1 }
+		ai_chance = { factor = 30 }
 	}
 }
 
@@ -1074,6 +960,7 @@ fleet_event = {
 	title = epoch_core.40.name
 	desc = epoch_core.40.desc
 	picture = GFX_evt_relic_world
+	show_sound = event_dig_site
 	location = from
 	archaeology = yes
 	is_triggered_only = yes
@@ -1092,7 +979,7 @@ fleet_event = {
 			set_country_flag = epoch_core_structure_risk_increased
 		}
 		}
-		from.planet = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } }
+		from = { planet_owner = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } } }
 		ai_chance = { factor = 35 }
 	}
 }
@@ -1110,6 +997,7 @@ fleet_event = {
 	}
 	desc = { text = epoch_core.41.desc.standard trigger = { always = yes } }
 	picture = GFX_evt_relic_world
+	show_sound = event_dig_site
 	location = from
 	archaeology = yes
 	is_triggered_only = yes
@@ -1118,7 +1006,7 @@ fleet_event = {
 		hidden_effect = {
 		owner = { set_country_flag = epoch_core_structure_contamination_compared }
 		}
-		from.planet = { add_modifier = { modifier = epoch_core_structure_secured days = -1 } }
+		from = { planet_owner = { add_modifier = { modifier = epoch_core_structure_secured days = -1 } } }
 		ai_chance = { factor = 60 }
 	}
 	option = {
@@ -1129,7 +1017,7 @@ fleet_event = {
 			set_country_flag = epoch_core_structure_risk_increased
 		}
 		}
-		from.planet = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } }
+		from = { planet_owner = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } } }
 		ai_chance = { factor = 40 }
 	}
 }
@@ -1147,6 +1035,7 @@ fleet_event = {
 	}
 	desc = { text = epoch_core.42.desc.standard trigger = { always = yes } }
 	picture = GFX_evt_relic_world
+	show_sound = event_dig_site
 	location = from
 	archaeology = yes
 	is_triggered_only = yes
@@ -1155,7 +1044,7 @@ fleet_event = {
 		hidden_effect = {
 		owner = { set_country_flag = epoch_core_structure_echo_matched }
 		}
-		add_resource = { physics_research = 150 society_research = 150 }
+		owner = { add_resource = { physics_research = 150 society_research = 150 } }
 		ai_chance = { factor = 60 }
 	}
 	option = {
@@ -1166,7 +1055,7 @@ fleet_event = {
 			set_country_flag = epoch_core_structure_risk_increased
 		}
 		}
-		from.planet = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } }
+		from = { planet_owner = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } } }
 		ai_chance = { factor = 40 }
 	}
 }
@@ -1184,12 +1073,13 @@ fleet_event = {
 	}
 	desc = { text = epoch_core.43.desc.standard trigger = { always = yes } }
 	picture = GFX_evt_relic_world
+	show_sound = event_dig_site
 	location = from
 	archaeology = yes
 	is_triggered_only = yes
 	option = {
 		name = epoch_core.43.a
-		from.planet = { add_modifier = { modifier = epoch_core_structure_secured days = -1 } }
+		from = { planet_owner = { add_modifier = { modifier = epoch_core_structure_secured days = -1 } } }
 		hidden_effect = {
 		from = { set_site_progress_locked = yes }
 		owner = {
@@ -1203,12 +1093,9 @@ fleet_event = {
 	}
 	option = {
 		name = epoch_core.43.b
-		from.planet = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } }
+		from = { planet_owner = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } } }
 		hidden_effect = {
-		from.planet = {
-			remove_modifier = epoch_core_silent_structure
-			archaeological_site = { destroy_archaeological_site = this }
-		}
+		from = { planet_owner = { remove_modifier = epoch_core_silent_structure archaeological_site = { destroy_archaeological_site = this } } }
 		owner = {
 			set_country_flag = epoch_core_structure_destroyed
 			set_country_flag = epoch_core_structure_choice_recorded
@@ -1220,7 +1107,7 @@ fleet_event = {
 	}
 	option = {
 		name = epoch_core.43.c
-		from.planet = { add_modifier = { modifier = epoch_core_structure_investigated days = -1 } }
+		from = { planet_owner = { add_modifier = { modifier = epoch_core_structure_investigated days = -1 } } }
 		hidden_effect = {
 		owner = {
 			set_country_flag = epoch_core_structure_investigated
@@ -1230,5 +1117,103 @@ fleet_event = {
 		}
 		}
 		ai_chance = { factor = 45 }
+	}
+}
+
+# A destroyed/missing site opens an explicit remote-study or archive decision.
+# This monthly check detects only the real missing-object condition; elapsed
+# time never resolves the campaign or counts as excavation progress.
+country_event = {
+	id = epoch_core.44
+	title = epoch_core.44.name
+	desc = epoch_core.44.desc
+	picture = GFX_evt_relic_world
+	is_triggered_only = yes
+	trigger = {
+		epoch_core_active_campaign_empire = yes
+		has_country_flag = epoch_core_structure_study_ordered
+		NOT = { has_country_flag = epoch_core_structure_choice_recorded }
+		NOT = { has_country_flag = epoch_core_structure_remote_study_ordered }
+		NOT = { has_country_flag = epoch_core_structure_recovery_event_open }
+		OR = {
+			NOT = { has_country_flag = epoch_core_structure_site_created }
+			NOT = { exists = event_target:epoch_core_world@root }
+			event_target:epoch_core_world@root = { NOT = { exists = archaeological_site } }
+		}
+	}
+	immediate = { set_country_flag = epoch_core_structure_recovery_event_open }
+	option = {
+		name = epoch_core.44.a
+		trigger = { OR = { exists = event_target:epoch_core_signal_system@root exists = capital_scope } }
+		hidden_effect = {
+			set_country_flag = epoch_core_structure_remote_study_ordered
+			if = {
+				limit = { exists = event_target:epoch_core_signal_system@root }
+				event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_STRUCTURE_REMOTE_STUDY" location = this owner = root } }
+			}
+			else = { capital_scope = { enable_special_project = { name = "EPOCH_STRUCTURE_REMOTE_STUDY" location = this owner = root } } }
+		}
+		ai_chance = { factor = 70 }
+	}
+	option = {
+		name = epoch_core.44.b
+		hidden_effect = {
+			set_country_flag = epoch_core_structure_investigation_failed
+			set_country_flag = epoch_core_structure_choice_recorded
+			remove_country_flag = epoch_core_structure_recovery_event_open
+			random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
+			country_event = { id = epoch_core.23 days = 1 }
+		}
+		ai_chance = { factor = 30 }
+	}
+}
+
+ship_event = {
+	id = epoch_core.45
+	hide_window = yes
+	is_triggered_only = yes
+	immediate = {
+		owner = {
+			if = {
+				limit = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_structure_remote_study_ordered NOT = { has_country_flag = epoch_core_structure_choice_recorded } }
+				set_country_flag = epoch_core_structure_investigated
+				set_country_flag = epoch_core_structure_choice_recorded
+				remove_country_flag = epoch_core_structure_recovery_event_open
+				random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
+				country_event = { id = epoch_core.23 days = 1 }
+			}
+		}
+	}
+}
+
+country_event = {
+	id = epoch_core.46
+	title = epoch_core.46.name
+	desc = epoch_core.46.desc
+	picture = GFX_evt_relic_world
+	is_triggered_only = yes
+	trigger = { epoch_core_active_campaign_empire = yes has_country_flag = epoch_core_structure_remote_study_ordered NOT = { has_country_flag = epoch_core_structure_choice_recorded } }
+	option = {
+		name = epoch_core.46.a
+		trigger = { OR = { exists = event_target:epoch_core_signal_system@root exists = capital_scope } }
+		hidden_effect = {
+			if = {
+				limit = { exists = event_target:epoch_core_signal_system@root }
+				event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_STRUCTURE_REMOTE_STUDY" location = this owner = root } }
+			}
+			else = { capital_scope = { enable_special_project = { name = "EPOCH_STRUCTURE_REMOTE_STUDY" location = this owner = root } } }
+		}
+		ai_chance = { factor = 70 }
+	}
+	option = {
+		name = epoch_core.46.b
+		hidden_effect = {
+			set_country_flag = epoch_core_structure_investigation_failed
+			set_country_flag = epoch_core_structure_choice_recorded
+			remove_country_flag = epoch_core_structure_recovery_event_open
+			random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } add_situation_progress = 20 }
+			country_event = { id = epoch_core.23 days = 1 }
+		}
+		ai_chance = { factor = 30 }
 	}
 }

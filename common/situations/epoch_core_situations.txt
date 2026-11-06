@@ -56,10 +56,22 @@ epoch_first_echo_investigation = {
 		name = epoch_echo_cautious_approach
 		icon = GFX_situation_approach_research
 		icon_background = GFX_situation_approach_bg_green
-		potential = { owner = { has_country_flag = epoch_core_initial_cautious } }
+		potential = { owner = { has_country_flag = epoch_core_campaign_active } }
+		on_select = {
+			owner = {
+				remove_country_flag = epoch_core_approach_intensive
+				remove_country_flag = epoch_core_approach_containment
+				remove_country_flag = epoch_core_approach_minimal
+				set_country_flag = epoch_core_approach_cautious
+			}
+		}
+		modifier = { country_physics_research_produces_mult = 0.02 }
 		resources = {
 			category = situations
 			upkeep = { trigger = { current_stage = stage_signal_analysis } energy = 2 }
+			upkeep = { trigger = { current_stage = stage_source_analysis } energy = 2 }
+			upkeep = { trigger = { current_stage = stage_contamination } energy = 2 }
+			upkeep = { trigger = { current_stage = stage_excavation } energy = 2 }
 		}
 		ai_weight = { weight = 1 }
 	}
@@ -67,11 +79,69 @@ epoch_first_echo_investigation = {
 		name = epoch_echo_aggressive_approach
 		icon = GFX_situation_approach_fist
 		icon_background = GFX_situation_approach_bg_red
-		potential = { owner = { has_country_flag = epoch_core_initial_aggressive } }
+		potential = { owner = { has_country_flag = epoch_core_campaign_active } }
+		on_select = {
+			owner = {
+				remove_country_flag = epoch_core_approach_cautious
+				remove_country_flag = epoch_core_approach_containment
+				remove_country_flag = epoch_core_approach_minimal
+				set_country_flag = epoch_core_approach_intensive
+				set_country_flag = epoch_core_structure_risk_increased
+			}
+		}
 		resources = {
 			category = situations
 			upkeep = { trigger = { current_stage = stage_signal_analysis } energy = 5 }
+			upkeep = { trigger = { current_stage = stage_source_analysis } energy = 5 }
+			upkeep = { trigger = { current_stage = stage_contamination } energy = 6 }
+			upkeep = { trigger = { current_stage = stage_excavation } energy = 5 }
 		}
+		modifier = { country_engineering_research_produces_mult = 0.03 }
+		ai_weight = { weight = 1 }
+	}
+	approach = {
+		name = epoch_echo_containment_approach
+		icon = GFX_situation_approach_research
+		icon_background = GFX_situation_approach_bg_green
+		potential = { owner = { has_country_flag = epoch_core_contamination_started } }
+		on_select = {
+			owner = {
+				remove_country_flag = epoch_core_approach_cautious
+				remove_country_flag = epoch_core_approach_intensive
+				remove_country_flag = epoch_core_approach_minimal
+				set_country_flag = epoch_core_approach_containment
+			}
+		}
+		modifier = { country_society_research_produces_mult = 0.02 }
+		resources = {
+			category = situations
+			upkeep = { trigger = { current_stage = stage_contamination } energy = 4 minerals = 1 }
+			upkeep = { trigger = { current_stage = stage_excavation } energy = 2 }
+		}
+		ai_weight = { weight = 1 }
+	}
+	approach = {
+		name = epoch_echo_minimal_approach
+		icon = GFX_situation_approach_fist
+		icon_background = GFX_situation_approach_bg_red
+		potential = { owner = { has_country_flag = epoch_core_campaign_active } }
+		on_select = {
+			owner = {
+				remove_country_flag = epoch_core_approach_cautious
+				remove_country_flag = epoch_core_approach_intensive
+				remove_country_flag = epoch_core_approach_containment
+				set_country_flag = epoch_core_approach_minimal
+				set_country_flag = epoch_core_structure_risk_increased
+			}
+		}
+		resources = {
+			category = situations
+			upkeep = { trigger = { current_stage = stage_signal_analysis } energy = 1 }
+			upkeep = { trigger = { current_stage = stage_source_analysis } energy = 1 }
+			upkeep = { trigger = { current_stage = stage_contamination } energy = 1 }
+			upkeep = { trigger = { current_stage = stage_excavation } energy = 1 }
+		}
+		modifier = { country_physics_research_produces_mult = -0.02 }
 		ai_weight = { weight = 1 }
 	}
 

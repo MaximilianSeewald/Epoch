@@ -5,8 +5,9 @@ special_project = {
 	picture = GFX_evt_black_hole
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
-	on_success = { ship_event = { id = epoch_core.10 } }
-	on_fail = { ship_event = { id = epoch_core.31 } }
+	on_success = { from = { ship_event = { id = epoch_core.10 } } }
+	on_fail = { country_event = { id = epoch_core.31 } }
+	on_cancel = { country_event = { id = epoch_core.31 } }
 }
 
 special_project = {
@@ -16,8 +17,9 @@ special_project = {
 	picture = GFX_evt_black_hole
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
-	on_success = { ship_event = { id = epoch_core.10 } }
-	on_fail = { ship_event = { id = epoch_core.31 } }
+	on_success = { from = { ship_event = { id = epoch_core.10 } } }
+	on_fail = { country_event = { id = epoch_core.31 } }
+	on_cancel = { country_event = { id = epoch_core.31 } }
 }
 
 special_project = {
@@ -27,8 +29,9 @@ special_project = {
 	picture = GFX_evt_black_hole
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
-	on_success = { ship_event = { id = epoch_core.11 } }
-	on_fail = { ship_event = { id = epoch_core.32 } }
+	on_success = { from = { ship_event = { id = epoch_core.11 } } }
+	on_fail = { country_event = { id = epoch_core.32 } }
+	on_cancel = { country_event = { id = epoch_core.32 } }
 }
 
 special_project = {
@@ -38,8 +41,9 @@ special_project = {
 	picture = GFX_evt_black_hole
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
-	on_success = { ship_event = { id = epoch_core.11 } }
-	on_fail = { ship_event = { id = epoch_core.32 } }
+	on_success = { from = { ship_event = { id = epoch_core.11 } } }
+	on_fail = { country_event = { id = epoch_core.32 } }
+	on_cancel = { country_event = { id = epoch_core.32 } }
 }
 
 special_project = {
@@ -49,8 +53,9 @@ special_project = {
 	picture = GFX_evt_black_hole
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
-	on_success = { ship_event = { id = epoch_core.11 } }
-	on_fail = { ship_event = { id = epoch_core.32 } }
+	on_success = { from = { ship_event = { id = epoch_core.11 } } }
+	on_fail = { country_event = { id = epoch_core.32 } }
+	on_cancel = { country_event = { id = epoch_core.32 } }
 }
 
 special_project = {
@@ -60,8 +65,9 @@ special_project = {
 	picture = GFX_evt_black_hole
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
-	on_success = { ship_event = { id = epoch_core.11 } }
-	on_fail = { ship_event = { id = epoch_core.32 } }
+	on_success = { from = { ship_event = { id = epoch_core.11 } } }
+	on_fail = { country_event = { id = epoch_core.32 } }
+	on_cancel = { country_event = { id = epoch_core.32 } }
 }
 
 special_project = {
@@ -71,8 +77,9 @@ special_project = {
 	picture = GFX_evt_ship_in_orbit
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
-	on_success = { ship_event = { id = epoch_core.12 } }
-	on_fail = { ship_event = { id = epoch_core.28 } }
+	on_success = { from = { ship_event = { id = epoch_core.12 } } }
+	on_fail = { country_event = { id = epoch_core.28 } }
+	on_cancel = { country_event = { id = epoch_core.28 } }
 }
 
 special_project = {
@@ -82,8 +89,9 @@ special_project = {
 	picture = GFX_evt_ship_in_orbit
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
-	on_success = { ship_event = { id = epoch_core.13 } }
-	on_fail = { ship_event = { id = epoch_core.30 } }
+	on_success = { from = { ship_event = { id = epoch_core.13 } } }
+	on_fail = { country_event = { id = epoch_core.30 } }
+	on_cancel = { country_event = { id = epoch_core.30 } }
 }
 
 special_project = {
@@ -93,8 +101,9 @@ special_project = {
 	picture = GFX_evt_space_debris
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
-	on_success = { ship_event = { id = epoch_core.13 } }
-	on_fail = { ship_event = { id = epoch_core.30 } }
+	on_success = { from = { ship_event = { id = epoch_core.13 } } }
+	on_fail = { country_event = { id = epoch_core.30 } }
+	on_cancel = { country_event = { id = epoch_core.30 } }
 }
 
 special_project = {
@@ -104,8 +113,9 @@ special_project = {
 	picture = GFX_evt_black_hole
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
-	on_success = { ship_event = { id = epoch_core.13 } }
-	on_fail = { ship_event = { id = epoch_core.30 } }
+	on_success = { from = { ship_event = { id = epoch_core.13 } } }
+	on_fail = { country_event = { id = epoch_core.30 } }
+	on_cancel = { country_event = { id = epoch_core.30 } }
 }
 
 special_project = {
@@ -115,7 +125,20 @@ special_project = {
 	picture = GFX_evt_black_hole
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
-	on_success = { ship_event = { id = epoch_core.21 } }
-	on_fail = { ship_event = { id = epoch_core.26 } }
+	on_success = { from = { ship_event = { id = epoch_core.21 } } }
+	on_fail = { country_event = { id = epoch_core.26 } }
+	on_cancel = { country_event = { id = epoch_core.26 } }
+}
+
+special_project = {
+	key = "EPOCH_STRUCTURE_REMOTE_STUDY"
+	days_to_research = 180
+	tech_department = society_technology
+	picture = GFX_evt_relic_world
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { from = { ship_event = { id = epoch_core.45 } } }
+	on_fail = { country_event = { id = epoch_core.46 } }
+	on_cancel = { country_event = { id = epoch_core.46 } }
 }
 
