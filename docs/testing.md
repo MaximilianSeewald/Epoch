@@ -11,30 +11,77 @@ These checks do not demonstrate that the campaign works in game, or prove the
 expedition's full runtime life cycle, AI completion, multiplayer safety, or
 save/load persistence.
 
-## Expected Phase I project and vessel sequence
+## Phase I milestone: 6 November 2026
 
-1. The Situation gains approach progress to 15, then enters a second Phase-1 stage whose native `on_first_enter` callback releases exactly one First Echo project (`EPOCH_FIRST_ECHO_CAUTIOUS` or `EPOCH_FIRST_ECHO_AGGRESSIVE`). Progress is held there until the second selected project resolves or the player explicitly abandons it; only then does the Situation progress into Phase 2. Its first ship callback opens the follow-up decision.
-2. The player selects an owned science ship with a scientist for `EPOCH_MISSING_EXPEDITION`. Only the ship whose successful project callback is `epoch_core.12` is saved as the expedition vessel and destroyed; its fleet scientist is saved before that destruction.
-3. Rescue, salvage, and survey projects callback to `epoch_core.13`; these are search ships and must remain in service. Failure callbacks and timeouts record a search outcome without deleting any ship. Only a survivor outcome clears the saved expedition scientist's missing marker; other recorded outcomes resolve that scientist as lost.
-4. The contamination study is performed by a staffed science ship after its Situation threshold; success or an explicit alternative resolution unlocks excavation only after the current progress boundary. No unrelated science ship is selected or destroyed by these callbacks.
-5. A staffed science ship excavates all four native chapters at the Silent Structure after its threshold. The site is retained when secured, removed only by the player's explicit destroy choice, and never removed by a calendar timeout. The final chapter decision resolves that phase; the closing report waits for its own Situation threshold.
+The five sections now use fixed research/wait pairs and native `on_first_enter`
+callbacks. Open wait objectives have zero monthly progress. The callback is
+also dispatched monthly as a guarded save/load fallback; it never resolves a
+project or grants progress. The main description stays fixed; native
+`triggered_blocked_desc` identifies the currently required action.
 
-The sequence above is the expected script behavior. It is not a runtime confirmation. Stage `end` values define transition boundaries; raising one does not freeze progress at an earlier nominal threshold. The previous first-project release depended on the monthly dispatcher still seeing `stage_signal_analysis` at progress 15. The reported game run showed that stage had already changed before the dispatcher could satisfy that guard, so the first project was never released. The repair uses a Vanilla `on_first_enter` callback on a same-UI wait stage and gates its monthly progress on the saved First Echo completion flag. The script sources establish the callback syntax and stage pattern, while the precise engine update order and the new stage's runtime behavior still need an in-game run.
+| Research stage | End / objective release | Wait stage | Required resolution | Wait end |
+|---|---:|---|---|---:|
+| `stage_signal_analysis` | 15 | `stage_echo_resolution` | `epoch_core_first_echo_complete` or explicit `epoch_core_echo_second_abandoned` | 20 |
+| `stage_source_analysis` | 25 | `stage_expedition_resolution` | Expedition/search result report: `epoch_core_expedition_phase_resolved` | 30 |
+| `stage_contamination` | 35 | `stage_contamination_resolution` | Sampling, isolation, or explicit acceptance of damage: `epoch_core_contamination_phase_resolved` | 40 |
+| `stage_excavation` | 45 | `stage_structure_resolution` | Chapter 4 choice or explicit missing-site recovery: `epoch_core_structure_phase_resolved` | 50 |
+| `stage_report` | 55 | `stage_conclusion_resolution` | Final continuation/sealing decision: `epoch_core_conclusion_decision_resolved` | 60 (never approached automatically) |
 
-For an opt-in game-log trace, run `event epoch_core.49` in the console to toggle Situation diagnostics. The trace is disabled by default and records the dispatcher, stage/progress readout, project-release flag, and objective state on each monthly Situation dispatch.
+The final decision closes the Situation immediately on either path and records
+`epoch_core_phase_i_situation_complete`. Continuing preserves readiness for
+future content; sealing records permanently opts out. Both remove the active
+Phase I state and retain lasting consequences. No Phase II gameplay is started.
+Monthly steps are smaller than each five-point wait stage, so a threshold
+overshoot cannot jump past an unresolved objective. Exact displayed progress
+may exceed a threshold by part of a monthly step.
 
-The existing Stellaris log files supplied during regression runs contain EPOCH-related script errors, including an invalid `from.planet` scope switch inside Vanilla's visibility helper when it was called for the archaeological site. This helper has been removed from that owner-only visibility check; rerun the game and review fresh logs after this update before claiming parser acceptance.
+The original two-project First Echo flow, expedition performing-ship callback,
+and four native archaeology chapters/difficulties remain in use. Expedition
+failure, recall and search loss remain explicit outcomes. All actual
+non-survivor expedition losses now contribute to later consequences. The
+contamination uses class-specific planet modifiers; it persists until sampling,
+paid isolation or explicit acceptance. A deterministic closing assessment
+incorporates Echo, expedition and contamination records as well as the existing
+structure outcome. English/German stage, objective and outcome text is complete.
 
-The conclusion must apply a lasting path- and empire-class-dependent gameplay
-penalty before either choice. Verify that no ordinary expiry or routine event
-removes it, and confirm it survives saving and loading. Check conclusion option
-text in both languages for in-world wording and confirm all EPOCH events,
-situations, projects, and enrollment hooks are suppressed after sealing the
-records. Review closing text to ensure the consequences can be visible while
-their cause and the larger mystery remain unresolved.
+Failure/cancellation windows have persistent one-shot guards. Missing target
+objects or a conquered site request explicit recovery/closure instead of timed
+success. Closing removes pending projects after recording the resolution, so
+cancellation callbacks cannot reopen them. The native archaeological site is
+saved under a country-keyed target; excavation and visibility cannot select a
+different empire's site. Native excavation stages, rolls and chapter callbacks
+remain the same. Invalid site-to-country modifier switches now use the saved
+campaign world.
 
-See the [M0-B evidence matrix](evidence/m0-b-engine-verification.md) for
-source-level findings, status definitions, limitations, and open questions.
+Run the complete static suite with PowerShell 7 and Node.js:
+
+~~~powershell
+./scripts/test_epoch_regressions.ps1
+git diff --check
+~~~
+
+The PowerShell suite includes `scripts/test_phase_i_flow.cjs`, which parses the
+actual Clausewitz progress/dispatcher blocks. It explores all approaches,
+quarter-point boundary offsets, complete paths with approach switches,
+abandonment, both initial methods, and repeated dispatch with restored country
+flags. This is a limited static model, not an engine emulator or actual
+save/load validation. Historical log summaries are labelled pre-fix evidence.
+
+The user reports the initial Situation, monthly approach progress, stable
+description, First Echo wait gate and both project unlocks, and multistage
+archaeology as successfully tested. The expanded campaign still requires one
+complete runtime acceptance pass. Follow the
+[German acceptance checklist](testing/phase-i-acceptance.md). Fresh 4.5.3 parser
+logs, AI project assignment/completion, real save/load, empire variants, UI and
+multiplayer remain runtime checks. Existing saves already beyond a skipped
+objective are not automatically rewound; use a new game or a pre-discovery save.
+
+Diagnostics remain off by default. Console `event epoch_core.49` toggles monthly
+stage/progress/project logging for investigation. No global monthly country
+pulse or elapsed-time completion is introduced.
+
+See the [source evidence matrix](evidence/m0-b-engine-verification.md) for
+historical evidence and the source references below for this milestone.
 
 ## M0-B performed checks
 

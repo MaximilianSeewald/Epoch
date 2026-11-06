@@ -93,7 +93,7 @@ foreach ($entry in @(
 foreach ($section in @('First Echo', 'Missing Expedition', 'First Contamination', 'The Silent Structure', 'Phase I Conclusion')) {
 	Assert-Check ($phaseSpec.Contains($section)) "Binding Phase I specification is missing section: $section"
 }
-Assert-Check ($phaseSpec -match 'PR #6 is the technical starting point for Phase I, but it is not the complete Phase I implementation') 'Phase I specification must state PR #6 is not complete Phase I'
+Assert-Check ($phaseSpec -match 'PR #6 now contains the five-section implementation and remains open until successful full in-game acceptance') 'Phase I specification must distinguish implementation from final in-game acceptance'
 foreach ($requirement in @('permanent exit', 'AI', 'multiple simultaneous empires', 'save/load', 'multiplayer', 'VERIFIED', 'RUNTIME', 'negative consequence', 'in-world language', 'preserve uncertainty')) {
 	Assert-Check ($phaseSpec.Contains($requirement)) "Binding Phase I specification is missing requirement: $requirement"
 }
@@ -148,6 +148,10 @@ $requiredSituationLocKeys = @(
 	'epoch_echo_aggressive_approach'
 )
 foreach ($key in $requiredSituationLocKeys) { Assert-Check $allLocKeys.ContainsKey($key) "Missing situation/stage localization key $key" }
+$scriptedLoc = Read-ProjectFile 'common/scripted_loc/epoch_core_loc.txt'
+Assert-Check (Test-BraceBalance $scriptedLoc) 'Scripted conclusion localization must parse balanced blocks'
+foreach ($ref in [regex]::Matches($scriptedLoc, 'localization_key\s*=\s*([A-Za-z0-9_.]+)')) { Assert-Check ($allLocKeys.ContainsKey($ref.Groups[1].Value)) "Missing summary localization $($ref.Groups[1].Value)" }
+foreach ($stage in [regex]::Matches($situations, '(?m)^\s*(stage_[a-z_]+)\s*=\s*\{')) { Assert-Check ($allLocKeys.ContainsKey($stage.Groups[1].Value)) "Missing stage localization $($stage.Groups[1].Value)" }
 $textRefs = [regex]::Matches($events + "`n" + $situations, '(?:title|desc|text|name|custom_tooltip)\s*=\s*(epoch_core\.[A-Za-z0-9_.]+|epoch_first_echo_[A-Za-z0-9_]+|stage_(?:signal_analysis|source_analysis))')
 foreach ($ref in $textRefs) { Assert-Check $allLocKeys.ContainsKey($ref.Groups[1].Value) "Missing EN/DE localization key $($ref.Groups[1].Value)" }
 $projectKeys = @([regex]::Matches($projects, '(?m)^\s*key\s*=\s*"([A-Z0-9_]+)"') | ForEach-Object { $_.Groups[1].Value })
@@ -192,7 +196,7 @@ $firstCallback = Get-EventBlock $events 10
 Assert-Check ($null -ne $sourceStage -and $sourceStage -notmatch 'situation_event\s*=\s*\{\s*id\s*=\s*epoch_core\.3' -and $firstCallback -match 'situation_event\s*=\s*\{\s*id\s*=\s*epoch_core\.3') 'epoch_core.3 must follow the first successful First Echo project, not a stage threshold'
 $signalStage = Get-Block $situationBlock '(?m)^\s*stage_signal_analysis\s*=\s*\{' 'signal-analysis stage'
 Assert-Check ($signalStage -notmatch 'situation_event\s*=\s*\{\s*id\s*=\s*epoch_core\.3') 'epoch_core.3 must not fire when the Situation is first created'
-Assert-Check (@([regex]::Matches($situationBlock, '(?m)^\s*stage_[a-z_]+\s*=\s*\{')).Count -eq 6 -and $situationBlock -match 'stage_signal_analysis\s*=\s*\{[\s\S]*?end\s*=\s*15' -and $situationBlock -match 'stage_echo_resolution\s*=\s*\{[\s\S]*?end\s*=\s*20[\s\S]*?on_first_enter\s*=\s*\{\s*situation_event\s*=\s*\{\s*id\s*=\s*epoch_core\.48' -and $situationBlock -match 'stage_source_analysis\s*=\s*\{[\s\S]*?base\s*=\s*20[\s\S]*?add\s*=\s*5' -and $situationBlock -match 'stage_contamination\s*=\s*\{[\s\S]*?base\s*=\s*30[\s\S]*?add\s*=\s*5' -and $situationBlock -match 'stage_excavation\s*=\s*\{[\s\S]*?base\s*=\s*40[\s\S]*?add\s*=\s*5' -and $situationBlock -match 'stage_report\s*=\s*\{[\s\S]*?end\s*=\s*50') 'The Situation must include a native phase-1 wait stage and preserve later boundaries'
+Assert-Check (@([regex]::Matches($situationBlock, '(?m)^\s*stage_[a-z_]+\s*=\s*\{')).Count -eq 10 -and $situationBlock -notmatch 'end\s*=\s*\{') 'All five sections need separate research/wait stages with fixed ends'
 Assert-Check ($situationBlock -match 'permanent\s*=\s*yes' -and $situationBlock -match 'on_progress_complete\s*=\s*\{[\s\S]*epoch_core_conclusion_decision_resolved[\s\S]*destroy_situation\s*=\s*this') 'The final stage must remain at full progress until its conclusion choice is recorded'
 Assert-Check ($situationBlock -match 'monthly_progress\s*=\s*\{\s*base\s*=\s*0[\s\S]*current_situation_approach[\s\S]*situation_progress\s*<\s*15' -and $situationBlock -match 'situation_progress\s*<\s*25' -and $situationBlock -match 'situation_progress\s*<\s*35' -and $situationBlock -match 'situation_progress\s*<\s*45') 'Situation progress must come from the selected approach and stop at each explicit phase boundary'
 Assert-Check ($events -notmatch 'add_situation_progress\s*=') 'Project and choice callbacks must not award manual progress or complete projects automatically'
@@ -254,20 +258,20 @@ foreach ($key in @('EPOCH_ECHO_CALIBRATION','EPOCH_ECHO_BASELINE','EPOCH_ECHO_OV
 $secondCallback = Get-EventBlock $events 11
 Assert-Check ($secondCallback -match 'set_country_flag\s*=\s*epoch_core_first_echo_complete' -and $secondCallback -notmatch 'add_situation_progress|destroy_situation\s*=|destroy_ship\s*=|country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.(?:4|5)') 'epoch_core.11 must record First Echo completion without starting the next phase early'
 $phaseGates = @(
-	@{ Stage = 'stage_source_analysis'; Base = 25; Objective = 'epoch_core_expedition_phase_resolved'; Setter = 'epoch_core_expedition_phase_resolved'; Alternative = '' },
-	@{ Stage = 'stage_contamination'; Base = 35; Objective = 'epoch_core_contamination_phase_resolved'; Setter = 'epoch_core_contamination_phase_resolved'; Alternative = '' },
-	@{ Stage = 'stage_excavation'; Base = 45; Objective = 'epoch_core_structure_phase_resolved'; Setter = 'epoch_core_structure_phase_resolved'; Alternative = '' },
-	@{ Stage = 'stage_report'; Base = 50; Objective = 'epoch_core_conclusion_decision_resolved'; Setter = 'epoch_core_conclusion_decision_resolved'; Alternative = '' }
+    @{ Research = 'stage_signal_analysis'; Stage = 'stage_echo_resolution'; Threshold = 15; End = 20; Objective = 'epoch_core_first_echo_complete' },
+    @{ Research = 'stage_source_analysis'; Stage = 'stage_expedition_resolution'; Threshold = 25; End = 30; Objective = 'epoch_core_expedition_phase_resolved' },
+    @{ Research = 'stage_contamination'; Stage = 'stage_contamination_resolution'; Threshold = 35; End = 40; Objective = 'epoch_core_contamination_phase_resolved' },
+    @{ Research = 'stage_excavation'; Stage = 'stage_structure_resolution'; Threshold = 45; End = 50; Objective = 'epoch_core_structure_phase_resolved' },
+    @{ Research = 'stage_report'; Stage = 'stage_conclusion_resolution'; Threshold = 55; End = 60; Objective = 'epoch_core_conclusion_decision_resolved' }
 )
 foreach ($gate in $phaseGates) {
-	$stageBlock = Get-Block $situationBlock "(?m)^\s*$($gate.Stage)\s*=\s*\{" $gate.Stage
-	if ($gate.Stage -eq 'stage_report') {
-		Assert-Check ($null -ne $stageBlock -and $stageBlock -match 'end\s*=\s*50' -and $situationBlock -match 'permanent\s*=\s*yes' -and (Get-EventBlock $events 47) -match 'current_stage\s*=\s*stage_report[\s\S]*epoch_core_conclusion_decision_resolved') 'The final permanent stage must stop at its objective gate without ending early'
-	} else {
-		Assert-Check ($null -ne $stageBlock -and $stageBlock -match "base\s*=\s*$($gate.Base - 5)" -and $stageBlock -match 'add\s*=\s*5' -and $stageBlock -match [regex]::Escape($gate.Objective)) "$($gate.Stage) needs an objective-dependent boundary at its release threshold"
-	}
-	Assert-Check ($situationBlock -match "current_stage\s*=\s*$($gate.Stage)\s+situation_progress\s*<\s*$($gate.Base)" -and (Get-EventBlock $events 48) -match "current_stage\s*=\s*$($gate.Stage)[\s\S]*situation_progress\s*>=\s*$($gate.Base)") "$($gate.Stage) must stop at its boundary and release its objective once"
-	Assert-Check ($events -match "set_country_flag\s*=\s*$($gate.Setter)") "$($gate.Stage) needs a saved objective flag set by a real resolution callback"
+    $research = Get-Block $situationBlock "(?m)^\s*$($gate.Research)\s*=\s*\{" $gate.Research
+    $wait = Get-Block $situationBlock "(?m)^\s*$($gate.Stage)\s*=\s*\{" $gate.Stage
+    Assert-Check ($research -match "end\s*=\s*$($gate.Threshold)\b" -and $research -notmatch 'on_first_enter') "$($gate.Research) must end at its fixed research threshold"
+    Assert-Check ($wait -match "end\s*=\s*$($gate.End)\b" -and $wait -match 'on_first_enter\s*=\s*\{\s*situation_event\s*=\s*\{\s*id\s*=\s*epoch_core\.48') "$($gate.Stage) must release its objective through native stage entry"
+    Assert-Check ((Get-EventBlock $events 48) -match "current_stage\s*=\s*$($gate.Stage)\b[\s\S]*situation_progress\s*>=\s*$($gate.Threshold)\b") "$($gate.Stage) dispatcher must recognize the stage present at the threshold"
+    Assert-Check ($events -match "set_country_flag\s*=\s*$($gate.Objective)\b") "$($gate.Stage) must have a saved resolution state"
+    Assert-Check ($allLocKeys.ContainsKey($gate.Research) -and $allLocKeys.ContainsKey($gate.Stage)) "$($gate.Stage) and its research stage must be localized in both languages"
 }
 Assert-Check ($situationBlock -match 'current_stage\s*=\s*stage_signal_analysis\s+situation_progress\s*<\s*15' -and $situationBlock -match 'current_stage\s*=\s*stage_echo_resolution[\s\S]*?epoch_core_first_echo_complete[\s\S]*?situation_progress\s*<\s*20' -and $situationBlock -match 'current_stage\s*=\s*stage_echo_resolution[\s\S]*?epoch_core_echo_second_abandoned') 'Phase 1 must collect progress to 15, wait for its objective, then advance toward phase 2'
 Assert-Check ((Get-EventBlock $events 47) -match 'set_country_flag\s*=\s*epoch_core_monthly_dispatcher_seen' -and (Get-EventBlock $events 47) -match 'epoch_core_situation_diagnostics[\s\S]*GetCurrentStage[\s\S]*GetProgress[\s\S]*epoch_core_echo_first_project_pending[\s\S]*epoch_core_first_echo_complete' -and (Get-EventBlock $events 49) -match 'epoch_core_situation_diagnostics') 'Opt-in diagnostics must report stage, progress, dispatcher, project, and objective state'
@@ -281,7 +285,10 @@ Assert-Check ((Get-EventBlock $events 28) -match 'epoch_core_expedition_project_
 Assert-Check ((Get-Block (Get-EventBlock $events 26) '(?m)^\s*immediate\s*=\s*\{' 'contamination failure effects') -notmatch 'epoch_core_contamination_phase_resolved' -and (Get-EventBlock $events 26) -match 'name\s*=\s*epoch_core\.26\.b[\s\S]*epoch_core_contamination_phase_resolved') 'Failed contamination work satisfies the gate only through the explicit abandon option'
 Assert-Check ((Get-Block (Get-EventBlock $events 46) '(?m)^\s*option\s*=\s*\{\s*name\s*=\s*epoch_core\.46\.a' 'remote retry option') -notmatch 'epoch_core_structure_phase_resolved' -and (Get-EventBlock $events 46) -match 'name\s*=\s*epoch_core\.46\.b[\s\S]*epoch_core_structure_phase_resolved') 'Failed remote study satisfies the structure gate only through explicit archive resolution'
 Assert-Check ((Get-EventBlock $events 23) -match 'name\s*=\s*epoch_core\.23\.a[\s\S]*epoch_core_conclusion_decision_resolved' -and (Get-EventBlock $events 23) -match 'name\s*=\s*epoch_core\.23\.b[\s\S]*epoch_core_conclusion_decision_resolved') 'Both final decisions must resolve the conclusion gate; exit also closes the Situation'
-Assert-Check ($situationBlock -match 'permanent\s*=\s*yes' -and (Get-EventBlock $events 47) -match 'current_stage\s*=\s*stage_report\s+situation_progress\s*>=\s*50\s+owner\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_conclusion_decision_resolved\s*\}[\s\S]*destroy_situation\s*=\s*this') 'Saveable final progress may wait at 100% until the decision flag appears, then close once'
+foreach ($choice in @('a','b')) {
+    $option = Get-Block (Get-EventBlock $events 23) "option\s*=\s*\{\s*name\s*=\s*epoch_core\.23\.$choice\b" "final choice $choice"
+    Assert-Check ($option -match 'set_country_flag\s*=\s*epoch_core_conclusion_decision_resolved' -and $option -match 'set_country_flag\s*=\s*epoch_core_phase_i_situation_complete' -and $option -match 'remove_country_flag\s*=\s*epoch_core_campaign_active' -and $option -match 'destroy_situation\s*=\s*this') "Final choice $choice must immediately and permanently close the Situation"
+}
 Assert-Check (($phaseGates | ForEach-Object { $_.Objective; $_.Alternative } | Where-Object { $_ }) -notmatch '^$' -and $events -notmatch 'set_variable\s*=\s*\{\s*which\s*=\s*epoch_core_(?:first_echo_complete|expedition_phase_resolved|contamination_phase_resolved|structure_phase_resolved|conclusion_decision_resolved)') 'Phase gates must use persistent campaign flags rather than transient local test state'
 Assert-Check ($situationBlock -match 'desc\s*=\s*\{\s*trigger\s*=\s*\{\s*always\s*=\s*yes\s*\}\s*text\s*=\s*epoch_first_echo_investigation_desc\s*\}' -and $situationBlock -notmatch 'epoch_core_situation_(?:waiting|active)') 'Situation description must stay narrative and independent of monthly status flags'
 Assert-Check ((Get-EventBlock $events 31) -match 'epoch_core_campaign_opted_out[\s\S]*destroy_situation\s*=\s*this' -and (Get-EventBlock $events 23) -match 'epoch_core_campaign_opted_out[\s\S]*destroy_situation\s*=\s*this') 'Both campaign exit routes must destroy the saved Situation to avoid a deadlock'
@@ -356,8 +363,8 @@ Assert-Check ($worsenedContaminationEffect -match 'is_machine_empire\s*=\s*yes[\
 Assert-Check ($conclusionEvent -match 'epoch_core_permanent_scar_organic' -and $conclusionEvent -match 'epoch_core_permanent_scar_hive' -and $conclusionEvent -match 'epoch_core_permanent_scar_machine') 'Conclusion must apply a class-specific permanent consequence'
 Assert-Check ($conclusionEvent -match 'epoch_core_permanent_scar_exacerbated' -and $conclusionEvent -match 'epoch_core_expedition_loss_recorded' -and $conclusionEvent -match 'epoch_core_contamination_neglected' -and $conclusionEvent -match 'epoch_core_structure_destroyed') 'Permanent consequence severity must reflect the campaign path'
 Assert-Check ($conclusionEvent -match 'days\s*=\s*-1' -and $conclusionEvent -match 'epoch_core_phase_ii_ready' -and $conclusionEvent -match 'epoch_core_campaign_opted_out') 'Permanent consequence must be applied before in-world continuation/closure options'
-Assert-Check ($finalEvent -match 'set_country_flag\s*=\s*epoch_core_expedition_phase_resolved' -and (Get-EventBlock $events 48) -match 'stage_contamination[\s\S]*epoch_core_expedition_phase_resolved[\s\S]*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.20') 'Expedition report resolves its phase; the Situation threshold releases First Contamination'
-Assert-Check ($contaminationEvent -match 'set_country_flag\s*=\s*epoch_core_contamination_phase_resolved' -and (Get-EventBlock $events 21) -match 'set_country_flag\s*=\s*epoch_core_contamination_phase_resolved' -and (Get-EventBlock $events 43) -match 'set_country_flag\s*=\s*epoch_core_structure_phase_resolved' -and (Get-EventBlock $events 45) -match 'set_country_flag\s*=\s*epoch_core_structure_phase_resolved' -and (Get-EventBlock $events 48) -match 'stage_excavation[\s\S]*epoch_core_contamination_phase_resolved[\s\S]*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.22' -and (Get-EventBlock $events 48) -match 'stage_report[\s\S]*epoch_core_structure_phase_resolved[\s\S]*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.23') 'Phase callbacks resolve state; the Situation thresholds release the native site and closing report'
+Assert-Check ($finalEvent -match 'set_country_flag\s*=\s*epoch_core_expedition_phase_resolved' -and (Get-EventBlock $events 48) -match 'stage_contamination_resolution[\s\S]*epoch_core_expedition_phase_resolved[\s\S]*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.20') 'Expedition report resolves its phase; the Situation threshold releases First Contamination'
+Assert-Check ($contaminationEvent -match 'set_country_flag\s*=\s*epoch_core_contamination_phase_resolved' -and (Get-EventBlock $events 21) -match 'set_country_flag\s*=\s*epoch_core_contamination_phase_resolved' -and (Get-EventBlock $events 43) -match 'set_country_flag\s*=\s*epoch_core_structure_phase_resolved' -and (Get-EventBlock $events 45) -match 'set_country_flag\s*=\s*epoch_core_structure_phase_resolved' -and (Get-EventBlock $events 48) -match 'stage_structure_resolution[\s\S]*epoch_core_contamination_phase_resolved[\s\S]*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.22' -and (Get-EventBlock $events 48) -match 'stage_conclusion_resolution[\s\S]*epoch_core_structure_phase_resolved[\s\S]*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.23') 'Phase callbacks resolve state; the Situation thresholds release the native site and closing report'
 Assert-Check ($conclusionEvent -match 'set_country_flag\s*=\s*epoch_core_campaign_opted_out' -and $conclusionEvent -match 'remove_country_flag\s*=\s*epoch_core_campaign_active' -and $conclusionEvent -match 'set_country_flag\s*=\s*epoch_core_phase_ii_ready') 'Conclusion must set permanent internal exit or Phase II continuation state'
 Assert-Check ($modifiers -match 'epoch_core_permanent_scar_organic\s*=\s*\{[\s\S]*?planet_jobs_food_produces_mult\s*=\s*-0\.05' -and $modifiers -match 'epoch_core_permanent_scar_hive\s*=\s*\{[\s\S]*?planet_jobs_unity_produces_mult\s*=\s*-0\.05' -and $modifiers -match 'epoch_core_permanent_scar_machine\s*=\s*\{[\s\S]*?planet_jobs_energy_produces_mult\s*=\s*-0\.05') 'Permanent class-specific modifiers must reduce actual job output'
 foreach ($modifierKey in @('epoch_core_permanent_scar_organic', 'epoch_core_permanent_scar_hive', 'epoch_core_permanent_scar_machine', 'epoch_core_permanent_scar_exacerbated', 'epoch_core_permanent_scar_fallback', 'epoch_core_permanent_scar_exacerbated_fallback')) {
@@ -408,6 +415,26 @@ foreach ($guardedEvent in $optOutGuards) {
 }
 $refusal = Get-EventBlock $events 2
 Assert-Check ($refusal -match 'name\s*=\s*epoch_core\.2\.c[\s\S]*set_country_flag\s*=\s*epoch_core_campaign_opted_out' -and $events -match 'NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_campaign_opted_out\s*\}') 'Refusal must remain permanent and suppress active campaign events'
+
+# Native syntax evidence from this target installation, rather than assumptions.
+$situationReadmePath = Join-Path $VanillaRoot 'common/situations/99_README_SITUATIONS.txt'
+if (Test-Path -LiteralPath $situationReadmePath) {
+    $native = [System.IO.File]::ReadAllText($situationReadmePath)
+    Assert-Check ($native -match 'on_first_enter\s*=' -and $native -match 'permanent\s*=\s*yes/no' -and $native -match 'default\s*=\s*yes') 'Installed Situation documentation must support stage entry, manual endings and default approach fallback'
+}
+foreach ($id in @(26,28,30,31,32,46)) {
+    $recovery = Get-EventBlock $events $id
+    Assert-Check ($recovery -match "NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_recovery_$($id)_open" -and $recovery -match "set_country_flag\s*=\s*epoch_core_recovery_$($id)_open" -and ([regex]::Matches($recovery, "remove_country_flag\s*=\s*epoch_core_recovery_$($id)_open")).Count -eq 2) "Recovery $id must suppress duplicate windows and reset its guard on both decisions"
+    Assert-Check ($recovery -match 'abort_special_project\s*=') "Recovery $id must remove outstanding projects on explicit closure"
+}
+Assert-Check ((Get-EventBlock $events 50) -notmatch 'set_country_flag|add_situation_progress|destroy_ship|days\s*=' -and (Get-EventBlock $events 50) -match 'NOT\s*=\s*\{\s*exists\s*=\s*event_target:epoch_core_world@root') 'Missing-object detection may only request explicit decisions, never resolve objectives'
+Assert-Check ($silentSite -match 'is_same_value\s*=\s*event_target:epoch_core_structure_site@root\.owner' -and $silentSite -match 'is_same_value\s*=\s*event_target:epoch_core_structure_site@root\s*\}') 'Site visibility and excavation must be isolated to the saved owner-specific native site'
+Assert-Check ($cautiousApproach -match 'default\s*=\s*yes' -and $containmentApproach -notmatch 'NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_core_contamination_phase_resolved') 'Containment must remain valid until stage exit, then fall back to a default approach'
+foreach ($approach in @($cautiousApproach,$intensiveApproach,$minimalApproach)) {
+    Assert-Check ($approach -match 'triggered_modifier\s*=\s*\{\s*potential\s*=\s*\{\s*situation_monthly_progress\s*>\s*0' -and $approach -notmatch 'upkeep\s*=\s*\{\s*trigger\s*=\s*\{\s*current_stage') 'Ordinary research costs and bonuses must pause together at unresolved objectives'
+}
+& node (Join-Path $PSScriptRoot 'test_phase_i_flow.cjs') $Root
+Assert-Check ($LASTEXITCODE -eq 0) 'Parsed campaign-state regression must pass'
 
 # Summarize existing test logs by source. Old EPOCH failures are reported as
 # evidence from the pre-fix run; unrelated-mod/base-game errors are separated.

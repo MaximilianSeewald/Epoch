@@ -1,9 +1,9 @@
 # EPOCH Phase I: First Contact
 
-**Status:** Binding campaign specification; implementation remains in progress.
+**Status:** Binding campaign specification; the five-section implementation is ready for full in-game acceptance. Static QA is complete; final player approval remains pending.
 **Target:** Stellaris PC 4.5.3. **Scope:** one independent First Contact campaign per participating organic, Hive Mind, or Machine Intelligence empire.
 
-> PR #6 is the technical starting point for Phase I, but it is not the complete Phase I implementation. Its First Echo and Missing Expedition prototype do not complete this specification.
+> The original First Echo and Missing Expedition prototype was the technical starting point. PR #6 now contains the five-section implementation and remains open until successful full in-game acceptance.
 
 This document is the source of truth for Phase I. It expands the six-phase story framework in [the architecture overview](../architecture.md), uses the state and bootstrap constraints in [M0-D](../architecture/m0-d-core-bootstrap-uap.md), and supersedes the narrower M2/M3 scope in [the roadmap](../roadmap.md). The current technical evidence and its limits are in [the 4.5.3 evidence matrix](../evidence/m0-b-engine-verification.md); the regression suite is described in [testing](../testing.md).
 
@@ -34,6 +34,12 @@ The canonical owner is the country. Campaign phase, decision/outcome flags or va
 Required links include: Echo approach -> expedition risk/options; expedition result -> contamination presentation/severity; contamination state -> structure access/options; structure resolution -> conclusion; all four results -> conclusion summary and continuation/exit. Not every individual choice needs to affect every later section, but each link must be observable and documented in the scripts and regression coverage.
 
 All active campaign dispatches re-check eligibility, owner, current section, and permanent opt-out. Never retrieve one empire's ship, planet, situation, project, or event target while handling another empire. Prefer owner-scoped persistent state and owner-keyed targets; global named targets without an owner key are prohibited for campaign objects. Missing systems, planets, ships, leaders, situations, or targets must resolve to a safe fallback that advances or closes the relevant stage without deleting unrelated objects. The final negative consequence must be durably represented by saved game state; its persistence must be verified across save/load.
+
+The fixed ten-stage implementation, gate/flag mapping and current validation
+limits are recorded in [testing](../testing.md#phase-i-milestone-6-november-2026).
+Use the [complete acceptance checklist](../testing/phase-i-acceptance.md) for the
+remaining player test. Earlier successful component tests do not establish a
+successful full campaign.
 
 ## Native gameplay and AI
 

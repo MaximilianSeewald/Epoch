@@ -12,13 +12,15 @@ or technology.
 
 ## Project status
 
-PR #6 is the technical starting point for Phase I, not its complete implementation.
+PR #6 contains the connected five-section Phase I implementation and remains
+open and unmerged pending full in-game acceptance.
 The binding five-section scope and definition of done are in
 [`docs/phases/phase-i-first-contact.md`](docs/phases/phase-i-first-contact.md).
-A connected gameplay draft now extends beyond the original First Echo and
-Missing Expedition prototype, including contamination, the Silent Structure,
-and a Phase I conclusion. It has not yet completed full engine, save/load,
-AI, multiplayer, or in-game validation. The lore in `docs/story-bible.md`
+All five sections have separate research/wait stages, explicit objective gates,
+and a final player decision. Static QA passes; use the
+[complete acceptance checklist](docs/testing/phase-i-acceptance.md) for the next
+gameplay test. Full engine, save/load, AI, multiplayer, and in-game validation
+remain pending. The lore in `docs/story-bible.md`
 remains a working proposal (v0.1).
 
 ## Design invariants

@@ -153,3 +153,30 @@ Proceed to integrated EPOCH runtime verification when ready. Prioritize parser
 logs and a complete campaign for each empire class, then interruption, save/load,
 AI, multiplayer, and representative galaxy-size checks. Source and static
 regression evidence do not substitute for those runtime results.
+
+## Phase I integration source review: 6 November 2026
+
+This review uses the installed target sources at
+`G:/Steam/steamapps/common/Stellaris`. It does not claim engine/parser acceptance
+of the updated mod or a successful campaign playthrough.
+The installed Steam manifest was rechecked and still reports build `26325427`.
+
+Final local QA: 606 static regression assertions and 5,287 parsed campaign-state
+assertions passed; `git diff --check` passed. Historical logs are not fresh
+runtime evidence for this revision.
+
+| Mechanic used by this milestone | Installed source evidence |
+|---|---|
+| Fixed ordered stages, `on_first_enter`, permanent/manual ending, default approach fallback | `common/situations/99_README_SITUATIONS.txt`, stages/approaches/endings sections |
+| `triggered_blocked_desc` and progress-gated modifiers | `common/situations/12_biogenesis_situations.txt`, lines 101–134 and 440–447 |
+| Deterministic country-scoped dynamic text, `random = no`, first matching entry | `common/scripted_loc/000_example.txt`, lines 1–25 |
+| Native pending-project detection and explicit cancellation | `events/paragon_events_3.txt`, lines 1770–1781: `has_special_project` and `abort_special_project = { type = ... }` |
+| Planet-to-site scope selection | `events/ancient_relics_arcsite_events_1.txt`, lines 965–973: `archaeological_site = { ... }` |
+| Four chapters and native failed-roll handling | Previously reviewed `site_ruins_of_shallash`; EPOCH chapter count, difficulties and roll handling preserved |
+
+The user reports successful runtime tests of the original First Echo wait gate,
+project sequencing and native multistage archaeology. Those reports apply to
+the earlier component implementation. The expanded wait-stage sequence, site
+identity guards, recovery windows, approach modifier gating and scripted closing
+summaries still require fresh UI/parser/runtime verification. See the complete
+[acceptance checklist](../testing/phase-i-acceptance.md).
