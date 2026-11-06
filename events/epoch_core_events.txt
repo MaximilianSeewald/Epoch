@@ -1234,15 +1234,24 @@ situation_event = {
 	trigger = { owner = { epoch_core_active_campaign_empire = yes } }
 	immediate = {
 		owner = {
+			set_country_flag = epoch_core_monthly_dispatcher_seen
 			country_event = { id = epoch_core.44 }
 			remove_country_flag = epoch_core_situation_waiting_objective
 			remove_country_flag = epoch_core_situation_waiting_progress
 			remove_country_flag = epoch_core_situation_active_progress
 		}
 		if = {
+			limit = { owner = { has_country_flag = epoch_core_situation_diagnostics } }
+			log = "EPOCH_DIAG dispatcher=1 stage=[This.GetCurrentStage] progress=[This.GetProgress]"
+			if = { limit = { owner = { has_country_flag = epoch_core_echo_first_project_pending } } log = "EPOCH_DIAG first_echo_project=unlocked" }
+			else = { log = "EPOCH_DIAG first_echo_project=not_unlocked" }
+			if = { limit = { owner = { OR = { has_country_flag = epoch_core_first_echo_complete has_country_flag = epoch_core_echo_second_abandoned } } } log = "EPOCH_DIAG first_echo_objective=complete" }
+			else = { log = "EPOCH_DIAG first_echo_objective=open" }
+		}
+		if = {
 			limit = {
 				OR = {
-				AND = { current_stage = stage_signal_analysis situation_progress >= 15 owner = { NOT = { OR = { has_country_flag = epoch_core_first_echo_complete has_country_flag = epoch_core_echo_second_abandoned } } } }
+				AND = { current_stage = stage_echo_resolution situation_progress >= 15 owner = { NOT = { OR = { has_country_flag = epoch_core_first_echo_complete has_country_flag = epoch_core_echo_second_abandoned } } } }
 				AND = { current_stage = stage_source_analysis situation_progress >= 25 owner = { NOT = { has_country_flag = epoch_core_expedition_phase_resolved } } }
 				AND = { current_stage = stage_contamination situation_progress >= 35 owner = { NOT = { has_country_flag = epoch_core_contamination_phase_resolved } } }
 				AND = { current_stage = stage_excavation situation_progress >= 45 owner = { NOT = { has_country_flag = epoch_core_structure_phase_resolved } } }
@@ -1254,7 +1263,8 @@ situation_event = {
 		else_if = {
 			limit = {
 				OR = {
-					AND = { current_stage = stage_signal_analysis situation_progress < 15 owner = { OR = { has_country_flag = epoch_core_first_echo_complete has_country_flag = epoch_core_echo_second_abandoned } } }
+					AND = { current_stage = stage_echo_resolution situation_progress < 20 owner = { has_country_flag = epoch_core_first_echo_complete } }
+					AND = { current_stage = stage_signal_analysis situation_progress < 15 }
 					AND = { current_stage = stage_source_analysis situation_progress < 25 owner = { has_country_flag = epoch_core_expedition_phase_resolved } }
 					AND = { current_stage = stage_contamination situation_progress < 35 owner = { has_country_flag = epoch_core_contamination_phase_resolved } }
 					AND = { current_stage = stage_excavation situation_progress < 45 owner = { has_country_flag = epoch_core_structure_phase_resolved } }
@@ -1318,6 +1328,25 @@ situation_event = {
 	}
 }
 
+# Temporary console toggle: `event epoch_core.49` enables/disables monthly
+# diagnostics in the game log. Normal gameplay emits no diagnostic output.
+country_event = {
+	id = epoch_core.49
+	hide_window = yes
+	is_triggered_only = yes
+	immediate = {
+		if = {
+			limit = { has_country_flag = epoch_core_situation_diagnostics }
+			remove_country_flag = epoch_core_situation_diagnostics
+			log = "EPOCH_DIAG disabled"
+		}
+		else = {
+			set_country_flag = epoch_core_situation_diagnostics
+			log = "EPOCH_DIAG enabled"
+		}
+	}
+}
+
 # One monthly dispatcher releases exactly the current phase's objective at its
 # progress threshold. Persistent country flags make each release save-safe.
 situation_event = {
@@ -1328,7 +1357,7 @@ situation_event = {
 	trigger = { owner = { epoch_core_active_campaign_empire = yes } }
 	immediate = {
 		if = {
-			limit = { current_stage = stage_signal_analysis situation_progress >= 15 owner = { NOT = { has_country_flag = epoch_core_echo_first_project_pending } } }
+			limit = { current_stage = stage_echo_resolution situation_progress >= 15 owner = { NOT = { has_country_flag = epoch_core_echo_first_project_pending } } }
 			owner = {
 				set_country_flag = epoch_core_echo_first_project_pending
 				if = {

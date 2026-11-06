@@ -8,17 +8,21 @@ epoch_first_echo_investigation = {
 
 	desc = { trigger = { always = yes } text = epoch_first_echo_investigation_desc }
 
-	# Each phase has a fixed progress boundary. While its objective is unresolved,
-	# the scriptable stage end is five points beyond the nominal phase mark; that
-	# endpoint is also the objective release threshold and hard progress stop.
+	# Stage ends cause transitions; they are not progress locks. Phase 1 therefore
+	# has a dedicated wait stage. Its entry callback releases the first project,
+	# and approach progress stays off until both First Echo objectives are done.
 	stages = {
 		stage_signal_analysis = {
 			icon = GFX_situation_stage_1
 			icon_background = GFX_situation_stage_frame_blue
-			end = {
-				base = 10
-				modifier = { add = 5 owner = { NOT = { OR = { has_country_flag = epoch_core_first_echo_complete has_country_flag = epoch_core_echo_second_abandoned } } } }
-			}
+			end = 15
+			custom_tooltip = epoch_first_echo_phase_echo
+		}
+		stage_echo_resolution = {
+			icon = GFX_situation_stage_1
+			icon_background = GFX_situation_stage_frame_blue
+			end = 20
+			on_first_enter = { situation_event = { id = epoch_core.48 } }
 			custom_tooltip = epoch_first_echo_phase_echo
 		}
 		stage_source_analysis = {
@@ -56,22 +60,26 @@ epoch_first_echo_investigation = {
 		}
 	}
 
-	# The selected approach is the only source of passive progress. The objective
-	# release thresholds match the unresolved stage ends: 15, 25, 35, 45, and 50.
+	# The selected approach is the only source of passive progress. Phase 1's
+	# threshold opens a wait stage at 15; progress from 15 to 20 resumes only once
+	# the First Echo objective flag is set. Later phase thresholds stay unchanged.
 	monthly_progress = {
 		base = 0
 	modifier = { add = 2.5 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_signal_analysis situation_progress < 15 }
+	modifier = { add = 2.5 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_echo_resolution owner = { OR = { has_country_flag = epoch_core_first_echo_complete has_country_flag = epoch_core_echo_second_abandoned } } situation_progress < 20 }
 	modifier = { add = 2.5 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_source_analysis situation_progress < 25 }
 	modifier = { add = 2.0 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_contamination situation_progress < 35 }
 	modifier = { add = 2.0 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_excavation situation_progress < 45 }
 		modifier = { add = 1.5 desc = epoch_echo_progress_cautious current_situation_approach = epoch_echo_cautious_approach current_stage = stage_report situation_progress < 50 }
 	modifier = { add = 4.5 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_signal_analysis situation_progress < 15 }
+	modifier = { add = 4.5 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_echo_resolution owner = { OR = { has_country_flag = epoch_core_first_echo_complete has_country_flag = epoch_core_echo_second_abandoned } } situation_progress < 20 }
 	modifier = { add = 4.5 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_source_analysis situation_progress < 25 }
 	modifier = { add = 4.0 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_contamination situation_progress < 35 }
 	modifier = { add = 4.0 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_excavation situation_progress < 45 }
 		modifier = { add = 3.0 desc = epoch_echo_progress_intensive current_situation_approach = epoch_echo_aggressive_approach current_stage = stage_report situation_progress < 50 }
 	modifier = { add = 3.0 desc = epoch_echo_progress_containment current_situation_approach = epoch_echo_containment_approach current_stage = stage_contamination situation_progress < 35 }
 	modifier = { add = 1.75 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_signal_analysis situation_progress < 15 }
+	modifier = { add = 1.75 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_echo_resolution owner = { OR = { has_country_flag = epoch_core_first_echo_complete has_country_flag = epoch_core_echo_second_abandoned } } situation_progress < 20 }
 	modifier = { add = 1.75 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_source_analysis situation_progress < 25 }
 	modifier = { add = 1.5 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_contamination situation_progress < 35 }
 	modifier = { add = 1.5 desc = epoch_echo_progress_minimal current_situation_approach = epoch_echo_minimal_approach current_stage = stage_excavation situation_progress < 45 }
