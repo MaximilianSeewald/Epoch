@@ -44,6 +44,27 @@ function namedBlock(source, key, value) {
   }
   throw new Error(`Unclosed ${key} = ${value}`);
 }
+function withoutScopeBlocks(source, scope) {
+  const pattern = new RegExp(`\\b${scope}\\s*=\\s*\\{`, 'gm');
+  let out = '', cursor = 0;
+  for (let m; (m = pattern.exec(source));) {
+    const open = source.indexOf('{', m.index + m[0].length - 1);
+    let depth = 0, quote = false, comment = false, end = -1;
+    for (let i = open; i < source.length; i++) {
+      const c = source[i];
+      if (comment) { if (c === '\n') comment = false; continue; }
+      if (!quote && c === '#') { comment = true; continue; }
+      if (c === '"') { quote = !quote; continue; }
+      if (!quote && c === '{') depth++;
+      if (!quote && c === '}' && --depth === 0) { end = i; break; }
+    }
+    if (end < 0) throw new Error(`Unclosed ${scope} scope`);
+    out += source.slice(cursor, m.index) + ' ';
+    cursor = end + 1;
+    pattern.lastIndex = cursor;
+  }
+  return out + source.slice(cursor);
+}
 
 const stageNames = ['stage_scar_wakes','stage_scar_report','stage_first_hunters','stage_hunters_resolution','stage_broken_code','stage_block_a_handoff'];
 // The stage parser above uses a literal keyed block. Extract each body directly
@@ -200,7 +221,18 @@ check(/every_owned_planet\s*=/.test(legacyScan) && /NOT\s*=\s*\{\s*has_deposit/.
 // Retreat state model: no route is passive/retryable, an accessible route is
 // queued once, arrival completes, and a missing fleet completes without error.
 const retreatEffect = read('common/scripted_effects/epoch_core_effects.txt');
-check(/epoch_ii_nullwarden_retreat_pending/.test(retreatEffect) && /epoch_ii_nullwarden_route_queued/.test(retreatEffect) && /epoch_ii_nullwarden_disengage_complete/.test(retreatEffect), 'The retreat helper exposes pending, queued, and terminal states');
+const retreatRoutine = namedBlock(retreatEffect, 'epoch_ii_disengage_nullwarden_fleet', '');
+check(/epoch_ii_nullwarden_retreat_pending/.test(retreatRoutine) && /epoch_ii_nullwarden_route_queued/.test(retreatRoutine) && /epoch_ii_nullwarden_disengage_complete/.test(retreatRoutine), 'The retreat helper exposes pending, queued, and terminal states');
+const fleetScopes = blocks(retreatRoutine, 'event_target:epoch_ii_nullwarden_fleet@root');
+check(fleetScopes.length >= 4 && !/\b(?:has_country_flag|set_country_flag|remove_country_flag)\b/.test(fleetScopes.map(s => withoutScopeBlocks(s, 'root')).join('\n')), 'Every country-flag read/write inside Fleet scopes is explicitly wrapped in root Country scope');
+const destinationScopes = [...blocks(retreatRoutine, 'random_system'), ...blocks(retreatRoutine, 'closest_system')];
+check(destinationScopes.length === 3 && destinationScopes.every(s => /has_access_fleet\s*=\s*event_target:epoch_ii_nullwarden_country@root/.test(s) && /save_global_event_target_as\s*=\s*epoch_ii_retreat_system@root/.test(s) && /root\s*=\s*\{\s*set_country_flag\s*=\s*epoch_ii_retreat_destination_found\s*\}/.test(s)), 'Every System-scope destination candidate saves its event target and writes its country flag through root');
+check((retreatRoutine.match(/limit\s*=\s*\{\s*root\s*=\s*\{\s*NOT\s*=\s*\{\s*has_country_flag\s*=\s*epoch_ii_retreat_destination_found/g) || []).length === 2 && /limit\s*=\s*\{\s*root\s*=\s*\{\s*has_country_flag\s*=\s*epoch_ii_retreat_destination_found/.test(retreatRoutine), 'Fleet-scope destination flag reads explicitly switch back to the campaign country');
+check(/limit\s*=\s*\{\s*has_country_flag\s*=\s*epoch_ii_nullwarden_route_queued[\s\S]*?event_target:epoch_ii_nullwarden_fleet@root\s*=\s*\{/.test(retreatRoutine), 'The route-queued condition is evaluated in the outer campaign-country scope');
+check(/queue_actions\s*=\s*\{\s*move_to\s*=\s*event_target:epoch_ii_retreat_system@root\s*\}[\s\S]*?root\s*=\s*\{\s*set_country_flag\s*=\s*epoch_ii_nullwarden_route_queued\s+set_country_flag\s*=\s*epoch_ii_nullwarden_retreat_pending\s*\}/.test(retreatRoutine), 'Movement is queued in Fleet scope and route flags are written to the campaign country');
+check(/solar_system\s*=\s*\{\s*is_same_value\s*=\s*event_target:epoch_ii_retreat_system@root\s*\}[\s\S]*?root\s*=\s*\{\s*remove_country_flag\s*=\s*epoch_ii_nullwarden_retreat_pending\s+remove_country_flag\s*=\s*epoch_ii_nullwarden_route_queued[\s\S]*?set_country_flag\s*=\s*epoch_ii_nullwarden_disengage_complete\s*\}/.test(retreatRoutine), 'Arrival is compared in Fleet/System scope and completion flags are written in Country scope');
+const yearlyDispatcher = blocks(events, 'country_event').find(body => /\bid\s*=\s*epoch_ii\.0\b/.test(body)) || '';
+check(/has_country_flag\s*=\s*epoch_ii_nullwarden_retreat_pending\s*\}\s*epoch_ii_disengage_nullwarden_fleet\s*=\s*yes/.test(yearlyDispatcher), 'The yearly country event retries pending retreats in Country scope');
 function retreat(state, { fleet = true, route = false, arrived = false } = {}) {
   if (state.complete) return state;
   if (!fleet) { state.pending = false; state.queued = false; state.complete = true; return state; }

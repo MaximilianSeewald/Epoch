@@ -119,7 +119,7 @@ epoch_ii_disengage_nullwarden_fleet = {
 				if = {
 					limit = { solar_system = { is_same_value = event_target:epoch_ii_retreat_system@root } }
 					set_fleet_stance = passive
-					root = { remove_country_flag = epoch_ii_nullwarden_retreat_pending set_country_flag = epoch_ii_nullwarden_disengage_complete }
+					root = { remove_country_flag = epoch_ii_nullwarden_retreat_pending remove_country_flag = epoch_ii_nullwarden_route_queued remove_country_flag = epoch_ii_retreat_destination_found set_country_flag = epoch_ii_nullwarden_disengage_complete }
 				}
 			}
 		}
@@ -139,7 +139,7 @@ epoch_ii_disengage_nullwarden_fleet = {
 					root = { set_country_flag = epoch_ii_retreat_destination_found }
 				}
 				if = {
-					limit = { NOT = { has_country_flag = epoch_ii_retreat_destination_found } }
+					limit = { root = { NOT = { has_country_flag = epoch_ii_retreat_destination_found } } }
 					closest_system = {
 						limit = {
 							has_owner = no
@@ -152,7 +152,7 @@ epoch_ii_disengage_nullwarden_fleet = {
 					}
 				}
 				if = {
-					limit = { NOT = { has_country_flag = epoch_ii_retreat_destination_found } }
+					limit = { root = { NOT = { has_country_flag = epoch_ii_retreat_destination_found } } }
 					closest_system = {
 						limit = {
 							has_access_fleet = event_target:epoch_ii_nullwarden_country@root
@@ -164,7 +164,7 @@ epoch_ii_disengage_nullwarden_fleet = {
 					}
 				}
 				if = {
-					limit = { has_country_flag = epoch_ii_retreat_destination_found }
+					limit = { root = { has_country_flag = epoch_ii_retreat_destination_found } }
 					queue_actions = { move_to = event_target:epoch_ii_retreat_system@root }
 					root = { set_country_flag = epoch_ii_nullwarden_route_queued set_country_flag = epoch_ii_nullwarden_retreat_pending }
 				}
@@ -175,6 +175,7 @@ epoch_ii_disengage_nullwarden_fleet = {
 	else = {
 		remove_country_flag = epoch_ii_nullwarden_retreat_pending
 		remove_country_flag = epoch_ii_nullwarden_route_queued
+		remove_country_flag = epoch_ii_retreat_destination_found
 		set_country_flag = epoch_ii_nullwarden_disengage_complete
 	}
 }
