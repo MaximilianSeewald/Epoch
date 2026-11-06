@@ -1,4 +1,4 @@
-l_german:
+﻿l_german:
  epoch_core.2.name:0 "Das erste Echo"
  epoch_core.2.desc:0 "Bei einer routinemäßigen Erkundung zeichnet eines unserer Forschungsschiffe einen schmalen Impuls in diesem System auf. Er wiederholt sich mit einer Präzision, die keine natürliche Quelle dauerhaft halten dürfte, und verschwindet dann zwischen den Messungen. Das Schiff kann für eine sorgfältige Untersuchung bleiben oder die Quelle sofort triangulieren."
  epoch_core.2.a:0 "Den Impuls geduldig kartieren und alle Messwerte sichern."
@@ -56,3 +56,7 @@ l_german:
  EPOCH_EXPEDITION_SALVAGE_DESC:0 "Ein gezielter Bergungsscan könnte den Rekorder finden, bevor sich das Signal erneut verlagert."
  EPOCH_EXPEDITION_SURVEY:0 "Die Signalspur kartieren"
  EPOCH_EXPEDITION_SURVEY_DESC:0 "Eine breite, langsame Untersuchung kartiert die Spur und hält das Schiff auf Abstand."
+ epoch_first_echo_investigation_type:0 "Signalsuche"
+ epoch_first_echo_investigation_monthly_change_tooltip:0 "$situation_monthly_change_tooltip_no_control$"
+ stage_signal_analysis:0 "Signalanalyse"
+ stage_source_analysis:0 "Quellenanalyse"

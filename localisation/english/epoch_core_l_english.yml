@@ -1,4 +1,4 @@
-l_english:
+﻿l_english:
  epoch_core.2.name:0 "The First Echo"
  epoch_core.2.desc:0 "During a routine survey, one of our Science Ships records a narrow pulse from this system. It repeats with a precision no natural source should sustain, then vanishes between scans. The ship can hold position for a careful study or begin triangulating the source at once."
  epoch_core.2.a:0 "Map the pulse patiently and preserve every reading."
@@ -56,3 +56,7 @@ l_english:
  EPOCH_EXPEDITION_SALVAGE_DESC:0 "A focused recovery sweep may find the recorder before the signal shifts again."
  EPOCH_EXPEDITION_SURVEY:0 "Survey the signal wake"
  EPOCH_EXPEDITION_SURVEY_DESC:0 "A broad, slow survey will map the wake while keeping the ship at a distance."
+ epoch_first_echo_investigation_type:0 "Signal Investigation"
+ epoch_first_echo_investigation_monthly_change_tooltip:0 "$situation_monthly_change_tooltip_no_control$"
+ stage_signal_analysis:0 "Signal Analysis"
+ stage_source_analysis:0 "Source Analysis"

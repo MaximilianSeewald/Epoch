@@ -105,7 +105,8 @@ situation_event = {
 		set_situation_flag = epoch_core_second_stage_started
 		owner = {
 			set_country_flag = epoch_core_cautious_instrument_calibrated
-			event_target:epoch_core_signal_system@root.owner = { enable_special_project = { name = "EPOCH_ECHO_CALIBRATION" location = this owner = root.owner } }
+			set_country_flag = epoch_core_echo_choice_pending
+			country_event = { id = epoch_core.16 days = 1 }
 		}
 		ai_chance = { factor = 65 }
 	}
@@ -115,7 +116,8 @@ situation_event = {
 		set_situation_flag = epoch_core_second_stage_started
 		owner = {
 			set_country_flag = epoch_core_cautious_baseline_kept
-			event_target:epoch_core_signal_system@root.owner = { enable_special_project = { name = "EPOCH_ECHO_BASELINE" location = this owner = root.owner } }
+			set_country_flag = epoch_core_echo_choice_pending
+			country_event = { id = epoch_core.16 days = 1 }
 		}
 		ai_chance = { factor = 35 }
 	}
@@ -125,7 +127,8 @@ situation_event = {
 		set_situation_flag = epoch_core_second_stage_started
 		owner = {
 			set_country_flag = epoch_core_aggressive_overdrive_committed
-			event_target:epoch_core_signal_system@root.owner = { enable_special_project = { name = "EPOCH_ECHO_OVERDRIVE" location = this owner = root.owner } }
+			set_country_flag = epoch_core_echo_choice_pending
+			country_event = { id = epoch_core.16 days = 1 }
 		}
 		ai_chance = { factor = 35 }
 	}
@@ -135,9 +138,44 @@ situation_event = {
 		set_situation_flag = epoch_core_second_stage_started
 		owner = {
 			set_country_flag = epoch_core_aggressive_throttled
-			event_target:epoch_core_signal_system@root.owner = { enable_special_project = { name = "EPOCH_ECHO_THROTTLED" location = this owner = root.owner } }
+			set_country_flag = epoch_core_echo_choice_pending
+			country_event = { id = epoch_core.16 days = 1 }
 		}
 		ai_chance = { factor = 65 }
+	}
+}
+
+country_event = {
+	id = epoch_core.16
+	hide_window = yes
+	is_triggered_only = yes
+	trigger = {
+		epoch_core_active_campaign_empire = yes
+		has_country_flag = epoch_core_echo_choice_pending
+		NOT = { has_country_flag = epoch_core_second_stage_project_enabled }
+	}
+	immediate = {
+		remove_country_flag = epoch_core_echo_choice_pending
+		if = {
+			limit = { has_country_flag = epoch_core_cautious_instrument_calibrated }
+			event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_ECHO_CALIBRATION" location = this owner = root } }
+			set_country_flag = epoch_core_second_stage_project_enabled
+		}
+		else_if = {
+			limit = { has_country_flag = epoch_core_cautious_baseline_kept }
+			event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_ECHO_BASELINE" location = this owner = root } }
+			set_country_flag = epoch_core_second_stage_project_enabled
+		}
+		else_if = {
+			limit = { has_country_flag = epoch_core_aggressive_overdrive_committed }
+			event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_ECHO_OVERDRIVE" location = this owner = root } }
+			set_country_flag = epoch_core_second_stage_project_enabled
+		}
+		else_if = {
+			limit = { has_country_flag = epoch_core_aggressive_throttled }
+			event_target:epoch_core_signal_system@root = { enable_special_project = { name = "EPOCH_ECHO_THROTTLED" location = this owner = root } }
+			set_country_flag = epoch_core_second_stage_project_enabled
+		}
 	}
 }
 
@@ -223,6 +261,7 @@ country_event = {
 		set_variable = { which = epoch_core_expedition_result value = 5 }
 		set_variable = { which = epoch_core_expedition_status value = 4 }
 		set_country_flag = epoch_core_expedition_outcome_recorded
+		country_event = { id = epoch_core.7 days = 180 }
 		ai_chance = { factor = 5 }
 	}
 }
@@ -246,13 +285,13 @@ ship_event = {
 			solar_system = {
 				random_neighbor_system = {
 					limit = { NOT = { exists = owner } }
-					save_event_target_as = epoch_core_signal_system@root.owner
+					save_global_event_target_as = epoch_core_signal_system@root.owner
 				}
 			}
 		}
 		if = {
 			limit = { NOT = { exists = event_target:epoch_core_signal_system@root.owner } }
-			from = { solar_system = { save_event_target_as = epoch_core_signal_system@root.owner } }
+			from = { solar_system = { save_global_event_target_as = epoch_core_signal_system@root.owner } }
 		}
 		owner = {
 			set_country_flag = epoch_core_discovery_scheduled
