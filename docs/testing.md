@@ -139,3 +139,9 @@ No tests changed Vanilla files. No gameplay content was added.
 - [ ] Host/client behavior has no reproducible desyncs.
 
 Static source review does not substitute for these runtime checks.
+
+## Phase II Block A implementation note
+
+The Chapter 1–3 implementation, migration boundaries, gameplay limitations,
+and static validation scope are recorded in
+[`phases/phase-ii-block-a-implementation.md`](phases/phase-ii-block-a-implementation.md).

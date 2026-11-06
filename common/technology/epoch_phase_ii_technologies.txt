@@ -1,0 +1,22 @@
+tech_epoch_resonance_spectroscopy = {
+	cost = @tier1cost2
+	area = physics
+	tier = 1
+	category = { particles computing }
+	potential = { has_country_flag = epoch_ii_spectroscopy_lead }
+	weight = @tier1weight2
+	modifier = { country_physics_research_produces_mult = 0.03 }
+	ai_weight = { weight = 1 }
+}
+
+tech_epoch_adaptive_resonance_armor = {
+	cost = @tier2cost2
+	area = engineering
+	tier = 2
+	category = { voidcraft }
+	prerequisites = { "tech_epoch_resonance_spectroscopy" "tech_ship_armor_2" }
+	potential = { has_country_flag = epoch_ii_armor_lead }
+	weight = @tier2weight2
+	modifier = { ship_armor_mult = 0.05 }
+	ai_weight = { weight = 1 }
+}

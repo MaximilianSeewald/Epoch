@@ -868,6 +868,7 @@ country_event = {
 		if = {
 			limit = { exists = capital_scope }
 			capital_scope = {
+				save_global_event_target_as = epoch_ii_conclusion_capital@root
 				if = {
 					limit = { owner = { is_machine_empire = yes } }
 					add_modifier = { modifier = epoch_core_permanent_scar_machine days = -1 }
@@ -910,6 +911,8 @@ country_event = {
 		random_situation = { limit = { is_situation_type = epoch_first_echo_investigation } destroy_situation = this }
 		set_variable = { which = epoch_core_campaign_status value = 3 }
 		set_variable = { which = epoch_core_current_phase value = 6 }
+		epoch_ii_start_invitation_clock = yes
+		country_event = { id = epoch_ii.0 days = 1 }
 		}
 		ai_chance = { factor = 70 }
 	}

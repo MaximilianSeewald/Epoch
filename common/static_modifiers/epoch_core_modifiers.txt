@@ -129,3 +129,4 @@ epoch_core_permanent_scar_exacerbated_fallback = {
 	icon = "gfx/interface/icons/planet_modifiers/pm_asteroid_impacts.dds"
 	country_energy_produces_mult = -0.03
 }
+
