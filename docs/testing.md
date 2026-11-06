@@ -1,5 +1,24 @@
 # EPOCH validation plan and M0-B results
 
+The Phase I acceptance matrix is defined in
+[`phases/phase-i-first-contact.md`](phases/phase-i-first-contact.md). The
+existing regression script checks static patterns for all five sections, an
+owner-keyed expedition vessel and route, randomized loss/recovery outcomes,
+contamination and structure effects, class-specific permanent consequences,
+in-world conclusion text, AI decision weights, missing-object fallbacks,
+owner-keyed target usage, enrollment hooks, localization, and script references.
+These checks do not demonstrate that the campaign works in game, or prove the
+expedition's full runtime life cycle, AI completion, multiplayer safety, or
+save/load persistence.
+
+The conclusion must apply a lasting path- and empire-class-dependent gameplay
+penalty before either choice. Verify that no ordinary expiry or routine event
+removes it, and confirm it survives saving and loading. Check conclusion option
+text in both languages for in-world wording and confirm all EPOCH events,
+situations, projects, and enrollment hooks are suppressed after sealing the
+records. Review closing text to ensure the consequences can be visible while
+their cause and the larger mystery remain unresolved.
+
 See the [M0-B evidence matrix](evidence/m0-b-engine-verification.md) for
 source-level findings, status definitions, limitations, and open questions.
 

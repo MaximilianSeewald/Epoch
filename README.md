@@ -12,9 +12,14 @@ or technology.
 
 ## Project status
 
-This repository scaffold is the initial project baseline. The lore in `docs/story-bible.md`
-is a working proposal (v0.1), not locked canon. No in-game implementation is claimed
-to be complete or tested yet.
+PR #6 is the technical starting point for Phase I, not its complete implementation.
+The binding five-section scope and definition of done are in
+[`docs/phases/phase-i-first-contact.md`](docs/phases/phase-i-first-contact.md).
+A connected gameplay draft now extends beyond the original First Echo and
+Missing Expedition prototype, including contamination, the Silent Structure,
+and a Phase I conclusion. It has not yet completed full engine, save/load,
+AI, multiplayer, or in-game validation. The lore in `docs/story-bible.md`
+remains a working proposal (v0.1).
 
 ## Design invariants
 

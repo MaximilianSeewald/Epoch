@@ -1,0 +1,43 @@
+# Create one campaign-owned science vessel. The target is owner-keyed and only
+# this saved object may be destroyed when its expedition is lost.
+epoch_core_create_expedition = {
+	if = {
+		limit = { NOT = { has_country_flag = epoch_core_expedition_ship_created } }
+		create_leader = {
+			class = scientist
+			species = owner_main_species
+			name = random
+			skill = 2
+			event_leader = yes
+		}
+		last_created_leader = {
+			save_global_event_target_as = epoch_core_expedition_scientist@root
+		}
+		create_fleet = {
+			name = "NAME_EPOCH_Expedition"
+			settings = { spawn_debris = no }
+			effect = {
+				set_owner = root
+				create_ship_design = { design = "NAME_EPOCH_Expedition" }
+				create_ship = {
+					name = "NAME_EPOCH_Expedition_Ship"
+					design = last_created_design
+					prefix = no
+					upgradable = no
+					graphical_culture = root
+					effect = {
+						set_ship_flag = epoch_core_expedition_vessel
+						save_global_event_target_as = epoch_core_expedition_ship@root
+					}
+				}
+				assign_leader = event_target:epoch_core_expedition_scientist@root
+				set_location = event_target:epoch_core_expedition_origin_system@root
+				auto_move_to_planet = {
+					target = event_target:epoch_core_expedition_destination@root
+					clear_auto_move_on_arrival = yes
+				}
+			}
+		}
+		set_country_flag = epoch_core_expedition_ship_created
+	}
+}

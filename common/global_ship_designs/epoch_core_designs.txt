@@ -1,0 +1,13 @@
+ship_design = {
+	name = "NAME_EPOCH_Expedition"
+	ship_size = science
+	is_event_design = yes
+	section = {
+		template = "DEFAULT_SCIENCESHIP_SECTION"
+		slot = "mid"
+	}
+	required_component = "SHIP_THRUSTER_1"
+	required_component = "SENSOR_1"
+	required_component = "CORVETTE_FISSION_REACTOR"
+	required_component = "HYPER_DRIVE_2"
+}

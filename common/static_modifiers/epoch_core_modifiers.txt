@@ -1,0 +1,51 @@
+epoch_core_contamination_active = {
+	planet_stability_add = -3
+	planet_jobs_produces_mult = -0.05
+}
+
+epoch_core_contamination_worsened = {
+	planet_stability_add = -8
+	planet_jobs_produces_mult = -0.10
+}
+
+epoch_core_silent_structure = {
+	planet_jobs_physics_research_produces_mult = 0.05
+}
+
+epoch_core_structure_secured = {
+	planet_jobs_engineering_research_produces_mult = 0.05
+}
+
+epoch_core_structure_ruins = {
+	planet_stability_add = -2
+}
+
+# Permanent class-specific scars. They deliberately have no duration field and
+# are only applied at the Phase I conclusion.
+epoch_core_permanent_scar_organic = {
+	planet_stability_add = -3
+	planet_jobs_food_produces_mult = -0.05
+}
+
+epoch_core_permanent_scar_hive = {
+	planet_stability_add = -3
+	planet_jobs_unity_produces_mult = -0.05
+}
+
+epoch_core_permanent_scar_machine = {
+	planet_stability_add = -3
+	planet_jobs_energy_produces_mult = -0.05
+}
+
+epoch_core_permanent_scar_exacerbated = {
+	planet_stability_add = -2
+	planet_jobs_produces_mult = -0.05
+}
+
+epoch_core_permanent_scar_fallback = {
+	country_energy_produces_mult = -0.03
+}
+
+epoch_core_permanent_scar_exacerbated_fallback = {
+	country_energy_produces_mult = -0.03
+}

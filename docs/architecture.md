@@ -5,6 +5,12 @@ proposed systems or syntax have been tested in Stellaris 4.5.3. See
 [`technical-reference.md`](technical-reference.md) for verification status and
 the engine research gate.
 
+The binding gameplay contract for the first campaign is
+[`phases/phase-i-first-contact.md`](phases/phase-i-first-contact.md). PR #6 is
+its technical starting point, not a complete Phase I implementation. This
+contract supersedes the narrower M2/M3 scope below; the six-stage outline
+remains the broader project roadmap.
+
 ## Principles
 
 1. **Core first:** EPOCH Core is an independently installable Workshop mod and
@@ -141,22 +147,18 @@ verified engine behavior. Exact Workshop packaging, dependency declarations, and
 activation/load-order behavior remain unverified pending 4.5.3 and launcher
 documentation.
 
-## Implementation gate
+## Implementation and verification gate
 
-Before gameplay scripts are written, complete the runtime and missing-source
-checks listed in [`evidence/m0-b-engine-verification.md`](evidence/m0-b-engine-verification.md).
-M0-B has source-level evidence for on_actions, event chains, situations, special
-projects, and selected script systems. The supplied dataset does not include
-localisation, UI assets, script_values, inline-script definitions, full AI
-definitions, or vanilla packaging metadata; runtime and multiplayer validation
-remain open. Before gameplay scripts are written, inspect the Stellaris 4.5.3 installation and
-verify: descriptor conventions; recognised script directories; event namespaces,
-types, and registration; on_action definitions and load behavior; scopes and scope
-transitions; triggers/effects; scripted triggers/effects; flags, variables, and
-event targets; situations/stages; special projects; localisation encoding/key
-syntax; AI weights/automation; and multiplayer determinism/performance. Record the
-source file and a minimal in-game validation for each feature. Do not treat this
-proposal or older community examples as proof of 4.5.3 support.
+Gameplay implementation is governed by the binding [Phase I specification](phases/phase-i-first-contact.md).
+The evidence matrix records what the supplied 4.5.3 source subset supports and
+what remains unverified. Source inspection may guide implementation, but each
+scope-sensitive or lifecycle-sensitive mechanism must be verified against the
+target game files and tested in game before being reported as runtime-complete.
+The supplied dataset omits localisation/UI assets, ship-size/design definitions,
+script values, inline-script definitions, full AI definitions, and packaging
+metadata; it also cannot establish runtime, save/load, or multiplayer behavior.
 
-M0-D is documentation-only. No gameplay implementation is authorized by its
-architecture artifacts, and historical M0-B/M0-C results are not rewritten.
+M0-D's historical architecture artifacts remain documentation-only records of
+that milestone. They do not limit the implementation scope of current Phase I
+work. Historical M0-B/M0-C findings are not rewritten as though they were tested
+in a later runtime campaign.

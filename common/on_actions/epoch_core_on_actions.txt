@@ -25,3 +25,11 @@ on_survey_planet = {
 		epoch_core.15
 	}
 }
+
+# Vanilla documents this as This = owner of the destroyed ship, FromFrom = ship.
+# The event filters for the campaign-owned expedition flag before recording loss.
+on_ship_destroyed_victim = {
+	events = {
+		epoch_core.29
+	}
+}
