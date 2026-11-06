@@ -5,23 +5,25 @@
 - Establish naming, namespace and localisation rules.
 - Define compatibility boundaries and test checklist.
 
-## M1 – Discovery framework
-- Implement staggered, event-driven discovery scheduling.
-- Ensure no starting civics, traits, origins or bonuses are added.
-- Verify organic, Hive Mind and Machine Intelligence eligibility.
+## Phase I – First Contact (binding scope)
 
-## M2 – First playable episode
-- Deliver the First Echo event chain and first situation.
-- Include a mild but meaningful cost, player choices and an investigation project.
-- Add English and German localisation.
+The binding acceptance criteria are in
+[`phases/phase-i-first-contact.md`](phases/phase-i-first-contact.md). It contains
+five connected sections: First Echo, Missing Expedition, First Contamination,
+The Silent Structure, and Phase I Conclusion. PR #6 is the technical starting
+point, not completion of Phase I. The older M1/M2/M3 labels are historical
+milestones and do not narrow this campaign scope.
 
-## M3 – Threat arcs
-- Implement first complete arcs for selected threat families.
-- Add persistent consequences and cross-arc references.
+## Phase II and later
+
+Phase II may be prepared at the end of Phase I, but its campaign content is not
+part of this implementation. The remaining roadmap stages describe later parts
+of the six-phase story; they are planning milestones, not authorization to
+implement those phases before Phase I is accepted.
 
 ## M4 – Pattern and first technologies
-- Reveal the common signature.
-- Introduce first EPOCH technologies and longer projects.
+- Continue to reveal the common signature without disclosing the final purpose.
+- Introduce later EPOCH technologies and longer projects.
 
 ## M5 – Integration and convergence
 - Add infrastructure and differentiated empire-class expression.

@@ -12,9 +12,16 @@ or technology.
 
 ## Project status
 
-This repository scaffold is the initial project baseline. The lore in `docs/story-bible.md`
-is a working proposal (v0.1), not locked canon. No in-game implementation is claimed
-to be complete or tested yet.
+PR #6 contains the connected five-section Phase I implementation and remains
+open and unmerged pending full in-game acceptance.
+The binding five-section scope and definition of done are in
+[`docs/phases/phase-i-first-contact.md`](docs/phases/phase-i-first-contact.md).
+All five sections have separate research/wait stages, explicit objective gates,
+and a final player decision. Static QA passes; use the
+[complete acceptance checklist](docs/testing/phase-i-acceptance.md) for the next
+gameplay test. Full engine, save/load, AI, multiplayer, and in-game validation
+remain pending. The lore in `docs/story-bible.md`
+remains a working proposal (v0.1).
 
 ## Design invariants
 

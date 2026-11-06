@@ -1,0 +1,28 @@
+# Country-scoped closing assessment; first matching entry wins.
+defined_text = {
+	name = GetEpochEchoSummary
+	random = no
+	text = { localization_key = epoch_core.summary.echo_abandoned trigger = { has_country_flag = epoch_core_echo_second_abandoned } }
+	text = { localization_key = epoch_core.summary.echo_degraded trigger = { has_country_flag = epoch_core_signal_trace_degraded } }
+	text = { localization_key = epoch_core.summary.echo_cautious trigger = { has_country_flag = epoch_core_initial_cautious } }
+	text = { localization_key = epoch_core.summary.echo_aggressive }
+}
+
+defined_text = {
+	name = GetEpochExpeditionSummary
+	random = no
+	text = { localization_key = epoch_core.summary.expedition_cancelled trigger = { has_country_flag = epoch_core_expedition_project_abandoned } }
+	text = { localization_key = epoch_core.summary.expedition_rescued trigger = { has_country_flag = epoch_core_expedition_survivors_found } }
+	text = { localization_key = epoch_core.summary.expedition_recorder trigger = { has_country_flag = epoch_core_expedition_recorder_recovered } }
+	text = { localization_key = epoch_core.summary.expedition_wake trigger = { has_country_flag = epoch_core_expedition_spatial_wake_saved } }
+	text = { localization_key = epoch_core.summary.expedition_lost }
+}
+
+defined_text = {
+	name = GetEpochContaminationSummary
+	random = no
+	text = { localization_key = epoch_core.summary.contamination_contained trigger = { has_country_flag = epoch_core_contamination_contained } }
+	text = { localization_key = epoch_core.summary.contamination_studied trigger = { has_country_flag = epoch_core_contamination_study_complete } }
+	text = { localization_key = epoch_core.summary.contamination_neglected }
+}
+

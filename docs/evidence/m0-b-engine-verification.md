@@ -20,6 +20,12 @@ copied into EPOCH.
 neither the build ID nor 4.5.3 is proven by the script-file contents or their
 hashes alone.
 
+The EPOCH implementation has since moved from the generated expedition-vessel
+prototype described by some historical rows below to a player-assigned native
+Special Project, and now defines its own native archaeology site. Rows marked
+as Vanilla patterns remain evidence about engine scripts; they do not describe
+the current EPOCH implementation unless stated explicitly.
+
 ## Status definitions
 
 - **VERIFIED – SOURCE:** the named pattern or definition is present at the cited
@@ -36,6 +42,19 @@ Line numbers refer to the supplied source files and are one-based.
 
 | Area / claim | Status | Vanilla evidence or gap | Meaning for EPOCH |
 |---|---|---|---|
+| `on_survey_planet` scope and source | VERIFIED – SOURCE | `common/on_actions/00_on_actions.txt:1129-1137` explicitly says a ship surveyed a planet, `Scope = Ship`, `From = Planet`; the hook dispatch list follows. | Use this event for discovery that requires an actual science-ship survey. Do not assume `solar_system`, `owner`, or other scope transitions without explicit evidence/runtime validation. |
+| Related `on_planet_surveyed` scopes | VERIFIED – SOURCE | `common/on_actions/00_on_actions.txt:1202-1208` says Root = Planet, From = Country, and can also occur without a ship through intel changes. | This hook alone cannot establish a ship-caused survey. Its planet/country scopes differ from `on_survey_planet`. |
+| Ship/fleet/leader creation examples | VERIFIED – SOURCE | `common/scripted_effects/00_scripted_effects.txt:978-1002` contains nested `create_fleet` / `create_ship` and owner assignment; the installed source has more lifecycle examples. | Use the complete installed source for exact patterns; source presence does not itself prove an EPOCH vessel's full runtime lifecycle. |
+| Vanilla science-ship design/creation patterns | VERIFIED – SOURCE | Installed `common/global_ship_designs/event_ship_designs_anomalies.txt:150-164` defines an event science design; `events/anomaly_events_1.txt:2884-2920` creates one. | Historical EPOCH prototype ship-design code has been removed. The current expedition uses native project assignment to an existing ship. |
+| Vanilla leader creation and ship destruction patterns | VERIFIED – SOURCE | Installed `events/anomaly_events_1.txt:2465-...` contains `create_leader` with class scientist; `common/scripted_effects/02_machine_age_effects.txt:1264` demonstrates `destroy_ship = this`. | These examples establish available engine effects. Current EPOCH does not create an expedition scientist; its callback stores the assigned leader and destroys `this` ship. Post-destruction leader state remains a runtime question. |
+| Native project ship and leader requirements | VERIFIED – SOURCE | Installed `common/special_projects/00_projects_1.txt` includes projects with `requirements = { shipclass_science_ship = 1 leader = scientist }`, `event_scope = ship_event`, and ship-event success/failure callbacks; `common/on_actions/00_on_actions.txt` describes the performing ship in the success on_action. | EPOCH uses this native assignment path. The ship callback saves the actual performer; automatic AI assignment and callback behavior after interruption remain runtime checks. |
+| Archaeological-site structure and scopes | VERIFIED – SOURCE | Installed `common/archaeological_site_types/99_README_ARC_SITES.txt` documents the site schema and scopes; `00_base_game_arc_sites.txt` contains multi-stage sites. Vanilla event examples use `archaeology = yes` and `set_site_progress_locked = yes`; `events/paragon_events_3.txt` destroys a site by `destroy_archaeological_site = this`. | EPOCH defines a four-stage site with science-ship/scientist requirements and distinct final outcomes. Parser acceptance, UI, AI excavation, and save/load remain unverified. |
+| Owner-keyed persistent global event targets | VERIFIED – SOURCE | Installed `common/scripted_effects/nomads_effects.txt:6360-6374` saves and reads `comms_signal_system@root`; `common/scripted_effects/02_machine_age_effects.txt:187` saves `cybercreedspecies@root.owner`, with reads at `:245` and `:452`. | The installed source supports both owner/context key forms used by EPOCH. Concurrent-empire isolation and save/load persistence of EPOCH's specific targets remain runtime checks. |
+| Special project enable location and owner fields | VERIFIED – SOURCE | Installed `common/inline_scripts/contracts/FindResourceInternal.txt:45-49` enables a project with an event-target planet location and `owner = ROOT`; its project definition is `common/inline_scripts/special_projects/find_resource_internal_project.txt:2-12`. | EPOCH uses the same location/owner form. This does not prove that the campaign vessel will be selected or that AI will complete it. |
+| Unexpected ship destruction callback | VERIFIED – SOURCE | Installed `common/on_actions/00_on_actions.txt:1390-1405` documents `This` as owner of destroyed ship 1, `FromFrom` as ship 1, and defines `on_ship_destroyed_victim`. | EPOCH filters the destroyed ship's flag before recording an unexpected expedition loss. Mod on_action merge behavior and target validity during dispatch remain runtime checks. |
+| Assigning a created leader to a fleet | VERIFIED – SOURCE | Installed `common/scripted_effects/00_scripted_effects.txt:1244-1252` creates ships inside a fleet and assigns `last_created_leader`. | Vanilla pattern only; current EPOCH does not create or assign a campaign scientist. |
+| Randomized and permanent effects | VERIFIED – SOURCE | Installed event/effect scripts use `random_list`; static modifier definitions include `planet_jobs_produces_mult`, stability, resource output, and other effects. Effects use `add_modifier` with `days = -1`; resource checks use `resource_stockpile_compare` and `has_resource`. | Source supports the syntax patterns used for conditional expedition outcomes, persistent planet scars, and the containment cost gate. Determinism, UI presentation, and persistence in EPOCH save/load need runtime verification. |
+| Aborting/canceling a special project | VERIFIED – SOURCE | Installed special-project definitions expose `on_cancel`; country-scope failure/cancel callbacks and `abort_special_project = { type = ... }` are used by Vanilla. | EPOCH no longer schedules calendar fallbacks. Real project failure or cancellation opens a retry/explicit-abandon decision; callback order and object cleanup remain runtime checks. |
 | A global game-start hook exists and has no scope | VERIFIED – SOURCE | `common/on_actions/00_on_actions.txt:1-29`, `on_game_start`; `common/on_actions/00_on_actions.txt:80-83` explicitly describes another no-scope hook as “No scope, like on_game_start” | A global hook cannot directly be assumed to be empire-scoped. Avoid a global callback that scans every country if the per-country hook suffices. |
 | Country game-start hook dispatches a list of country initialization events | VERIFIED – SOURCE | `common/on_actions/00_on_actions.txt:31-78`, `on_game_start_country` | Strong candidate for country-local bootstrap/eligibility, avoiding a separate global enumeration. Whether a mod can extend this vanilla hook without replacing it, plus exact-once and coverage, requires validation. |
 | Event namespace, event ID, event types, trigger-only use, options, immediate/after | VERIFIED – SOURCE | `events/situation_events.txt:5`, `:10-86` (`namespace = situation`, `carrier_event`, `situation.5`, `is_triggered_only`, options and `after`); `:89-145` (`situation_event`) | Reserve a unique EPOCH namespace and use the event type matching the actual root scope. Validate parser and ID collision behavior in game. |
@@ -46,7 +65,7 @@ Line numbers refer to the supplied source files and are one-based.
 | MP save-load hook has an OOS warning | VERIFIED – SOURCE | `common/on_actions/00_on_actions.txt:80-83`, comment says `on_single_player_save_game_load` does not run when loading MP saves due to OOS concerns | Do not use this hook as the multiplayer recovery path. This warning is not a general guarantee about other hooks. |
 | Mod on_action merge/override behavior | UNVERIFIED | Supplied files show vanilla hook definitions, not mod merge rules or a loaded test mod | Verify how to register an additional handler without replacing vanilla handlers before relying on this candidate. |
 | Situation root, owner/target, and log-facing text | VERIFIED – SOURCE | `common/situations/99_README_SITUATIONS.txt:14-36` | Situation is suitable to model long-running state, with explicit attention to scopes and UI text. |
-| Situation stages, progress, monthly updates, approaches, outcomes, abort | VERIFIED – SOURCE | `common/situations/99_README_SITUATIONS.txt:40-64`, `:156-190`, `:241-248`; concrete `common/situations/01_narrative_situations.txt:1-146` | Suitable for multi-stage investigation and choice-dependent progress. Monthly per-situation update cost at scale is unmeasured. |
+| Situation stages, first-entry callbacks, approach progress, monthly events | VERIFIED – SOURCE | `common/situations/99_README_SITUATIONS.txt:40-64`, `:156-190`, `:241-248`; installed `common/situations/12_biogenesis_situations.txt:706-711` uses a scriptable `end = { base ... mult ... }`; `01_narrative_situations.txt:29-40` uses stage `on_first_enter`; `01_narrative_situations.txt:124-137` uses `on_monthly = { events = { ... } }`. | A Situation stage end is a transition boundary; it does not hold progress at a nominal threshold. In the reported EPOCH run, monthly progress had already advanced the current stage before `.48`'s old `current_stage = stage_signal_analysis` condition was evaluated, so the First Echo release guard never matched. The repair uses a stage-entry callback to dispatch `.48`, then holds progress in a second Phase-1 stage until the saved objective flag appears. Exact engine tick ordering, `on_first_enter` execution in this case, and the new progression still need runtime validation. |
 | Situation choices set approaches; triggered situation events use situation scope | VERIFIED – SOURCE | `events/situation_events.txt:89-145` (`situation_event`, `situation = this`, `set_situation_approach`); `:849-916` creates a situation and sets chosen approach | Connect choice events to the live situation; test scope transitions and AI outcomes in runtime. |
 | Special project fields and completion callbacks | VERIFIED – SOURCE | `common/special_projects/00_projects_1.txt:2-23` (key, costs, requirements, event scope, success/fail); `:116-145` (event chain and follow-up events) | Projects fit discrete research tasks; use success callback to continue event/situation flow. |
 | Project availability effect exists in supplied effects | VERIFIED – SOURCE | `common/scripted_effects/02_machine_age_effects.txt:1617`, `enable_special_project` definitions | Source pattern supports activating a defined project from other script. Exact parameters and scope depend on the specific definition. |
@@ -58,13 +77,28 @@ Line numbers refer to the supplied source files and are one-based.
 
 ## Architecture assessment
 
-**PROPOSED:** first test a country-local `on_game_start_country` handler. It
-should filter to appropriate empire types, set a persistent idempotency marker,
-then schedule at most one delayed event for that country. The delayed event
-should recheck the shared eligibility rule and marker before starting content.
-This design does not require a recurring global scan and the source confirms the
-per-country hook and delayed country-event patterns. Avoid claiming exactly-once,
-randomized staggering, save compatibility, or MP safety until runtime tests pass.
+The current implementation uses a country-local `on_game_start_country`
+bootstrap, guarded survey discovery, and native project success callbacks.
+The campaign Situation retains five narrative phases plus a same-UI Phase-1
+wait stage. Approach progress reaches 15 to release the first project through
+the wait stage's native `on_first_enter` callback; progress remains held until
+First Echo is completed or explicitly abandoned, then resumes from 15 to 20
+before Phase 2. Later phase gates remain unchanged. A Situation-owned monthly
+event bridges to the guarded missing-site recovery check and updates
+player-facing wait state; it never grants progress or resolves a project.
+Exact-once callback behavior, engine tick ordering, new-game/load behavior, AI,
+save compatibility, and MP safety still require runtime tests.
+
+The documented monthly progress rates are cautious `2.5/2.5/2/2/1.5`,
+intensive `4.5/4.5/4/4/3`, minimal `1.75/1.75/1.5/1.5/1`, and containment
+`3` in the contamination phase only (phase order 1–5). Situation energy upkeep
+by phase is cautious `2/3/2/3/2`, intensive `5/6/6/7/5`, containment `4`
+plus `1` mineral during contamination, and minimal `1/1/1/1/1`. Phase progress
+thresholds are `15/20/25/35/45/50` (including the Phase-1 wait-stage end); its
+monthly progress pauses between 15 and 20 until the First Echo objective flag
+is recorded. Later objective stage ends still have five-point margin while
+their phase approach progress stops at its nominal threshold. Intensive risk checks are one-shot per phase; the
+containment buffer refreshes for 30 days while that approach is active.
 
 Use a situation for persistent, multi-stage progression and approaches. Use a
 special project for a discrete research assignment; its success callback can
@@ -95,8 +129,7 @@ or that runtime behavior was executable and verified. No parser, in-game,
 situation, project, save/load, AI, MP, or performance test has been run. No
 temporary test mod was created; runtime behavior remains open.
 
-Still required when the matching game installation is available: launcher
-recognition/activation; parser logs; per-country hook coverage for organic,
+Still required: launcher recognition/activation; parser logs; per-country hook coverage for organic,
 Hive Mind, and machine empires; delay and scope behavior; situation start,
 progress, completion/abort; project start/completion; save/load; AI; host/client
 determinism and desync observation; performance at representative empire counts.
@@ -116,8 +149,34 @@ determinism and desync observation; performance at representative empire counts.
 
 ## Recommendation
 
-Proceed to a minimal isolated test mod when ready to perform runtime verification;
-the matching installation is present. Keep the first test limited to the country-start hook, one guarded
-delayed event, and a source-supported simple situation start. Do not implement
-EPOCH gameplay mechanics until the open runtime and missing-source questions are
-closed or explicitly accepted by the Technical Lead.
+Proceed to integrated EPOCH runtime verification when ready. Prioritize parser
+logs and a complete campaign for each empire class, then interruption, save/load,
+AI, multiplayer, and representative galaxy-size checks. Source and static
+regression evidence do not substitute for those runtime results.
+
+## Phase I integration source review: 6 November 2026
+
+This review uses the installed target sources at
+`G:/Steam/steamapps/common/Stellaris`. It does not claim engine/parser acceptance
+of the updated mod or a successful campaign playthrough.
+The installed Steam manifest was rechecked and still reports build `26325427`.
+
+Final local QA: 606 static regression assertions and 5,287 parsed campaign-state
+assertions passed; `git diff --check` passed. Historical logs are not fresh
+runtime evidence for this revision.
+
+| Mechanic used by this milestone | Installed source evidence |
+|---|---|
+| Fixed ordered stages, `on_first_enter`, permanent/manual ending, default approach fallback | `common/situations/99_README_SITUATIONS.txt`, stages/approaches/endings sections |
+| `triggered_blocked_desc` and progress-gated modifiers | `common/situations/12_biogenesis_situations.txt`, lines 101–134 and 440–447 |
+| Deterministic country-scoped dynamic text, `random = no`, first matching entry | `common/scripted_loc/000_example.txt`, lines 1–25 |
+| Native pending-project detection and explicit cancellation | `events/paragon_events_3.txt`, lines 1770–1781: `has_special_project` and `abort_special_project = { type = ... }` |
+| Planet-to-site scope selection | `events/ancient_relics_arcsite_events_1.txt`, lines 965–973: `archaeological_site = { ... }` |
+| Four chapters and native failed-roll handling | Previously reviewed `site_ruins_of_shallash`; EPOCH chapter count, difficulties and roll handling preserved |
+
+The user reports successful runtime tests of the original First Echo wait gate,
+project sequencing and native multistage archaeology. Those reports apply to
+the earlier component implementation. The expanded wait-stage sequence, site
+identity guards, recovery windows, approach modifier gating and scripted closing
+summaries still require fresh UI/parser/runtime verification. See the complete
+[acceptance checklist](../testing/phase-i-acceptance.md).

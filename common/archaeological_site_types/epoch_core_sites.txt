@@ -1,0 +1,55 @@
+epoch_core_silent_structure = {
+	desc = epoch_core_silent_structure_desc
+	picture = GFX_evt_relic_world
+	stages = 4
+	weight = 0
+	max_instances = 999
+	situation_log_category = empire_concerns
+
+	# Match the native vanilla pattern: allow is evaluated on the fleet and the
+	# site is supplied as from. The site is created only on the campaign world.
+	allow = {
+		from = { is_same_value = event_target:epoch_core_structure_site@root.owner }
+		is_ship_class = shipclass_science_ship
+		exists = leader
+		leader = { leader_class = scientist }
+		owner = {
+			epoch_core_active_campaign_empire = yes
+			has_country_flag = epoch_core_structure_site_created
+		}
+	}
+	visible = {
+		has_country_flag = epoch_core_structure_site_created
+		from = { is_same_value = event_target:epoch_core_structure_site@root }
+		default_site_visible_trigger = yes
+	}
+
+	stage = {
+		difficulty = 2
+		icon = GFX_archaeology_runes_D1
+		event = epoch_core.40
+	}
+	stage = {
+		difficulty = 3
+		icon = GFX_archaeology_runes_D3
+		event = epoch_core.41
+	}
+	stage = {
+		difficulty = 4
+		icon = GFX_archaeology_runes_D6
+		event = epoch_core.42
+	}
+	stage = {
+		difficulty = 5
+		icon = GFX_archaeology_runes_D2
+		event = epoch_core.43
+	}
+
+	# Keep Vanilla's native failed-roll score/clue handling. This callback runs
+	# from fleet -> archaeological site; do not assume the site can switch to a
+	# planet scope here.
+	on_roll_failed = {
+		from = { standard_archaeological_site_on_roll_failed = { RANDOM_EVENTS = no_events } }
+		owner = { set_country_flag = epoch_core_structure_excavation_setback }
+	}
+}

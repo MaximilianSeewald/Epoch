@@ -1,0 +1,52 @@
+# These planet-scoped effects resolve the same contamination state through
+# mechanics appropriate to the current owner class.
+epoch_core_apply_contamination_active = {
+	if = {
+		limit = { owner = { is_machine_empire = yes } }
+		add_modifier = { modifier = epoch_core_contamination_active_machine days = -1 }
+	}
+	else_if = {
+		limit = { owner = { is_hive_empire = yes } }
+		add_modifier = { modifier = epoch_core_contamination_active_hive days = -1 }
+	}
+	else = { add_modifier = { modifier = epoch_core_contamination_active_organic days = -1 } }
+}
+
+epoch_core_apply_contamination_worsened = {
+	if = {
+		limit = { owner = { is_machine_empire = yes } }
+		add_modifier = { modifier = epoch_core_contamination_worsened_machine days = -1 }
+	}
+	else_if = {
+		limit = { owner = { is_hive_empire = yes } }
+		add_modifier = { modifier = epoch_core_contamination_worsened_hive days = -1 }
+	}
+	else = { add_modifier = { modifier = epoch_core_contamination_worsened_organic days = -1 } }
+}
+
+epoch_core_apply_contamination_studied = {
+	if = {
+		limit = { owner = { is_machine_empire = yes } }
+		add_modifier = { modifier = epoch_core_contamination_studied_machine days = -1 }
+	}
+	else_if = {
+		limit = { owner = { is_hive_empire = yes } }
+		add_modifier = { modifier = epoch_core_contamination_studied_hive days = -1 }
+	}
+	else = { add_modifier = { modifier = epoch_core_contamination_studied_organic days = -1 } }
+}
+
+epoch_core_remove_contamination_effects = {
+	remove_modifier = epoch_core_containment_buffered
+	remove_modifier = epoch_core_contamination_active
+	remove_modifier = epoch_core_contamination_worsened
+	remove_modifier = epoch_core_contamination_active_organic
+	remove_modifier = epoch_core_contamination_active_hive
+	remove_modifier = epoch_core_contamination_active_machine
+	remove_modifier = epoch_core_contamination_worsened_organic
+	remove_modifier = epoch_core_contamination_worsened_hive
+	remove_modifier = epoch_core_contamination_worsened_machine
+	remove_modifier = epoch_core_contamination_studied_organic
+	remove_modifier = epoch_core_contamination_studied_hive
+	remove_modifier = epoch_core_contamination_studied_machine
+}

@@ -1,0 +1,131 @@
+epoch_core_contamination_active = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_hazardous_weather.dds"
+	planet_stability_add = -3
+	planet_jobs_produces_mult = -0.05
+}
+
+# Temporary buffering applied only while the containment approach is selected.
+epoch_core_containment_buffered = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_natural_beauty.dds"
+	planet_stability_add = 2
+	planet_jobs_produces_mult = 0.02
+}
+
+epoch_core_contamination_worsened = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_irradiated.dds"
+	planet_stability_add = -8
+	planet_jobs_produces_mult = -0.10
+}
+
+epoch_core_contamination_active_organic = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_hazardous_weather.dds"
+	planet_stability_add = -3
+	planet_jobs_food_produces_mult = -0.05
+}
+
+epoch_core_contamination_active_hive = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_wild_storms.dds"
+	planet_stability_add = -3
+	planet_jobs_unity_produces_mult = -0.05
+}
+
+epoch_core_contamination_active_machine = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_robots.dds"
+	planet_stability_add = -3
+	planet_jobs_energy_produces_mult = -0.05
+}
+
+epoch_core_contamination_worsened_organic = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_irradiated.dds"
+	planet_stability_add = -8
+	planet_jobs_food_produces_mult = -0.10
+	planet_jobs_produces_mult = -0.05
+}
+
+epoch_core_contamination_worsened_hive = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_wild_storms.dds"
+	planet_stability_add = -8
+	planet_jobs_unity_produces_mult = -0.10
+	planet_jobs_produces_mult = -0.05
+}
+
+epoch_core_contamination_worsened_machine = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_robots.dds"
+	planet_stability_add = -8
+	planet_jobs_energy_produces_mult = -0.10
+	planet_jobs_produces_mult = -0.05
+}
+
+epoch_core_contamination_studied_organic = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_lush.dds"
+	planet_stability_add = -1
+	planet_jobs_food_produces_mult = -0.02
+}
+
+epoch_core_contamination_studied_hive = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_titanic_life.dds"
+	planet_stability_add = -1
+	planet_jobs_unity_produces_mult = -0.02
+}
+
+epoch_core_contamination_studied_machine = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_factory.dds"
+	planet_stability_add = -1
+	planet_jobs_energy_produces_mult = -0.02
+}
+
+epoch_core_silent_structure = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_planet_from_space.dds"
+	planet_jobs_physics_research_produces_mult = 0.05
+}
+
+epoch_core_structure_secured = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_natural_beauty.dds"
+	planet_jobs_engineering_research_produces_mult = 0.05
+}
+
+epoch_core_structure_investigated = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_planet_surface.dds"
+	planet_jobs_society_research_produces_mult = 0.05
+}
+
+epoch_core_structure_ruins = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_wasteland.dds"
+	planet_stability_add = -2
+}
+
+# Permanent class-specific scars. They deliberately have no duration field and
+# are only applied at the Phase I conclusion.
+epoch_core_permanent_scar_organic = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_irradiated.dds"
+	planet_stability_add = -3
+	planet_jobs_food_produces_mult = -0.05
+}
+
+epoch_core_permanent_scar_hive = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_wild_storms.dds"
+	planet_stability_add = -3
+	planet_jobs_unity_produces_mult = -0.05
+}
+
+epoch_core_permanent_scar_machine = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_robots.dds"
+	planet_stability_add = -3
+	planet_jobs_energy_produces_mult = -0.05
+}
+
+epoch_core_permanent_scar_exacerbated = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_asteroid_impacts.dds"
+	planet_stability_add = -2
+	planet_jobs_produces_mult = -0.05
+}
+
+epoch_core_permanent_scar_fallback = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_irradiated.dds"
+	country_energy_produces_mult = -0.03
+}
+
+epoch_core_permanent_scar_exacerbated_fallback = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_asteroid_impacts.dds"
+	country_energy_produces_mult = -0.03
+}
