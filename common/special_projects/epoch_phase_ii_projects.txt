@@ -1,0 +1,59 @@
+special_project = {
+	key = "EPOCH_II_SCAR_SURVEY"
+	days_to_research = 180
+	tech_department = society_technology
+	picture = GFX_evt_black_hole
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_ii.3 } }
+	on_fail = { country_event = { id = epoch_ii.8 } }
+	on_cancel = { country_event = { id = epoch_ii.8 } }
+}
+
+special_project = {
+	key = "EPOCH_II_SIGNAL_DIVERSION"
+	days_to_research = 240
+	tech_department = physics_technology
+	picture = GFX_evt_black_hole
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_ii.6 } }
+	on_fail = { country_event = { id = epoch_ii.18 } }
+	on_cancel = { country_event = { id = epoch_ii.18 } }
+}
+
+special_project = {
+	key = "EPOCH_II_CODE_ARCHIVE"
+	days_to_research = 300
+	tech_department = physics_technology
+	picture = GFX_evt_black_hole
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_ii.10 } }
+	on_fail = { country_event = { id = epoch_ii.11 } }
+	on_cancel = { country_event = { id = epoch_ii.11 } }
+}
+
+special_project = {
+	key = "EPOCH_II_CODE_FORENSICS"
+	days_to_research = 180
+	tech_department = engineering_technology
+	picture = GFX_evt_space_debris
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_ii.10 } }
+	on_fail = { country_event = { id = epoch_ii.11 } }
+	on_cancel = { country_event = { id = epoch_ii.11 } }
+}
+
+special_project = {
+	key = "EPOCH_II_CODE_RECONSTRUCTION"
+	days_to_research = 90
+	tech_department = physics_technology
+	picture = GFX_evt_space_debris
+	event_scope = ship_event
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	on_success = { ship_event = { id = epoch_ii.10 } }
+	on_fail = { country_event = { id = epoch_ii.11 } }
+	on_cancel = { country_event = { id = epoch_ii.11 } }
+}

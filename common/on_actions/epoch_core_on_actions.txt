@@ -19,6 +19,11 @@ on_country_type_changed = {
 	}
 }
 
+# Owner-local, guarded recovery/migration for continuing Phase-I saves.
+on_yearly_pulse_country = {
+	events = { epoch_ii.0 }
+}
+
 # The signal is attached to the system a Science Ship actually surveys.
 on_survey_planet = {
 	events = {

@@ -1,0 +1,37 @@
+# Presentation deposits record Phase I history; original lasting planet modifiers
+# remain in place so a feature never silently weakens an existing consequence.
+d_epoch_contamination_active = {
+	is_for_colonizable = yes
+	icon = d_geothermal_vent
+	category = deposit_cat_misc
+}
+d_epoch_contamination_worsened = {
+	is_for_colonizable = yes
+	icon = d_geothermal_vent
+	category = deposit_cat_misc
+}
+d_epoch_contamination_studied = {
+	is_for_colonizable = yes
+	icon = d_geothermal_vent
+	category = deposit_cat_misc
+}
+d_epoch_contamination_contained = {
+	is_for_colonizable = yes
+	icon = d_geothermal_vent
+	category = deposit_cat_misc
+}
+d_epoch_conclusion_scar_organic = {
+	is_for_colonizable = yes
+	icon = d_geothermal_vent
+	category = deposit_cat_misc
+}
+d_epoch_conclusion_scar_hive = {
+	is_for_colonizable = yes
+	icon = d_geothermal_vent
+	category = deposit_cat_misc
+}
+d_epoch_conclusion_scar_machine = {
+	is_for_colonizable = yes
+	icon = d_geothermal_vent
+	category = deposit_cat_misc
+}

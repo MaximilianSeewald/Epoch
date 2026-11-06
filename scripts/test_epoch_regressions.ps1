@@ -435,6 +435,8 @@ foreach ($approach in @($cautiousApproach,$intensiveApproach,$minimalApproach)) 
 }
 & node (Join-Path $PSScriptRoot 'test_phase_i_flow.cjs') $Root
 Assert-Check ($LASTEXITCODE -eq 0) 'Parsed campaign-state regression must pass'
+& node (Join-Path $PSScriptRoot 'test_phase_ii_block_a.cjs') $Root
+Assert-Check ($LASTEXITCODE -eq 0) 'Phase II Block A static regression must pass'
 
 # Summarize existing test logs by source. Old EPOCH failures are reported as
 # evidence from the pre-fix run; unrelated-mod/base-game errors are separated.

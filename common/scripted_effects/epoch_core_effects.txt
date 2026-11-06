@@ -50,3 +50,28 @@ epoch_core_remove_contamination_effects = {
 	remove_modifier = epoch_core_contamination_studied_hive
 	remove_modifier = epoch_core_contamination_studied_machine
 }
+
+# Resonance stability is an empire-local campaign variable bounded to 0–100.
+epoch_ii_clamp_resonance_stability = {
+	if = {
+		limit = { check_variable = { which = epoch_ii_resonance_stability value > 100 } }
+		set_variable = { which = epoch_ii_resonance_stability value = 100 }
+	}
+	if = {
+		limit = { check_variable = { which = epoch_ii_resonance_stability value < 0 } }
+		set_variable = { which = epoch_ii_resonance_stability value = 0 }
+	}
+}
+
+epoch_ii_close_campaign = {
+	set_country_flag = epoch_ii_closed_by_choice
+	remove_country_flag = epoch_ii_active
+	if = { limit = { exists = event_target:epoch_ii_nullwarden_fleet@root } event_target:epoch_ii_nullwarden_fleet@root = { destroy_fleet = this } }
+	if = { limit = { exists = event_target:epoch_ii_target_planet@root } event_target:epoch_ii_target_planet@root = { remove_modifier = epoch_ii_emergency_fortifications } }
+	abort_special_project = { type = EPOCH_II_SCAR_SURVEY }
+	abort_special_project = { type = EPOCH_II_SIGNAL_DIVERSION }
+	abort_special_project = { type = EPOCH_II_CODE_ARCHIVE }
+	abort_special_project = { type = EPOCH_II_CODE_FORENSICS }
+	abort_special_project = { type = EPOCH_II_CODE_RECONSTRUCTION }
+	random_situation = { limit = { is_situation_type = epoch_resonance_protocol } destroy_situation = this }
+}
