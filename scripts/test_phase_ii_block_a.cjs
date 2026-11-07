@@ -56,7 +56,7 @@ check(projectDefs.length === 13 && projectDefs.every(p => /timelimit\s*=\s*1080/
 check(!/any_owned_ship\s*=\s*\{\s*is_ship_class\s*=\s*shipclass_science_ship/.test(events) && !/any_owned_leader\s*=\s*\{\s*leader_class\s*=\s*scientist/.test(events), 'Project availability must not be inferred from unrelated empire-wide assets');
 check(/id\s*=\s*epoch_ii\.20[\s\S]*?remove_country_flag\s*=\s*epoch_ii_c1_waiting_for_ship[\s\S]*?country_event\s*=\s*\{\s*id\s*=\s*epoch_ii\.12/.test(events) && !/country_event\s*=\s*\{\s*id\s*=\s*epoch_ii\.20\s+days\s*=\s*90/.test(events), 'Legacy project recovery must be one-shot, with no polling loop');
 check(/every_owned_planet\s*=/.test(events) && !/every_planet\s*=/.test(events), 'Legacy feature migration must scan owned planets only');
-check(/event_target:epoch_core_world@root = \{\s*is_owned_by = root\s*\}/.test(events) && /NOT = \{\s*has_deposit\s*=\s*d_epoch_contamination_active\s*\}/.test(events), 'Contamination migration must be owner-local and idempotent');
+check(/event_target:epoch_core_world@root = \{\s*is_owned_by = root\s*\}/.test(events) && /NOT = \{\s*has_deposit\s*=\s*d_epoch_resonance_contamination_active\s*\}/.test(events), 'Contamination migration must be owner-local and idempotent');
 check(/epoch_ii_contamination_feature_not_applicable/.test(events) && /epoch_ii_legacy_scar_feature_not_applicable/.test(events), 'Migration must explicitly mark a current missing/foreign state');
 check(/epoch_ii_planet_migration_v2/.test(events) && /remove_country_flag\s*=\s*epoch_ii_contamination_migrated/.test(events), 'The migration revision must reopen flags set by the previous implementation');
 check(/set_country_flag\s*=\s*epoch_ii_contamination_migrated/.test(events) && /set_country_flag\s*=\s*epoch_ii_capital_migrated/.test(events) && /is_owned_by\s*=\s*root/.test(events), 'A feature migration is marked complete only after an owned-world check');
@@ -71,7 +71,7 @@ check([...events.matchAll(/set_variable\s*=\s*\{\s*which\s*=\s*epoch_ii_resonanc
 check(/add_research_option\s*=\s*tech_epoch_resonance_spectroscopy/.test(events) && /add_research_option\s*=\s*tech_epoch_adaptive_resonance_armor/.test(events) && !/enable_technology\s*=/.test(events), 'Chapter 3 must add normal research options, not auto-complete technologies');
 check(/potential\s*=\s*\{\s*has_country_flag\s*=\s*epoch_ii_spectroscopy_lead\s*\}/.test(tech), 'Spectroscopy must require the Chapter 3 research lead');
 check(/SMALL_EPOCH_RESONANCE_ARMOR[\s\S]*?ship_armor_add\s*=\s*8[\s\S]*?ship_hull_add\s*=\s*8/.test(component), 'Adaptive armor must have a defined functional component');
-check(/category\s*=\s*deposit_cat_misc/.test(features) && /d_epoch_conclusion_scar_machine/.test(features), 'Presentation feature deposits must exist');
+check((features.match(/^d_epoch_(?:resonance_(?:contamination_[a-z]+|scar(?:_[a-z]+)?)|silent_structure_[a-z]+)\s*=\s*\{/gm) || []).length === 15 && /category\s*=\s*deposit_cat_rare/.test(features) && /planet_jobs_food_produces_mult/.test(features) && /planet_jobs_physics_research_produces_mult/.test(features), 'State-specific Planetary Feature definitions must carry Phase I, Phase II, scar, and structure effects');
 const eventDefs = [...allPhaseIIEvents.matchAll(/^\s*(country_event|situation_event|ship_event)\s*=\s*\{\s*\n\s*id\s*=\s*(epoch_ii\.\d+)/gm)];
 const definitions = new Map();
 for (const match of eventDefs) { check(!definitions.has(match[2]), `Duplicate event ${match[2]}`); definitions.set(match[2], match[1]); }

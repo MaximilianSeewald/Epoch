@@ -1,42 +1,178 @@
-# Presentation deposits record Phase I history; original lasting planet modifiers
-# remain in place so a feature never silently weakens an existing consequence.
-d_epoch_contamination_active = {
+# State-specific deposits implement three logical Planetary Feature families.
+# State setters clear the family before adding the one active state. Phase-II
+# contamination states preserve Phase-I consequences through planet flags.
+
+d_epoch_resonance_contamination_active = {
 	is_for_colonizable = yes
-	icon = d_geothermal_vent
-	category = deposit_cat_misc
+	category = deposit_cat_rare
+	icon = d_radioactive_wasteland
+	drop_weight = { weight = 0 }
+	triggered_planet_modifier = { potential = { owner = { is_regular_empire = yes } } planet_stability_add = -3 planet_jobs_food_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { owner = { is_hive_empire = yes } } planet_stability_add = -3 planet_jobs_unity_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { owner = { is_machine_empire = yes } } planet_stability_add = -3 planet_jobs_energy_produces_mult = -0.05 }
 }
-d_epoch_contamination_worsened = {
+
+d_epoch_resonance_contamination_worsened = {
 	is_for_colonizable = yes
-	icon = d_geothermal_vent
-	category = deposit_cat_misc
+	category = deposit_cat_rare
+	icon = d_radioactive_wasteland
+	drop_weight = { weight = 0 }
+	triggered_planet_modifier = { potential = { owner = { is_regular_empire = yes } } planet_stability_add = -8 planet_jobs_food_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { owner = { is_hive_empire = yes } } planet_stability_add = -8 planet_jobs_unity_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { owner = { is_machine_empire = yes } } planet_stability_add = -8 planet_jobs_energy_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
 }
-d_epoch_contamination_studied = {
+
+d_epoch_resonance_contamination_studied = {
 	is_for_colonizable = yes
-	icon = d_geothermal_vent
-	category = deposit_cat_misc
+	category = deposit_cat_rare
+	icon = d_metal_boneyard
+	drop_weight = { weight = 0 }
+	triggered_planet_modifier = { potential = { owner = { is_regular_empire = yes } } planet_stability_add = -1 planet_jobs_food_produces_mult = -0.02 }
+	triggered_planet_modifier = { potential = { owner = { is_hive_empire = yes } } planet_stability_add = -1 planet_jobs_unity_produces_mult = -0.02 }
+	triggered_planet_modifier = { potential = { owner = { is_machine_empire = yes } } planet_stability_add = -1 planet_jobs_energy_produces_mult = -0.02 }
 }
-d_epoch_contamination_contained = {
+
+d_epoch_resonance_contamination_contained = {
 	is_for_colonizable = yes
-	icon = d_geothermal_vent
-	category = deposit_cat_misc
+	category = deposit_cat_rare
+	icon = d_deep_sinkhole
+	drop_weight = { weight = 0 }
 }
-d_epoch_conclusion_scar_organic = {
+
+# Later resonance phases share the same contamination feature. Their entries
+# preserve any still-active Phase-I state flags, so the economic effects stack
+# exactly as in the former separate-modifier implementation.
+d_epoch_resonance_contamination_latent = {
 	is_for_colonizable = yes
-	icon = d_geothermal_vent
-	category = deposit_cat_misc
+	category = deposit_cat_rare
+	icon = d_metal_boneyard
+	drop_weight = { weight = 0 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_active_state owner = { is_regular_empire = yes } } planet_stability_add = -3 planet_jobs_food_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_active_state owner = { is_hive_empire = yes } } planet_stability_add = -3 planet_jobs_unity_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_active_state owner = { is_machine_empire = yes } } planet_stability_add = -3 planet_jobs_energy_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_worsened_state owner = { is_regular_empire = yes } } planet_stability_add = -8 planet_jobs_food_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_worsened_state owner = { is_hive_empire = yes } } planet_stability_add = -8 planet_jobs_unity_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_worsened_state owner = { is_machine_empire = yes } } planet_stability_add = -8 planet_jobs_energy_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_studied_state owner = { is_regular_empire = yes } } planet_stability_add = -1 planet_jobs_food_produces_mult = -0.02 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_studied_state owner = { is_hive_empire = yes } } planet_stability_add = -1 planet_jobs_unity_produces_mult = -0.02 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_studied_state owner = { is_machine_empire = yes } } planet_stability_add = -1 planet_jobs_energy_produces_mult = -0.02 }
+	planet_modifier = { planet_jobs_physics_research_produces_mult = 0.02 planet_stability_add = -1 }
 }
-d_epoch_conclusion_scar_hive = {
+
+d_epoch_resonance_contamination_resonant = {
 	is_for_colonizable = yes
-	icon = d_geothermal_vent
-	category = deposit_cat_misc
+	category = deposit_cat_rare
+	icon = d_radioactive_wasteland
+	drop_weight = { weight = 0 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_active_state owner = { is_regular_empire = yes } } planet_stability_add = -3 planet_jobs_food_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_active_state owner = { is_hive_empire = yes } } planet_stability_add = -3 planet_jobs_unity_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_active_state owner = { is_machine_empire = yes } } planet_stability_add = -3 planet_jobs_energy_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_worsened_state owner = { is_regular_empire = yes } } planet_stability_add = -8 planet_jobs_food_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_worsened_state owner = { is_hive_empire = yes } } planet_stability_add = -8 planet_jobs_unity_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_worsened_state owner = { is_machine_empire = yes } } planet_stability_add = -8 planet_jobs_energy_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_studied_state owner = { is_regular_empire = yes } } planet_stability_add = -1 planet_jobs_food_produces_mult = -0.02 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_studied_state owner = { is_hive_empire = yes } } planet_stability_add = -1 planet_jobs_unity_produces_mult = -0.02 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_studied_state owner = { is_machine_empire = yes } } planet_stability_add = -1 planet_jobs_energy_produces_mult = -0.02 }
+	planet_modifier = { planet_jobs_physics_research_produces_mult = 0.05 planet_jobs_produces_mult = -0.03 planet_stability_add = -2 }
 }
-d_epoch_conclusion_scar_machine = {
+
+d_epoch_resonance_contamination_unstable = {
 	is_for_colonizable = yes
-	icon = d_geothermal_vent
-	category = deposit_cat_misc
+	category = deposit_cat_rare
+	icon = d_radioactive_wasteland
+	drop_weight = { weight = 0 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_active_state owner = { is_regular_empire = yes } } planet_stability_add = -3 planet_jobs_food_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_active_state owner = { is_hive_empire = yes } } planet_stability_add = -3 planet_jobs_unity_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_active_state owner = { is_machine_empire = yes } } planet_stability_add = -3 planet_jobs_energy_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_worsened_state owner = { is_regular_empire = yes } } planet_stability_add = -8 planet_jobs_food_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_worsened_state owner = { is_hive_empire = yes } } planet_stability_add = -8 planet_jobs_unity_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_worsened_state owner = { is_machine_empire = yes } } planet_stability_add = -8 planet_jobs_energy_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_studied_state owner = { is_regular_empire = yes } } planet_stability_add = -1 planet_jobs_food_produces_mult = -0.02 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_studied_state owner = { is_hive_empire = yes } } planet_stability_add = -1 planet_jobs_unity_produces_mult = -0.02 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_studied_state owner = { is_machine_empire = yes } } planet_stability_add = -1 planet_jobs_energy_produces_mult = -0.02 }
+	planet_modifier = { planet_jobs_physics_research_produces_mult = 0.10 planet_jobs_produces_mult = -0.10 planet_stability_add = -5 }
 }
-d_epoch_resonance_latent = { is_for_colonizable = yes icon = d_geothermal_vent category = deposit_cat_misc }
-d_epoch_resonance_active = { is_for_colonizable = yes icon = d_geothermal_vent category = deposit_cat_misc }
-d_epoch_resonance_unstable = { is_for_colonizable = yes icon = d_geothermal_vent category = deposit_cat_misc }
-d_epoch_resonance_controlled = { is_for_colonizable = yes icon = d_geothermal_vent category = deposit_cat_misc }
-d_epoch_chamber_ruin = { is_for_colonizable = yes icon = d_geothermal_vent category = deposit_cat_misc }
+
+d_epoch_resonance_contamination_controlled = {
+	is_for_colonizable = yes
+	category = deposit_cat_rare
+	icon = d_metal_boneyard
+	drop_weight = { weight = 0 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_active_state owner = { is_regular_empire = yes } } planet_stability_add = -3 planet_jobs_food_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_active_state owner = { is_hive_empire = yes } } planet_stability_add = -3 planet_jobs_unity_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_active_state owner = { is_machine_empire = yes } } planet_stability_add = -3 planet_jobs_energy_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_worsened_state owner = { is_regular_empire = yes } } planet_stability_add = -8 planet_jobs_food_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_worsened_state owner = { is_hive_empire = yes } } planet_stability_add = -8 planet_jobs_unity_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_worsened_state owner = { is_machine_empire = yes } } planet_stability_add = -8 planet_jobs_energy_produces_mult = -0.10 planet_jobs_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_studied_state owner = { is_regular_empire = yes } } planet_stability_add = -1 planet_jobs_food_produces_mult = -0.02 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_studied_state owner = { is_hive_empire = yes } } planet_stability_add = -1 planet_jobs_unity_produces_mult = -0.02 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_contamination_studied_state owner = { is_machine_empire = yes } } planet_stability_add = -1 planet_jobs_energy_produces_mult = -0.02 }
+	planet_modifier = { planet_jobs_physics_research_produces_mult = 0.04 planet_jobs_produces_mult = 0.02 planet_stability_add = 2 }
+}
+
+d_epoch_resonance_scar = {
+	is_for_colonizable = yes
+	category = deposit_cat_rare
+	icon = d_city_ruins
+	drop_weight = { weight = 0 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_resonance_scar owner = { is_regular_empire = yes } } planet_stability_add = -3 planet_jobs_food_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_resonance_scar owner = { is_hive_empire = yes } } planet_stability_add = -3 planet_jobs_unity_produces_mult = -0.05 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_resonance_scar owner = { is_machine_empire = yes } } planet_stability_add = -3 planet_jobs_energy_produces_mult = -0.05 }
+}
+
+d_epoch_resonance_scar_altered = {
+	is_for_colonizable = yes
+	category = deposit_cat_rare
+	icon = d_city_ruins
+	drop_weight = { weight = 0 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_resonance_scar_altered owner = { is_regular_empire = yes } } planet_stability_add = -1 planet_jobs_food_produces_mult = -0.02 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_resonance_scar_altered owner = { is_hive_empire = yes } } planet_stability_add = -1 planet_jobs_unity_produces_mult = -0.02 }
+	triggered_planet_modifier = { potential = { has_planet_flag = epoch_core_resonance_scar_altered owner = { is_machine_empire = yes } } planet_stability_add = -1 planet_jobs_energy_produces_mult = -0.02 }
+}
+
+d_epoch_resonance_scar_healed = {
+	is_for_colonizable = yes
+	category = deposit_cat_rare
+	icon = d_city_ruins
+	drop_weight = { weight = 0 }
+}
+
+# Third family: the Silent Structure. The feature carries the original survey
+# bonus and exactly one final outcome bonus/penalty. Risk flags remain narrative
+# records and do not stack a second structure modifier.
+d_epoch_silent_structure_unsecured = {
+	is_for_colonizable = yes
+	category = deposit_cat_rare
+	icon = d_metal_boneyard
+	drop_weight = { weight = 0 }
+	planet_modifier = { planet_jobs_physics_research_produces_mult = 0.05 }
+	triggered_planet_modifier = { potential = { owner = { has_country_flag = epoch_core_structure_risk_increased } } planet_stability_add = -2 }
+}
+
+d_epoch_silent_structure_secured = {
+	is_for_colonizable = yes
+	category = deposit_cat_rare
+	icon = d_metal_boneyard
+	drop_weight = { weight = 0 }
+	planet_modifier = { planet_jobs_physics_research_produces_mult = 0.05 planet_jobs_engineering_research_produces_mult = 0.05 }
+	triggered_planet_modifier = { potential = { owner = { has_country_flag = epoch_core_structure_risk_increased } } planet_stability_add = -2 }
+}
+
+d_epoch_silent_structure_investigated = {
+	is_for_colonizable = yes
+	category = deposit_cat_rare
+	icon = d_metal_boneyard
+	drop_weight = { weight = 0 }
+	planet_modifier = { planet_jobs_physics_research_produces_mult = 0.05 planet_jobs_society_research_produces_mult = 0.05 }
+	triggered_planet_modifier = { potential = { owner = { has_country_flag = epoch_core_structure_contamination_compared } } planet_jobs_engineering_research_produces_mult = 0.05 }
+	triggered_planet_modifier = { potential = { owner = { has_country_flag = epoch_core_structure_risk_increased } } planet_stability_add = -2 }
+}
+
+d_epoch_silent_structure_destroyed = {
+	is_for_colonizable = yes
+	category = deposit_cat_rare
+	icon = d_city_ruins
+	drop_weight = { weight = 0 }
+	planet_modifier = { planet_stability_add = -2 }
+	triggered_planet_modifier = { potential = { owner = { has_country_flag = epoch_core_structure_contamination_compared } } planet_jobs_engineering_research_produces_mult = 0.05 }
+}

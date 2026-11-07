@@ -2,7 +2,7 @@ special_project = {
 	key = "EPOCH_FIRST_ECHO_CAUTIOUS"
 	days_to_research = 180
 	tech_department = society_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_physics_research
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	on_success = { ship_event = { id = epoch_core.10 } }
@@ -14,7 +14,7 @@ special_project = {
 	key = "EPOCH_FIRST_ECHO_AGGRESSIVE"
 	days_to_research = 60
 	tech_department = physics_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_unknown_ships
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	on_success = { ship_event = { id = epoch_core.10 } }
@@ -26,7 +26,7 @@ special_project = {
 	key = "EPOCH_ECHO_CALIBRATION"
 	days_to_research = 150
 	tech_department = society_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_physics_research
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	on_success = { ship_event = { id = epoch_core.11 } }
@@ -38,7 +38,7 @@ special_project = {
 	key = "EPOCH_ECHO_BASELINE"
 	days_to_research = 240
 	tech_department = society_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_society_research
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	on_success = { ship_event = { id = epoch_core.11 } }
@@ -50,7 +50,7 @@ special_project = {
 	key = "EPOCH_ECHO_OVERDRIVE"
 	days_to_research = 30
 	tech_department = physics_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_engineering_research
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	on_success = { ship_event = { id = epoch_core.11 } }
@@ -62,7 +62,7 @@ special_project = {
 	key = "EPOCH_ECHO_THROTTLED"
 	days_to_research = 90
 	tech_department = physics_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_physics_research
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	on_success = { ship_event = { id = epoch_core.11 } }
@@ -110,7 +110,7 @@ special_project = {
 	key = "EPOCH_EXPEDITION_SURVEY"
 	days_to_research = 240
 	tech_department = physics_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_unknown_ships
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	on_success = { ship_event = { id = epoch_core.13 } }
@@ -122,7 +122,7 @@ special_project = {
 	key = "EPOCH_CONTAMINATION_STUDY"
 	days_to_research = 120
 	tech_department = society_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_contingency_planet
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	on_success = { ship_event = { id = epoch_core.21 } }
@@ -134,7 +134,7 @@ special_project = {
 	key = "EPOCH_STRUCTURE_REMOTE_STUDY"
 	days_to_research = 180
 	tech_department = society_technology
-	picture = GFX_evt_relic_world
+	picture = GFX_evt_alien_ruins
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	on_success = { ship_event = { id = epoch_core.45 } }
