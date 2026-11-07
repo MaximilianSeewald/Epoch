@@ -13,6 +13,7 @@ country_event = {
 		NOT = { has_country_flag = epoch_core_campaign_opted_out }
 	}
 	immediate = {
+		epoch_core_migrate_planetary_features = yes
 		if = {
 			limit = { NOT = { has_country_flag = epoch_ii_planet_migration_v2 } }
 			# 0a226e1 treated missing and foreign references as final. Re-open
@@ -270,7 +271,7 @@ situation_event = {
 	desc = { text = epoch_ii.4.desc.machine trigger = { owner = { is_machine_empire = yes } } }
 	desc = { text = epoch_ii.4.desc.hive trigger = { owner = { is_hive_empire = yes } } }
 	desc = { text = epoch_ii.4.desc.organic trigger = { always = yes } }
-	picture = GFX_evt_hostile_fleet
+	picture = GFX_evt_ship_under_attack
 	is_triggered_only = yes
 	situation = this
 	trigger = { owner = { has_country_flag = epoch_ii_active NOR = { has_country_flag = epoch_ii_ch2_prompted has_country_flag = epoch_ii_ch2_resolved } } }
@@ -317,7 +318,7 @@ country_event = {
 	id = epoch_ii.14
 	title = epoch_ii.4.name
 	desc = epoch_ii.4.combat
-	picture = GFX_evt_hostile_fleet
+	picture = GFX_evt_ship_under_attack
 	is_triggered_only = yes
 	trigger = { has_country_flag = epoch_ii_c2_combat NOT = { has_country_flag = epoch_ii_ch2_resolved } }
 	option = { name = epoch_ii.4.win trigger = { NOT = { exists = event_target:epoch_ii_nullwarden_fleet@root } } hidden_effect = { set_country_flag = epoch_ii_nullwarden_engagement_recorded set_country_flag = epoch_ii_wreck_available set_country_flag = epoch_ii_ch2_resolved add_resource = { physics_research = 200 alloys = 100 } } ai_chance = { factor = 90 } }
@@ -329,7 +330,7 @@ country_event = {
 	id = epoch_ii.15
 	title = epoch_ii.4.name
 	desc = epoch_ii.4.defense
-	picture = GFX_evt_hostile_fleet
+	picture = GFX_evt_ship_under_attack
 	is_triggered_only = yes
 	trigger = { has_country_flag = epoch_ii_c2_defense NOT = { has_country_flag = epoch_ii_ch2_resolved } }
 	option = {
@@ -468,7 +469,7 @@ country_event = {
 	id = epoch_ii.18
 	title = epoch_ii.18.name
 	desc = epoch_ii.18.failed.desc
-	picture = GFX_evt_hostile_fleet
+	picture = GFX_evt_ship_under_attack
 	is_triggered_only = yes
 	trigger = { has_country_flag = epoch_ii_active has_country_flag = epoch_ii_diversion_project_enabled NOR = { has_country_flag = epoch_ii_c2_recovery_open has_country_flag = epoch_ii_ch2_resolved } }
 	immediate = { remove_country_flag = epoch_ii_diversion_project_enabled remove_country_flag = epoch_ii_c2_diversion_project_started set_country_flag = epoch_ii_diversion_failed set_country_flag = epoch_ii_c2_recovery_open change_variable = { which = epoch_ii_resonance_stability value = -10 } epoch_ii_clamp_resonance_stability = yes add_resource = { energy = -200 } if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { add_planet_devastation = 10 } } }
@@ -481,7 +482,7 @@ country_event = {
 	id = epoch_ii.24
 	title = epoch_ii.18.name
 	desc = epoch_ii.18.cancelled.desc
-	picture = GFX_evt_hostile_fleet
+	picture = GFX_evt_ship_under_attack
 	is_triggered_only = yes
 	trigger = { has_country_flag = epoch_ii_active has_country_flag = epoch_ii_diversion_project_enabled NOR = { has_country_flag = epoch_ii_c2_recovery_open has_country_flag = epoch_ii_ch2_resolved } }
 	immediate = { remove_country_flag = epoch_ii_diversion_project_enabled remove_country_flag = epoch_ii_c2_diversion_project_started set_country_flag = epoch_ii_diversion_cancelled set_country_flag = epoch_ii_c2_recovery_open change_variable = { which = epoch_ii_resonance_stability value = -5 } epoch_ii_clamp_resonance_stability = yes }
@@ -564,7 +565,7 @@ situation_event = {
 	desc = { text = epoch_ii.61.desc.machine trigger = { owner = { is_machine_empire = yes } } }
 	desc = { text = epoch_ii.61.desc.hive trigger = { owner = { is_hive_empire = yes } } }
 	desc = { text = epoch_ii.61.desc.organic trigger = { always = yes } }
-	picture = GFX_evt_planet
+	picture = GFX_evt_alien_planet
 	is_triggered_only = yes
 	situation = this
 	trigger = { owner = { has_country_flag = epoch_ii_ch4_research_done NOT = { has_country_flag = epoch_ii_ch4_incident1 } } }
@@ -579,7 +580,7 @@ country_event = {
 	desc = { text = epoch_ii.62.desc.machine trigger = { is_machine_empire = yes } }
 	desc = { text = epoch_ii.62.desc.hive trigger = { is_hive_empire = yes } }
 	desc = { text = epoch_ii.62.desc.organic trigger = { always = yes } }
-	picture = GFX_evt_planet
+	picture = GFX_evt_alien_planet
 	is_triggered_only = yes
 	trigger = { has_country_flag = epoch_ii_ch4_incident1 NOT = { has_country_flag = epoch_ii_ch4_incident2 } }
 	option = { name = epoch_ii.62.a hidden_effect = { set_country_flag = epoch_ii_ch4_incident2 change_variable = { which = epoch_ii_resonance_stability value = 4 } epoch_ii_clamp_resonance_stability = yes epoch_ii_set_site_controlled = yes set_country_flag = epoch_ii_ch4_protocol_treated country_event = { id = epoch_ii.68 days = 1 } } ai_chance = { factor = 40 } }
@@ -592,7 +593,7 @@ country_event = {
 	title = epoch_ii.68.name
 	desc = { text = epoch_ii.68.desc.unstable trigger = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { has_planet_flag = epoch_ii_unstable_resonance } } }
 	desc = { text = epoch_ii.68.desc.default trigger = { always = yes } }
-	picture = GFX_evt_planet
+	picture = GFX_evt_alien_planet
 	is_triggered_only = yes
 	trigger = { has_country_flag = epoch_ii_ch4_incident2 NOT = { has_country_flag = epoch_ii_ch4_resolved } }
 	option = { name = epoch_ii.68.a hidden_effect = { if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { add_modifier = { modifier = epoch_ii_breakthrough_sacrifice days = -1 } epoch_ii_set_site_active = yes } } set_country_flag = epoch_ii_breakthrough_economic_cost set_country_flag = epoch_ii_ch4_protocol_treated set_country_flag = epoch_ii_ch4_resolved country_event = { id = epoch_ii.63 days = 1 } } ai_chance = { factor = 30 } }
@@ -701,7 +702,7 @@ situation_event = {
 	title = epoch_ii.71.name
 	desc = { text = epoch_ii.71.desc.exposed trigger = { owner = { has_country_flag = epoch_ii_network_exposed } } }
 	desc = { text = epoch_ii.71.desc.default trigger = { always = yes } }
-	picture = GFX_evt_hostile_fleet
+	picture = GFX_evt_ship_under_attack
 	is_triggered_only = yes
 	situation = this
 	trigger = { owner = { has_country_flag = epoch_ii_ch6_research_done NOT = { has_country_flag = epoch_ii_ch6_prompted } } }
@@ -756,7 +757,7 @@ country_event = {
 	id = epoch_ii.72
 	title = epoch_ii.72.name
 	desc = epoch_ii.72.desc
-	picture = GFX_evt_hostile_fleet
+	picture = GFX_evt_ship_under_attack
 	is_triggered_only = yes
 	trigger = { has_country_flag = epoch_ii_ch6_resolved NOT = { has_country_flag = epoch_ii_block_b_report_sent } }
 	immediate = { set_country_flag = epoch_ii_block_b_report_sent }
@@ -1027,7 +1028,7 @@ country_event = {
 	id = epoch_ii.80
 	title = epoch_ii.71.name
 	desc = epoch_ii.80.desc
-	picture = GFX_evt_hostile_fleet
+	picture = GFX_evt_ship_under_attack
 	is_triggered_only = yes
 	trigger = { has_country_flag = epoch_ii_active OR = { has_country_flag = epoch_ii_ch6_trap_started has_country_flag = epoch_ii_ch6_science_started } NOR = { has_country_flag = epoch_ii_ch6_resolved has_country_flag = epoch_ii_ch6_recovery_prompted } }
 	immediate = { set_country_flag = epoch_ii_ch6_recovery_prompted }

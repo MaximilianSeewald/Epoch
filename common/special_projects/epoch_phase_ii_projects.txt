@@ -3,7 +3,7 @@ special_project = {
 	days_to_research = 180
 	timelimit = 1080
 	tech_department = society_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_contingency_planet
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
@@ -18,7 +18,7 @@ special_project = {
 	days_to_research = 240
 	timelimit = 1080
 	tech_department = physics_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_unknown_ships
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
@@ -33,7 +33,7 @@ special_project = {
 	days_to_research = 300
 	timelimit = 1080
 	tech_department = physics_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_physics_research
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
@@ -78,7 +78,7 @@ special_project = {
 	days_to_research = 180
 	timelimit = 1080
 	tech_department = physics_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_the_beholder
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }
@@ -106,7 +106,7 @@ special_project = {
 	days_to_research = 240
 	timelimit = 1080
 	tech_department = physics_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_alien_planet
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }
@@ -120,7 +120,7 @@ special_project = {
 	days_to_research = 180
 	timelimit = 1080
 	tech_department = engineering_technology
-	picture = GFX_evt_hostile_fleet
+	picture = GFX_evt_ship_under_attack
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
@@ -134,7 +134,7 @@ special_project = {
 	days_to_research = 240
 	timelimit = 1080
 	tech_department = physics_technology
-	picture = GFX_evt_hostile_fleet
+	picture = GFX_evt_ship_under_attack
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
@@ -148,7 +148,7 @@ special_project = {
 	days_to_research = 180
 	timelimit = 1080
 	tech_department = physics_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_unknown_ships
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }
@@ -162,7 +162,7 @@ special_project = {
 	days_to_research = 240
 	timelimit = 1080
 	tech_department = society_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_society_research
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }
@@ -176,7 +176,7 @@ special_project = {
 	days_to_research = 270
 	timelimit = 1080
 	tech_department = engineering_technology
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_engineering_research
 	event_scope = ship_event
 	requirements = { shipclass_science_ship = 1 leader = scientist }
 	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }

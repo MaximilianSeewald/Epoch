@@ -1,39 +1,22 @@
-# These planet-scoped effects resolve the same contamination state through
-# mechanics appropriate to the current owner class.
+# Phase I contamination and its economy now live on one blocker deposit. The
+# planet flags select the state and the deposit's triggered modifiers resolve
+# the effect for the current owner class.
 epoch_core_apply_contamination_active = {
-	if = {
-		limit = { owner = { is_machine_empire = yes } }
-		add_modifier = { modifier = epoch_core_contamination_active_machine days = -1 }
-	}
-	else_if = {
-		limit = { owner = { is_hive_empire = yes } }
-		add_modifier = { modifier = epoch_core_contamination_active_hive days = -1 }
-	}
-	else = { add_modifier = { modifier = epoch_core_contamination_active_organic days = -1 } }
+	epoch_core_remove_contamination_effects = yes
+	set_planet_flag = epoch_core_contamination_active_state
+	add_deposit = d_epoch_resonance_contamination
 }
 
 epoch_core_apply_contamination_worsened = {
-	if = {
-		limit = { owner = { is_machine_empire = yes } }
-		add_modifier = { modifier = epoch_core_contamination_worsened_machine days = -1 }
-	}
-	else_if = {
-		limit = { owner = { is_hive_empire = yes } }
-		add_modifier = { modifier = epoch_core_contamination_worsened_hive days = -1 }
-	}
-	else = { add_modifier = { modifier = epoch_core_contamination_worsened_organic days = -1 } }
+	epoch_core_remove_contamination_effects = yes
+	set_planet_flag = epoch_core_contamination_worsened_state
+	add_deposit = d_epoch_resonance_contamination
 }
 
 epoch_core_apply_contamination_studied = {
-	if = {
-		limit = { owner = { is_machine_empire = yes } }
-		add_modifier = { modifier = epoch_core_contamination_studied_machine days = -1 }
-	}
-	else_if = {
-		limit = { owner = { is_hive_empire = yes } }
-		add_modifier = { modifier = epoch_core_contamination_studied_hive days = -1 }
-	}
-	else = { add_modifier = { modifier = epoch_core_contamination_studied_organic days = -1 } }
+	epoch_core_remove_contamination_effects = yes
+	set_planet_flag = epoch_core_contamination_studied_state
+	add_deposit = d_epoch_resonance_contamination
 }
 
 epoch_core_remove_contamination_effects = {
@@ -49,6 +32,74 @@ epoch_core_remove_contamination_effects = {
 	remove_modifier = epoch_core_contamination_studied_organic
 	remove_modifier = epoch_core_contamination_studied_hive
 	remove_modifier = epoch_core_contamination_studied_machine
+	remove_modifier = epoch_core_contamination_active
+	remove_deposit = d_epoch_contamination_active
+	remove_deposit = d_epoch_contamination_worsened
+	remove_deposit = d_epoch_contamination_studied
+	remove_deposit = d_epoch_contamination_contained
+	remove_planet_flag = epoch_core_contamination_active_state
+	remove_planet_flag = epoch_core_contamination_worsened_state
+	remove_planet_flag = epoch_core_contamination_studied_state
+	remove_planet_flag = epoch_core_contamination_contained_state
+	if = {
+		limit = { NOR = { has_planet_flag = epoch_ii_latent_resonance has_planet_flag = epoch_ii_active_resonance has_planet_flag = epoch_ii_unstable_resonance has_planet_flag = epoch_ii_controlled_resonance } }
+		remove_deposit = d_epoch_resonance_contamination
+	}
+}
+
+epoch_core_set_resonance_scar = {
+	set_planet_flag = epoch_core_resonance_scar
+	add_deposit = d_epoch_resonance_scar
+	remove_modifier = epoch_core_permanent_scar_organic
+	remove_modifier = epoch_core_permanent_scar_hive
+	remove_modifier = epoch_core_permanent_scar_machine
+	remove_deposit = d_epoch_conclusion_scar_organic
+	remove_deposit = d_epoch_conclusion_scar_hive
+	remove_deposit = d_epoch_conclusion_scar_machine
+}
+
+# Idempotent compatibility pass for saves made before both blocker features
+# owned their economic effects. It runs only in the existing owner-local
+# Phase II recovery event and never removes independent Phase I/II consequences.
+epoch_core_migrate_planetary_features = {
+	every_owned_planet = {
+		if = {
+			limit = { OR = { has_modifier = epoch_core_contamination_active_organic has_modifier = epoch_core_contamination_active_hive has_modifier = epoch_core_contamination_active_machine has_modifier = epoch_core_contamination_worsened_organic has_modifier = epoch_core_contamination_worsened_hive has_modifier = epoch_core_contamination_worsened_machine has_modifier = epoch_core_contamination_studied_organic has_modifier = epoch_core_contamination_studied_hive has_modifier = epoch_core_contamination_studied_machine has_modifier = epoch_core_contamination_active has_planet_flag = epoch_core_contamination_spread has_deposit = d_epoch_contamination_active has_deposit = d_epoch_contamination_worsened has_deposit = d_epoch_contamination_studied has_deposit = d_epoch_contamination_contained } }
+			if = {
+				limit = { OR = { has_modifier = epoch_core_contamination_worsened_organic has_modifier = epoch_core_contamination_worsened_hive has_modifier = epoch_core_contamination_worsened_machine has_planet_flag = epoch_core_contamination_spread root = { OR = { has_country_flag = epoch_core_contamination_worsened has_country_flag = epoch_core_contamination_neglected has_country_flag = epoch_core_contamination_study_failed has_country_flag = epoch_core_contamination_spread_recorded } } }
+				epoch_core_apply_contamination_worsened = yes
+			}
+			else_if = {
+				limit = { OR = { has_modifier = epoch_core_contamination_studied_organic has_modifier = epoch_core_contamination_studied_hive has_modifier = epoch_core_contamination_studied_machine root = { has_country_flag = epoch_core_contamination_study_complete } } }
+				epoch_core_apply_contamination_studied = yes
+			}
+			else_if = {
+				limit = { has_deposit = d_epoch_contamination_contained root = { has_country_flag = epoch_core_contamination_contained } }
+				epoch_core_remove_contamination_effects = yes
+				set_planet_flag = epoch_core_contamination_contained_state
+				add_deposit = d_epoch_resonance_contamination
+			}
+			else = { epoch_core_apply_contamination_active = yes }
+		}
+		if = {
+			limit = { OR = { has_modifier = epoch_core_permanent_scar_organic has_modifier = epoch_core_permanent_scar_hive has_modifier = epoch_core_permanent_scar_machine has_deposit = d_epoch_conclusion_scar_organic has_deposit = d_epoch_conclusion_scar_hive has_deposit = d_epoch_conclusion_scar_machine } }
+			epoch_core_set_resonance_scar = yes
+		}
+		if = {
+			limit = { OR = { has_modifier = epoch_ii_resonance_latent has_modifier = epoch_ii_resonance_active has_modifier = epoch_ii_resonance_unstable has_modifier = epoch_ii_resonance_controlled has_planet_flag = epoch_ii_latent_resonance has_planet_flag = epoch_ii_active_resonance has_planet_flag = epoch_ii_unstable_resonance has_planet_flag = epoch_ii_controlled_resonance } }
+			remove_modifier = epoch_ii_resonance_latent
+			remove_modifier = epoch_ii_resonance_active
+			remove_modifier = epoch_ii_resonance_unstable
+			remove_modifier = epoch_ii_resonance_controlled
+			remove_deposit = d_epoch_resonance_latent
+			remove_deposit = d_epoch_resonance_active
+			remove_deposit = d_epoch_resonance_unstable
+			remove_deposit = d_epoch_resonance_controlled
+			add_deposit = d_epoch_resonance_contamination
+		}
+	}
+}
+
 }
 
 # Resonance stability is an empire-local campaign variable bounded to 0–100.
@@ -252,34 +303,38 @@ epoch_ii_clamp_resonance_stability = {
 	}
 }
 
-# Resonance statuses use separate deposits and modifiers from Phase-I records.
-# Removing a status never touches the capital scar or contamination outcome.
+# Resonance phases share the same contamination blocker entry. This preserves
+# their original Phase II economy while leaving the permanent scar independent.
 epoch_ii_clear_site_state = {
 	remove_planet_flag = epoch_ii_latent_resonance
 	remove_planet_flag = epoch_ii_active_resonance
 	remove_planet_flag = epoch_ii_unstable_resonance
 	remove_planet_flag = epoch_ii_controlled_resonance
-	remove_deposit = d_epoch_resonance_latent
-	remove_deposit = d_epoch_resonance_active
-	remove_deposit = d_epoch_resonance_unstable
-	remove_deposit = d_epoch_resonance_controlled
+	if = {
+		limit = { NOR = { has_planet_flag = epoch_core_contamination_active_state has_planet_flag = epoch_core_contamination_worsened_state has_planet_flag = epoch_core_contamination_studied_state has_planet_flag = epoch_core_contamination_contained_state } }
+		remove_deposit = d_epoch_resonance_contamination
+	}
 	remove_modifier = epoch_ii_resonance_latent
 	remove_modifier = epoch_ii_resonance_active
 	remove_modifier = epoch_ii_resonance_unstable
 	remove_modifier = epoch_ii_resonance_controlled
+	remove_deposit = d_epoch_resonance_latent
+	remove_deposit = d_epoch_resonance_active
+	remove_deposit = d_epoch_resonance_unstable
+	remove_deposit = d_epoch_resonance_controlled
 }
 
 epoch_ii_set_site_latent = {
-	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_latent_resonance add_deposit = d_epoch_resonance_latent add_modifier = { modifier = epoch_ii_resonance_latent days = -1 } } }
+	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_latent_resonance add_deposit = d_epoch_resonance_contamination } }
 }
 epoch_ii_set_site_active = {
-	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_active_resonance add_deposit = d_epoch_resonance_active add_modifier = { modifier = epoch_ii_resonance_active days = -1 } } }
+	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_active_resonance add_deposit = d_epoch_resonance_contamination } }
 }
 epoch_ii_set_site_unstable = {
-	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_unstable_resonance add_deposit = d_epoch_resonance_unstable add_modifier = { modifier = epoch_ii_resonance_unstable days = -1 } } }
+	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_unstable_resonance add_deposit = d_epoch_resonance_contamination } }
 }
 epoch_ii_set_site_controlled = {
-	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_controlled_resonance add_deposit = d_epoch_resonance_controlled add_modifier = { modifier = epoch_ii_resonance_controlled days = -1 } } }
+	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_controlled_resonance add_deposit = d_epoch_resonance_contamination } }
 }
 
 epoch_ii_close_campaign = {

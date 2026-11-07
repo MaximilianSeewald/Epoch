@@ -610,7 +610,7 @@ country_event = {
 		trigger = { is_hive_empire = yes }
 	}
 	desc = { text = epoch_core.20.desc.organic trigger = { always = yes } }
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_contingency_planet
 	is_triggered_only = yes
 	trigger = {
 		epoch_core_active_campaign_empire = yes
@@ -654,6 +654,7 @@ country_event = {
 	option = {
 		name = epoch_core.20.b
 		custom_tooltip = epoch_core.20.b.tooltip
+		add_resource = { energy = -500 minerals = -300 }
 		trigger = {
 			exists = event_target:epoch_core_world@root
 			event_target:epoch_core_world@root = { is_owned_by = root }
@@ -661,10 +662,13 @@ country_event = {
 			resource_stockpile_compare = { resource = minerals value >= 300 }
 		}
 		hidden_effect = {
-		add_resource = { energy = -500 minerals = -300 }
 		event_target:epoch_core_world@root = { epoch_core_remove_contamination_effects = yes }
 		set_country_flag = epoch_core_contamination_contained
 		set_country_flag = epoch_core_contamination_phase_resolved
+		event_target:epoch_core_world@root = {
+			set_planet_flag = epoch_core_contamination_contained_state
+			add_deposit = d_epoch_resonance_contamination
+		}
 		}
 		ai_chance = { factor = 35 }
 	}
@@ -779,7 +783,7 @@ country_event = {
 		trigger = { is_hive_empire = yes }
 	}
 	desc = { text = epoch_core.22.desc.organic trigger = { always = yes } }
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_alien_ruins
 	is_triggered_only = yes
 	trigger = {
 		epoch_core_active_campaign_empire = yes
@@ -854,7 +858,7 @@ country_event = {
 		trigger = { is_hive_empire = yes }
 	}
 	desc = { text = epoch_core.23.desc.organic trigger = { always = yes } }
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_city_ruins
 	is_triggered_only = yes
 	trigger = {
 		epoch_core_active_campaign_empire = yes
@@ -869,15 +873,7 @@ country_event = {
 			limit = { exists = capital_scope }
 			capital_scope = {
 				save_global_event_target_as = epoch_ii_conclusion_capital@root
-				if = {
-					limit = { owner = { is_machine_empire = yes } }
-					add_modifier = { modifier = epoch_core_permanent_scar_machine days = -1 }
-				}
-				else_if = {
-					limit = { owner = { is_hive_empire = yes } }
-					add_modifier = { modifier = epoch_core_permanent_scar_hive days = -1 }
-				}
-				else = { add_modifier = { modifier = epoch_core_permanent_scar_organic days = -1 } }
+				epoch_core_set_resonance_scar = yes
 			}
 		}
 		else = { add_modifier = { modifier = epoch_core_permanent_scar_fallback days = -1 } }

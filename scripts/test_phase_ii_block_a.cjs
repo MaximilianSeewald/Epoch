@@ -71,7 +71,7 @@ check([...events.matchAll(/set_variable\s*=\s*\{\s*which\s*=\s*epoch_ii_resonanc
 check(/add_research_option\s*=\s*tech_epoch_resonance_spectroscopy/.test(events) && /add_research_option\s*=\s*tech_epoch_adaptive_resonance_armor/.test(events) && !/enable_technology\s*=/.test(events), 'Chapter 3 must add normal research options, not auto-complete technologies');
 check(/potential\s*=\s*\{\s*has_country_flag\s*=\s*epoch_ii_spectroscopy_lead\s*\}/.test(tech), 'Spectroscopy must require the Chapter 3 research lead');
 check(/SMALL_EPOCH_RESONANCE_ARMOR[\s\S]*?ship_armor_add\s*=\s*8[\s\S]*?ship_hull_add\s*=\s*8/.test(component), 'Adaptive armor must have a defined functional component');
-check(/category\s*=\s*deposit_cat_misc/.test(features) && /d_epoch_conclusion_scar_machine/.test(features), 'Presentation feature deposits must exist');
+check((features.match(/^d_epoch_resonance_(?:contamination|scar)\s*=\s*\{/gm) || []).length === 2 && /category\s*=\s*deposit_cat_blockers/.test(features) && /planet_jobs_food_produces_mult/.test(features) && /planet_jobs_physics_research_produces_mult/.test(features), 'Exactly two blocker-category features must carry Phase I and resonance economic effects');
 const eventDefs = [...allPhaseIIEvents.matchAll(/^\s*(country_event|situation_event|ship_event)\s*=\s*\{\s*\n\s*id\s*=\s*(epoch_ii\.\d+)/gm)];
 const definitions = new Map();
 for (const match of eventDefs) { check(!definitions.has(match[2]), `Duplicate event ${match[2]}`); definitions.set(match[2], match[1]); }

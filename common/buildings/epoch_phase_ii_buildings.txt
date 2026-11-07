@@ -1,4 +1,5 @@
 building_epoch_resonance_laboratory = {
+	icon = building_physics_lab_2
 	base_buildtime = 360
 	base_cap_amount = 1
 	category = research
@@ -33,6 +34,7 @@ building_epoch_resonance_laboratory = {
 }
 
 building_epoch_containment_infrastructure = {
+	icon = building_society_lab
 	base_buildtime = 360
 	base_cap_amount = 1
 	category = research

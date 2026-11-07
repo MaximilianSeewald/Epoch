@@ -8,7 +8,7 @@ situation_event = {
 	desc = { text = epoch_ii.120.desc.machine trigger = { owner = { is_machine_empire = yes } } }
 	desc = { text = epoch_ii.120.desc.hive trigger = { owner = { is_hive_empire = yes } } }
 	desc = { text = epoch_ii.120.desc.organic trigger = { always = yes } }
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_relic_world
 	is_triggered_only = yes
 	situation = this
 	trigger = { owner = { has_country_flag = epoch_ii_handoff_block_c_ready NOR = { has_country_flag = epoch_ii_ch7_boundary_prompted has_country_flag = epoch_ii_phase_complete } } }
@@ -52,7 +52,7 @@ situation_event = {
 	desc = { text = epoch_ii.122.desc.machine trigger = { owner = { is_machine_empire = yes } } }
 	desc = { text = epoch_ii.122.desc.hive trigger = { owner = { is_hive_empire = yes } } }
 	desc = { text = epoch_ii.122.desc.organic trigger = { always = yes } }
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_physics_research
 	is_triggered_only = yes
 	situation = this
 	trigger = { owner = { has_country_flag = epoch_ii_ch7_boundary_resolved NOR = { has_country_flag = epoch_ii_ch7_counterpattern_prompted has_country_flag = epoch_ii_phase_complete } } }
@@ -96,7 +96,7 @@ situation_event = {
 	desc = { text = epoch_ii.124.desc.machine trigger = { owner = { is_machine_empire = yes } } }
 	desc = { text = epoch_ii.124.desc.hive trigger = { owner = { is_hive_empire = yes } } }
 	desc = { text = epoch_ii.124.desc.organic trigger = { always = yes } }
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_contingency_planet
 	is_triggered_only = yes
 	situation = this
 	trigger = { owner = { has_country_flag = epoch_ii_ch7_counterpattern_resolved NOR = { has_country_flag = epoch_ii_ch7_instability_prompted has_country_flag = epoch_ii_phase_complete } } }
@@ -140,7 +140,7 @@ situation_event = {
 	desc = { text = epoch_ii.126.desc.machine trigger = { owner = { is_machine_empire = yes } } }
 	desc = { text = epoch_ii.126.desc.hive trigger = { owner = { is_hive_empire = yes } } }
 	desc = { text = epoch_ii.126.desc.organic trigger = { always = yes } }
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_engineering_research
 	is_triggered_only = yes
 	situation = this
 	trigger = { owner = { has_country_flag = epoch_ii_ch7_instability_resolved NOR = { has_country_flag = epoch_ii_ch7_control_prompted has_country_flag = epoch_ii_phase_complete } } }
@@ -170,7 +170,7 @@ situation_event = {
 	desc = { text = epoch_ii.128.desc.machine trigger = { owner = { is_machine_empire = yes } } }
 	desc = { text = epoch_ii.128.desc.hive trigger = { owner = { is_hive_empire = yes } } }
 	desc = { text = epoch_ii.128.desc.organic trigger = { always = yes } }
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_unknown_ships
 	is_triggered_only = yes
 	situation = this
 	trigger = { owner = { has_country_flag = epoch_ii_ch7_control_resolved NOR = { has_country_flag = epoch_ii_ch8_prompted has_country_flag = epoch_ii_phase_complete } } }
@@ -191,7 +191,7 @@ country_event = {
 	desc = { text = epoch_ii.129.desc.machine trigger = { is_machine_empire = yes } }
 	desc = { text = epoch_ii.129.desc.hive trigger = { is_hive_empire = yes } }
 	desc = { text = epoch_ii.129.desc.organic trigger = { always = yes } }
-	picture = GFX_evt_black_hole
+	picture = GFX_evt_unknown_ships
 	is_triggered_only = yes
 	trigger = { has_country_flag = epoch_ii_phase_complete has_country_flag = epoch_ii_phase_iii_handoff_ready NOT = { has_country_flag = epoch_ii_closing_report_seen } }
 	immediate = {
