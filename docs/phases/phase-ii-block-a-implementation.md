@@ -1,5 +1,7 @@
 # Phase II Block A — Awakening implementation
 
+**Historical implementation report for the former eight-chapter Stage II prototype. Not current design authority.** The active five-chapter contract is [Stage II – Resonance](phase-ii-resonance.md); see the [migration register](../architecture/content-migration.md). Facts below are retained as historical implementation evidence.
+
 This note records the implemented Chapter 1–3 boundary for review. The content
 is a source-level implementation for Stellaris 4.5.3; it has not been loaded
 or played in game.

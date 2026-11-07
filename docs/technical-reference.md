@@ -1,4 +1,6 @@
-# Stellaris 4.5.3 technical reference
+# Stellaris 4.5.3 Technical Reference
+
+**Status: Historical source-evidence reference.** Findings are useful only within their recorded boundary. Current requirements follow [architecture](architecture.md) and the [stage specifications](phases/); source examples are not runtime validation.
 
 **Purpose:** M0-B source verification for EPOCH. No gameplay scripts or mechanics
 are implemented by this document.

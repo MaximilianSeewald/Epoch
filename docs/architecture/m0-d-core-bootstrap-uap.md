@@ -1,5 +1,7 @@
 # M0-D Core Bootstrap and UAP Architecture
 
+**Historical design artifact.** This records the M0-D milestone, not the current campaign architecture or an authorization to implement its full UAP/state proposal. Apply the current [architecture contract](../architecture.md) and [source hierarchy](content-migration.md) where they differ.
+
 **Status:** Architecture proposal for M0-D. No gameplay implementation is part
 of this phase. Conceptual state labels below are documentation terms, not
 Stellaris script identifiers.
@@ -392,3 +394,4 @@ M0-D authorizes documentation only. Before gameplay implementation, validate:
 Use the existing M0-B/M0-C records as historical evidence; append new results
 to a new record instead of rewriting those results. No gameplay files are
 changed by this phase.
+

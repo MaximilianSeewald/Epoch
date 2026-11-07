@@ -1,5 +1,7 @@
 # ADR-004: Keep Gigastructures integration outside Core
 
+**Status: Historical technical decision record.** The optional integration boundary remains a current invariant where summarized in [architecture](../../architecture.md); packaging details remain subject to verification.
+
 - **Status:** Accepted as an architecture requirement; packaging validation open
 - **Date:** 2026-11-06
 - **Scope:** EPOCH distribution and module boundaries

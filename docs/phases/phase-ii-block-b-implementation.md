@@ -1,5 +1,7 @@
 # Phase II Block B — Expansion implementation
 
+**Historical implementation report for the former eight-chapter Stage II prototype. Not current design authority.** The active five-chapter contract is [Stage II – Resonance](phase-ii-resonance.md); see the [migration register](../architecture/content-migration.md). Facts below are retained as historical implementation evidence.
+
 Block B continues `epoch_resonance_protocol` from the saved `epoch_ii_handoff_ready` state. It preserves the existing approach and 0–100 resonance-stability variable; it does not create a second Phase II invitation or reset the Phase I contamination and capital-scar records. Chapter 7 is not implemented or started.
 
 ## Situation flow and durable outcomes

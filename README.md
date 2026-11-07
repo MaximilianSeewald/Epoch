@@ -1,49 +1,29 @@
 # EPOCH – A New Galactic Age
 
-**Target:** Stellaris 4.5.3  
-**Distribution:** Steam Workshop  
-**Languages:** English and German  
-**Optional integration:** Gigastructural Engineering & More
+**Target:** Stellaris 4.5.3 · **Languages:** English and German · **Optional integration:** Gigastructural Engineering & More
 
-EPOCH is a narrative-driven, multi-stage development framework for organic empires,
-Hive Minds, and Machine Intelligences. It begins through staggered discoveries and
-event-driven story progression—not through a starting civic, trait, origin, bonus,
-or technology.
+EPOCH is a narrative-driven campaign for organic empires, Hive Minds, and Machine Intelligences. It begins through staggered discoveries and events, with no new origin, start civic, or free start bonus.
 
 ## Project status
 
-PR #6 contains the connected five-section Phase I implementation and remains
-open and unmerged pending full in-game acceptance.
-The binding five-section scope and definition of done are in
-[`docs/phases/phase-i-first-contact.md`](docs/phases/phase-i-first-contact.md).
-All five sections have separate research/wait stages, explicit objective gates,
-and a final player decision. Static QA passes; use the
-[complete acceptance checklist](docs/testing/phase-i-acceptance.md) for the next
-gameplay test. Full engine, save/load, AI, multiplayer, and in-game validation
-remain pending. The lore in `docs/story-bible.md`
-remains a working proposal (v0.1).
+The binding campaign architecture has four stages: **I – First Contact** (implemented and tested in game through entry to Stage II; PR #11 merged the shared planetary feature/UI foundation), **II – Resonance** (design contract: exactly five chapters; implementation is not authorized by this document), **III – Military Crisis**, and **IV – Ascension**. The current in-game test reached the Stage II entry point. It does not establish complete multiplayer, AI, or alternative-path validation. See the [roadmap](docs/roadmap.md), [architecture](docs/architecture.md), and [source hierarchy](docs/architecture/content-migration.md).
 
 ## Design invariants
 
-- Preserve vanilla content and gameplay.
-- Add no starting civics, traits, origins, or start bonuses.
-- Support organic empires, Hive Minds, and Machine Intelligences.
-- Begin through individually staggered discovery events.
-- Keep the early experience challenging but manageable.
-- Reveal the larger purpose gradually.
-- Prefer event-driven progression over frequent empire-wide polling.
-- Give AI empires access to the same mechanics and prerequisites.
-- Keep Gigastructures support in an optional compatibility bridge.
-- Provide English and German localisation.
+- Preserve vanilla content; Gigastructures is optional and separately integrated.
+- No new start origin, civics, or free start bonuses. Discovery is event-led, not technology-led.
+- Support organic, Hive Mind, and Machine Intelligence empires independently.
+- No galaxy-global single instance may block another empire's campaign.
+- Validate target ownership and scope before using event targets.
+- Use real projects, technologies, buildings, fleets, planet states, and costs. Calendar time alone does not equal gameplay progress.
+- Make consequences meaningful without creating a campaign softlock; retain permanent voluntary exit.
+- Require save/load and multiplayer safety, English/German localisation, and suitable vanilla or original art.
+- Report static checks, source evidence, and in-game results as distinct evidence levels.
 
-## Layout
+## Repository layout
 
-- `common/` – scripted definitions, technologies, situations, projects and decisions.
-- `events/` – narrative event files, grouped by story arc.
-- `localisation/english/` and `localisation/german/` – localisation.
-- `compatibility/gigastructures/` – optional integration layer.
-- `docs/` – design, architecture, testing and release documentation.
+- `common/`, `events/`, `scripts/`, `gfx/`, `localisation/` – current game content and code inventory.
+- `compatibility/gigastructures/` – optional integration scaffold.
+- `docs/` – binding design, technical references, historical evidence, and test plans.
 
-The exact Stellaris file conventions and supported script scopes will be verified
-against the 4.5.3 game files before implementation. This scaffold intentionally
-does not include speculative gameplay scripts.
+The active content and migration decision register is [Content Migration](docs/architecture/content-migration.md). Gameplay code is not changed by the documentation consolidation.

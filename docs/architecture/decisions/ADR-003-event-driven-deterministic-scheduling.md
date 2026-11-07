@@ -1,5 +1,7 @@
 # ADR-003: Schedule once and progress through keyed callbacks
 
+**Status: Historical technical decision record.** Source/runtime evidence boundaries remain; current requirements follow [architecture](../../architecture.md).
+
 - **Status:** Proposed; multiplayer and save/load validation open
 - **Date:** 2026-11-06
 - **Scope:** Discovery scheduling and event orchestration

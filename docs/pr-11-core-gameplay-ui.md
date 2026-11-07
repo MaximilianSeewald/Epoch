@@ -1,4 +1,6 @@
-# PR #11: Shared gameplay and UI foundation
+# PR #11: Shared Gameplay and UI Foundation
+
+**Status: Historical implementation/review report. PR #11 is merged in the current `main`.** Review notes and static/runtime limits below describe that PR's revision. They do not define current Stage II scope; see [Stage II](phases/phase-ii-resonance.md) and the [migration register](architecture/content-migration.md). The five-point in-game checklist records the then-pending smoke-test gate, not an open merge requirement.
 
 ## Review corrections
 
@@ -45,7 +47,7 @@ Use Stellaris 4.5.3 with EPOCH Core only. Test a fresh campaign with an organic 
 4. Confirm technology, building, blocker, project, and event art displays without missing-texture placeholders.
 5. Confirm Situation stage labels, approaches, event titles, descriptions, options, and tooltips render correctly in English and German, including umlauts and punctuation.
 
-Record screenshots and a save for each empire class and language. Any failure blocks merge. Do not merge before the player confirms this smoke test.
+For a fresh verification run, record screenshots and a save for each empire class and language; this historical acceptance checklist does not claim that those checks were subsequently completed.
 
 ## Runtime assumptions not yet confirmed
 

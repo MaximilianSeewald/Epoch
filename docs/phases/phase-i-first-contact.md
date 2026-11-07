@@ -1,11 +1,13 @@
-# EPOCH Phase I: First Contact
+# EPOCH Stage I: First Contact
 
-**Status:** Binding campaign specification; the five-section implementation is ready for full in-game acceptance. Static QA is complete; final player approval remains pending.
+**Current status:** Stage I is implemented and the in-game campaign was tested through entry to Stage II. This does not establish complete multiplayer, AI, or alternate-path validation. PR #6 is merged. Historical implementation notes below describe their recorded revision; use [testing](../testing.md) for current evidence boundaries.
+
+**Status:** Binding campaign specification; five sections are implemented. Current in-game evidence reaches Stage II entry, with full AI/MP/alternate-path validation still incomplete.
 **Target:** Stellaris PC 4.5.3. **Scope:** one independent First Contact campaign per participating organic, Hive Mind, or Machine Intelligence empire.
 
-> The original First Echo and Missing Expedition prototype was the technical starting point. PR #6 now contains the five-section implementation and remains open until successful full in-game acceptance.
+> The original First Echo and Missing Expedition prototype was the technical starting point. PR #6 merged the five-section implementation.
 
-This document is the source of truth for Phase I. It expands the six-phase story framework in [the architecture overview](../architecture.md), uses the state and bootstrap constraints in [M0-D](../architecture/m0-d-core-bootstrap-uap.md), and supersedes the narrower M2/M3 scope in [the roadmap](../roadmap.md). The current technical evidence and its limits are in [the 4.5.3 evidence matrix](../evidence/m0-b-engine-verification.md); the regression suite is described in [testing](../testing.md).
+This document is the source of truth for Stage I within the four-stage architecture in [the architecture overview](../architecture.md). M0-D is a historical technical record; consult current evidence in [the 4.5.3 evidence matrix](../evidence/m0-b-engine-verification.md) and [testing](../testing.md).
 
 ## Goal and boundary
 
@@ -35,11 +37,10 @@ Required links include: Echo approach -> expedition risk/options; expedition res
 
 All active campaign dispatches re-check eligibility, owner, current section, and permanent opt-out. Never retrieve one empire's ship, planet, situation, project, or event target while handling another empire. Prefer owner-scoped persistent state and owner-keyed targets; global named targets without an owner key are prohibited for campaign objects. Missing systems, planets, ships, leaders, situations, or targets must resolve to a safe fallback that advances or closes the relevant stage without deleting unrelated objects. The final negative consequence must be durably represented by saved game state; its persistence must be verified across save/load.
 
-The fixed ten-stage implementation, gate/flag mapping and current validation
-limits are recorded in [testing](../testing.md#phase-i-milestone-6-november-2026).
-Use the [complete acceptance checklist](../testing/phase-i-acceptance.md) for the
-remaining player test. Earlier successful component tests do not establish a
-successful full campaign.
+The fixed ten situation-stages and their gate/flag mapping are implementation
+details, not campaign sections. See the historical [acceptance checklist](../testing/phase-i-acceptance.md)
+for its earlier test scope and the current [testing policy](../testing.md) for
+evidence limits. The current run reached Stage II entry only.
 
 ## Native gameplay and AI
 

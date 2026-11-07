@@ -1,5 +1,7 @@
 # ADR-001: Use a country-local start hook as the bootstrap candidate
 
+**Status: Historical technical decision record.** Its engine-verification limits remain evidence; campaign scope follows [current architecture](../../architecture.md).
+
 - **Status:** Proposed; runtime gate open
 - **Date:** 2026-11-06
 - **Scope:** EPOCH Core initialization

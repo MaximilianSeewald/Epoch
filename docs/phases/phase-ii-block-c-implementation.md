@@ -1,5 +1,7 @@
 # Phase II Block C — The Decision
 
+**Historical implementation report for the former eight-chapter Stage II prototype. Not current design authority.** The active five-chapter contract is [Stage II – Resonance](phase-ii-resonance.md); see the [migration register](../architecture/content-migration.md). Chapters 7–8 and their endings are not active Stage II requirements. Facts below are retained as historical implementation evidence.
+
 **Branch:** `feature/phase-ii-finale`  
 **Target:** Stellaris 4.5.3  
 **Scope:** Chapters 7–8 only; Phase III content is not started.  

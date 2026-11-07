@@ -1,8 +1,10 @@
 # Phase I: vollständige Ingame-Abnahme
 
-Stand: 6. November 2026. Branch `feature/first-playable-discovery`, PR #6.
-Die Implementierung ist für diese Abnahme vorbereitet. Die statischen Prüfungen
-sind kein Nachweis eines erfolgreichen Spieldurchlaufs.
+**Historischer Abnahmeplan für PR #6.** PR #6 ist gemergt. Der aktuelle Ingame-Test
+bestätigt die Hauptkampagne bis zum Eintritt in Stage II, jedoch keine vollständige
+Multiplayer-, KI- oder Alternativpfad-Validierung. Diese Checkliste bleibt als
+historische Testanleitung erhalten; sie ist kein Statusbericht. Siehe die aktuelle
+[Evidenzrichtlinie](../testing.md).
 
 ## Vorbereitung
 
@@ -88,5 +90,5 @@ eigene Laufzeitbeobachtung; Host/Client-Synchronität bleibt ein Release-Test.
 
 Optional `event epoch_core.49` zum Ein-/Ausschalten des Diagnosemodus verwenden.
 Er ist standardmäßig aus. Keine anderen Konsolenbefehle sind für den regulären
-Abnahmedurchlauf erforderlich. PR #6 bleibt bis zur erfolgreichen Abnahme offen
-und ungemergt.
+Abnahmedurchlauf erforderlich. Der damalige Hinweis auf einen offenen PR #6 ist
+historisch und durch den Status am Dokumentanfang überholt.

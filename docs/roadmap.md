@@ -1,39 +1,20 @@
-# Development roadmap
+# EPOCH Roadmap
 
-## M0 – Baseline and research
-- Confirm 4.5.3 mod structure and scripting conventions.
-- Establish naming, namespace and localisation rules.
-- Define compatibility boundaries and test checklist.
+**Status: Binding four-stage campaign architecture.** Scope is controlled by the [architecture contract](architecture.md), the relevant [stage specifications](phases/), and the [content migration register](architecture/content-migration.md). Milestone labels from earlier plans are historical only.
 
-## Phase I – First Contact (binding scope)
+| Stage | Name | Scope | Status |
+|---|---|---|---|
+| I | First Contact | Five campaign sections; shared planetary feature/UI foundation | Implemented; in-game test reached Stage II entry. Not complete for all AI/MP/alternate paths. |
+| II | Resonance | Exactly five chapters, specified in [Stage II](phases/phase-ii-resonance.md) | Rebuild required; this documentation does not implement gameplay. |
+| III | Military Crisis | Larger, real military escalation; see [Stage III](phases/stage-iii-military-crisis.md) | Direction and boundaries only. |
+| IV | Ascension | Mechanically meaningful ascension and earned healing; see [Stage IV](phases/stage-iv-ascension.md) | Direction and boundaries only. |
 
-The binding acceptance criteria are in
-[`phases/phase-i-first-contact.md`](phases/phase-i-first-contact.md). It contains
-five connected sections: First Echo, Missing Expedition, First Contamination,
-The Silent Structure, and Phase I Conclusion. PR #6 is the technical starting
-point, not completion of Phase I. The older M1/M2/M3 labels are historical
-milestones and do not narrow this campaign scope.
+## Delivery gates
 
-## Phase II and later
+1. Preserve Stage I and PR #11 planetary feature behavior while preparing Stage II migration.
+2. Approve and implement the five Stage II chapters as real, empire-local gameplay. Do not add a sixth Stage II chapter or an in-stage finale after Chapter 5.
+3. Define and implement Stage III as a distinct military crisis, carrying forward prior choices without making combat images or abstract progress counters substitutes for game objects.
+4. Define and implement Stage IV ascension, including class-specific routes, infrastructure, lasting world/economy/military effects, and player-driven healing.
+5. Validate save/load, multiplayer, AI, empire isolation, English/German localisation, art, and optional-mod boundaries before claiming the corresponding acceptance.
 
-Phase II may be prepared at the end of Phase I, but its campaign content is not
-part of this implementation. The remaining roadmap stages describe later parts
-of the six-phase story; they are planning milestones, not authorization to
-implement those phases before Phase I is accepted.
-
-## M4 – Pattern and first technologies
-- Continue to reveal the common signature without disclosing the final purpose.
-- Introduce later EPOCH technologies and longer projects.
-
-## M5 – Integration and convergence
-- Add infrastructure and differentiated empire-class expression.
-- Connect earlier choices to the galaxy-scale story.
-
-## M6 – Finale and UAP
-- Reveal the original purpose.
-- Implement final alternatives and the Universal Ascension Protocol.
-
-## M7 – Stabilisation and release
-- AI behaviour, balance, performance, multiplayer/desync checks.
-- Vanilla-only and Gigastructures-enabled test matrices.
-- Workshop packaging, changelog and release notes.
+Old M0/M4/M5/M6/M7 labels, six-stage proposals, and phase-specific implementation blocks are archived planning history. They do not define current deliverables or sequencing.

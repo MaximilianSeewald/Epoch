@@ -1,5 +1,7 @@
 # ADR-002: Keep UAP state empire-scoped and transition-guarded
 
+**Status: Historical technical proposal.** It does not make its UAP state model a current implementation requirement. Current scope follows the [architecture contract](../../architecture.md).
+
 - **Status:** Proposed; storage/atomicity validation open
 - **Date:** 2026-11-06
 - **Scope:** EPOCH Core progression
