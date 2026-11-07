@@ -37,6 +37,7 @@ country_event = {
 					event_target:epoch_core_world@root = {
 						if = {
 							limit = { NOR = { has_planet_flag = epoch_ii_latent_resonance has_planet_flag = epoch_ii_active_resonance has_planet_flag = epoch_ii_unstable_resonance has_planet_flag = epoch_ii_controlled_resonance } }
+							epoch_core_clear_contamination_deposits = yes
 							if = {
 								limit = { root = { OR = { has_country_flag = epoch_core_contamination_worsened has_country_flag = epoch_core_contamination_neglected has_country_flag = epoch_core_contamination_study_failed has_country_flag = epoch_core_contamination_spread_recorded } } }
 								if = { limit = { NOT = { has_deposit = d_epoch_resonance_contamination_worsened } } add_deposit = d_epoch_resonance_contamination_worsened }

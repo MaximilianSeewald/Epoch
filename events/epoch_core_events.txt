@@ -627,6 +627,7 @@ country_event = {
 		}
 		if = {
 			limit = {
+				NOT = { has_country_flag = epoch_core_structure_site_created }
 				exists = event_target:epoch_core_world@root
 				OR = {
 					has_country_flag = epoch_core_expedition_loss_recorded
@@ -666,8 +667,7 @@ country_event = {
 		set_country_flag = epoch_core_contamination_contained
 		set_country_flag = epoch_core_contamination_phase_resolved
 		event_target:epoch_core_world@root = {
-			set_planet_flag = epoch_core_contamination_contained_state
-			add_deposit = d_epoch_resonance_contamination_contained
+			epoch_core_set_contamination_contained = yes
 		}
 		}
 		ai_chance = { factor = 35 }
@@ -716,8 +716,8 @@ ship_event = {
 				set_country_flag = epoch_core_contamination_study_complete
 				set_country_flag = epoch_core_contamination_phase_resolved
 				if = {
-					limit = { exists = event_target:epoch_core_world@root event_target:epoch_core_world@root = { is_owned_by = root.owner } }
-					event_target:epoch_core_world@root = {
+					limit = { exists = event_target:epoch_core_world@root.owner event_target:epoch_core_world@root.owner = { is_owned_by = root.owner } }
+					event_target:epoch_core_world@root.owner = {
 						epoch_core_remove_contamination_effects = yes
 						epoch_core_apply_contamination_studied = yes
 					}

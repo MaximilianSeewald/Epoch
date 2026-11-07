@@ -206,7 +206,9 @@ for (const name of ['epoch_core_set_resonance_scar','epoch_core_set_resonance_sc
   assert.equal(countDeep(body,'epoch_core_clear_resonance_scar'),1,`${name}: prior scar state must be cleared first`);
 }
 const clearState = effectDefs.get('epoch_ii_clear_site_state');
-assert.equal(countPairs(clearState,'remove_deposit'),8,'Phase II state clear removes every contamination variant');
+const contaminationManager = effectDefs.get('epoch_core_clear_contamination_deposits');
+assert.equal(countPairs(contaminationManager,'remove_deposit'),8,'Shared contamination manager removes every contamination variant');
+assert.equal(countDeep(clearState,'epoch_core_clear_contamination_deposits'),1,'Phase II state clear delegates deposit cleanup to the shared manager');
 assert.equal(countPairs(clearState,'remove_modifier'),4,'Phase II state clear removes the four legacy modifiers once');
 const featurePairs = parsedByPath.get('common/deposits/epoch_phase_ii_features.txt');
 const featureNames = featurePairs.map(([name]) => name);

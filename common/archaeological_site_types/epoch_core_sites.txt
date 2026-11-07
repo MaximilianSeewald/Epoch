@@ -51,6 +51,5 @@ epoch_core_silent_structure = {
 	# planet scope here.
 	on_roll_failed = {
 		from = { standard_archaeological_site_on_roll_failed = { RANDOM_EVENTS = no_events } }
-		owner = { set_country_flag = epoch_core_structure_excavation_setback }
 	}
 }
