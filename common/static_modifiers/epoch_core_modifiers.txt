@@ -160,3 +160,28 @@ epoch_core_permanent_scar_exacerbated_fallback = {
 	country_energy_produces_mult = -0.03
 }
 
+epoch_ii_ending_boundary = {
+	country_physics_research_produces_mult = -0.03
+	country_energy_produces_mult = -0.02
+}
+epoch_ii_ending_guarded_listening = {
+	country_physics_research_produces_mult = 0.06
+	country_energy_produces_mult = -0.03
+}
+epoch_ii_ending_broken_instrument = {
+	country_physics_research_produces_mult = -0.05
+	country_alloys_produces_mult = -0.03
+}
+epoch_ii_ending_outward_signal = {
+	ship_fire_rate_mult = 0.05
+	country_physics_research_produces_mult = -0.02
+}
+epoch_ii_ch7_crisis_scars = {
+	planet_stability_add = -5
+	planet_jobs_physics_research_produces_mult = -0.05
+	planet_jobs_produces_mult = -0.03
+}
+epoch_ii_chamber_ruin = {
+	planet_jobs_physics_research_produces_mult = -0.10
+	planet_jobs_energy_produces_mult = -0.05
+}

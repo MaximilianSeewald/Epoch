@@ -39,3 +39,4 @@ d_epoch_resonance_latent = { is_for_colonizable = yes icon = d_geothermal_vent c
 d_epoch_resonance_active = { is_for_colonizable = yes icon = d_geothermal_vent category = deposit_cat_misc }
 d_epoch_resonance_unstable = { is_for_colonizable = yes icon = d_geothermal_vent category = deposit_cat_misc }
 d_epoch_resonance_controlled = { is_for_colonizable = yes icon = d_geothermal_vent category = deposit_cat_misc }
+d_epoch_chamber_ruin = { is_for_colonizable = yes icon = d_geothermal_vent category = deposit_cat_misc }

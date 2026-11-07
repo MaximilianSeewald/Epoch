@@ -293,3 +293,92 @@ epoch_ii_close_campaign = {
 	abort_special_project = { type = EPOCH_II_CODE_RECONSTRUCTION }
 	random_situation = { limit = { is_situation_type = epoch_resonance_protocol } destroy_situation = this }
 }
+
+epoch_ii_chamber_dispatch_boundary = {
+	if = {
+		limit = { exists = event_target:epoch_ii_chamber_system@root event_target:epoch_ii_chamber_system@root = { has_access_fleet = root } }
+		event_target:epoch_ii_chamber_system@root = { enable_special_project = { name = EPOCH_II_CHAMBER_BOUNDARY location = this owner = root } }
+	}
+	else = { country_event = { id = epoch_ii.131 days = 1 } }
+}
+epoch_ii_chamber_dispatch_counterpattern = {
+	if = {
+		limit = { exists = event_target:epoch_ii_chamber_system@root event_target:epoch_ii_chamber_system@root = { has_access_fleet = root } }
+		event_target:epoch_ii_chamber_system@root = { enable_special_project = { name = EPOCH_II_CHAMBER_COUNTERPATTERN location = this owner = root } }
+	}
+	else = { country_event = { id = epoch_ii.133 days = 1 } }
+}
+epoch_ii_chamber_dispatch_control = {
+	if = {
+		limit = { exists = event_target:epoch_ii_chamber_system@root event_target:epoch_ii_chamber_system@root = { has_access_fleet = root } }
+		event_target:epoch_ii_chamber_system@root = { enable_special_project = { name = EPOCH_II_CHAMBER_CONTROL location = this owner = root } }
+	}
+	else = { country_event = { id = epoch_ii.135 days = 1 } }
+}
+
+epoch_ii_ch8_clear_ending = {
+	remove_country_flag = epoch_ii_ending_boundary
+	remove_country_flag = epoch_ii_ending_listen
+	remove_country_flag = epoch_ii_ending_outward
+	remove_country_flag = epoch_ii_ending_break
+	remove_modifier = epoch_ii_ending_boundary
+	remove_modifier = epoch_ii_ending_guarded_listening
+	remove_modifier = epoch_ii_ending_outward_signal
+	remove_modifier = epoch_ii_ending_broken_instrument
+}
+
+epoch_ii_resolve_ch8_boundary = {
+	if = {
+		limit = { NOR = { has_country_flag = epoch_ii_ending_boundary has_country_flag = epoch_ii_ending_listen has_country_flag = epoch_ii_ending_outward has_country_flag = epoch_ii_ending_break } }
+		epoch_ii_ch8_clear_ending = yes
+		set_country_flag = epoch_ii_ending_boundary
+		add_modifier = { modifier = epoch_ii_ending_boundary days = -1 }
+		set_country_flag = epoch_ii_phase_complete
+		set_country_flag = epoch_ii_phase_iii_suppression_map
+		change_variable = { which = epoch_ii_resonance_stability value = 12 }
+		epoch_ii_clamp_resonance_stability = yes
+		if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } epoch_ii_set_site_controlled = yes }
+	}
+}
+epoch_ii_resolve_ch8_listen = {
+	if = {
+		limit = { NOR = { has_country_flag = epoch_ii_ending_boundary has_country_flag = epoch_ii_ending_listen has_country_flag = epoch_ii_ending_outward has_country_flag = epoch_ii_ending_break } }
+		epoch_ii_ch8_clear_ending = yes
+		set_country_flag = epoch_ii_ending_listen
+		add_modifier = { modifier = epoch_ii_ending_guarded_listening days = -1 }
+		set_country_flag = epoch_ii_phase_complete
+		set_country_flag = epoch_ii_phase_iii_live_channel
+		change_variable = { which = epoch_ii_resonance_stability value = -5 }
+		epoch_ii_clamp_resonance_stability = yes
+		if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } epoch_ii_set_site_controlled = yes event_target:epoch_ii_target_planet@root = { set_planet_flag = epoch_ii_countermark_channel } }
+	}
+}
+epoch_ii_resolve_ch8_outward = {
+	if = {
+		limit = { NOR = { has_country_flag = epoch_ii_ending_boundary has_country_flag = epoch_ii_ending_listen has_country_flag = epoch_ii_ending_outward has_country_flag = epoch_ii_ending_break } }
+		epoch_ii_ch8_clear_ending = yes
+		set_country_flag = epoch_ii_ending_outward
+		add_modifier = { modifier = epoch_ii_ending_outward_signal days = -1 }
+		set_country_flag = epoch_ii_network_exposed
+		set_country_flag = epoch_ii_phase_complete
+		set_country_flag = epoch_ii_phase_iii_outbound_bearing
+		change_variable = { which = epoch_ii_resonance_stability value = -12 }
+		epoch_ii_clamp_resonance_stability = yes
+		if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } epoch_ii_set_site_active = yes }
+	}
+}
+epoch_ii_resolve_ch8_break = {
+	if = {
+		limit = { NOR = { has_country_flag = epoch_ii_ending_boundary has_country_flag = epoch_ii_ending_listen has_country_flag = epoch_ii_ending_outward has_country_flag = epoch_ii_ending_break } }
+		epoch_ii_ch8_clear_ending = yes
+		set_country_flag = epoch_ii_ending_break
+		add_modifier = { modifier = epoch_ii_ending_broken_instrument days = -1 }
+		set_country_flag = epoch_ii_chamber_ruined
+		set_country_flag = epoch_ii_phase_complete
+		set_country_flag = epoch_ii_phase_iii_damaged_fragment
+		change_variable = { which = epoch_ii_resonance_stability value = 8 }
+		epoch_ii_clamp_resonance_stability = yes
+		if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } epoch_ii_set_site_unstable = yes event_target:epoch_ii_target_planet@root = { set_planet_flag = epoch_ii_chamber_ruined add_deposit = d_epoch_chamber_ruin add_modifier = { modifier = epoch_ii_chamber_ruin days = -1 } } }
+		else = { set_country_flag = epoch_ii_archive_damaged }
+	}
+}

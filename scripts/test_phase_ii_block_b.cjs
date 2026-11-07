@@ -52,13 +52,13 @@ function countryFlagsAreOwnerScoped(source) {
 const stageBody = block(situation, 'stages');
 const stages = [...stageBody.matchAll(/(stage_[a-z0-9_]+)\s*=\s*\{[^}]*?end\s*=\s*(\d+)[^}]*?\}/g)]
   .map(m => ({ name: m[1], end: Number(m[2]) }));
-const expected = ['stage_scar_wakes','stage_scar_report','stage_first_hunters','stage_hunters_resolution','stage_broken_code','stage_block_a_handoff','stage_ch4_research','stage_ch4_incidents','stage_ch5_research','stage_ch5_expedition','stage_ch5_silence','stage_ch6_research','stage_ch6_resolution'];
-check(stages.map(s => s.name).join(',') === expected.join(','), 'All Block A/B stages remain ordered in the continuing situation');
-check(stages.map(s => s.end).join(',') === '20,30,50,60,80,90,100,110,120,130,140,150,170', 'Stage thresholds are monotonic and leave the final report after the Chapter 6 action');
+const expected = ['stage_scar_wakes','stage_scar_report','stage_first_hunters','stage_hunters_resolution','stage_broken_code','stage_block_a_handoff','stage_ch4_research','stage_ch4_incidents','stage_ch5_research','stage_ch5_expedition','stage_ch5_silence','stage_ch6_research','stage_ch6_resolution','stage_block_b_report'];
+check(stages.slice(0,14).map(s => s.name).join(',') === expected.join(','), 'All Block A/B stages remain ordered before the appended finale');
+check(stages.slice(0,14).map(s => s.end).join(',') === '20,30,50,60,80,90,100,110,120,130,140,150,170,180', 'The original Block A/B thresholds are preserved before the finale stages');
 check(/epoch_ii_handoff_ready/.test(events) && /has_country_flag = epoch_ii_ch3_resolved/.test(situation), 'Block A handoff remains the only entry into Block B');
-check(/set_country_flag = epoch_ii_block_a_complete/.test(events) && /set_country_flag = epoch_ii_block_b_complete/.test(situation), 'The two block results are recorded independently');
-check(/has_country_flag = epoch_ii_ch6_resolved/.test(situation) && /remove_country_flag = epoch_ii_active/.test(situation), 'The campaign only closes after a saved Chapter 6 result');
-check(!/stage_ch7|chapter_7|epoch_ii_ch7/.test(situation + events), 'Block B does not start Chapter 7');
+check(/set_country_flag = epoch_ii_block_a_complete/.test(events) && /set_country_flag = epoch_ii_block_b_complete/.test(events), 'Block A and Block B results are recorded independently');
+check(/has_country_flag = epoch_ii_ch6_resolved/.test(situation) && /has_country_flag = epoch_ii_phase_complete/.test(situation) && /remove_country_flag = epoch_ii_active/.test(situation), 'The campaign preserves activation through Block B and closes only after the Phase II ending');
+check(/epoch_ii_handoff_block_c_ready/.test(events) && /stage_ch7_boundary/.test(situation), 'Block B reports into the Chapter 7 handoff');
 
 const gates = [
   ['stage_ch4_incidents','epoch_ii_ch4_resolved'],
@@ -221,7 +221,7 @@ function simulate(pathKind) {
   const transitions = [];
   let progress = 90;
   let previousEnd = 90;
-  for (const s of stages.slice(6)) {
+for (const s of stages.slice(6,14)) {
     const modifiersForStage = [...situation.matchAll(new RegExp(`modifier = \\{[^\\n]*current_stage = ${s.name}[^\\n]*\\}`, 'g'))].map(m => m[0]);
     const research = ['stage_ch4_research','stage_ch5_research','stage_ch6_research'].includes(s.name);
     if (research) {
@@ -253,10 +253,11 @@ function simulate(pathKind) {
       flags.add(`epoch_ii_ch6_${pathKind === 'archive' ? 'withdrawal' : pathKind}_resolved`);
       flags.add('epoch_ii_ch6_resolved');
     }
+    if (s.name === 'stage_block_b_report') { flags.add('epoch_ii_block_b_complete'); flags.add('epoch_ii_handoff_block_c_ready'); }
     progress = s.end;
     previousEnd = s.end;
   }
-  check(progress === 170, `${pathKind} simulation reaches the final report threshold only after actions`);
+  check(progress === 180, `${pathKind} simulation reaches the Block B report threshold only after actions`);
   check(transitions.some(item => item.event === 'epoch_ii.60' && item.progress === 100)
     && transitions.some(item => item.event === 'epoch_ii.64' && item.progress === 120)
     && transitions.some(item => item.event === 'epoch_ii.70' && item.progress === 150), `${pathKind} story prompts follow Chapter 4–6 research thresholds`);
@@ -268,6 +269,6 @@ for (const kind of ['combat','trap','science','withdrawal','archive']) {
   check(state.flags.has('epoch_ii_ch4_resolved') && state.flags.has('epoch_ii_ch5_resolved') && state.flags.has('epoch_ii_ch6_resolved'), `${kind} route reaches the saved Block B handoff`);
 }
 check(simulate('combat').flags.has('epoch_ii_ch6_combat_started') && simulate('combat').flags.has('epoch_ii_ch6_resolved'), 'A completed combat route preserves its distinct outcome and result flags');
-check(/set_country_flag = epoch_ii_block_b_complete/.test(situation) && /set_country_flag = epoch_ii_handoff_block_c_ready/.test(events) && !/stage_ch7|chapter_7|epoch_ii_ch7/.test(situation + events), 'Block C handoff is recorded only after Block B closes and does not activate Chapter 7');
+check(/set_country_flag = epoch_ii_block_b_complete/.test(events) && /set_country_flag = epoch_ii_handoff_block_c_ready/.test(events) && /stage_ch7_boundary/.test(situation), 'Block B handoff is recorded and followed by the integrated Chapter 7 stages');
 
 console.log(`PASS: ${checks} Block B transition and source-wiring assertions passed. Static model only; no in-game validation.`);
