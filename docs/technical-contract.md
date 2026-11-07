@@ -33,3 +33,17 @@ The source review did not comprehensively verify AI weights, localization/UI ass
 - Provide English and German localization. Use valid Vanilla or original art rather than placeholders. Show actual resource deltas in native option tooltips where supported. Verify feature-panel placement, state refresh, localization, and economic effects in game.
 - Require save/load, AI coverage, simultaneous-empire isolation, host/client MP, fresh logs, and Vanilla-only/optional-mod checks. Static/source evidence never substitutes for these acceptance runs.
 - No new start origin/civic/free start bonus or discovery technology. Do not use global singleton campaign state or foreign event targets.
+
+
+## Stage-II implementation source review
+
+The local installation still reports Build-ID 26325427. Additional inspected patterns:
+
+- `common/on_actions/00_on_actions.txt`: `on_fleet_destroyed_victim` uses victim Country / From combatant Country / FromFrom victim Fleet / FromFromFrom combatant Fleet. Combat-join attacker/defender hooks are Fleet scoped. `on_space_battle_won` also fires on emergency FTL/disable, so it is not used as destruction proof.
+- `common/country_types/00_country_types.txt`: guardian-style countries (for example `origin_dragon`) disable strategic AI but use a non-neutral faction, basic technology, exclusive diplomacy and event modules. This supports deliberately scripted tactical fleets; it does not demonstrate EPOCH hostility/pursuit behavior.
+- `events/an4_events.txt`, drones.110: aggressive fleet stance, `set_aggro_range_measure_from = return_point` and bounded aggro range.
+- `common/special_projects/documentation.txt`: scientist/Science Ship requirements, visible location, country-scope abort/failure and ship-scope completion. `common/special_projects/00_projects_distant_stars.txt` explicitly forwards `scopes = { from = from }` to `distar.156`; EPOCH uses the same explicit location forwarding instead of assuming a nested callback's From chain.
+- `common/situations/02_strategic_situations.txt`: approach `on_select`; actual progress is changed by effects, not by EPOCH's zero monthly progress.
+- `common/decisions/02_special_decisions.txt` and building examples: native decision enactment/cost/effect/AI fields and building resources/prerequisites. Event pictures, feature assets, ship components, graphical culture, building art and reactor references are checked against the installation.
+
+The new battle proof combines the native destroyed-object callback with the dedicated owner/marked fleet and campaign combatant involvement. Object cleanup or a missing target cannot grant success. Destruction callback object lifetime, current-combat flags during allied kills and ordering remain unverified engine assumptions to exercise in acceptance. New science callbacks and planet decisions are statically interpreted from their actual scripts, but that interpreter is not a Stellaris runtime.

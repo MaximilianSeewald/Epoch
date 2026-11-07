@@ -1,62 +1,28 @@
 # Content Migration and Documentation Authority
 
-**Status: Binding code-migration register.** This documentation cleanup leaves all gameplay files unchanged. The next code PR must use this register before removing or replacing legacy content.
+**Status: Stage-II code replacement completed; runtime acceptance open.** Current architecture and stage specs govern behavior; Git history is the archive. This register describes the actual replacement, not future instructions.
 
-## Source hierarchy
+| Content | Implemented disposition |
+|---|---|
+| Old eight-chapter/19-stage Resonance progression | Replaced by five zero-monthly-progress stages, driven solely by actual objective callbacks/actions. |
+| Old Phase-II event file | Reduced to guarded invitation recovery, schema detection and explicit prototype-save suspension. Fresh gameplay uses `epoch_res.*`; Stage I retains its existing clock call. |
+| Block C, second crisis, Chamber projects, Countermark and four-ending dispatch | Active gameplay removed. `epoch_phase_ii_block_c_events.txt` deleted. No old Chapter-6–8 dispatch remains. |
+| Old scheduled event IDs | Separate inert receivers preserve queued-save ID resolution. Correct original event types are retained. They contain no effects, options, dispatch, rewards or spawns. |
+| Thirteen old project keys / Chamber recovery type | Abort-only project definitions and an inert zero-progress situation shell permit safe cleanup. No active code enables or starts them. The migration aborts old projects and destroys obsolete situations. |
+| First Nullwarden fleet | Rebuilt with non-neutral targeted hostility, native tactical aggro, bounded once-only scale and native military destruction proof. Missing fleet targets never imply victory. One explicit paid replacement encounter is bounded and requires a new battle. |
+| Old retreat/diversion helpers, stability counter, old completion/handoff helpers | Removed. No alternative successful Chapter-2 completion. Preparation remains optional support for actual combat. |
+| PR #11 Contamination, Scar and Silent Structure | Shared cleaners/setters retained. New planet decisions use planet-local setters through the existing contamination cleaner, preserving independent families and Stage-I penalty flags. Added intrinsic organic/Hive/Machine economics for the four Stage-II states. |
+| Prototype technologies/buildings/components | Two early research technologies and two buildings retained/reworked. Armor/Sensors/Field Control technology paths and component set/templates removed. Their future Stage-III/IV design remains open. |
+| Legacy economic consequences | Definitions and associated localization retained for prototype saves, with no new active writer. No bulk removal of permanent costs. |
+| Localization/GFX | New English/German story/project/decision/report keys; unused prototype names/keys removed. Vanilla event art, feature icons and ship graphics reused. |
+| Prototype Block A/B/C/model tests | Removed. Replaced by source-derived five-chapter contract/interpreter tests. Stage-I flow and shared-family/event-structure tests retained; stale documentation wording assertions updated to PR #12's active contract. |
 
-When active documents disagree, apply this order:
+Before removal, an internal ledger inventoried 697 identifiers across scripts, callbacks, flags, targets, technology, buildings and localization, with incoming/outgoing file/line references. It is an implementation artifact outside the repository, not an additional architecture document. Current tests validate defined event/project/helper references and inert legacy receivers.
 
-1. [Current architecture and invariants](../architecture.md).
-2. Current [Stage I](../phases/phase-i-first-contact.md), [Stage II](../phases/phase-ii-resonance.md), [Stage III](../phases/stage-iii-military-crisis.md), and [Stage IV](../phases/stage-iv-ascension.md) specifications.
-3. [Acceptance criteria](../testing.md).
-4. [Technical contracts and evidence limits](../technical-contract.md).
+## Supported saves
 
-The Git history is the archive for removed reports. `Open` marks an undecided design choice. Source verification is evidence of a Vanilla pattern only, not proof of EPOCH parser/runtime behavior.
+New games and Stage-I/pre-entry saves retain the Stage-I foundation and continuation clock. A pre-entry save with a saved timer retains its deadline; an older save without a recorded date receives a conservative full interval at migration. New Stage II uses a separate persistent schema and guarded objectives. Prototype Stage-II saves enter an explicit incompatible/suspended state; there is no fabricated successful migration or Stage-III handoff. Old fleet references are de-escalated owner-locally, queued callbacks do nothing, and old consequences remain.
 
-## Architecture and content migration matrix
+## Remaining work
 
-| Legacy artifact/idea | Decision | Current destination/action |
-|---|---|---|
-| Eight-chapter Stage II and old Block A/B/C chapter mapping | **Remove** | Replaced by the five chapters in Stage II spec and its acceptance criteria. |
-| Chapters 1–3: Scar Wakes, First Hunters, Broken Code | **Revise** | Keep story concepts in new Stage II chapters 1–3; rebuild against actual project/fleet/action requirements. |
-| Old Chapters 4–5 and Block B progression | **Revise** | Rebuild as the Chapter 4 interactive planet-level containment mini-game and Chapter 5 multi-system exploration; do not inherit thresholds or mechanics blindly. |
-| Old Chapter 6 adapted Nullwarden finale | **Move** | Larger adapted military escalation belongs to Stage III. Prototype event/ship content is inventory only pending design. |
-| Old Chapter 7 Resonance Chamber | **Remove from Stage II; archive/reassess** | No future stage assignment is settled. Stage IV is a candidate, not a binding destination; the chamber's future need and function are open. |
-| Old Chapter 8 Countermark and four mandatory final decisions | **Remove from Stage II; archive/reassess** | The four outcomes (Keep Boundary, Listen Under Guard, Turn Signal Outward, Break Instrument) are not Stage II requirements. Whether to retain, redesign, and where to place any concept remains open; Stage IV is a candidate only. |
-| Old 19-stage situation, six-stage architecture, and M0/M4/M5/M6/M7 plan | **Remove** | Superseded; current architecture has four stages. |
-| Old progress thresholds, 0–100 Stability, invitation/handoff flags | **Reassess/migrate** | Keep the design requirement that Stage II begins about five in-game years after the Stage-I continuation choice. Old implementation thresholds/flags are not binding. Audit every read/write in callbacks and saves; replace only with an approved state model. |
-| Nullwarden fleets and ship designs (`epoch_nullwarden`, `epoch_nullwarden_designs.txt`, `epoch_ii.15` onward) | **Revise** | Chapter 2 needs a real first hostile fleet; adapted fleet concept moves to III. Audit country type, designs, components, spawn, hostility, AI, cleanup, and event references. |
-| Resonance Protocol situation and Chamber recovery situation (`epoch_resonance_protocol`, `epoch_resonance_chamber_recovery`) | **Replace/remove prototype stages** | Retain Stage II only if rebuilt around five chapters; remove Chamber recovery stage. Audit every callback and entry hook before removing definitions. |
-| Planetary features (Contamination, Scar, Silent Structure) from PR #11 | **Keep** | Shared foundation; state names and family/cardinality rules are in [Stage I](../phases/phase-i-first-contact.md). Preserve setter behavior, visibility, and actual economic effects. |
-| Old Phase II event/flag layer representing planet state | **Migrate in code PR after audit** | Preserve PR #11 shared feature UI and economics. Retire duplicate state only after call-site, save, and localisation migration is designed. |
-| Resonance Laboratory | **Reassess** | Candidate Chapter 3/5 or Stage IV infrastructure; not automatically retained. Verify its utility and costs in the chosen design. |
-| Containment Infrastructure | **Revise** | Possible Chapter 4 support, only if real containment mechanics and planetary costs justify it. |
-| Resonance Spectroscopy | **Reassess/retain as candidate** | Candidate research path from Chapter 3; no free grant; verify prerequisite and downstream references. |
-| Adaptive Resonance Armor, Phased Sensors | **Reassess** | Candidate technologies; military adaptation primarily Stage III. Chapter 2/III allocation and research prerequisites remain open. |
-| Contamination-Neutral Infrastructure | **Reassess** | Candidate Stage II/IV building technology; verify Stage I feature interaction, economic effects, and building dependencies. |
-| Resonance Field Control | **Reassess** | Its Chamber dependency is from the retired prototype. A future role/stage is open; Stage IV is a candidate, not a mandatory Stage II tech. |
-| All 13 prototype Stage II Special Projects (`EPOCH_II_SCAR_SURVEY`, `SIGNAL_DIVERSION`, `CODE_ARCHIVE`, `CODE_FORENSICS`, `CODE_RECONSTRUCTION`, `NODE_REFLECTION`, `NODE_INTERRUPTED`, `SILENT_SYSTEM`, `NODE_TRAP`, `SCIENCE_COUNTERMEASURE`, `CHAMBER_BOUNDARY`, `CHAMBER_COUNTERPATTERN`, `CHAMBER_CONTROL`) | **Reassess individually** | First ten are candidates for chapters 1–5 or III; last three depend on the unassigned Chamber concept. No project is declared safe/valid without target, owner, ship/scientist, callbacks, cancellation and reference audit. |
-| Stage I/core Special Projects in `epoch_core_projects.txt` | **Keep subject to reference audit** | Includes `EPOCH_FIRST_ECHO_CAUTIOUS`, `EPOCH_FIRST_ECHO_AGGRESSIVE`, `EPOCH_ECHO_CALIBRATION`, `EPOCH_ECHO_BASELINE`, `EPOCH_ECHO_OVERDRIVE`, `EPOCH_ECHO_THROTTLED`, `EPOCH_MISSING_EXPEDITION`, `EPOCH_EXPEDITION_RESCUE`, `EPOCH_EXPEDITION_SALVAGE`, `EPOCH_EXPEDITION_SURVEY`, `EPOCH_CONTAMINATION_STUDY`, and `EPOCH_STRUCTURE_REMOTE_STUDY`. Preserve Stage I callbacks and identify any `epoch_ii` dependency before retiring old definitions. |
-| Resonance Laboratory and Containment Infrastructure buildings | **Reassess** | Verify technology prerequisites, planet limits, resource categories, upkeep, and callers; retain only if mapped to accepted mechanics. |
-| Old Phase II component set/templates (Resonance Armor, Phased Sensors) | **Reassess** | Depends on approved Stage III combat role and tech map; do not orphan tech, set, template, ship design, or localisation references. |
-| Old Phase II and Block C event files (`epoch_phase_ii_events.txt`, `epoch_phase_ii_block_c_events.txt`; `epoch_ii.*`) | **Replace, then remove obsolete definitions** | Map each event ID, incoming dispatch, project/situation callback, and outgoing event. Retire Chamber and old finale events. Prevent dead content from auto-firing by removing verified dispatch sources, not by deleting definitions first. |
-| Stage II on-actions/yearly pulse/fleet-destroyed callbacks | **Replace selectively** | Audit `epoch_core_on_actions.txt`, event trigger conditions and all callback scopes. Remove obsolete handlers only after replacement dispatch and Stage I non-regression are verified. |
-| `epoch_core_effects.txt` Phase II helpers and feature setters | **Split decisions** | Keep PR #11 planetary feature helpers; identify and replace Phase II scheduling, target, stability, flag, and transition helpers. Search all call sites before each removal. |
-| All `epoch_ii_*` country/planet/fleet/project flags and event targets | **Migrate or retire** | Build a read/write/call-site ledger; define old-save policy; map only information needed for five chapters and downstream III/IV. Do not bulk-clear state. |
-| Old Block C modifiers/devastation and endings | **Remove from active Stage II** | Reassess consequences for Stage III/IV. Ensure no remaining callback or localisation references before code removal. |
-| Old Phase II acceptance script/checkpoint names and four-ending expectations | **Remove** | Use the current five-chapter acceptance plan. |
-| Stage I tests, scripts, and Stage I feature behavior | **Keep** | Add non-regression coverage for entry/exit, permanent scars, no re-enrollment, all empire classes, and PR #11 features. |
-
-The table classifies legacy concepts, not evidence that a prototype item works in game. Detailed code references must be regenerated in the implementation PR immediately before deletion because callback/reference networks can change.
-
-## Required next code-PR cleanup sequence
-
-1. Inventory and map every `epoch_ii.*` event ID; every project key; situation type/stage; flag/variable/event target; technology, building, component/template, country type, deposit/feature and modifier; scripted effect/trigger; localization/GFX key. Search incoming **and** outgoing references across `common/`, `events/`, `localisation/`, and `scripts/`.
-2. Design and review the five-chapter replacement state flow and old-save migration before modifying scripts. Define what old saves do if they are pre-entry, mid-chapter 1–5, in obsolete chapters 6–8, or closed with an old outcome.
-3. Keep Stage I and PR #11 feature setters/state data intact; add a compatibility/migration adapter for Stage I feature states if the new Stage II model needs conversion. Do not silently drop modifiers, deposits, or permanent consequences.
-4. Add the replacement Stage II situation/events/projects and their validated targets/callbacks. Run the new entry path on fresh saves and migrated save classes. Explicitly remove/deactivate obsolete dispatches and automatic fire sources (yearly pulse, on-action, project completion, situation callback, delayed event) so unreferenced old events cannot start.
-5. Remove obsolete situation stages, old events, old projects, technologies/buildings/components, flags/effects, and their localisation only after incoming/outgoing reference searches are clear and new replacement paths exist. Preserve genuinely reusable content under the new contract.
-6. Replace the eight-chapter regression model and stale test expectations with five-chapter static checks plus real-game acceptance. Keep Stage I regressions and log checks.
-7. Verify fresh and old saves, all empire classes, AI, concurrent empires, save/load, multiplayer host/client, Vanilla-only, and optional Gigastructures separately. Do not report in-game success from static checks.
-
-Old event, situation, project, feature, technology, building, flag, and script definitions remain in gameplay files and may still auto-dispatch. This document cleanup does not deactivate them. Their replacement and prevention of obsolete event firing are explicit next-code-PR requirements.
+Perform the connected gameplay run in [testing](../testing.md), particularly native death-hook attribution, AI science/decision behavior, return-point fleet containment, save loading of retired situations, lost targets, simultaneous empires and host/client MP. Verify new logs. Source patterns and static interpreters cannot certify engine behavior or balance. Stage-III/IV implementations and optional Gigastructures package validation remain separate work.
