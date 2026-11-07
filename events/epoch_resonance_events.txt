@@ -32,7 +32,22 @@ country_event = {
 }
 
 ship_event = { id = epoch_res.101 hide_window = yes is_triggered_only = yes
-    trigger = { owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 1 } NOT = { has_country_flag = epoch_res_scar_complete } } from = { is_owned_by = root.owner is_same_value = event_target:epoch_res_scar@root.owner } } immediate = { owner = {
+    trigger = {
+  exists = owner
+  owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 1 } NOT = { has_country_flag = epoch_res_scar_complete } }
+  exists = from
+  from = { is_scope_type = country is_same_value = root.owner }
+  exists = event_target:epoch_res_project_scar@root
+  exists = fromfrom
+  exists = event_target:epoch_res_scar@root.owner
+  fromfrom = {
+   is_same_value = event_target:epoch_res_project_scar@root
+   OR = { is_scope_type = planet is_scope_type = colony }
+   is_same_value = event_target:epoch_res_scar@root.owner
+   is_owned_by = root.owner
+   solar_system = { is_same_value = root.solar_system }
+  }
+ } immediate = { clear_global_event_target = epoch_res_project_scar@root  owner = {
  set_country_flag = epoch_res_scar_complete
  if = { limit = { OR = { has_country_flag = epoch_core_initial_aggressive has_country_flag = epoch_core_expedition_project_abandoned } } set_country_flag = epoch_res_signal_exposed }
  if = { limit = { has_country_flag = epoch_core_structure_secured } set_country_flag = epoch_res_prepared }
@@ -127,7 +142,22 @@ if = { limit = {
 }
 
 ship_event = { id = epoch_res.102 hide_window = yes is_triggered_only = yes
-    trigger = { owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 2 } NOT = { has_country_flag = epoch_res_recon_complete } } from = { is_owned_by = root.owner is_same_value = event_target:epoch_res_home@root.owner } } immediate = { owner = { set_country_flag = epoch_res_prepared set_country_flag = epoch_res_recon_complete
+    trigger = {
+  exists = owner
+  owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 2 } NOT = { has_country_flag = epoch_res_recon_complete } }
+  exists = from
+  from = { is_scope_type = country is_same_value = root.owner }
+  exists = event_target:epoch_res_project_recon@root
+  exists = fromfrom
+  exists = event_target:epoch_res_home@root.owner
+  fromfrom = {
+   is_same_value = event_target:epoch_res_project_recon@root
+   OR = { is_scope_type = planet is_scope_type = colony }
+   is_same_value = event_target:epoch_res_home@root.owner
+   is_owned_by = root.owner
+   solar_system = { is_same_value = root.solar_system }
+  }
+ } immediate = { clear_global_event_target = epoch_res_project_recon@root  owner = { set_country_flag = epoch_res_prepared set_country_flag = epoch_res_recon_complete
  if = { limit = { exists = event_target:epoch_res_hunters@this event_target:epoch_res_hunters@this = { is_scope_type = fleet has_fleet_flag = epoch_res_hunters_for@root.owner } } event_target:epoch_res_hunters@this = { add_modifier = { modifier = epoch_res_targeting_flaw days = -1 } } }
 } } }
 
@@ -248,7 +278,22 @@ country_event = {
 }
 
 ship_event = { id = epoch_res.103 hide_window = yes is_triggered_only = yes
-    trigger = { owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 } NOT = { has_country_flag = epoch_res_salvage_complete } } from = { is_same_value = event_target:epoch_res_wreck@root.owner } } immediate = { owner = { set_country_flag = epoch_res_salvage_complete country_event = { id = epoch_res.32 } } } }
+    trigger = {
+  exists = owner
+  owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 } NOT = { has_country_flag = epoch_res_salvage_complete } }
+  exists = from
+  from = { is_scope_type = country is_same_value = root.owner }
+  exists = event_target:epoch_res_project_wreck@root
+  exists = fromfrom
+  exists = event_target:epoch_res_wreck@root.owner
+  fromfrom = {
+   is_same_value = event_target:epoch_res_project_wreck@root
+   OR = { is_scope_type = planet is_scope_type = colony }
+   is_same_value = event_target:epoch_res_wreck@root.owner
+   
+   solar_system = { is_same_value = root.solar_system }
+  }
+ } immediate = { clear_global_event_target = epoch_res_project_wreck@root  owner = { set_country_flag = epoch_res_salvage_complete country_event = { id = epoch_res.32 } } } }
 
 country_event = {
  id = epoch_res.31
@@ -266,7 +311,22 @@ country_event = {
 }
 
 ship_event = { id = epoch_res.104 hide_window = yes is_triggered_only = yes
-    trigger = { owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 } has_country_flag = epoch_res_salvage_complete has_country_flag = epoch_res_signature_complete NOT = { has_country_flag = epoch_res_analysis_complete } } from = { is_owned_by = root.owner is_same_value = event_target:epoch_res_home@root.owner } } immediate = { owner = {
+    trigger = {
+  exists = owner
+  owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 } has_country_flag = epoch_res_salvage_complete has_country_flag = epoch_res_signature_complete NOT = { has_country_flag = epoch_res_analysis_complete } }
+  exists = from
+  from = { is_scope_type = country is_same_value = root.owner }
+  exists = event_target:epoch_res_project_compare@root
+  exists = fromfrom
+  exists = event_target:epoch_res_home@root.owner
+  fromfrom = {
+   is_same_value = event_target:epoch_res_project_compare@root
+   OR = { is_scope_type = planet is_scope_type = colony }
+   is_same_value = event_target:epoch_res_home@root.owner
+   is_owned_by = root.owner
+   solar_system = { is_same_value = root.solar_system }
+  }
+ } immediate = { clear_global_event_target = epoch_res_project_compare@root  owner = {
  set_country_flag = epoch_res_analysis_complete
  set_country_flag = epoch_ii_spectroscopy_lead
  set_country_flag = epoch_ii_containment_neutral_infrastructure_lead
@@ -323,10 +383,40 @@ country_event = {
 }
 
 ship_event = { id = epoch_res.105 hide_window = yes is_triggered_only = yes
-    trigger = { owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 5 } NOT = { has_country_flag = epoch_res_reflection_complete } } from = { is_same_value = event_target:epoch_res_reflection@root.owner } } immediate = { owner = { set_country_flag = epoch_res_reflection_complete if = { limit = { has_country_flag = epoch_res_network_pulse } add_resource = { physics_research = 150 } } country_event = { id = epoch_res.51 } country_event = { id = epoch_res.59 } } } }
+    trigger = {
+  exists = owner
+  owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 5 } NOT = { has_country_flag = epoch_res_reflection_complete } }
+  exists = from
+  from = { is_scope_type = country is_same_value = root.owner }
+  exists = event_target:epoch_res_project_reflection@root
+  exists = fromfrom
+  exists = event_target:epoch_res_reflection@root.owner
+  fromfrom = {
+   is_same_value = event_target:epoch_res_project_reflection@root
+   OR = { is_scope_type = planet is_scope_type = colony }
+   is_same_value = event_target:epoch_res_reflection@root.owner
+   
+   solar_system = { is_same_value = root.solar_system }
+  }
+ } immediate = { clear_global_event_target = epoch_res_project_reflection@root  owner = { set_country_flag = epoch_res_reflection_complete if = { limit = { has_country_flag = epoch_res_network_pulse } add_resource = { physics_research = 150 } } country_event = { id = epoch_res.51 } country_event = { id = epoch_res.59 } } } }
 
 ship_event = { id = epoch_res.106 hide_window = yes is_triggered_only = yes
-    trigger = { owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 5 } NOT = { has_country_flag = epoch_res_silence_complete } } from = { is_same_value = event_target:epoch_res_silence@root.owner } } immediate = { owner = { set_country_flag = epoch_res_silence_complete if = { limit = { has_country_flag = epoch_res_network_exposed } add_resource = { physics_research = 300 } add_modifier = { modifier = epoch_res_signal_strain days = 1800 } } country_event = { id = epoch_res.52 } country_event = { id = epoch_res.59 } } } }
+    trigger = {
+  exists = owner
+  owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 5 } NOT = { has_country_flag = epoch_res_silence_complete } }
+  exists = from
+  from = { is_scope_type = country is_same_value = root.owner }
+  exists = event_target:epoch_res_project_silence@root
+  exists = fromfrom
+  exists = event_target:epoch_res_silence@root.owner
+  fromfrom = {
+   is_same_value = event_target:epoch_res_project_silence@root
+   OR = { is_scope_type = planet is_scope_type = colony }
+   is_same_value = event_target:epoch_res_silence@root.owner
+   
+   solar_system = { is_same_value = root.solar_system }
+  }
+ } immediate = { clear_global_event_target = epoch_res_project_silence@root  owner = { set_country_flag = epoch_res_silence_complete if = { limit = { has_country_flag = epoch_res_network_exposed } add_resource = { physics_research = 300 } add_modifier = { modifier = epoch_res_signal_strain days = 1800 } } country_event = { id = epoch_res.52 } country_event = { id = epoch_res.59 } } } }
 
 country_event = {
  id = epoch_res.51
@@ -468,8 +558,23 @@ country_event = {
 }
 ship_event = {
  id = epoch_res.107 hide_window = yes is_triggered_only = yes
- trigger = { owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 1 } has_country_flag = epoch_res_scar_complete } from = { is_same_value = event_target:epoch_res_baseline@root.owner } }
- immediate = { owner = {
+ trigger = {
+  exists = owner
+  owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 1 } has_country_flag = epoch_res_scar_complete }
+  exists = from
+  from = { is_scope_type = country is_same_value = root.owner }
+  exists = event_target:epoch_res_project_baseline@root
+  exists = fromfrom
+  exists = event_target:epoch_res_baseline@root.owner
+  fromfrom = {
+   is_same_value = event_target:epoch_res_project_baseline@root
+   OR = { is_scope_type = planet is_scope_type = colony }
+   is_same_value = event_target:epoch_res_baseline@root.owner
+   
+   solar_system = { is_same_value = root.solar_system }
+  }
+ }
+ immediate = { clear_global_event_target = epoch_res_project_baseline@root  owner = {
   set_country_flag = epoch_res_baseline_complete
   set_variable = { which = epoch_res_chapter value = 2 }
   random_situation = { limit = { is_situation_type = epoch_resonance_protocol } add_situation_progress = 20 }
@@ -497,8 +602,23 @@ country_event = {
 }
 ship_event = {
  id = epoch_res.108 hide_window = yes is_triggered_only = yes
- trigger = { owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 } has_country_flag = epoch_res_salvage_complete NOT = { has_country_flag = epoch_res_signature_complete } } from = { is_same_value = event_target:epoch_res_wreck@root.owner } }
- immediate = { owner = { set_country_flag = epoch_res_signature_complete country_event = { id = epoch_res.31 } } }
+ trigger = {
+  exists = owner
+  owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 } has_country_flag = epoch_res_salvage_complete NOT = { has_country_flag = epoch_res_signature_complete } }
+  exists = from
+  from = { is_scope_type = country is_same_value = root.owner }
+  exists = event_target:epoch_res_project_signature@root
+  exists = fromfrom
+  exists = event_target:epoch_res_wreck@root.owner
+  fromfrom = {
+   is_same_value = event_target:epoch_res_project_signature@root
+   OR = { is_scope_type = planet is_scope_type = colony }
+   is_same_value = event_target:epoch_res_wreck@root.owner
+   
+   solar_system = { is_same_value = root.solar_system }
+  }
+ }
+ immediate = { clear_global_event_target = epoch_res_project_signature@root  owner = { set_country_flag = epoch_res_signature_complete country_event = { id = epoch_res.31 } } }
 }
 
 country_event = {
@@ -520,7 +640,22 @@ country_event = {
 }
 
 ship_event = { id = epoch_res.109 hide_window = yes is_triggered_only = yes
-    trigger = { owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 5 } NOT = { has_country_flag = epoch_res_interrupted_complete } } from = { is_same_value = event_target:epoch_res_interrupted@root.owner } } immediate = { owner = { set_country_flag = epoch_res_interrupted_complete country_event = { id = epoch_res.53 } country_event = { id = epoch_res.59 } } } }
+    trigger = {
+  exists = owner
+  owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 5 } NOT = { has_country_flag = epoch_res_interrupted_complete } }
+  exists = from
+  from = { is_scope_type = country is_same_value = root.owner }
+  exists = event_target:epoch_res_project_interrupted@root
+  exists = fromfrom
+  exists = event_target:epoch_res_interrupted@root.owner
+  fromfrom = {
+   is_same_value = event_target:epoch_res_project_interrupted@root
+   OR = { is_scope_type = planet is_scope_type = colony }
+   is_same_value = event_target:epoch_res_interrupted@root.owner
+   
+   solar_system = { is_same_value = root.solar_system }
+  }
+ } immediate = { clear_global_event_target = epoch_res_project_interrupted@root  owner = { set_country_flag = epoch_res_interrupted_complete country_event = { id = epoch_res.53 } country_event = { id = epoch_res.59 } } } }
 
 country_event = {
  id = epoch_res.53 title = epoch_res.53.name desc = epoch_res.53.desc picture = GFX_evt_ship_in_orbit is_triggered_only = yes

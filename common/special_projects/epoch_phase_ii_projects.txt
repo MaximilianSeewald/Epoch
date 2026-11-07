@@ -8,7 +8,22 @@ special_project = {
  requirements = { shipclass_science_ship = 1 leader = scientist }
  AI_wait_days = { weight = 5 }
  abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
- on_success = { ship_event = { id = epoch_res.101 scopes = { from = from } } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_scar@owner }
+   event_target:epoch_res_scar@owner = { save_global_event_target_as = epoch_res_project_scar@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_scar@this }
+   ship_event = { id = epoch_res.101 scopes = { from = from fromfrom = event_target:epoch_res_project_scar@this } }
+  }
+ }
  on_fail = { }
  on_cancel = { }
 }
@@ -23,7 +38,22 @@ special_project = {
  requirements = { shipclass_science_ship = 1 leader = scientist }
  AI_wait_days = { weight = 5 }
  abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
- on_success = { ship_event = { id = epoch_res.102 scopes = { from = from } } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_home@owner }
+   event_target:epoch_res_home@owner = { save_global_event_target_as = epoch_res_project_recon@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_recon@this }
+   ship_event = { id = epoch_res.102 scopes = { from = from fromfrom = event_target:epoch_res_project_recon@this } }
+  }
+ }
  on_fail = { }
  on_cancel = { }
 }
@@ -38,7 +68,22 @@ special_project = {
  requirements = { shipclass_science_ship = 1 leader = scientist }
  AI_wait_days = { weight = 5 }
  abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
- on_success = { ship_event = { id = epoch_res.103 scopes = { from = from } } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_wreck@owner }
+   event_target:epoch_res_wreck@owner = { save_global_event_target_as = epoch_res_project_wreck@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_wreck@this }
+   ship_event = { id = epoch_res.103 scopes = { from = from fromfrom = event_target:epoch_res_project_wreck@this } }
+  }
+ }
  on_fail = { }
  on_cancel = { }
 }
@@ -53,7 +98,22 @@ special_project = {
  requirements = { shipclass_science_ship = 1 leader = scientist }
  AI_wait_days = { weight = 5 }
  abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
- on_success = { ship_event = { id = epoch_res.104 scopes = { from = from } } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_home@owner }
+   event_target:epoch_res_home@owner = { save_global_event_target_as = epoch_res_project_compare@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_compare@this }
+   ship_event = { id = epoch_res.104 scopes = { from = from fromfrom = event_target:epoch_res_project_compare@this } }
+  }
+ }
  on_fail = { }
  on_cancel = { }
 }
@@ -68,7 +128,22 @@ special_project = {
  requirements = { shipclass_science_ship = 1 leader = scientist }
  AI_wait_days = { weight = 5 }
  abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
- on_success = { ship_event = { id = epoch_res.105 scopes = { from = from } } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_reflection@owner }
+   event_target:epoch_res_reflection@owner = { save_global_event_target_as = epoch_res_project_reflection@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_reflection@this }
+   ship_event = { id = epoch_res.105 scopes = { from = from fromfrom = event_target:epoch_res_project_reflection@this } }
+  }
+ }
  on_fail = { }
  on_cancel = { }
 }
@@ -83,7 +158,22 @@ special_project = {
  requirements = { shipclass_science_ship = 1 leader = scientist }
  AI_wait_days = { weight = 5 }
  abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
- on_success = { ship_event = { id = epoch_res.106 scopes = { from = from } } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_silence@owner }
+   event_target:epoch_res_silence@owner = { save_global_event_target_as = epoch_res_project_silence@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_silence@this }
+   ship_event = { id = epoch_res.106 scopes = { from = from fromfrom = event_target:epoch_res_project_silence@this } }
+  }
+ }
  on_fail = { }
  on_cancel = { }
 }
@@ -98,7 +188,22 @@ special_project = {
  requirements = { shipclass_science_ship = 1 leader = scientist }
  AI_wait_days = { weight = 5 }
  abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
- on_success = { ship_event = { id = epoch_res.107 scopes = { from = from } } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_baseline@owner }
+   event_target:epoch_res_baseline@owner = { save_global_event_target_as = epoch_res_project_baseline@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_baseline@this }
+   ship_event = { id = epoch_res.107 scopes = { from = from fromfrom = event_target:epoch_res_project_baseline@this } }
+  }
+ }
  on_fail = { }
  on_cancel = { }
 }
@@ -113,7 +218,22 @@ special_project = {
  requirements = { shipclass_science_ship = 1 leader = scientist }
  AI_wait_days = { weight = 5 }
  abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
- on_success = { ship_event = { id = epoch_res.108 scopes = { from = from } } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_wreck@owner }
+   event_target:epoch_res_wreck@owner = { save_global_event_target_as = epoch_res_project_signature@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_signature@this }
+   ship_event = { id = epoch_res.108 scopes = { from = from fromfrom = event_target:epoch_res_project_signature@this } }
+  }
+ }
  on_fail = { }
  on_cancel = { }
 }
@@ -128,7 +248,22 @@ special_project = {
  requirements = { shipclass_science_ship = 1 leader = scientist }
  AI_wait_days = { weight = 5 }
  abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
- on_success = { ship_event = { id = epoch_res.109 scopes = { from = from } } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_interrupted@owner }
+   event_target:epoch_res_interrupted@owner = { save_global_event_target_as = epoch_res_project_interrupted@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_interrupted@this }
+   ship_event = { id = epoch_res.109 scopes = { from = from fromfrom = event_target:epoch_res_project_interrupted@this } }
+  }
+ }
  on_fail = { }
  on_cancel = { }
 }

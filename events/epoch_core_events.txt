@@ -805,8 +805,10 @@ country_event = {
 				event_target:epoch_core_world@root = { is_owned_by = root NOT = { exists = archaeological_site } }
 			}
 			event_target:epoch_core_world@root = {
-				create_archaeological_site = epoch_core_silent_structure
-				archaeological_site = { save_global_event_target_as = epoch_core_structure_site@root }
+				planet = {
+					create_archaeological_site = epoch_core_silent_structure
+					archaeological_site = { save_global_event_target_as = epoch_core_structure_site@root }
+				}
 				epoch_core_set_structure_unsecured = yes
 				owner = { set_country_flag = epoch_core_structure_site_created }
 			}
@@ -815,8 +817,10 @@ country_event = {
 			limit = { NOT = { has_country_flag = epoch_core_structure_site_created } }
 			random_owned_planet = {
 				limit = { NOT = { exists = archaeological_site } }
-				create_archaeological_site = epoch_core_silent_structure
-				archaeological_site = { save_global_event_target_as = epoch_core_structure_site@root }
+				planet = {
+					create_archaeological_site = epoch_core_silent_structure
+					archaeological_site = { save_global_event_target_as = epoch_core_structure_site@root }
+				}
 				epoch_core_set_structure_unsecured = yes
 				save_global_event_target_as = epoch_core_world@root
 				owner = { set_country_flag = epoch_core_structure_site_created }
@@ -1175,38 +1179,68 @@ fleet_event = {
 	option = {
 		name = epoch_core.43.a
 		hidden_effect = {
-		from = { set_site_progress_locked = yes }
+        if = { limit = {
+            owner = { epoch_core_active_campaign_empire = yes NOT = { has_country_flag = epoch_core_structure_phase_resolved } }
+            exists = event_target:epoch_core_world@root.owner
+            event_target:epoch_core_world@root.owner = { is_owned_by = root.owner }
+        }
+		if = {
+            limit = {
+                exists = event_target:epoch_core_structure_site@root.owner
+                event_target:epoch_core_structure_site@root.owner = { is_scope_type = archaeological_site }
+            }
+            event_target:epoch_core_structure_site@root.owner = { set_site_progress_locked = yes }
+        }
 		owner = {
 			event_target:epoch_core_world@root.owner = { epoch_core_set_structure_secured = yes }
 			set_country_flag = epoch_core_structure_secured
 			set_country_flag = epoch_core_structure_choice_recorded
 			set_country_flag = epoch_core_structure_phase_resolved
 		}
+        }
 		}
 		ai_chance = { factor = 35 }
 	}
 	option = {
 		name = epoch_core.43.b
 		hidden_effect = {
-		from = { destroy_archaeological_site = this }
+        if = { limit = {
+            owner = { epoch_core_active_campaign_empire = yes NOT = { has_country_flag = epoch_core_structure_phase_resolved } }
+            exists = event_target:epoch_core_world@root.owner
+            event_target:epoch_core_world@root.owner = { is_owned_by = root.owner }
+        }
+		if = {
+            limit = {
+                exists = event_target:epoch_core_structure_site@root.owner
+                event_target:epoch_core_structure_site@root.owner = { is_scope_type = archaeological_site }
+            }
+            event_target:epoch_core_structure_site@root.owner = { destroy_archaeological_site = this }
+        }
 		owner = {
 			event_target:epoch_core_world@root.owner = { epoch_core_set_structure_destroyed = yes }
 			set_country_flag = epoch_core_structure_destroyed
 			set_country_flag = epoch_core_structure_choice_recorded
 			set_country_flag = epoch_core_structure_phase_resolved
 		}
+        }
 		}
 		ai_chance = { factor = 20 }
 	}
 	option = {
 		name = epoch_core.43.c
 		hidden_effect = {
+        if = { limit = {
+            owner = { epoch_core_active_campaign_empire = yes NOT = { has_country_flag = epoch_core_structure_phase_resolved } }
+            exists = event_target:epoch_core_world@root.owner
+            event_target:epoch_core_world@root.owner = { is_owned_by = root.owner }
+        }
 		owner = {
 			event_target:epoch_core_world@root.owner = { epoch_core_set_structure_investigated = yes }
 			set_country_flag = epoch_core_structure_investigated
 			set_country_flag = epoch_core_structure_choice_recorded
 			set_country_flag = epoch_core_structure_phase_resolved
 		}
+        }
 		}
 		ai_chance = { factor = 45 }
 	}
@@ -1447,6 +1481,10 @@ situation_event = {
 	situation = this
 	trigger = { owner = { epoch_core_active_campaign_empire = yes } }
 	immediate = {
+        if = {
+            limit = { owner = { has_country_flag = epoch_core_structure_study_ordered NOT = { has_country_flag = epoch_core_structure_phase_resolved } } }
+            owner = { country_event = { id = epoch_core.51 } }
+        }
 		if = {
 			limit = { current_stage = stage_echo_resolution situation_progress >= 15 owner = { NOT = { has_country_flag = epoch_core_echo_first_project_pending } } }
 			owner = {
@@ -1517,4 +1555,30 @@ country_event = {
 			country_event = { id = epoch_core.46 }
 		}
 	}
+}
+
+# Owner-local repair for pre-fix Colony-bound sites only. Completed outcomes
+# and functioning physical-planet sites are left unchanged.
+country_event = {
+ id = epoch_core.51
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = {
+  epoch_core_active_campaign_empire = yes
+  has_country_flag = epoch_core_structure_study_ordered
+  NOT = { has_country_flag = epoch_core_structure_phase_resolved }
+  exists = event_target:epoch_core_world@root
+  event_target:epoch_core_world@root = { is_owned_by = root }
+  exists = event_target:epoch_core_structure_site@root
+  event_target:epoch_core_structure_site@root = {
+   is_site_type = epoch_core_silent_structure
+   NOT = { exists = planet }
+  }
+ }
+ immediate = {
+  event_target:epoch_core_structure_site@root = { destroy_archaeological_site = this }
+  clear_global_event_target = epoch_core_structure_site@root
+  set_country_flag = epoch_core_structure_colony_site_retired
+  country_event = { id = epoch_core.44 }
+ }
 }
