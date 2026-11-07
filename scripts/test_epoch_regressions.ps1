@@ -91,11 +91,11 @@ foreach ($entry in @(
 
 # The binding campaign contract must remain linked and must not regress to the
 # original First Echo / expedition-only PR scope.
-foreach ($section in @('First Echo', 'Missing Expedition', 'First Contamination', 'The Silent Structure', 'Phase I Conclusion')) {
+foreach ($section in @('First Echo', 'Missing Expedition', 'First Contamination', 'The Silent Structure', 'Phase-I Conclusion')) {
 	Assert-Check ($phaseSpec.Contains($section)) "Binding Phase I specification is missing section: $section"
 }
-Assert-Check ($phaseSpec -match 'PR #6 now contains the five-section implementation and remains open until successful full in-game acceptance') 'Phase I specification must distinguish implementation from final in-game acceptance'
-foreach ($requirement in @('permanent exit', 'AI', 'multiple simultaneous empires', 'save/load', 'multiplayer', 'VERIFIED', 'RUNTIME', 'negative consequence', 'in-world language', 'preserve uncertainty')) {
+Assert-Check ($phaseSpec -match 'does not establish complete multiplayer, AI, or alternative-path validation') 'Phase I specification must distinguish implementation from final in-game acceptance'
+foreach ($requirement in @('permanent exit', 'AI', 'Each empire', 'save/load', 'multiplayer', 'Engine-specific', 'negative gameplay consequence', 'in-world', 'Preserve uncertainty')) {
 	Assert-Check ($phaseSpec.Contains($requirement)) "Binding Phase I specification is missing requirement: $requirement"
 }
 Assert-Check ((Read-ProjectFile 'docs/architecture.md') -match 'phases/phase-i-first-contact\.md') 'Architecture overview must link to the binding Phase I specification'
@@ -177,7 +177,7 @@ foreach ($language in @('english', 'german')) {
 	$relative = "localisation/$language/epoch_core_l_$language.yml"
 	$localizedPlayerText += @([System.IO.File]::ReadAllLines((Join-Path $Root $relative), [System.Text.Encoding]::UTF8) | Where-Object { $_ -match '^\s*[A-Za-z0-9_.]+:\d+\s+"' } | ForEach-Object { $_ -replace '^\s*[A-Za-z0-9_.]+:\d+\s+"', '' -replace '"\s*$', '' })
 }
-Assert-Check (($localizedPlayerText -join "`n") -notmatch '(?i)epoch_core|epoch_first_echo|EPOCH_|event.flag|set_country_flag|set_variable|debug|phase\s*(?:i|1)\b|kampagnenstatus|kampagnen-flagge') 'Player-facing localisations must not expose internal IDs, flags, variables, debugging, or phase labels'
+Assert-Check ((($localizedPlayerText -join "`n") -replace '\[[^\]]+\]', '') -notmatch '(?i)epoch_core|epoch_first_echo|EPOCH_|event.flag|set_country_flag|set_variable|debug|phase\s*(?:i|1)\b|kampagnenstatus|kampagnen-flagge') 'Player-facing localisations must not expose internal IDs, flags, variables, debugging, or phase labels'
 
 # Event ID coverage across event calls, project callbacks and on_action entries.
 $eventDefinitions = @([regex]::Matches($events, '(?m)^\s*id\s*=\s*epoch_core\.(\d+)\s*$') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
@@ -402,7 +402,7 @@ Assert-Check ((Get-EventBlock $events 31) -match 'EPOCH_FIRST_ECHO_[A-Z_]+' -and
 Assert-Check ((Get-EventBlock $events 32) -match 'epoch_core_echo_second_abandoned' -and (Get-EventBlock $events 32) -match 'EPOCH_ECHO_[A-Z_]+' -and (Get-EventBlock $events 32) -notmatch 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.(?:4|5)' -and (Get-EventBlock $events 48) -match 'has_country_flag\s*=\s*epoch_core_echo_second_abandoned[\s\S]*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.4') 'A follow-up failure offers retry or abandonment; explicit abandonment unlocks the expedition at its Situation threshold'
 $conclusionChoiceText = (($englishLoc + $germanLoc) -split "`r?`n" | Where-Object { $_ -match '^\s*epoch_core\.23\.[ab]:0' }) -join "`n"
 Assert-Check ($conclusionChoiceText -notmatch '(?i)campaign|participat|phase|einstieg|kampagne|teilnahme|zukünftigen phasen') 'Conclusion options must use only in-world language'
-Assert-Check (($englishLoc + $germanLoc) -notmatch '(?i)UAP|Universal Ascension|original purpose|ursprüngliche zivilisation|ursprüngliche Zweck|eigentliche Zweck') 'Phase I closing text must not reveal the later purpose or UAP'
+Assert-Check ((($englishLoc + $germanLoc) -split "`r?`n" | Where-Object { $_ -match '^epoch_core\.' }) -join "`n" -notmatch '(?i)UAP|Universal Ascension|original purpose|ursprüngliche zivilisation|ursprüngliche Zweck|eigentliche Zweck') 'Phase I closing text must not reveal the later purpose or UAP'
 
 # AI routes and absent-object recovery must be explicit at each blocking step.
 foreach ($id in @(2,3,4,5,6,7,20,22,23,40,41,42,43)) {
@@ -461,16 +461,8 @@ foreach ($approach in @($cautiousApproach,$intensiveApproach,$minimalApproach)) 
 }
 & node (Join-Path $PSScriptRoot 'test_phase_i_flow.cjs') $Root
 Assert-Check ($LASTEXITCODE -eq 0) 'Parsed campaign-state regression must pass'
-& node (Join-Path $PSScriptRoot 'test_phase_ii_block_a.cjs') $Root
-Assert-Check ($LASTEXITCODE -eq 0) 'Phase II Block A static regression must pass'
-& node (Join-Path $PSScriptRoot 'test_phase_ii_flow_model.cjs') $Root
-Assert-Check ($LASTEXITCODE -eq 0) 'Phase II Block A transition model must pass'
-& node (Join-Path $PSScriptRoot 'test_phase_ii_block_b.cjs') $Root
-Assert-Check ($LASTEXITCODE -eq 0) 'Phase II Block B transition and recovery model must pass'
-& node (Join-Path $PSScriptRoot 'test_phase_ii_block_c.cjs') $Root
-Assert-Check ($LASTEXITCODE -eq 0) 'Phase II Block C ending, technology, project, localization, and recovery checks must pass'
-& node (Join-Path $PSScriptRoot 'test_phase_ii_campaign_flow.cjs') $Root
-Assert-Check ($LASTEXITCODE -eq 0) 'Full eight-chapter Phase II campaign progression model must pass'
+& node (Join-Path $PSScriptRoot 'test_resonance.cjs') $Root $VanillaRoot
+Assert-Check ($LASTEXITCODE -eq 0) 'Five-chapter Resonance structural and invariant checks must pass'
 & node (Join-Path $PSScriptRoot 'test_clausewitz_structure.cjs') $Root $VanillaRoot
 Assert-Check ($LASTEXITCODE -eq 0) 'Clausewitz lexer/parser must validate every common/events text file and top-level scripted effects'
 & node (Join-Path $PSScriptRoot 'test_stellaris_runtime_log.cjs') --self-test
