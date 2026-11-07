@@ -1,5 +1,5 @@
-// Lexer/parser smoke check for Clausewitz text files. It checks nesting and
-// top-level declaration structure; it is not a Stellaris semantic validator.
+// Clausewitz parser and focused event-structure audit. It checks nesting plus
+// selected engine rules for event options; it is not a complete engine validator.
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
@@ -114,6 +114,85 @@ const effectDefs = new Map(parsedByPath.get('common/scripted_effects/epoch_core_
 function countPairs(pairs, key) { return pairs.filter(([name]) => name === key).length; }
 function countDeep(pairs,key) { return pairs.reduce((n,[name,value]) => n + (name === key ? 1 : 0) + (Array.isArray(value) ? countDeep(value,key) : 0),0); }
 function hasDeep(pairs,key) { return countDeep(pairs,key) > 0; }
+
+const eventTypes = new Set(['country_event','situation_event','ship_event','fleet_event']);
+const effectKeys = new Set(['add_resource','add_modifier','remove_modifier','add_deposit','remove_deposit','add_planet_devastation','set_country_flag','remove_country_flag','set_planet_flag','remove_planet_flag','change_variable','set_variable','set_situation_approach','country_event','situation_event','enable_special_project','create_fleet','create_ship','destroy_situation','hidden_effect']);
+const countryEffectKeys = new Set(['add_resource','set_country_flag','remove_country_flag','set_variable','change_variable','country_event']);
+function validateEventOptions(roots, rel) {
+  function visit(pairs, context) {
+    for (const [key, value] of pairs) {
+      if (context.eventRoot && context.visible && (effectKeys.has(key) || ['if','else_if','else','random','random_list'].includes(key))) {
+        assert.fail(`${rel}:${context.eventId}: event-level effect ${key} must be inside immediate or an option`);
+      }
+      if (key === 'add_resource') {
+        assert.ok(context.option || !context.visible || context.immediate, `${rel}:${context.eventId}: visible-event add_resource outside option`);
+        assert.ok(!context.trigger, `${rel}:${context.eventId}: add_resource inside trigger/limit`);
+        if (context.eventType === 'situation_event') assert.ok(context.countryScope, `${rel}:${context.eventId}: situation-event resources must execute in owner scope`);
+      }
+      if (key === 'ai_chance') assert.ok(context.option, `${rel}:${context.eventId}: ai_chance outside option`);
+      if (key === 'set_situation_approach') {
+        assert.ok(context.situationScope, `${rel}:${context.eventId}: set_situation_approach requires situation scope`);
+        assert.ok(!context.countryScope, `${rel}:${context.eventId}: set_situation_approach must not be nested in owner/country scope`);
+      }
+      if (context.eventType === 'situation_event' && countryEffectKeys.has(key)) {
+        assert.ok(context.countryScope, `${rel}:${context.eventId}: ${key} requires owner/country scope in situation events`);
+      }
+      if (context.trigger && effectKeys.has(key)) assert.fail(`${rel}:${context.eventId}: effect ${key} is nested in trigger/limit`);
+      if (!Array.isArray(value)) continue;
+      if (key === 'option') {
+        const names = value.filter(([child]) => child === 'name');
+        assert.equal(names.length, 1, `${rel}:${context.eventId}: every event option needs exactly one name`);
+        assert.equal(typeof names[0]?.[1], 'string', `${rel}:${context.eventId}: option name must be a key`);
+        assert.ok(names[0][1].length > 0, `${rel}:${context.eventId}: option name may not be empty`);
+        assert.ok(countPairs(value, 'hidden_effect') <= 1, `${rel}:${context.eventId}.${names[0][1]}: duplicate hidden_effect blocks`);
+        assert.ok(countPairs(value, 'ai_chance') <= 1, `${rel}:${context.eventId}.${names[0][1]}: duplicate ai_chance blocks`);
+        visit(value, { ...context, option: true, trigger: false, eventRoot: false });
+      } else {
+        visit(value, {
+          ...context,
+          trigger: context.trigger || key === 'trigger' || key === 'limit',
+          countryScope: context.countryScope || key === 'owner',
+          situationScope: context.situationScope || key === 'random_situation',
+          immediate: context.immediate || key === 'immediate',
+          eventRoot: false,
+        });
+      }
+    }
+  }
+  for (const [type, body] of roots) {
+    if (!eventTypes.has(type) || !Array.isArray(body)) continue;
+    const id = get(body, 'id') || '<missing id>';
+    const visible = countPairs(body, 'option') > 0 && get(body, 'hide_window') !== 'yes';
+    visit(body, { eventType: type, eventId: id, visible, option: false, trigger: false, countryScope: false, situationScope: type === 'situation_event', immediate: false, eventRoot: true });
+  }
+}
+for (const [rel, roots] of parsedByPath) if (rel.startsWith('events/')) validateEventOptions(roots, rel);
+
+const damagedOptionExample = parse(`country_event = { id = epoch_ii.15 option = { name = epoch_ii.15.evacuate } add_resource = { alloys = -100 energy = -200 } }`, 'damaged epoch_ii.15 regression fixture');
+assert.throws(() => validateEventOptions(damagedOptionExample, 'damaged epoch_ii.15 regression fixture'), /event-level effect add_resource|add_resource outside option/, 'The damaged epoch_ii.15 resource-after-option example must be rejected');
+const phaseTwoEvents = parsedByPath.get('events/epoch_phase_ii_events.txt');
+const defenseEvent = phaseTwoEvents.find(([type, body]) => eventTypes.has(type) && get(body,'id') === 'epoch_ii.15')?.[1];
+assert.ok(defenseEvent, 'epoch_ii.15 must remain defined');
+function namedOption(event, name) { return event.filter(([key, body]) => key === 'option' && Array.isArray(body) && get(body,'name') === name).map(([,body]) => body); }
+for (const [key, resource] of [
+  ['epoch_ii.4.hold', { physics_research: '200', alloys: '100' }],
+  ['epoch_ii.15.evacuate', { alloys: '-100', energy: '-200' }],
+  ['epoch_ii.4.defense_loss', { alloys: '-300', energy: '-500' }],
+]) {
+  const options = namedOption(defenseEvent, key);
+  assert.equal(options.length, 1, `epoch_ii.15 must contain exactly one ${key} option`);
+  const option = options[0];
+  assert.equal(countPairs(option,'hidden_effect'), 1, `${key}: one hidden_effect block`);
+  assert.equal(countPairs(option,'ai_chance'), 1, `${key}: ai_chance must remain inside the option`);
+  assert.equal(countDeep(option,'add_resource'), 1, `${key}: its resource effect must remain inside the option exactly once`);
+  const resourceBlock = option.find(([child]) => child === 'add_resource')?.[1];
+  if (key === 'epoch_ii.4.hold') assert.deepEqual(get(get(option,'if'),'add_resource'), Object.entries(resource), `${key}: conditional reward is preserved in the visible option`);
+  else assert.deepEqual(resourceBlock, Object.entries(resource), `${key}: direct cost is preserved in the visible option`);
+}
+assert.ok(namedOption(defenseEvent,'epoch_ii.15.evacuate')[0].some(([key]) => key === 'trigger'), 'evacuate trigger stays inside its option');
+const vanillaEventSample = fs.readFileSync(path.join(vanillaRoot,'events/advisor_events.txt'),'utf8');
+assert.match(vanillaEventSample, /option\s*=\s*\{\s*name\s*=\s*advisor\.1\.c[\s\S]{0,500}hidden_effect\s*=\s*\{\s*add_resource\s*=\s*\{\s*minerals\s*=\s*2\s*\}/, 'Installed Vanilla event advisor.1.c demonstrates effect fields nested under the option block');
+
 for (const name of ['epoch_core_apply_contamination_active','epoch_core_apply_contamination_worsened','epoch_core_apply_contamination_studied','epoch_ii_set_site_latent','epoch_ii_set_site_active','epoch_ii_set_site_unstable','epoch_ii_set_site_controlled']) {
   const body = effectDefs.get(name);
   assert.ok(body, `Missing feature setter ${name}`);
@@ -238,4 +317,4 @@ const vanillaBuildingDoc = fs.readFileSync(path.join(vanillaRoot,'common/buildin
 assert.match(vanillaBuildingDoc, /#\s*building_sets\s*=\s*\{/,'Installed Vanilla building example must document building_sets');
 assert.match(vanillaBuildingDoc, /#\s*resources\s*=\s*\{[\s\S]*?#\s*category\s*=\s*planet_buildings[\s\S]*?#\s*upkeep\s*=\s*\{[\s\S]*?#\s*cost\s*=\s*\{/,'Installed Vanilla building example must place cost/upkeep under resources');
 
-console.log(`PASS: ${files.length} Clausewitz files parsed; feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla blocker syntax validated.`);
+console.log(`PASS: ${files.length} Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.`);
