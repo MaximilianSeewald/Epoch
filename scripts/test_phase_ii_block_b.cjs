@@ -87,12 +87,13 @@ for (const stage of ['stage_ch4_research','stage_ch5_research','stage_ch6_resear
 check(/epoch_ii_ch4_incident1/.test(events) && /epoch_ii_ch4_incident2/.test(events) && /id = epoch_ii\.68/.test(events) && /epoch_ii_ch4_protocol_treated/.test(events), 'Chapter 4 records anomaly, coordination, breakthrough, and an explicit protocol');
 check(/epoch_ii_breakthrough_sacrifice/.test(events) && /epoch_ii_breakthrough_security/.test(events) && /epoch_ii_breakthrough_science/.test(events), 'The contamination breakthrough has permanent economy, costly security, and risky research outcomes');
 check(/epoch_ii_set_site_latent/.test(effects) && /epoch_ii_set_site_active/.test(effects) && /epoch_ii_set_site_unstable/.test(effects) && /epoch_ii_set_site_controlled/.test(effects), 'All four planet states have transition effects');
-check((effects.match(/epoch_ii_clear_site_state = yes/g) || []).length === 4 && /remove_deposit = d_epoch_resonance_(latent|active|unstable|controlled)/.test(effects), 'Every state transition clears all prior Phase II deposits before adding its one new feature');
+check((effects.match(/epoch_ii_clear_site_state = yes/g) || []).length === 4 && /remove_deposit = d_epoch_resonance_contamination_(?:latent|resonant|unstable|controlled)/.test(effects), 'Every state transition clears all prior Phase II deposits before adding its one new feature');
 check(!/remove_(?:deposit|modifier) = (?:d_epoch_core_|epoch_core_)/.test(block(effects, 'epoch_ii_clear_site_state')), 'Phase II state changes preserve permanent Phase I deposits and modifiers');
-for (const status of ['latent','active','unstable','controlled']) {
-  check(deposits.includes(`epoch_ii_${status}_resonance`) && deposits.includes(`planet_jobs_physics_research_produces_mult =`) && deposits.includes(`planet_stability_add =`), `${status} has a visible shared blocker feature with an economic/stability effect`);
+for (const status of ['latent','resonant','unstable','controlled']) {
+  const id = `d_epoch_resonance_contamination_${status}`;
+  check(deposits.includes(id) && deposits.includes('planet_jobs_physics_research_produces_mult =') && deposits.includes('planet_stability_add ='), `${status} has a visible shared blocker feature with an economic/stability effect`);
 }
-check(/epoch_ii_spread_authorized/.test(events) && /epoch_ii_secondary_planet@root/.test(events) && /d_epoch_resonance_contamination/.test(effects), 'Secondary planetary resonance requires an explicit, persistent player choice and uses the shared feature');
+check(/epoch_ii_spread_authorized/.test(events) && /epoch_ii_secondary_planet@root/.test(events) && /d_epoch_resonance_contamination_(?:active|resonant)/.test(effects), 'Secondary planetary resonance requires an explicit, persistent player choice and uses the shared feature');
 check(/building_epoch_resonance_laboratory/.test(building) && /upkeep = \{ energy = 4 \}/.test(building) && /epoch_ii_unstable_resonance/.test(building) && /epoch_ii_controlled_resonance/.test(building), 'Resonance lab has reachable energy upkeep, research, and state-specific risk');
 check(/building_epoch_containment_infrastructure/.test(building) && /planet_jobs_society_research_produces_mult = 0\.05/.test(building) && /epoch_ii_unstable_resonance/.test(building), 'Neutral infrastructure offers general and resonance-state effects');
 

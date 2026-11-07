@@ -446,6 +446,8 @@ Assert-Check ($LASTEXITCODE -eq 0) 'Phase II Block B transition and recovery mod
 Assert-Check ($LASTEXITCODE -eq 0) 'Phase II Block C ending, technology, project, localization, and recovery checks must pass'
 & node (Join-Path $PSScriptRoot 'test_phase_ii_campaign_flow.cjs') $Root
 Assert-Check ($LASTEXITCODE -eq 0) 'Full eight-chapter Phase II campaign progression model must pass'
+& node (Join-Path $PSScriptRoot 'test_clausewitz_structure.cjs') $Root $VanillaRoot
+Assert-Check ($LASTEXITCODE -eq 0) 'Clausewitz lexer/parser must validate every common/events text file and top-level scripted effects'
 
 # Summarize existing test logs by source. Old EPOCH failures are reported as
 # evidence from the pre-fix run; unrelated-mod/base-game errors are separated.

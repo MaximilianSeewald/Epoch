@@ -1,4 +1,4 @@
-namespace = epoch_core
+﻿namespace = epoch_core
 
 # Country-local, idempotent campaign entry point.
 country_event = {
@@ -667,7 +667,7 @@ country_event = {
 		set_country_flag = epoch_core_contamination_phase_resolved
 		event_target:epoch_core_world@root = {
 			set_planet_flag = epoch_core_contamination_contained_state
-			add_deposit = d_epoch_resonance_contamination
+			add_deposit = d_epoch_resonance_contamination_contained
 		}
 		}
 		ai_chance = { factor = 35 }
@@ -723,7 +723,7 @@ ship_event = {
 					}
 				}
 				add_resource = { society_research = 350 physics_research = 200 }
-			}
+	}
 		}
 	}
 }
