@@ -57,8 +57,8 @@ situation_event = {
 	situation = this
 	trigger = { owner = { has_country_flag = epoch_ii_ch7_boundary_resolved NOR = { has_country_flag = epoch_ii_ch7_counterpattern_prompted has_country_flag = epoch_ii_phase_complete } } }
 	immediate = { owner = { set_country_flag = epoch_ii_ch7_counterpattern_prompted } }
-	option = { name = epoch_ii.122.expedition trigger = { owner = { has_country_flag = epoch_ii_expedition_data_complete } } hidden_effect = { owner = { set_country_flag = epoch_ii_ch7_counter_project_started set_country_flag = epoch_ii_ch7_compare_complete set_country_flag = epoch_ii_ch7_counterpattern_resolved country_event = { id = epoch_ii.123 } } } ai_chance = { factor = 100 } }
-	option = { name = epoch_ii.122.partial trigger = { owner = { OR = { has_country_flag = epoch_ii_expedition_data_partial has_country_flag = epoch_ii_expedition_data_archived has_country_flag = epoch_ii_expedition_data_complete } } } hidden_effect = { owner = { if = { limit = { resource_stockpile_compare = { resource = energy value >= 300 } } add_resource = { energy = -300 society_research = 100 } } else = { change_variable = { which = epoch_ii_resonance_stability value = -20 } } change_variable = { which = epoch_ii_resonance_stability value = -5 } epoch_ii_clamp_resonance_stability = yes set_country_flag = epoch_ii_ch7_counter_project_started set_country_flag = epoch_ii_ch7_compare_degraded set_country_flag = epoch_ii_ch7_counterpattern_resolved country_event = { id = epoch_ii.123 } } } ai_chance = { factor = 100 } }
+option = { name = epoch_ii.122.expedition trigger = { owner = { has_country_flag = epoch_ii_two_real_systems_surveyed has_country_flag = epoch_ii_expedition_data_complete } } hidden_effect = { owner = { set_country_flag = epoch_ii_ch7_compare_complete set_country_flag = epoch_ii_ch7_counterpattern_resolved country_event = { id = epoch_ii.123 } } } ai_chance = { factor = 100 } }
+option = { name = epoch_ii.122.partial trigger = { owner = { OR = { has_country_flag = epoch_ii_expedition_data_partial has_country_flag = epoch_ii_expedition_data_archived } } } hidden_effect = { owner = { if = { limit = { resource_stockpile_compare = { resource = energy value >= 300 } } add_resource = { energy = -300 society_research = 100 } } else = { change_variable = { which = epoch_ii_resonance_stability value = -20 } } change_variable = { which = epoch_ii_resonance_stability value = -5 } epoch_ii_clamp_resonance_stability = yes set_country_flag = epoch_ii_ch7_compare_degraded set_country_flag = epoch_ii_ch7_counterpattern_resolved country_event = { id = epoch_ii.123 } } } ai_chance = { factor = 100 } }
 	option = { name = epoch_ii.122.ship trigger = { owner = { exists = event_target:epoch_ii_chamber_system@root event_target:epoch_ii_chamber_system@root = { has_access_fleet = root } resource_stockpile_compare = { resource = energy value >= 200 } } } hidden_effect = { owner = { add_resource = { energy = -200 } set_country_flag = epoch_ii_ch7_counter_project_started epoch_ii_chamber_dispatch_counterpattern = yes } } ai_chance = { factor = 0 } }
 	option = { name = epoch_ii.122.emergency trigger = { owner = { NOR = { has_country_flag = epoch_ii_expedition_data_complete has_country_flag = epoch_ii_expedition_data_partial has_country_flag = epoch_ii_expedition_data_archived } } } hidden_effect = { owner = { change_variable = { which = epoch_ii_resonance_stability value = -25 } epoch_ii_clamp_resonance_stability = yes set_country_flag = epoch_ii_ch7_compare_degraded set_country_flag = epoch_ii_ch7_counterpattern_resolved country_event = { id = epoch_ii.123 } } } ai_chance = { factor = 100 } }
 }
@@ -237,7 +237,8 @@ country_event = {
 	id = epoch_ii.130
 	hide_window = yes
 	is_triggered_only = yes
-	immediate = { owner = { if = { limit = { has_country_flag = epoch_ii_ch7_outer_project_started NOR = { has_country_flag = epoch_ii_ch7_boundary_resolved } } set_country_flag = epoch_ii_ch7_boundary_resolved set_country_flag = epoch_ii_ch7_boundary_project_complete add_resource = { physics_research = 200 } change_variable = { which = epoch_ii_resonance_stability value = 5 } epoch_ii_clamp_resonance_stability = yes country_event = { id = epoch_ii.121 } } } }
+	trigger = { has_country_flag = epoch_ii_active has_country_flag = epoch_ii_ch7_outer_project_started NOT = { has_country_flag = epoch_ii_ch7_boundary_resolved } }
+	immediate = { set_country_flag = epoch_ii_ch7_boundary_resolved set_country_flag = epoch_ii_ch7_boundary_project_complete add_resource = { physics_research = 200 } change_variable = { which = epoch_ii_resonance_stability value = 5 } epoch_ii_clamp_resonance_stability = yes country_event = { id = epoch_ii.121 } }
 }
 country_event = {
 	id = epoch_ii.131
@@ -254,7 +255,8 @@ country_event = {
 	id = epoch_ii.132
 	hide_window = yes
 	is_triggered_only = yes
-	immediate = { owner = { if = { limit = { has_country_flag = epoch_ii_ch7_counter_project_started NOR = { has_country_flag = epoch_ii_ch7_counterpattern_resolved } } set_country_flag = epoch_ii_ch7_counterpattern_resolved set_country_flag = epoch_ii_ch7_counter_project_complete change_variable = { which = epoch_ii_resonance_stability value = 5 } add_resource = { society_research = 200 } epoch_ii_clamp_resonance_stability = yes country_event = { id = epoch_ii.123 } } } }
+	trigger = { has_country_flag = epoch_ii_active has_country_flag = epoch_ii_ch7_counter_project_started NOT = { has_country_flag = epoch_ii_ch7_counterpattern_resolved } }
+	immediate = { set_country_flag = epoch_ii_ch7_counterpattern_resolved set_country_flag = epoch_ii_ch7_counter_project_complete change_variable = { which = epoch_ii_resonance_stability value = 5 } add_resource = { society_research = 200 } epoch_ii_clamp_resonance_stability = yes country_event = { id = epoch_ii.123 } }
 }
 country_event = {
 	id = epoch_ii.133
@@ -271,7 +273,8 @@ country_event = {
 	id = epoch_ii.134
 	hide_window = yes
 	is_triggered_only = yes
-	immediate = { owner = { if = { limit = { has_country_flag = epoch_ii_ch7_control_project_started NOR = { has_country_flag = epoch_ii_ch7_control_resolved } } set_country_flag = epoch_ii_ch7_control_resolved set_country_flag = epoch_ii_countermark_recorded change_variable = { which = epoch_ii_resonance_stability value = 8 } add_resource = { engineering_research = 150 } epoch_ii_clamp_resonance_stability = yes country_event = { id = epoch_ii.127 } } } }
+	trigger = { has_country_flag = epoch_ii_active has_country_flag = epoch_ii_ch7_control_project_started NOT = { has_country_flag = epoch_ii_ch7_control_resolved } }
+	immediate = { set_country_flag = epoch_ii_ch7_control_resolved set_country_flag = epoch_ii_countermark_recorded change_variable = { which = epoch_ii_resonance_stability value = 8 } add_resource = { engineering_research = 150 } epoch_ii_clamp_resonance_stability = yes country_event = { id = epoch_ii.127 } }
 }
 country_event = {
 	id = epoch_ii.135

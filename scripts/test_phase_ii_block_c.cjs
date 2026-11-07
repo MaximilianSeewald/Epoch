@@ -34,6 +34,29 @@ function block(source, key) {
   }
   throw new Error(`Unclosed ${key}`);
 }
+function eventBlocks(source) {
+  const found = [];
+  const re = /^\s*(country_event|ship_event|situation_event)\s*=\s*\{\s*\r?\n\s*id\s*=\s*(epoch_ii\.\d+)\b/gm;
+  let match;
+  while ((match = re.exec(source))) {
+    const open = source.indexOf('{', match.index);
+    let depth = 0, quoted = false, comment = false;
+    for (let i = open; i < source.length; i++) {
+      const c = source[i];
+      if (comment) { if (c === '\n') comment = false; continue; }
+      if (!quoted && c === '#') { comment = true; continue; }
+      if (c === '"') { quoted = !quoted; continue; }
+      if (quoted) continue;
+      if (c === '{') depth++;
+      if (c === '}' && --depth === 0) {
+        found.push({ type: match[1], id: match[2], body: source.slice(open + 1, i) });
+        re.lastIndex = i + 1;
+        break;
+      }
+    }
+  }
+  return found;
+}
 function project(key) {
   const at = projects.indexOf(`key = "${key}"`); assert.notEqual(at, -1, `Missing project ${key}`);
   const start = projects.lastIndexOf('special_project = {', at); const end = projects.indexOf('\n}', at);
@@ -54,6 +77,14 @@ function balanced(source, file) {
 }
 
 for (const [file, source] of Object.entries({ situation, events, blockC, projects, techs, effects, mods, deposits })) balanced(source, file);
+const declaredEvents = eventBlocks(blockC);
+const declaredEvent = (type, id) => {
+  const found = declaredEvents.find(e => e.type === type && e.id === id);
+  assert.ok(found, `Missing ${type} ${id} in Block C`);
+  return found.body;
+};
+const allCountryEvents = declaredEvents.filter(e => e.type === 'country_event');
+check(allCountryEvents.length >= 9 && allCountryEvents.every(e => !/\bowner\s*=\s*\{/.test(e.body)), 'Every declared Block C country_event performs country work in its own country scope');
 const mainStages = block(block(situation, 'epoch_resonance_protocol'), 'stages');
 const main = [...mainStages.matchAll(/(stage_[a-z0-9_]+)\s*=\s*\{[^}]*?end\s*=\s*(\d+)/g)].map(x => [x[1], Number(x[2])]);
 const ordered = ['stage_scar_wakes','stage_scar_report','stage_first_hunters','stage_hunters_resolution','stage_broken_code','stage_block_a_handoff','stage_ch4_research','stage_ch4_incidents','stage_ch5_research','stage_ch5_expedition','stage_ch5_silence','stage_ch6_research','stage_ch6_resolution','stage_block_b_report','stage_ch7_boundary','stage_ch7_counterpattern','stage_ch7_instability','stage_ch7_control','stage_ch8_countermark'];
@@ -76,10 +107,64 @@ for (const [key, callback] of [['EPOCH_II_CHAMBER_BOUNDARY','epoch_ii.136'],['EP
   check(p.includes(`id = ${callback}`) && blockC.includes(`id = ${callback}`), `${key} has a source-defined successful ship callback`);
   check(/on_fail/.test(p) && /on_cancel/.test(p), `${key} has failure and cancellation recovery`);
 }
+
+const callbackSpecs = [
+  { project: 'EPOCH_II_CHAMBER_BOUNDARY', ship: 'epoch_ii.136', country: 'epoch_ii.130', recovery: 'epoch_ii.131', retryName: 'epoch_ii.131.retry', archiveName: 'epoch_ii.131.archive', retryFlag: 'epoch_ii_ch7_boundary_retry_used', dispatch: 'epoch_ii_chamber_dispatch_boundary', start: 'epoch_ii_ch7_outer_project_started', resolved: 'epoch_ii_ch7_boundary_resolved', reward: 'physics_research = 200', delta: 'value = 5', next: 'epoch_ii.121' },
+  { project: 'EPOCH_II_CHAMBER_COUNTERPATTERN', ship: 'epoch_ii.137', country: 'epoch_ii.132', recovery: 'epoch_ii.133', retryName: 'epoch_ii.133.retry', archiveName: 'epoch_ii.133.archive', retryFlag: 'epoch_ii_ch7_counter_retry_used', dispatch: 'epoch_ii_chamber_dispatch_counterpattern', start: 'epoch_ii_ch7_counter_project_started', resolved: 'epoch_ii_ch7_counterpattern_resolved', reward: 'society_research = 200', delta: 'value = 5', next: 'epoch_ii.123' },
+  { project: 'EPOCH_II_CHAMBER_CONTROL', ship: 'epoch_ii.138', country: 'epoch_ii.134', recovery: 'epoch_ii.135', retryName: 'epoch_ii.135.retry', archiveName: 'epoch_ii.135.archive', retryFlag: 'epoch_ii_ch7_control_retry_used', dispatch: 'epoch_ii_chamber_dispatch_control', start: 'epoch_ii_ch7_control_project_started', resolved: 'epoch_ii_ch7_control_resolved', reward: 'engineering_research = 150', delta: 'value = 8', next: 'epoch_ii.127' },
+];
+for (const spec of callbackSpecs) {
+  const p = project(spec.project), ship = declaredEvent('ship_event', spec.ship), country = declaredEvent('country_event', spec.country), recovery = declaredEvent('country_event', spec.recovery);
+  check(/on_success\s*=\s*\{\s*ship_event/.test(p) && new RegExp(`id = ${spec.ship.replace('.', '\\.')}\\b`).test(p), `${spec.project} success enters its ship-scope callback`);
+  check(/owner\s*=\s*\{[\s\S]*?country_event/.test(ship) && new RegExp(`country_event = \\{ id = ${spec.country.replace('.', '\\.')} \\}`).test(ship), `${spec.ship} changes from the project ship to its owning campaign country`);
+  check(country.includes(`has_country_flag = epoch_ii_active`) && country.includes(`has_country_flag = ${spec.start}`) && new RegExp(`NOT = \\{ has_country_flag = ${spec.resolved} \\}`).test(country), `${spec.country} requires the active campaign, matching started project, and an unresolved completion`);
+  check(!/\bowner\s*=\s*\{/.test(country) && country.includes(`set_country_flag = ${spec.resolved}`) && country.includes(spec.reward) && country.includes(spec.delta) && country.includes(`country_event = { id = ${spec.next} }`), `${spec.country} pays one direct country-scope reward, sets its gate, then releases the matching Situation stage`);
+  check(p.includes(`on_fail = { country_event = { id = ${spec.recovery} } }`) && p.includes(`on_cancel = { country_event = { id = ${spec.recovery} } }`), `${spec.project} routes both failure and cancellation into the owning country recovery`);
+  check(recovery.includes(`has_country_flag = ${spec.resolved}`) && recovery.includes('recovery_open'), `${spec.recovery} opens at most one unresolved recovery event`);
+  const retryLine = recovery.split(/\r?\n/).find(line => line.includes(`name = ${spec.retryName}`)) || '';
+  const archiveLine = recovery.split(/\r?\n/).find(line => line.includes(`name = ${spec.archiveName}`)) || '';
+  check(retryLine.includes(`NOT = { has_country_flag = ${spec.retryFlag} }`) && retryLine.includes('exists = event_target:epoch_ii_chamber_system@root') && retryLine.includes('has_access_fleet = root') && retryLine.includes('resource_stockpile_compare') && retryLine.includes(`set_country_flag = ${spec.retryFlag}`) && retryLine.includes(spec.dispatch) && effects.includes(`${spec.dispatch} = {`) && effects.includes(`enable_special_project = { name = ${spec.project}`), `${spec.recovery} gates one paid retry on unused status, available target, access, and resources`);
+  check(archiveLine.includes('hidden_effect') && !archiveLine.includes('trigger =') && archiveLine.includes(`set_country_flag = ${spec.resolved}`) && archiveLine.includes(`country_event = { id = ${spec.next}`), `${spec.recovery} keeps an always-available archive route that resolves and releases the stage`);
+}
+function simulateSuccessfulCallback(spec) {
+  const flags = new Set(['epoch_ii_active', spec.start]);
+  let rewardCount = 0, releaseCount = 0;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (!flags.has('epoch_ii_active') || !flags.has(spec.start) || flags.has(spec.resolved)) continue;
+    flags.add(spec.resolved); rewardCount++; releaseCount++;
+  }
+  return { flags, rewardCount, releaseCount };
+}
+for (const spec of callbackSpecs) {
+  const result = simulateSuccessfulCallback(spec);
+  check(result.flags.has(spec.resolved) && result.rewardCount === 1 && result.releaseCount === 1, `${spec.country} model: ship success reaches the campaign empire once; a repeated callback cannot repeat rewards or release`);
+}
+function simulateRecovery(targetAvailable) {
+  let open = false, retryUsed = false, resolved = false, projects = 0;
+  const failOrCancel = () => { if (!resolved && !open) open = true; };
+  failOrCancel(); failOrCancel(); // repeated on_fail/on_cancel after a load
+  const retry = () => {
+    if (!open || retryUsed || !targetAvailable || resolved) return false;
+    retryUsed = true; open = false; projects++; return true;
+  };
+  const firstRetry = retry(), secondRetry = retry();
+  if (!firstRetry) { resolved = true; open = false; } // archive is always available
+  return { open, retryUsed, resolved, projects, firstRetry, secondRetry };
+}
+for (const targetAvailable of [true, false]) {
+  const result = simulateRecovery(targetAvailable);
+  check(result.projects <= 1 && !result.secondRetry && !result.open && (targetAvailable ? result.retryUsed && !result.resolved : result.resolved), `Project failure/cancel/load recovery (${targetAvailable ? 'reachable target' : 'lost ship or target'}) allows at most one retry or resolves through archive`);
+}
 check(/epoch_ii_chamber_dispatch_boundary[\s\S]*enable_special_project/.test(effects) && /has_access_fleet = root/.test(effects), 'Projects dispatch to the saved reachable convergence system');
 check(/epoch_ii_interrupted_node@root/.test(blockC.slice(0, blockC.indexOf('option = { name = epoch_ii.120.careful'))) && /epoch_ii_delayed_node@root/.test(blockC.slice(0, blockC.indexOf('option = { name = epoch_ii.120.careful'))) && /epoch_ii_chamber_system@root/.test(blockC + effects) && !/epoch_ii_target_system@root/.test(blockC), 'The chamber target is saved from an accessible Chapter 5 node, with the alternate node as fallback');
 check(/epoch_ii.120\.archive/.test(blockC) && /700 }/.test(blockC), 'Missing or unreachable chamber sites retain an expensive archive route');
 check(/days_to_research = 180/.test(project('EPOCH_II_CHAMBER_BOUNDARY')) && /days_to_research = 240/.test(project('EPOCH_II_CHAMBER_COUNTERPATTERN')) && /days_to_research = 270/.test(project('EPOCH_II_CHAMBER_CONTROL')), 'Three distinct research durations make the operation player-visible and non-instant');
+const expeditionFast = blockC.slice(blockC.indexOf('option = { name = epoch_ii.122.expedition'), blockC.indexOf('option = { name = epoch_ii.122.partial'));
+const expeditionPartial = blockC.slice(blockC.indexOf('option = { name = epoch_ii.122.partial'), blockC.indexOf('option = { name = epoch_ii.122.ship'));
+const expeditionShip = blockC.slice(blockC.indexOf('option = { name = epoch_ii.122.ship'), blockC.indexOf('option = { name = epoch_ii.122.emergency'));
+check(expeditionFast.includes('epoch_ii_two_real_systems_surveyed') && expeditionFast.includes('epoch_ii_expedition_data_complete') && !expeditionFast.includes('epoch_ii_chamber_dispatch_counterpattern'), 'Instant counter-pattern analysis requires complete records from two surveyed Chapter 5 nodes');
+check(expeditionPartial.includes('epoch_ii_expedition_data_partial') && expeditionPartial.includes('epoch_ii_expedition_data_archived') && !expeditionPartial.includes('epoch_ii_expedition_data_complete'), 'Paid archive reconstruction is limited to partial or archived evidence');
+check(expeditionShip.includes('epoch_ii_ch7_counter_project_started') && expeditionShip.includes('epoch_ii_chamber_dispatch_counterpattern') && /days_to_research = 240/.test(project('EPOCH_II_CHAMBER_COUNTERPATTERN')) && en.includes('epoch_ii.122.ship:0 "Run a staffed comparison project for fresh verification.'), 'The staffed 240-day project offers a distinct fresh-verification path and success reward');
 
 const tech = block(techs, 'tech_epoch_resonance_field_control');
 check(/area = engineering/.test(tech) && /cost = @tier3cost2/.test(tech) && /add_research_option = tech_epoch_resonance_field_control/.test(blockC), 'Resonance Field Control is normally researched and offered before the operation');
@@ -110,6 +195,9 @@ check(/epoch_ii_followup_roll_cooldown/.test(events) && /20 = \{ country_event =
 check(/epoch_ii_guarded_channel_incident_recorded/.test(blockC) && /epoch_ii_outbound_trace_echoed/.test(blockC) && /epoch_ii_damaged_echo_seen/.test(blockC) && /epoch_ii_suppression_residual_echo_seen/.test(blockC), 'Aftershocks apply ending-specific costs and persistent history');
 check(/set_country_flag = epoch_ii_phase_iii_handoff_ready/.test(situation) && /set_country_flag = epoch_ii_phase_complete/.test(effects), 'Phase III handoff is gated after the Phase II ending');
 check(/set_country_flag = epoch_ii_ending_/.test(effects) && /remove_country_flag = epoch_ii_active/.test(situation), 'Campaign activation ends only after the complete Phase II Situation');
+const closeMain = block(situation, 'epoch_resonance_protocol'), closeRecovery = block(situation, 'epoch_resonance_chamber_recovery');
+for (const ending of endings) check(block(effects, `epoch_ii_resolve_ch8_${ending}`).includes('set_country_flag = epoch_ii_phase_complete') && /has_country_flag = epoch_ii_phase_complete/.test(closeMain + closeRecovery) && /country_event = \{ id = epoch_ii\.129/.test(closeMain + closeRecovery), `Ending ${ending} releases the final Situation stage and reaches the Chapter 8 report`);
+check(!/start_situation\s*=\s*\{\s*type\s*=\s*epoch_resonance_protocol_phase_iii/.test(situation + events + blockC + effects), 'Phase II endings record Phase III handoffs without starting Phase III content');
 
 const referenced = [...blockC.matchAll(/(?:title|name|desc)\s*=\s*(?:\{[^}]*?text\s*=\s*)?(epoch_ii\.[A-Za-z0-9_.]+|EPOCH_II_[A-Z_]+)(?=\s|\})/g)].map(m => m[1]);
 for (const key of new Set(referenced)) check(en.includes(`${key}:0`) && de.includes(`${key}:0`), `Block C localization ${key} exists in English and German`);
