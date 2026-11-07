@@ -47,25 +47,35 @@ country_event = {
  picture = GFX_evt_unknown_ships
  is_triggered_only = yes
  trigger = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 2 } }
- immediate = { 
-if = { limit = { NOT = { has_country_flag = epoch_res_force_spawned } }
+ immediate = {
+epoch_res_refresh_hunters = yes
+if = { limit = {
+ NOT = { has_country_flag = epoch_res_force_spawned }
+ NOT = { has_country_flag = epoch_res_force_present }
+ exists = capital_scope
+ OR = { NOT = { has_country_flag = epoch_res_force_scaled } has_country_flag = epoch_res_replacement_pending }
+}
  capital_scope = { solar_system = { save_global_event_target_as = epoch_res_battle_system@root } }
  set_country_flag = epoch_res_force_spawned
+ remove_country_flag = epoch_res_replacement_pending
+ set_country_flag = epoch_res_identity_v1
  if = { limit = { NOT = { has_country_flag = epoch_res_force_scaled } }
   set_country_flag = epoch_res_force_scaled
   if = { limit = { OR = { years_passed > 25 has_technology = tech_destroyers any_owned_fleet = { fleet_power > 800 } } } set_country_flag = epoch_res_force_medium }
   if = { limit = { years_passed > 60 has_technology = tech_cruisers any_owned_fleet = { fleet_power > 1800 } } set_country_flag = epoch_res_force_large }
  }
  create_country = { name = "NAME_EPOCH_Unknown_Force" type = epoch_nullwarden name_list = "MACHINE1"
-  effect = { set_country_flag = epoch_res_warden set_graphical_culture = fallen_machine_empire_01
+  effect = { set_country_flag = epoch_res_warden set_country_flag = epoch_res_warden_for@root set_graphical_culture = fallen_machine_empire_01
    save_global_event_target_as = epoch_res_enemy@root
    root = { save_global_event_target_as = epoch_res_owner@prev }
    set_faction_hostility = { target = root set_hostile = yes }
   }
  }
+ if = { limit = { exists = event_target:epoch_res_enemy@root event_target:epoch_res_enemy@root = { is_scope_type = country has_country_flag = epoch_res_warden_for@root } }
  create_fleet = { name = "NAME_EPOCH_Unknown_Patrol" effect = {
   set_owner = event_target:epoch_res_enemy@root
   set_fleet_flag = epoch_res_hunters
+  set_fleet_flag = epoch_res_hunters_for@root
   while = { count = 4 create_ship = { design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = fallen_machine_empire_01 } }
   if = { limit = { root = { has_country_flag = epoch_res_force_medium } }
    while = { count = 2 create_ship = { design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = fallen_machine_empire_01 } }
@@ -79,16 +89,35 @@ if = { limit = { NOT = { has_country_flag = epoch_res_force_spawned } }
   set_fleet_stance = aggressive set_aggro_range_measure_from = return_point set_aggro_range = 160
   save_global_event_target_as = epoch_res_hunters@root
  } }
+ }
 }
  }
  option = { name = epoch_res.recon trigger = { NOT = { has_special_project = EPOCH_RES_RECON } NOT = { has_country_flag = epoch_res_recon_complete } } 
     allow = { resource_stockpile_compare = { resource = energy value >= 200 } }
     add_resource = { energy = -200 } epoch_res_home = yes enable_special_project = { name = EPOCH_RES_RECON location = event_target:epoch_res_home@root owner = root } ai_chance = { factor = 1 } }option = { name = epoch_res.recontact
- trigger = { NOT = { exists = event_target:epoch_res_hunters@root } NOT = { has_country_flag = epoch_res_force_reissued } NOT = { event_target:epoch_res_enemy@root = { any_owned_fleet = { has_fleet_flag = epoch_res_hunters } } } }
+ trigger = {
+ has_country_flag = epoch_res_absence_verified
+ NOT = { has_country_flag = epoch_res_force_present }
+ NOT = { has_country_flag = epoch_res_force_reissued }
+ }
  allow = { resource_stockpile_compare = { resource = energy value >= 400 } }
- add_resource = { energy = -400 }
- set_country_flag = epoch_res_force_reissued remove_country_flag = epoch_res_force_spawned
- country_event = { id = epoch_res.20 }
+ # Revalidate at selection time; a stale popup cannot charge or spawn twice.
+ epoch_res_refresh_hunters = yes
+ if = { limit = {
+  has_country_flag = epoch_res_active
+  NOT = { has_country_flag = epoch_core_campaign_opted_out }
+  check_variable = { which = epoch_res_chapter value = 2 }
+  has_country_flag = epoch_res_absence_verified
+  NOT = { has_country_flag = epoch_res_force_present }
+  NOT = { has_country_flag = epoch_res_force_reissued }
+  resource_stockpile_compare = { resource = energy value >= 400 }
+ }
+  add_resource = { energy = -400 }
+  set_country_flag = epoch_res_force_reissued
+  set_country_flag = epoch_res_replacement_pending
+  remove_country_flag = epoch_res_force_spawned
+  country_event = { id = epoch_res.20 }
+ }
  ai_chance = { factor = 5 }
  } option = { name = epoch_res.fight 
     
@@ -99,31 +128,107 @@ if = { limit = { NOT = { has_country_flag = epoch_res_force_spawned } }
 
 ship_event = { id = epoch_res.102 hide_window = yes is_triggered_only = yes
     trigger = { owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 2 } NOT = { has_country_flag = epoch_res_recon_complete } } from = { is_owned_by = root.owner is_same_value = event_target:epoch_res_home@root.owner } } immediate = { owner = { set_country_flag = epoch_res_prepared set_country_flag = epoch_res_recon_complete
- if = { limit = { exists = event_target:epoch_res_hunters@this } event_target:epoch_res_hunters@this = { add_modifier = { modifier = epoch_res_targeting_flaw days = -1 } } }
+ if = { limit = { exists = event_target:epoch_res_hunters@this event_target:epoch_res_hunters@this = { is_scope_type = fleet has_fleet_flag = epoch_res_hunters_for@root.owner } } event_target:epoch_res_hunters@this = { add_modifier = { modifier = epoch_res_targeting_flaw days = -1 } } }
 } } }
 
-fleet_event = { id = epoch_res.200 hide_window = yes is_triggered_only = yes
-    trigger = { owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 2 } } from = { has_fleet_flag = epoch_res_hunters owner = { is_same_value = event_target:epoch_res_enemy@root.owner } } } immediate = { owner = { set_country_flag = epoch_res_combat_participation }
+# Native combat join: Root/From and optional FromFrom/FromFromFrom are fleets.
+# Inspect both sides and the additional participants named by Vanilla's hook.
+fleet_event = {
+ id = epoch_res.200
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { OR = {
+  has_fleet_flag = epoch_res_hunters
+  AND = { exists = from from = { has_fleet_flag = epoch_res_hunters } }
+  AND = { exists = fromfrom fromfrom = { has_fleet_flag = epoch_res_hunters } }
+  AND = { exists = fromfromfrom fromfromfrom = { has_fleet_flag = epoch_res_hunters } }
  } }
+ immediate = {
+  epoch_res_track_join = yes
+  if = { limit = { exists = from } from = { epoch_res_track_join = yes } }
+  if = { limit = { exists = fromfrom } fromfrom = { epoch_res_track_join = yes } }
+  if = { limit = { exists = fromfromfrom } fromfromfrom = { epoch_res_track_join = yes } }
+ }
+}
 
-country_event = { id = epoch_res.201 hide_window = yes is_triggered_only = yes
-    trigger = { has_country_flag = epoch_res_warden exists = from exists = fromfrom
-fromfrom = { has_fleet_flag = epoch_res_hunters }
-exists = event_target:epoch_res_owner@root
-NOT = { has_country_flag = epoch_res_cleanup } } immediate = { fromfrom = { solar_system = { save_event_target_as = epoch_res_destroyed_system } }
- event_target:epoch_res_owner@root = {
- if = { limit = { has_country_flag = epoch_res_active check_variable = { which = epoch_res_chapter value = 2 }
-  OR = { is_same_value = from any_owned_fleet = { is_in_combat = yes solar_system = { is_same_value = event_target:epoch_res_destroyed_system } } }
- } set_country_flag = epoch_res_military_victory
- set_country_flag = epoch_res_wreck_recorded
- set_variable = { which = epoch_res_chapter value = 3 }
-    random_situation = { limit = { is_situation_type = epoch_resonance_protocol } add_situation_progress = 20 } country_event = { id = epoch_res.30 } }
- } }
+# Native fleet destruction is the only success source. is_in_combat is NOT
+# sampled on surviving allies here: Vanilla does not document callback ordering.
+country_event = {
+ id = epoch_res.201
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = {
+  has_country_flag = epoch_res_warden
+  NOT = { has_country_flag = epoch_res_cleanup }
+  exists = from
+  exists = fromfrom
+  fromfrom = {
+   has_fleet_flag = epoch_res_hunters
+   NOT = { has_fleet_flag = epoch_res_cleanup }
+   exists = owner
+   owner = { is_same_value = root }
+  }
+  exists = event_target:epoch_res_owner@root
+  event_target:epoch_res_owner@root = { is_scope_type = country }
+ }
+ immediate = {
+  event_target:epoch_res_owner@root = {
+   if = { limit = {
+    has_country_flag = epoch_res_active
+    NOT = { has_country_flag = epoch_core_campaign_opted_out }
+    check_variable = { which = epoch_res_chapter value = 2 }
+    OR = {
+     is_same_value = from
+     fromfrom = {
+      has_fleet_flag = epoch_res_engagement_open
+      has_fleet_flag = epoch_res_owner_participated
+      exists = event_target:epoch_res_engagement_system@this
+      solar_system = { is_same_value = event_target:epoch_res_engagement_system@prev }
+     }
+    }
+   }
+    set_country_flag = epoch_res_military_victory
+    set_country_flag = epoch_res_wreck_recorded
+    set_variable = { which = epoch_res_chapter value = 3 }
+    random_situation = { limit = { is_situation_type = epoch_resonance_protocol } add_situation_progress = 20 }
+    country_event = { id = epoch_res.30 }
+   }
+  }
+ }
+}
 
+# Exit can precede destruction callbacks. Mark the boundary immediately, but
+# retain its proof through the same day's destruction dispatch. A subsequent
+# join resets it synchronously, even before the deferred cleanup runs.
+fleet_event = {
+ id = epoch_res.203 hide_window = yes is_triggered_only = yes
+ trigger = { has_fleet_flag = epoch_res_hunters }
+ immediate = {
+  set_fleet_flag = epoch_res_engagement_ended
+  fleet_event = { id = epoch_res.204 days = 1 }
+ }
+}
+fleet_event = {
+ id = epoch_res.204 hide_window = yes is_triggered_only = yes
+ trigger = { has_fleet_flag = epoch_res_hunters has_fleet_flag = epoch_res_engagement_ended is_in_combat = no }
+ immediate = {
+  remove_fleet_flag = epoch_res_engagement_open
+  remove_fleet_flag = epoch_res_owner_participated
+  remove_fleet_flag = epoch_res_engagement_ended
+  clear_global_event_target = epoch_res_engagement_system@root
+ }
 }
 
 country_event = { id = epoch_res.202 hide_window = yes is_triggered_only = yes
-    trigger = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 2 } from = { is_same_value = event_target:epoch_res_enemy@root } } immediate = { set_country_flag = epoch_res_military_losses } }
+ trigger = {
+  has_country_flag = epoch_res_active
+  NOT = { has_country_flag = epoch_core_campaign_opted_out }
+  check_variable = { which = epoch_res_chapter value = 2 }
+  exists = from
+  from = { has_country_flag = epoch_res_warden exists = event_target:epoch_res_owner@this event_target:epoch_res_owner@this = { is_same_value = root } }
+ }
+ immediate = { set_country_flag = epoch_res_military_losses }
+}
 
 country_event = {
  id = epoch_res.30
@@ -272,9 +377,6 @@ country_event = {
 country_event = { id = epoch_res.80 hide_window = yes is_triggered_only = yes
     trigger = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } } immediate = { if = { limit = { check_variable = { which = epoch_res_chapter value = 1 } } if = { limit = { has_country_flag = epoch_res_scar_complete } country_event = { id = epoch_res.11 } } else = { country_event = { id = epoch_res.1 } } }
 if = { limit = { check_variable = { which = epoch_res_chapter value = 2 } }
- if = { limit = { exists = event_target:epoch_res_enemy@root }
-  event_target:epoch_res_enemy@root = { random_owned_fleet = { limit = { has_fleet_flag = epoch_res_hunters } save_global_event_target_as = epoch_res_hunters@root } }
- }
  country_event = { id = epoch_res.20 }
 }
 if = { limit = { check_variable = { which = epoch_res_chapter value = 3 } } if = { limit = { has_country_flag = epoch_res_signature_complete } country_event = { id = epoch_res.31 } } else_if = { limit = { has_country_flag = epoch_res_salvage_complete } country_event = { id = epoch_res.32 } } else = { country_event = { id = epoch_res.30 } } }

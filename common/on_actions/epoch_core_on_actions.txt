@@ -36,3 +36,5 @@ on_survey_planet = {
 on_fleet_destroyed_victim = { events = { epoch_res.201 epoch_res.202 } }
 on_fleet_combat_joined_attacker = { events = { epoch_res.200 } }
 on_fleet_combat_joined_defender = { events = { epoch_res.200 } }
+# This = each fleet leaving battle, whether it won, fled, or was destroyed.
+on_fleet_exit_battle = { events = { epoch_res.203 } }

@@ -6,8 +6,17 @@ epoch_res_close = {
     remove_country_flag = epoch_res_active
     set_country_flag = epoch_res_closed
     every_situation = { limit = { is_situation_type = epoch_resonance_protocol } destroy_situation = this }
-    if = { limit = { exists = event_target:epoch_res_enemy@root }
-        event_target:epoch_res_enemy@root = { set_faction_hostility = { target = root set_hostile = no } }
+    if = { limit = { exists = event_target:epoch_res_enemy@root event_target:epoch_res_enemy@root = { is_scope_type = country } }
+        event_target:epoch_res_enemy@root = {
+            if = {
+                limit = {
+                    has_country_flag = epoch_res_warden
+                    exists = event_target:epoch_res_owner@this
+                    event_target:epoch_res_owner@this = { is_same_value = root }
+                }
+                set_faction_hostility = { target = root set_hostile = no }
+            }
+        }
     }
     abort_special_project = { type = EPOCH_RES_BASELINE }
     abort_special_project = { type = EPOCH_RES_SIGNATURE }
