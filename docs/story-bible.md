@@ -1,86 +1,30 @@
 # EPOCH – The Echo Beyond
-## Story Bible v0.1 – Working proposal
 
-> Status: proposal for review. Nothing in this document is immutable canon yet.
+**Status: Current narrative direction.** Campaign shape is the binding four-stage architecture. This bible describes narrative intent, not implemented or verified gameplay mechanics.
 
 ## Core premise
 
-Across the galaxy, unrelated incidents begin to share a subtle signature: corrupted
-ship records, impossible biological changes, anomalous machine behaviour, abandoned
-structures and distortions in space-time. At first, these appear to be separate
-problems. Their common origin is not apparent.
+Across the galaxy, unrelated incidents share a subtle signature: corrupted ship records, impossible biological changes, anomalous machine behavior, abandoned structures, and distortions in space-time. They first appear to be separate problems. Their common origin remains unclear.
 
-The player initially encounters a dangerous mystery, not a promise of ascension.
+The player initially encounters a dangerous mystery, not a promised ascension. No empire type is immune: organics, Hive Minds, and Machine Intelligences interpret and experience the signal differently.
 
-## The Continuum
+## Narrative families
 
-A very ancient civilisation may have attempted to build a distributed system linking
-information, energy and patterns of consciousness across space and time. The project
-did not end cleanly. Its remnants became autonomous systems, biological information
-patterns and physical anomalies scattered across the galaxy.
+- **The Remnants:** autonomous entities/systems protecting or retrieving fragments; hostile, defensive, confused, or constrained by lost instructions.
+- **The Bloom:** biological patterns that resemble infection, mutation, adaptation, or repair. Containment, study, and exploitation have distinct consequences.
+- **The Fracture:** space-time instability connected with missing ships, distorted systems, and unreliable observations.
+- **The Silent Network:** foreign structure in machines, research, and communications. Machine empires may recognize symptoms earlier but are not immune.
+- **The Architects:** unknown originators whose identity and fate remain uncertain until the final stage.
 
-The fragments continue parts of their original process without understanding the
-intentions or identities of the beings they encounter.
+## Four-stage reveal pacing
 
-## Threat families
+1. **Stage I – First Contact:** local symptoms, expedition, contamination, and silent structure. Five sections end in a consequential decision and lasting cost.
+2. **Stage II – Resonance:** exactly five chapters follow the old signal, the first real Nullwarden fleet, broken code, a second planetary infection, and multiple silent-network systems. The stage closes its immediate investigation without revealing the wider purpose.
+3. **Stage III – Military Crisis:** adapted Nullwardens and the larger convergence threat create a real military escalation and strategic crisis.
+4. **Stage IV – Ascension:** the larger system and Universal Ascension Protocol are revealed. The player pursues a mechanically meaningful ascension and may heal accumulated harm through deliberate actions.
 
-### The Remnants
-Autonomous entities and systems that protect, repair or retrieve fragments. They may
-be hostile, defensive, confused or simply following instructions whose context is lost.
-
-### The Bloom
-Biological patterns that alter organisms. Their effects can resemble infection,
-mutation, adaptation or attempted repair. Containment, study and exploitation should
-all be possible approaches.
-
-### The Fracture
-Space-time instabilities associated with missing ships, distorted systems and
-unreliable observations. Some incidents may be contained; others may require patience
-or costly intervention.
-
-### The Silent Network
-Foreign structures embedded in machines, research facilities and communications.
-Machine empires may recognise some symptoms earlier, but must not be immune.
-
-### The Architects
-The civilisation or entities behind the original project. Their fate remains unknown:
-extinction, transformation, continued existence or something less familiar.
-
-## Central tension
-
-The Continuum is not necessarily trying to destroy the galaxy. It may be attempting
-to resume an interrupted process, treating biological life, machines and star systems
-as components. It cannot reliably distinguish voluntary participation from forced
-assimilation.
-
-## Late-game revelation
-
-The original ambition may have been to connect different forms of intelligence without
-erasing their identity. The present-day galaxy must decide whether to destroy the
-remnants, control them, restore the original system, or create a new form of integration.
-
-The Universal Ascension Protocol (UAP) should emerge as a deliberate alternative—not
-as an obvious goal telegraphed at the beginning.
-
-## Reveal pacing
-
-1. **Symptoms:** isolated incidents with local consequences.
-2. **Connections:** recurring clues and recognisable signatures.
-3. **Patterns:** evidence that incidents share a system or origin.
-4. **Function:** discovery of what the original system was designed to do.
-5. **Consequences:** the galaxy experiences the cost of continuation or failure.
-6. **Decision:** the player chooses the future of the system and its legacy.
+The deeper system may have sought to connect forms of intelligence without erasing identity. Its remnants cannot reliably distinguish voluntary participation from forced assimilation. The final choices should reflect this uncertainty; they must not be telegraphed in early content.
 
 ## Narrative quality rules
 
-Every major threat arc should contain:
-- introduction and a concrete mystery;
-- investigation and meaningful player choices;
-- escalation or a change in the situation;
-- consequences that can return in later chapters;
-- a resolution, containment, or deliberately open ending;
-- at least one connection to the wider mystery.
-
-Not every arc should be a combat encounter. Research, quarantine, diplomacy, sacrifice,
-endurance and exploitation should all be valid story verbs. Rewards must be balanced
-against costs and future consequences.
+Every major arc has an introduction and concrete mystery; investigation with meaningful choices; escalation; consequences carried into later play; resolution or deliberate open end; and a connection to the wider mystery. Valid story verbs include research, quarantine, diplomacy, sacrifice, endurance, exploitation, and combat. Narrative presentation never substitutes for the actual projects, fleets, planetary effects, and costs required by the stage contract.
