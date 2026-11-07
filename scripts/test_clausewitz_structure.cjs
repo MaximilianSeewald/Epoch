@@ -216,17 +216,18 @@ const expectedFeatures = [
   'd_epoch_resonance_contamination_studied','d_epoch_resonance_contamination_contained',
   'd_epoch_resonance_contamination_latent','d_epoch_resonance_contamination_resonant',
   'd_epoch_resonance_contamination_unstable','d_epoch_resonance_contamination_controlled',
-  'd_epoch_resonance_scar','d_epoch_resonance_scar_altered','d_epoch_resonance_scar_healed'
+  'd_epoch_resonance_scar','d_epoch_resonance_scar_altered','d_epoch_resonance_scar_healed',
+  'd_epoch_silent_structure_unsecured','d_epoch_silent_structure_secured','d_epoch_silent_structure_investigated','d_epoch_silent_structure_destroyed'
 ];
-assert.deepEqual([...featureNames].sort(), [...expectedFeatures].sort(), 'Only declared state variants of the two logical EPOCH features may exist');
+assert.deepEqual([...featureNames].sort(), [...expectedFeatures].sort(), 'Only declared state variants of the three logical EPOCH feature families may exist');
 for (const name of featureNames) {
   const body = featureBodies.get(name);
-  assert.equal(get(body, 'category'), 'deposit_cat_blockers', `${name}: expected the blocker category`);
+  assert.equal(get(body, 'category'), 'deposit_cat_rare', `${name}: expected the non-clearable Planetary Feature category`);
   assert.ok(get(body, 'is_for_colonizable') === 'yes', `${name}: feature must be valid on colonizable planets`);
   assert.ok(get(body, 'icon'), `${name}: feature needs a deposit icon`);
   assert.ok(get(body, 'drop_weight'), `${name}: event-added feature must not spawn naturally`);
   assert.ok(!['all_blocker_swap_types','blocker_swap_types','resources','can_be_cleared','on_cleared','time'].some(k => get(body,k) !== undefined), `${name}: no random swap or player-clear behavior is configured`);
-  if (name.includes('contamination_active') || name.includes('contamination_worsened') || name.includes('contamination_studied') || name.includes('contamination_latent') || name.includes('contamination_resonant') || name.includes('contamination_unstable') || name.includes('contamination_controlled') || name === 'd_epoch_resonance_scar' || name === 'd_epoch_resonance_scar_altered') {
+  if (name.includes('contamination_active') || name.includes('contamination_worsened') || name.includes('contamination_studied') || name.includes('contamination_latent') || name.includes('contamination_resonant') || name.includes('contamination_unstable') || name.includes('contamination_controlled') || name === 'd_epoch_resonance_scar' || name === 'd_epoch_resonance_scar_altered' || name.startsWith('d_epoch_silent_structure_')) {
     assert.ok(get(body,'triggered_planet_modifier') || get(body,'planet_modifier'), `${name}: economic effects must be on the feature`);
   }
 }

@@ -18,10 +18,11 @@ epoch_core_silent_structure = {
 			has_country_flag = epoch_core_structure_site_created
 		}
 	}
+	# Evaluated in country scope; this owner-local flag prevents foreign discovery.
+	# Vanilla's default trigger requires a planet in from, absent in the UI context.
 	visible = {
+		is_country_type = default
 		has_country_flag = epoch_core_structure_site_created
-		from = { is_same_value = event_target:epoch_core_structure_site@root }
-		default_site_visible_trigger = yes
 	}
 
 	stage = {

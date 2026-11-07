@@ -35,6 +35,10 @@ epoch_core_remove_contamination_effects = {
 	remove_deposit = d_epoch_resonance_contamination_worsened
 	remove_deposit = d_epoch_resonance_contamination_studied
 	remove_deposit = d_epoch_resonance_contamination_contained
+	remove_deposit = d_epoch_resonance_contamination_latent
+	remove_deposit = d_epoch_resonance_contamination_resonant
+	remove_deposit = d_epoch_resonance_contamination_unstable
+	remove_deposit = d_epoch_resonance_contamination_controlled
 	remove_planet_flag = epoch_core_contamination_active_state
 	remove_planet_flag = epoch_core_contamination_worsened_state
 	remove_planet_flag = epoch_core_contamination_studied_state
@@ -81,6 +85,21 @@ epoch_core_set_resonance_scar_healed = {
 # Idempotent compatibility pass for saves made before both blocker features
 # owned their economic effects. It runs only in the existing owner-local
 # Phase II recovery event and never removes independent Phase I/II consequences.
+epoch_core_clear_structure_state = {
+	remove_deposit = d_epoch_silent_structure_unsecured
+	remove_deposit = d_epoch_silent_structure_secured
+	remove_deposit = d_epoch_silent_structure_investigated
+	remove_deposit = d_epoch_silent_structure_destroyed
+	remove_modifier = epoch_core_silent_structure
+	remove_modifier = epoch_core_structure_secured
+	remove_modifier = epoch_core_structure_investigated
+	remove_modifier = epoch_core_structure_ruins
+}
+epoch_core_set_structure_unsecured = { epoch_core_clear_structure_state = yes add_deposit = d_epoch_silent_structure_unsecured }
+epoch_core_set_structure_secured = { epoch_core_clear_structure_state = yes add_deposit = d_epoch_silent_structure_secured }
+epoch_core_set_structure_investigated = { epoch_core_clear_structure_state = yes add_deposit = d_epoch_silent_structure_investigated }
+epoch_core_set_structure_destroyed = { epoch_core_clear_structure_state = yes add_deposit = d_epoch_silent_structure_destroyed }
+
 epoch_core_migrate_planetary_features = {
 	every_owned_planet = {
 		if = {
@@ -104,6 +123,13 @@ epoch_core_migrate_planetary_features = {
 		if = {
 			limit = { OR = { has_modifier = epoch_core_permanent_scar_organic has_modifier = epoch_core_permanent_scar_hive has_modifier = epoch_core_permanent_scar_machine } }
 			epoch_core_set_resonance_scar = yes
+		}
+		if = {
+			limit = { OR = { has_modifier = epoch_core_silent_structure has_modifier = epoch_core_structure_secured has_modifier = epoch_core_structure_investigated has_modifier = epoch_core_structure_ruins has_deposit = d_epoch_silent_structure_unsecured has_deposit = d_epoch_silent_structure_secured has_deposit = d_epoch_silent_structure_investigated has_deposit = d_epoch_silent_structure_destroyed } }
+			if = { limit = { root = { has_country_flag = epoch_core_structure_destroyed } } epoch_core_set_structure_destroyed = yes }
+			else_if = { limit = { root = { has_country_flag = epoch_core_structure_secured } } epoch_core_set_structure_secured = yes }
+			else_if = { limit = { root = { has_country_flag = epoch_core_structure_investigated } } epoch_core_set_structure_investigated = yes }
+			else = { epoch_core_set_structure_unsecured = yes }
 		}
 		if = {
 			limit = { OR = { has_modifier = epoch_ii_resonance_latent has_modifier = epoch_ii_resonance_active has_modifier = epoch_ii_resonance_unstable has_modifier = epoch_ii_resonance_controlled has_planet_flag = epoch_ii_latent_resonance has_planet_flag = epoch_ii_active_resonance has_planet_flag = epoch_ii_unstable_resonance has_planet_flag = epoch_ii_controlled_resonance } }

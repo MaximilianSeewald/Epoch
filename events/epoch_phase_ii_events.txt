@@ -36,12 +36,15 @@ country_event = {
 					limit = { event_target:epoch_core_world@root = { is_owned_by = root } }
 					event_target:epoch_core_world@root = {
 						if = {
-							limit = { root = { OR = { has_country_flag = epoch_core_contamination_worsened has_country_flag = epoch_core_contamination_neglected has_country_flag = epoch_core_contamination_study_failed has_country_flag = epoch_core_contamination_spread_recorded } } }
-							if = { limit = { NOT = { has_deposit = d_epoch_resonance_contamination_worsened } } add_deposit = d_epoch_resonance_contamination_worsened }
+							limit = { NOR = { has_planet_flag = epoch_ii_latent_resonance has_planet_flag = epoch_ii_active_resonance has_planet_flag = epoch_ii_unstable_resonance has_planet_flag = epoch_ii_controlled_resonance } }
+							if = {
+								limit = { root = { OR = { has_country_flag = epoch_core_contamination_worsened has_country_flag = epoch_core_contamination_neglected has_country_flag = epoch_core_contamination_study_failed has_country_flag = epoch_core_contamination_spread_recorded } } }
+								if = { limit = { NOT = { has_deposit = d_epoch_resonance_contamination_worsened } } add_deposit = d_epoch_resonance_contamination_worsened }
+							}
+							else_if = { limit = { root = { has_country_flag = epoch_core_contamination_contained } } if = { limit = { NOT = { has_deposit = d_epoch_resonance_contamination_contained } } add_deposit = d_epoch_resonance_contamination_contained } }
+							else_if = { limit = { root = { has_country_flag = epoch_core_contamination_study_complete } } if = { limit = { NOT = { has_deposit = d_epoch_resonance_contamination_studied } } add_deposit = d_epoch_resonance_contamination_studied } }
+							else = { if = { limit = { NOT = { has_deposit = d_epoch_resonance_contamination_active } } add_deposit = d_epoch_resonance_contamination_active } }
 						}
-						else_if = { limit = { root = { has_country_flag = epoch_core_contamination_contained } } if = { limit = { NOT = { has_deposit = d_epoch_resonance_contamination_contained } } add_deposit = d_epoch_resonance_contamination_contained } }
-						else_if = { limit = { root = { has_country_flag = epoch_core_contamination_study_complete } } if = { limit = { NOT = { has_deposit = d_epoch_resonance_contamination_studied } } add_deposit = d_epoch_resonance_contamination_studied } }
-						else = { if = { limit = { NOT = { has_deposit = d_epoch_resonance_contamination_active } } add_deposit = d_epoch_resonance_contamination_active } }
 						set_planet_flag = epoch_ii_contamination_feature_added
 					}
 					set_country_flag = epoch_ii_contamination_site_recorded

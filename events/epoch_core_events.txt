@@ -807,7 +807,7 @@ country_event = {
 			event_target:epoch_core_world@root = {
 				create_archaeological_site = epoch_core_silent_structure
 				archaeological_site = { save_global_event_target_as = epoch_core_structure_site@root }
-				add_modifier = { modifier = epoch_core_silent_structure days = -1 }
+				epoch_core_set_structure_unsecured = yes
 				owner = { set_country_flag = epoch_core_structure_site_created }
 			}
 		}
@@ -817,7 +817,7 @@ country_event = {
 				limit = { NOT = { exists = archaeological_site } }
 				create_archaeological_site = epoch_core_silent_structure
 				archaeological_site = { save_global_event_target_as = epoch_core_structure_site@root }
-				add_modifier = { modifier = epoch_core_silent_structure days = -1 }
+				epoch_core_set_structure_unsecured = yes
 				save_global_event_target_as = epoch_core_world@root
 				owner = { set_country_flag = epoch_core_structure_site_created }
 			}
@@ -1071,7 +1071,7 @@ fleet_event = {
 			set_country_flag = epoch_core_structure_risk_increased
 		}
 		}
-		owner = { event_target:epoch_core_world@root.owner = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } } }
+
 		ai_chance = { factor = 35 }
 	}
 }
@@ -1099,7 +1099,7 @@ fleet_event = {
 		hidden_effect = {
 		owner = { set_country_flag = epoch_core_structure_contamination_compared }
 		}
-		owner = { event_target:epoch_core_world@root.owner = { add_modifier = { modifier = epoch_core_structure_secured days = -1 } } }
+
 		ai_chance = { factor = 60 }
 	}
 	option = {
@@ -1110,7 +1110,7 @@ fleet_event = {
 			set_country_flag = epoch_core_structure_risk_increased
 		}
 		}
-		owner = { event_target:epoch_core_world@root.owner = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } } }
+
 		ai_chance = { factor = 40 }
 	}
 }
@@ -1149,7 +1149,7 @@ fleet_event = {
 			set_country_flag = epoch_core_structure_risk_increased
 		}
 		}
-		owner = { event_target:epoch_core_world@root.owner = { add_modifier = { modifier = epoch_core_structure_ruins days = -1 } } }
+
 		ai_chance = { factor = 40 }
 	}
 }
@@ -1177,7 +1177,7 @@ fleet_event = {
 		hidden_effect = {
 		from = { set_site_progress_locked = yes }
 		owner = {
-			event_target:epoch_core_world@root.owner = { add_modifier = { modifier = epoch_core_structure_secured days = -1 } }
+			event_target:epoch_core_world@root.owner = { epoch_core_set_structure_secured = yes }
 			set_country_flag = epoch_core_structure_secured
 			set_country_flag = epoch_core_structure_choice_recorded
 			set_country_flag = epoch_core_structure_phase_resolved
@@ -1190,10 +1190,7 @@ fleet_event = {
 		hidden_effect = {
 		from = { destroy_archaeological_site = this }
 		owner = {
-			event_target:epoch_core_world@root.owner = {
-				add_modifier = { modifier = epoch_core_structure_ruins days = -1 }
-				remove_modifier = epoch_core_silent_structure
-			}
+			event_target:epoch_core_world@root.owner = { epoch_core_set_structure_destroyed = yes }
 			set_country_flag = epoch_core_structure_destroyed
 			set_country_flag = epoch_core_structure_choice_recorded
 			set_country_flag = epoch_core_structure_phase_resolved
@@ -1205,7 +1202,7 @@ fleet_event = {
 		name = epoch_core.43.c
 		hidden_effect = {
 		owner = {
-			event_target:epoch_core_world@root.owner = { add_modifier = { modifier = epoch_core_structure_investigated days = -1 } }
+			event_target:epoch_core_world@root.owner = { epoch_core_set_structure_investigated = yes }
 			set_country_flag = epoch_core_structure_investigated
 			set_country_flag = epoch_core_structure_choice_recorded
 			set_country_flag = epoch_core_structure_phase_resolved
