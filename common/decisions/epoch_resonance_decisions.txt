@@ -1,0 +1,102 @@
+decision_epoch_res_quarantine = {
+ icon = decision_planet_food_boost
+ owned_planets_only = yes enactment_time = 60
+ resources = { category = decisions cost = { energy = 200 minerals = 100 } }
+ potential = { has_planet_flag = epoch_res_infected owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner }
+ allow = { NOT = { has_planet_flag = epoch_res_quarantine } }
+ effect = { if = { limit = { NOT = { has_planet_flag = epoch_res_quarantine }  owner = { has_country_flag = epoch_res_active check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner } set_planet_flag = epoch_res_quarantine
+add_modifier = { modifier = epoch_res_quarantine days = -1 }
+owner = { set_country_flag = epoch_res_strategy_quarantine }
+if = { limit = { NOT = { has_planet_flag = epoch_ii_unstable_resonance } } epoch_res_planet_latent = yes } }
+ }
+ ai_weight = { weight = 30 }
+}
+
+decision_epoch_res_localize = {
+ icon = decision_planet_food_boost
+ owned_planets_only = yes enactment_time = 60
+ resources = { category = decisions cost = { energy = 150 } }
+ potential = { has_planet_flag = epoch_res_infected owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner }
+ allow = { NOT = { has_planet_flag = epoch_res_localized } }
+ effect = { if = { limit = { NOT = { has_planet_flag = epoch_res_localized }  owner = { has_country_flag = epoch_res_active check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner } set_planet_flag = epoch_res_localized
+owner = { set_country_flag = epoch_res_localized } }
+ }
+ ai_weight = { weight = 25 }
+}
+
+decision_epoch_res_sample = {
+ icon = decision_planet_food_boost
+ owned_planets_only = yes enactment_time = 60
+ resources = { category = decisions cost = { energy = 250 } }
+ potential = { has_planet_flag = epoch_res_infected owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner }
+ allow = { has_planet_flag = epoch_res_localized NOT = { has_planet_flag = epoch_res_sampled } }
+ effect = { if = { limit = { has_planet_flag = epoch_res_localized NOT = { has_planet_flag = epoch_res_sampled }  owner = { has_country_flag = epoch_res_active check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner } set_planet_flag = epoch_res_sampled
+owner = { set_country_flag = epoch_res_strategy_research }
+if = { limit = { OR = { has_planet_flag = epoch_res_quarantine has_building = building_epoch_containment_infrastructure } }
+ owner = { set_country_flag = epoch_res_clean_samples add_resource = { society_research = 150 } }
+}
+else = { owner = { prev = { epoch_res_planet_unstable = yes } set_country_flag = epoch_res_sampling_accident } add_planet_devastation = 10 }
+ }
+ }
+ ai_weight = { weight = 15 }
+}
+
+decision_epoch_res_exploit = {
+ icon = decision_planet_food_boost
+ owned_planets_only = yes enactment_time = 60
+ resources = { category = decisions cost = { energy = 100 } }
+ potential = { has_planet_flag = epoch_res_infected owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner }
+ allow = { has_planet_flag = epoch_res_localized NOT = { has_planet_flag = epoch_res_exploited } }
+ effect = { if = { limit = { has_planet_flag = epoch_res_localized NOT = { has_planet_flag = epoch_res_exploited }  owner = { has_country_flag = epoch_res_active check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner } set_planet_flag = epoch_res_exploited
+owner = { set_country_flag = epoch_res_strategy_exploit add_resource = { physics_research = 300 alloys = 100 } prev = { epoch_res_planet_unstable = yes } }
+add_modifier = { modifier = epoch_res_extraction days = 360 }
+add_planet_devastation = 10 }
+ }
+ ai_weight = { weight = 2 }
+}
+
+decision_epoch_res_stabilize = {
+ icon = decision_planet_food_boost
+ owned_planets_only = yes enactment_time = 90
+ resources = { category = decisions cost = { energy = 300 alloys = 100 } }
+ potential = { has_planet_flag = epoch_res_infected owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner }
+ allow = { has_planet_flag = epoch_res_localized has_planet_flag = epoch_res_quarantine NOT = { has_planet_flag = epoch_ii_unstable_resonance } }
+ effect = { if = { limit = { has_planet_flag = epoch_res_localized has_planet_flag = epoch_res_quarantine NOT = { has_planet_flag = epoch_ii_unstable_resonance }  owner = { has_country_flag = epoch_res_active check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner } remove_modifier = epoch_res_quarantine
+owner = { prev = { epoch_res_planet_controlled = yes } set_country_flag = epoch_res_containment_success epoch_res_finish_containment = yes } }
+ }
+ ai_weight = { weight = 40 }
+}
+
+decision_epoch_res_emergency = {
+ icon = decision_planet_food_boost
+ owned_planets_only = yes enactment_time = 90
+ resources = { category = decisions cost = { energy = 700 alloys = 200 } }
+ potential = { has_planet_flag = epoch_res_infected owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner }
+ allow = { has_planet_flag = epoch_res_localized }
+ effect = { if = { limit = { has_planet_flag = epoch_res_localized  owner = { has_country_flag = epoch_res_active check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner } add_planet_devastation = 20
+remove_modifier = epoch_res_quarantine add_modifier = { modifier = epoch_res_permanent_damage days = -1 }
+owner = { prev = { epoch_res_planet_controlled = yes } set_country_flag = epoch_res_containment_failure set_country_flag = epoch_res_strategy_emergency epoch_res_finish_containment = yes } }
+ }
+ ai_weight = { weight = 5 }
+}
+
+decision_epoch_res_isolate = {
+ icon = decision_planet_food_boost
+ owned_planets_only = yes enactment_time = 60
+ resources = { category = decisions cost = { energy = 350 minerals = 200 } }
+ potential = { has_planet_flag = epoch_res_infected owner = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner }
+ allow = { has_planet_flag = epoch_ii_unstable_resonance has_planet_flag = epoch_res_quarantine }
+ effect = { if = { limit = { owner = { has_country_flag = epoch_res_active check_variable = { which = epoch_res_chapter value = 4 } } is_same_value = event_target:epoch_ii_target_planet@owner } owner = { prev = { epoch_res_planet_latent = yes } set_country_flag = epoch_res_isolation_recorded }
+add_planet_devastation = 5 }
+ }
+ ai_weight = { weight = 35 }
+}
+
+# Capital recovery remains visible while any campaign objective is blocked.
+decision_epoch_res_resume = {
+ icon = decision_planet_food_boost owned_planets_only = yes enactment_time = 1
+ potential = { is_capital = yes owner = { has_country_flag = epoch_res_active } }
+ allow = { owner = { NOT = { has_country_flag = epoch_res_recovery_cooldown } } }
+ effect = { owner = { country_event = { id = epoch_res.80 } set_timed_country_flag = { flag = epoch_res_recovery_cooldown days = 180 } } }
+ ai_weight = { weight = 0 }
+}

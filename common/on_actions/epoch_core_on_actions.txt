@@ -31,9 +31,8 @@ on_survey_planet = {
 	}
 }
 
-# Resolve only the campaign owner's saved second force when it is destroyed.
-on_fleet_destroyed_victim = {
-	events = { epoch_ii.81 }
-}
-
-
+# Native destruction callback: This=victim country, From=killer country,
+# FromFrom=destroyed fleet. Participation hooks are fleet-scoped.
+on_fleet_destroyed_victim = { events = { epoch_res.201 epoch_res.202 } }
+on_fleet_combat_joined_attacker = { events = { epoch_res.200 } }
+on_fleet_combat_joined_defender = { events = { epoch_res.200 } }

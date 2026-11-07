@@ -185,3 +185,10 @@ epoch_ii_chamber_ruin = {
 	planet_jobs_physics_research_produces_mult = -0.10
 	planet_jobs_energy_produces_mult = -0.05
 }
+
+epoch_res_quarantine = { icon = "gfx/interface/icons/planet_modifiers/pm_irradiated.dds" planet_jobs_produces_mult = -0.10 planet_stability_add = 2 }
+epoch_res_permanent_damage = { icon = "gfx/interface/icons/planet_modifiers/pm_irradiated.dds" planet_jobs_produces_mult = -0.05 planet_stability_add = -3 }
+epoch_res_extraction = { icon = "gfx/interface/icons/planet_modifiers/pm_irradiated.dds" planet_jobs_physics_research_produces_mult = 0.15 planet_stability_add = -3 }
+epoch_res_targeting_flaw = { ship_weapon_damage = -0.15 }
+
+epoch_res_signal_strain = { country_energy_produces_mult = -0.02 }

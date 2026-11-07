@@ -1,0 +1,13 @@
+special_project = { key = "EPOCH_II_SCAR_SURVEY" cost = 0 days_to_research = 1 event_scope = country_event abort_trigger = { always = yes } on_cancel = { } }
+special_project = { key = "EPOCH_II_SIGNAL_DIVERSION" cost = 0 days_to_research = 1 event_scope = country_event abort_trigger = { always = yes } on_cancel = { } }
+special_project = { key = "EPOCH_II_CODE_ARCHIVE" cost = 0 days_to_research = 1 event_scope = country_event abort_trigger = { always = yes } on_cancel = { } }
+special_project = { key = "EPOCH_II_CODE_FORENSICS" cost = 0 days_to_research = 1 event_scope = country_event abort_trigger = { always = yes } on_cancel = { } }
+special_project = { key = "EPOCH_II_CODE_RECONSTRUCTION" cost = 0 days_to_research = 1 event_scope = country_event abort_trigger = { always = yes } on_cancel = { } }
+special_project = { key = "EPOCH_II_NODE_REFLECTION" cost = 0 days_to_research = 1 event_scope = country_event abort_trigger = { always = yes } on_cancel = { } }
+special_project = { key = "EPOCH_II_NODE_INTERRUPTED" cost = 0 days_to_research = 1 event_scope = country_event abort_trigger = { always = yes } on_cancel = { } }
+special_project = { key = "EPOCH_II_SILENT_SYSTEM" cost = 0 days_to_research = 1 event_scope = country_event abort_trigger = { always = yes } on_cancel = { } }
+special_project = { key = "EPOCH_II_NODE_TRAP" cost = 0 days_to_research = 1 event_scope = country_event abort_trigger = { always = yes } on_cancel = { } }
+special_project = { key = "EPOCH_II_SCIENCE_COUNTERMEASURE" cost = 0 days_to_research = 1 event_scope = country_event abort_trigger = { always = yes } on_cancel = { } }
+special_project = { key = "EPOCH_II_CHAMBER_BOUNDARY" cost = 0 days_to_research = 1 event_scope = country_event abort_trigger = { always = yes } on_cancel = { } }
+special_project = { key = "EPOCH_II_CHAMBER_COUNTERPATTERN" cost = 0 days_to_research = 1 event_scope = country_event abort_trigger = { always = yes } on_cancel = { } }
+special_project = { key = "EPOCH_II_CHAMBER_CONTROL" cost = 0 days_to_research = 1 event_scope = country_event abort_trigger = { always = yes } on_cancel = { } }

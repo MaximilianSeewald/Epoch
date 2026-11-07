@@ -1,0 +1,85 @@
+# Owner-local archive station. Never relocates an old planet's consequences.
+epoch_res_home = {
+    capital_scope = { save_global_event_target_as = epoch_res_home@root }
+}
+epoch_res_close = {
+    remove_country_flag = epoch_res_active
+    set_country_flag = epoch_res_closed
+    every_situation = { limit = { is_situation_type = epoch_resonance_protocol } destroy_situation = this }
+    if = { limit = { exists = event_target:epoch_res_enemy@root }
+        event_target:epoch_res_enemy@root = { set_faction_hostility = { target = root set_hostile = no } }
+    }
+    abort_special_project = { type = EPOCH_RES_BASELINE }
+    abort_special_project = { type = EPOCH_RES_SIGNATURE }
+    abort_special_project = { type = EPOCH_RES_INTERRUPTED }
+    abort_special_project = { type = EPOCH_RES_SCAR }
+    abort_special_project = { type = EPOCH_RES_RECON }
+    abort_special_project = { type = EPOCH_RES_WRECK }
+    abort_special_project = { type = EPOCH_RES_COMPARE }
+    abort_special_project = { type = EPOCH_RES_REFLECTION }
+    abort_special_project = { type = EPOCH_RES_SILENCE }
+}
+
+# Only native science callbacks move the chapter variable. Monthly progress is zero.
+epoch_res_infect = {
+    if = { limit = { exists = event_target:epoch_core_world@root event_target:epoch_core_world@root = { is_owned_by = root } }
+        event_target:epoch_core_world@root = { save_global_event_target_as = epoch_ii_target_planet@root }
+    }
+    else = { capital_scope = { save_global_event_target_as = epoch_ii_target_planet@root } }
+    epoch_ii_set_site_active = yes
+    if = { limit = { OR = { has_country_flag = epoch_res_risky_analysis has_country_flag = epoch_res_infection_primed has_country_flag = epoch_res_signal_exposed } } epoch_ii_set_site_unstable = yes }
+    if = { limit = { has_country_flag = epoch_core_contamination_contained NOT = { has_country_flag = epoch_res_risky_analysis } } epoch_ii_set_site_latent = yes }
+    event_target:epoch_ii_target_planet@root = { set_planet_flag = epoch_res_infected }
+    if = { limit = { has_country_flag = epoch_res_prepared NOT = { has_country_flag = epoch_res_preparation_used } }
+        set_country_flag = epoch_res_preparation_used add_resource = { energy = 100 }
+    }
+}
+epoch_res_finish_containment = {
+    if = { limit = { has_country_flag = epoch_res_active check_variable = { which = epoch_res_chapter value = 4 } }
+        set_country_flag = epoch_res_containment_complete
+set_variable = { which = epoch_res_chapter value = 5 }
+    random_situation = { limit = { is_situation_type = epoch_resonance_protocol } add_situation_progress = 20 }
+        country_event = { id = epoch_res.50 }
+    }
+}
+epoch_res_find_nodes = {
+    # Two distinct accessible systems, selected only on entry/recovery, not every pulse.
+    capital_scope = { solar_system = { save_global_event_target_as = epoch_res_home_system@root } }
+    capital_scope = { solar_system = {
+        closest_system = { limit = { has_access_fleet = root NOT = { is_same_value = prev } }
+            save_global_event_target_as = epoch_res_reflection_system@root
+            star = { save_global_event_target_as = epoch_res_reflection@root }
+        }
+    } }
+    if = { limit = { exists = event_target:epoch_res_reflection_system@root }
+        event_target:epoch_res_reflection_system@root = {
+            closest_system = { limit = { has_access_fleet = root NOT = { is_same_value = event_target:epoch_res_reflection_system@root } NOT = { is_same_value = event_target:epoch_res_home_system@root } }
+                save_global_event_target_as = epoch_res_silence_system@root
+                star = { save_global_event_target_as = epoch_res_silence@root }
+            }
+        }
+    }
+}
+
+epoch_res_planet_latent = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_latent_resonance add_deposit = d_epoch_resonance_contamination_latent }
+
+epoch_res_planet_active = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_active_resonance add_deposit = d_epoch_resonance_contamination_resonant }
+
+epoch_res_planet_unstable = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_unstable_resonance add_deposit = d_epoch_resonance_contamination_unstable }
+
+epoch_res_planet_controlled = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_controlled_resonance add_deposit = d_epoch_resonance_contamination_controlled }
+
+epoch_res_find_interrupted = {
+ if = { limit = { exists = event_target:epoch_res_silence_system@root }
+  event_target:epoch_res_silence_system@root = {
+   closest_system = { limit = { has_access_fleet = root
+    NOT = { is_same_value = event_target:epoch_res_reflection_system@root }
+    NOT = { is_same_value = event_target:epoch_res_silence_system@root }
+    NOT = { is_same_value = event_target:epoch_res_home_system@root }
+   }
+    save_global_event_target_as = epoch_res_interrupted_system@root
+    star = { save_global_event_target_as = epoch_res_interrupted@root }
+   }
+  }
+ }
+}
