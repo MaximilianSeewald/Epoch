@@ -1,28 +1,32 @@
-# EPOCH Testing Policy
+# Acceptance and Verification
 
-**Status: Binding.** Active test scope follows the [four-stage roadmap](roadmap.md) and stage contracts. Historical test reports preserve what was observed at that time; they do not override current requirements.
+**Status: Binding test criteria.** Stage design is in the [stage specifications](phases/); engine evidence limits are in the [technical contract](technical-contract.md). This file is an acceptance plan, not a completed test report.
 
-## Evidence levels
+## Evidence discipline
 
-- **Design:** requirement or proposed behavior only.
-- **Source-verified:** pattern exists in inspected game files; no claim of EPOCH runtime correctness.
-- **Static regression:** source structure/invariants checked; no claim of engine execution.
-- **In-game verified:** reproducible test on a recorded Stellaris build, mod revision, save, route, and logs.
+Record design requirements, source-verified patterns, static checks, and reproducible in-game results separately. A static pass is not in-game evidence. For each in-game run record Stellaris build, mod commit, enabled mods, empire class/player-or-AI, seed, route, saves/checkpoints, logs, and screenshots when UI behavior matters.
 
-Do not upgrade an evidence claim without new evidence. In particular, the current Stage I run reached entry into Stage II; it does not establish complete multiplayer, AI, or alternate-path validation.
+Current game-playthrough evidence reaches entry to Stage II. It does not establish complete multiplayer, AI, or alternative-path validation. Do not claim an individual check passed without its case-specific evidence.
 
-## Required coverage by implementation stage
+## Stage I acceptance
 
-- Stage I: five-section story, real projects and archaeology, permanent consequences/exit, and shared planetary feature family behavior. Use [Stage I acceptance](testing/phase-i-acceptance.md).
-- Stage II: exactly five chapters with real objectives, real fleet in Chapter 2, planetary containment in Chapter 4, multi-system science work in Chapter 5, and no progress from time alone. Use [Stage II acceptance](testing/phase-ii-full-acceptance.md).
-- Stage III: real military objects/combat, alternative strategy, system/planet consequences, and prior-choice adaptation.
-- Stage IV: earned ascension/healing, differentiated empire-class paths, real research/traditions/perks/infrastructure, and durable world/economy/military changes.
-- Cross-stage: organic/Hive/Machine; AI/player; concurrent empires; target ownership/scope; fresh and migrated saves; save/load; MP host/client; Vanilla and optional-mod conditions; English/German; UI/tooltips/art; fresh logs.
+- Complete all five sections in sequence. Confirm actual exploration triggers discovery; each empire has independent state and staggered entry.
+- Verify unresolved wait/objective gates do not progress from calendar time alone and no project or reward is dispatched twice. Prior choices must visibly alter downstream options, risk, or results.
+- Complete Missing Expedition with a selected owned Science Ship and scientist. Confirm only the ship that actually completed the project is removed, and rescue/search results are conditional. Exercise cancellation, retry/abandonment, missing target, and ship/leader interruption.
+- Confirm First Contamination changes an actual world and economy. Test investigation, containment, neglect, and spread paths.
+- Complete the Silent Structure through its four-stage Archaeological Site with staffed Science Ship/scientist and real archaeology callbacks. Confirm investigate, secure, and destroy produce distinct durable results; test missing/inaccessible site recovery.
+- Confirm the final report reflects earlier choices. Continue or permanently exit; exit blocks all future EPOCH objects/dispatches for that empire while existing consequences persist.
+- Confirm the three Planetary Feature families each allow at most one visible state per planet, cannot be manually cleared, replace prior states on transition, and apply real class-compatible economic effects.
+- Verify save/load at objectives and conclusion; organic, Hive, and Machine empires; AI progression; simultaneous independent empires; English/German UI; host/client MP; Vanilla compatibility and optional-mod absence.
 
-## Pass criteria
+## Stage II acceptance: exactly five chapters
 
-The stage-specific objectives, recovery routes, and durable effects pass in game on recorded builds. Static tests and scripts remain valuable regression checks but cannot substitute for the game. Record exact routes, checkpoints, screenshots where UI matters, and `game.log`/`error.log` findings. A test plan or a pre-merge checklist is not itself a completed test report.
+1. **Entry / The Scar Wakes:** start the entry interval at the Stage-I continuation choice. No Stage-II dispatch, project, or active situation appears before about five in-game years have elapsed. Verify the signal study uses a real Science Ship project with valid target/scientific participation or the specified paid fallback. Compare outcomes from different Stage-I records.
+2. **The First Hunters:** verify the hostile Nullwarden fleet exists in a visible system as a real Stellaris fleet. Exercise military victory, active diversion, prepared defense, and costly withdrawal from separate saves. Persist the actual outcome. Popup choices and time passage alone cannot resolve the chapter.
+3. **The Broken Code:** complete wreck/signal/archive analysis with real targets and science participation. Verify research leads do not grant technology automatically. Test target loss, cancellation, and recovery.
+4. **The Second Infection:** interact with the planet-level containment mini-game using actual planet conditions and the shared feature states. Verify the player can inspect state, take actions, receive mechanical feedback, and make follow-up decisions. Confirm it is not only an event-popup chain or abstract meter. Quarantine, research, exploitation, and failure produce distinct immediate economy/stability/feature effects; failure remains recoverable and cannot softlock.
+5. **The Network of Silence:** finish Science Ship projects at multiple actual star systems with clear targets. Verify earlier choices alter later findings/risks and Chapter 5 creates the Stage III handoff. Confirm Stage II stops at Chapter 5, with no further Stage-II finale or ending.
 
-## Historical artifacts
+## Cross-stage verification
 
-`testing/m0-c-runtime-test.md`, M0 evidence, PR #11 review notes, and former Stage II block acceptance files document specific earlier revisions. Keep those results historically accurate. When a historical test expectation conflicts with the new architecture, use the current stage acceptance contract and mark the old expectation superseded.
+Test organic, Hive Mind, and Machine Intelligence empires; player and AI; two simultaneous independent campaigns; fresh and prototype-era saves; save/load before/after project callbacks and stage transitions; English/German; host/client MP; Vanilla-only and optional Gigastructures configurations. Confirm targets always belong to the campaign owner, no duplicate reward/fleet/project occurs, failure and missing-object paths remain actionable, tooltips match resource changes, Stage-I features/consequences persist, and fresh logs show no new EPOCH errors. Report incomplete cases as open; do not convert plans or static checks into runtime claims.

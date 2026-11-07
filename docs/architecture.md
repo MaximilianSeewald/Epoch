@@ -1,30 +1,29 @@
-# EPOCH Architecture Contract
+# EPOCH Architecture
 
-**Status: Binding current architecture.** For conflicts use the hierarchy in [Content Migration](architecture/content-migration.md). Historical records and code inventory are evidence, not active design.
+**Status: Binding.** This is the source of truth for campaign-wide rules. Stage details are defined once in the linked specifications; acceptance criteria are in [testing](testing.md), technical evidence and limits in [technical contract](technical-contract.md), and legacy code disposition in the [migration matrix](architecture/content-migration.md).
 
-## Campaign shape
+## Four stages
 
-EPOCH has exactly four stages: **I – First Contact**, **II – Resonance**, **III – Military Crisis**, and **IV – Ascension**. Stage I retains its five sections. Stage II contains exactly **The Scar Wakes**, **The First Hunters**, **The Broken Code**, **The Second Infection**, and **The Network of Silence**. Stage III is the larger military crisis. Stage IV is ascension. The binding details and boundaries are in each stage specification linked from the [roadmap](roadmap.md). No older six-stage outline or eight-chapter Stage II is active.
+| Stage | Name | Contract |
+|---|---|---|
+| I | First Contact | Five sections; implemented, with current in-game evidence through entry to Stage II. See [Stage I](phases/phase-i-first-contact.md). |
+| II | Resonance | Exactly five chapters; entry about five in-game years after the Stage-I continuation decision. See [Stage II](phases/phase-ii-resonance.md). |
+| III | Military Crisis | Distinct, larger real military escalation. See [Stage III](phases/stage-iii-military-crisis.md). |
+| IV | Ascension | Mechanically meaningful ascension and earned healing; the final wider revelation and Universal Ascension Protocol. See [Stage IV](phases/stage-iv-ascension.md). |
 
-## Cross-stage invariants
+Stage II ends with Chapter 5. The Resonance Chamber and Countermark are excluded from Stage II; their later use is undecided. No extra stages or chapters are implied by implementation substeps.
 
-- No new start origin, civics, free start bonuses, or start technology. Discovery begins through delayed events and discoveries.
-- Support regular organic empires, Hive Minds, and Machine Intelligences. Empires participate independently; no global singleton blocks a competing empire.
-- Keep vanilla content functional. Gigastructures remains optional in a separate integration.
-- Validate ownership and scope before accessing foreign event targets.
-- Use actual game objects and player actions for ships, fleets, projects, research, buildings, planetary conditions, and costs. Time may pace opportunities but may not substitute for required gameplay.
-- Keep durable consequences and voluntary permanent exit. Failure paths must not create an unresolvable softlock.
-- Show resource impacts in native option tooltips where the engine supports it. Localize all player-facing text in English and German and use suitable vanilla or original art.
-- Treat save/load and multiplayer safety as requirements. State only the evidence level actually obtained: design, source inspection, static checks, or reproducible in-game verification.
+## Cross-stage rules
 
-## Ownership and progression
+- Add no origin, start civic, or free starting bonus. First Contact starts through discoveries/events, not a start technology.
+- Support organic empires, Hive Minds, and Machine Intelligences with class-appropriate effects and text. Each empire participates independently; no galaxy-global single instance blocks another.
+- Validate ownership and scope before accessing event targets. A campaign never reads or changes another empire's objects or progress.
+- Use real ships, fleets, science projects, research, buildings, planetary states, and costs. Events present decisions but do not substitute for promised gameplay. Time can pace content but cannot satisfy an objective by itself.
+- Keep failure consequential but recoverable; preserve a deliberate, permanent player exit.
+- Preserve Vanilla behavior. Stage I's three Planetary Feature families are shared across later stages: **Resonance Contamination**, **Resonance Scar**, and **Silent Structure**. A family has at most one visible state per planet; feature states cannot be manually cleared; state changes replace the prior state; each state has real economic effects appropriate to empire class. Stage II reuses this foundation rather than creating a competing representation.
+- Show resource changes in native option tooltips where the engine supports it. Localize all player-facing content in English and German. Use suitable Vanilla or original graphics.
+- Treat save/load and multiplayer safety as release requirements. Distinguish design requirements, source evidence, static checks, and in-game verification; do not claim runtime success from static checks.
 
-Campaign records are empire-local. A campaign transition must preserve the relevant prior decisions and outcomes, revalidate the owner and any referenced objects, and have a recoverable path for missing/destroyed objects. Stage specifications define narrative requirements; the next implementation design must resolve detailed mechanics where marked open rather than infer them from the old prototype.
+## Optional Gigastructures integration
 
-## Stage boundaries
-
-Stage I implementation and tested scope are described in [First Contact](phases/phase-i-first-contact.md); Stage I conclusions and planetary foundations are recorded in [PR #11 evidence](pr-11-core-gameplay-ui.md). Stage II ends after its fifth chapter and hands off to Stage III. Adapted Nullwardens, a larger convergence threat, and the full military escalation belong to Stage III. The Universal Ascension Protocol reveal and earned recovery of accumulated EPOCH harm belong to Stage IV. The Resonance Chamber and Countermark are retired from Stage II; their future placement and function are open design decisions, with Stage IV only a candidate.
-
-## Technical references
-
-The engine source reference, ADRs, and implementation reports retain milestone-specific evidence. They do not establish runtime, AI, save/load, or multiplayer behavior unless a reproducible test is recorded. See [technical reference](technical-reference.md), [testing policy](testing.md), and the [migration register](architecture/content-migration.md).
+EPOCH Core remains independently usable and contains no hard reference to Gigastructures identifiers or content. Integration belongs in a separately packaged optional compatibility mod. If Gigastructures or the compatibility mod is absent, Core must still load and function. Dependency metadata, launcher activation, package layout, and load order require validation; directory placement alone does not make a separately installable mod. See the evidence limits in [technical contract](technical-contract.md).
