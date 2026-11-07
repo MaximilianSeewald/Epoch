@@ -7,7 +7,7 @@ const assert = require('node:assert/strict');
 const root = process.argv[2] || path.resolve(__dirname, '..');
 const vanillaRoot = process.argv[3] || 'G:/Steam/steamapps/common/Stellaris';
 const files = [];
-for (const folder of ['common', 'events']) {
+for (const folder of ['common', 'events', 'test-mods']) {
   const visit = dir => {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       const full = path.join(dir, entry.name);
@@ -45,7 +45,7 @@ function tokenize(source, file) {
 }
 
 function parse(source, file) {
-  const tokens = tokenize(source.replace(/^\uFEFF/, ''), file);
+  const tokens = tokenize(source, file);
   let i = 0;
   const parseScope = nested => {
     const pairs = [];
@@ -82,6 +82,8 @@ const parsedByPath = new Map();
 for (const file of files) {
   const rel = path.relative(root, file).replaceAll('\\', '/');
   const source = fs.readFileSync(file, 'utf8');
+  const bytes = fs.readFileSync(file);
+  assert.ok(!(bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf), `${rel}: Clausewitz .txt scripts must not have a UTF-8 BOM`);
   const pairs = parse(source, rel);
   sourceByPath.set(rel, source);
   parsedByPath.set(rel, pairs);
@@ -92,6 +94,20 @@ for (const file of files) {
     assert.equal(new Set(names).size, names.length, `${rel}: duplicate scripted-effect definition`);
   }
 }
+
+// Clausewitz else branches must immediately follow their if/else_if sibling in
+// the same scope. The generic lexer catches braces, but not this engine rule.
+function checkElsePairs(pairs, file, scope = 'root') {
+  let previous = null;
+  for (const [key, value] of pairs) {
+    if (key === 'else' || key === 'else_if') {
+      assert.ok(previous === 'if' || previous === 'else_if', `${file}:${scope}: ${key} must immediately follow if/else_if in the same scope`);
+    }
+    if (Array.isArray(value)) checkElsePairs(value, file, `${scope}/${key}`);
+    previous = key;
+  }
+}
+for (const [rel, pairs] of parsedByPath) checkElsePairs(pairs, rel);
 
 const get = (pairs, key) => pairs.find(([name]) => name === key)?.[1];
 const effectDefs = new Map(parsedByPath.get('common/scripted_effects/epoch_core_effects.txt'));
@@ -168,6 +184,10 @@ assert.equal(hiddenResourceChecks, 0, 'No event option may hide resource changes
 
 const englishLoc = fs.readFileSync(path.join(root,'localisation/english/epoch_core_l_english.yml'),'utf8').replace(/^\uFEFF/,'');
 const germanLoc = fs.readFileSync(path.join(root,'localisation/german/epoch_core_l_german.yml'),'utf8').replace(/^\uFEFF/,'');
+for (const rel of ['localisation/english/epoch_core_l_english.yml','localisation/german/epoch_core_l_german.yml']) {
+  const bytes = fs.readFileSync(path.join(root, rel));
+  assert.ok(bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf, `${rel}: Stellaris localization must retain UTF-8 BOM`);
+}
 const optionNames = new Set();
 function collectOptionNames(pairs) {
   for (const [key,value] of pairs) {
@@ -193,10 +213,16 @@ for (const rel of ['common/situations/epoch_core_situations.txt','common/situati
     for (const [stage, body] of stages) {
       const key = get(body,'custom_tooltip');
       assert.ok(key, `${rel}:${stage}: visible stage text uses Vanilla custom_tooltip localization`);
+      assert.match(englishLoc, new RegExp(`^\\s*${stage}:\\d+\\s`, 'm'), `English raw stage name missing ${stage}`);
+      assert.match(germanLoc, new RegExp(`^\\s*${stage}:\\d+\\s`, 'm'), `German raw stage name missing ${stage}`);
       assert.match(englishLoc, new RegExp(`^\\s*${key}:\\d+\\s`, 'm'), `English stage tooltip missing ${key}`);
       assert.match(germanLoc, new RegExp(`^\\s*${key}:\\d+\\s`, 'm'), `German stage tooltip missing ${key}`);
     }
   }
+}
+for (const key of ['epoch_resonance_protocol','epoch_resonance_protocol_type','epoch_resonance_protocol_monthly_change_tooltip','epoch_resonance_protocol_desc','epoch_resonance_chamber_recovery','epoch_resonance_chamber_recovery_type','epoch_resonance_chamber_recovery_monthly_change_tooltip','epoch_resonance_chamber_recovery_desc']) {
+  assert.match(englishLoc, new RegExp(`^\\s*${key}:\\d+\\s`, 'm'), `English situation localization missing ${key}`);
+  assert.match(germanLoc, new RegExp(`^\\s*${key}:\\d+\\s`, 'm'), `German situation localization missing ${key}`);
 }
 
 const vanillaBlockers = parse(fs.readFileSync(path.join(vanillaRoot,'common/deposits/01_blocker_deposits.txt'),'utf8'),'Vanilla 4.5.3 blocker deposits');
@@ -204,5 +230,12 @@ const vanillaCategories = parse(fs.readFileSync(path.join(vanillaRoot,'common/de
 const blockerCategory = get(vanillaCategories,'deposit_cat_blockers');
 assert.equal(get(blockerCategory,'blocker'),'yes','Vanilla category must mark deposit_cat_blockers as a Blocker category');
 assert.ok(vanillaBlockers.some(([,body]) => Array.isArray(body) && get(body,'category') === 'deposit_cat_blockers' && get(body,'triggered_planet_modifier')), 'Installed Vanilla must demonstrate triggered_planet_modifier in the requested blocker category');
+const vanillaGraphics = fs.readFileSync(path.join(vanillaRoot,'common/graphical_culture/00_graphical_culture.txt'),'utf8');
+assert.match(vanillaGraphics, /(?:^|\n)\s*fallen_machine_empire_01\s*=\s*\{/,'Installed Vanilla must define the selected Nullwarden graphical culture');
+const vanillaComponents = fs.readFileSync(path.join(vanillaRoot,'common/component_templates/00_utilities_roles.txt'),'utf8');
+assert.ok(vanillaComponents.includes('key = "COMBAT_COMPUTER_LINE_DEFAULT"'),'Installed Vanilla must define the selected Nullwarden combat computer');
+const vanillaBuildingDoc = fs.readFileSync(path.join(vanillaRoot,'common/buildings/00_example.txt'),'utf8');
+assert.match(vanillaBuildingDoc, /#\s*building_sets\s*=\s*\{/,'Installed Vanilla building example must document building_sets');
+assert.match(vanillaBuildingDoc, /#\s*resources\s*=\s*\{[\s\S]*?#\s*category\s*=\s*planet_buildings[\s\S]*?#\s*upkeep\s*=\s*\{[\s\S]*?#\s*cost\s*=\s*\{/,'Installed Vanilla building example must place cost/upkeep under resources');
 
 console.log(`PASS: ${files.length} Clausewitz files parsed; feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla blocker syntax validated.`);

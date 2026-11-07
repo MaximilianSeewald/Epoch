@@ -2,6 +2,12 @@
 
 ## Review corrections
 
+- The next real-log review found the direct cause of the namespace failure: three EPOCH event `.txt` files had acquired a UTF-8 BOM, so Stellaris rejected the event tables at byte zero and then reported the event IDs as cascades. The Clausewitz test had hidden this defect by stripping `\uFEFF` before parsing. It now rejects BOMs at byte level; localization `.yml` files are separately required to retain their BOM.
+- Corrected the Phase II suppression option's situation scope, restored a valid conditional reward branch in the Nullwarden defense event, and moved the five Block C planet modifiers/devastation effects out of `limit` trigger blocks. The parser now checks sibling `if`/`else_if`/`else` structure as well as balanced scopes.
+- Updated both Phase II buildings to use Vanilla's `building_sets` and `resources = { category = planet_buildings cost = { ... } upkeep = { ... } }` structure, preserving the 600-mineral costs and existing energy upkeep. The Nullwarden now uses installed Vanilla's `fallen_machine_empire_01` culture and `COMBAT_COMPUTER_LINE_DEFAULT` component template.
+- Added the missing situation type, monthly tooltip, description and chamber-recovery keys in English and German. Every raw Phase II stage identifier also has a localized name that points to its existing player-facing stage tooltip.
+- Added `scripts/test_stellaris_runtime_log.cjs`. It reports EPOCH root errors, event-table cascades and foreign/Vanilla/Workshop diagnostics separately. The normal regressions run its synthetic classifier self-test; pass an actual fresh `error.log` to gate a real run. Historical logs are evidence of the pre-fix defect and are expected to fail this gate.
+
 - Fixed the malformed scope in `epoch_core_migrate_planetary_features`: its nested `OR`/`root` limit was missing a close, and a trailing close had masked that error by nesting subsequent scripted effects. The new lexer/parser parses every `.txt` under `common/` and `events/`, checks balanced strings/comments/braces and verifies all scripted-effect definitions are unique top-level blocks.
 - Stellaris 4.5.3's installed `common/deposit_categories/00_deposit_categories.txt` declares `deposit_cat_blockers` with `blocker = yes`. Its `common/deposits/01_blocker_deposits.txt` includes blocker-category deposits using `triggered_planet_modifier`. EPOCH uses that category and pattern, zero natural spawn weight, vanilla deposit icons, and no clear/swap/resource-time fields. `all_blocker_swap_types` is omitted because these are event-added state markers, not generated blockers. The source confirms the category and syntax; only an in-game check can confirm the final panel placement, refresh timing, and current-owner reevaluation.
 - State-specific deposits now show eight contamination states and three scar states. Setters clear the prior variants before adding the next; contamination and scar have separate clear/set paths. One state definition supplies each logical feature's economic effects, including the existing Phase I penalties carried into Phase II. Organic, Hive, and Machine branches each use their own production resource. State changes retain the original numeric economy values.
@@ -17,6 +23,14 @@ Run from the repository root:
 ./scripts/test_epoch_regressions.ps1
 git diff --check
 ```
+
+For the next in-game run, analyze the newly produced log separately:
+
+```powershell
+node ./scripts/test_stellaris_runtime_log.cjs "$env:USERPROFILE/Documents/Paradox Interactive/Stellaris/logs/error.log"
+```
+
+An old log is useful only to confirm that the classifier recognizes the known failures; it cannot pass acceptance for this change.
 
 The suite passes 625 static regression checks, including the Phase I model, Phase II transition/recovery models, and the Clausewitz structure and UI audits. These checks validate source structure and installed Vanilla examples; they do not prove runtime behavior in Stellaris.
 
@@ -35,5 +49,5 @@ Record screenshots and a save for each empire class and language. Any failure bl
 ## Runtime assumptions not yet confirmed
 
 - The installed source supports the selected blocker category and triggered modifier syntax. Blocker-tab placement and immediate economic re-evaluation after state/owner changes still require the in-game acceptance above.
-- No in-game smoke test was run during implementation. The previous error-log summary predates these corrections and is not evidence for this branch.
+- No in-game smoke test was run during implementation. The genuine error log used to diagnose these fixes predates them and is not evidence for this branch.
 - Compatibility conversion is idempotent for owned planets reached by the existing Phase II recovery event. Fresh saves remain the acceptance baseline; legacy saves with missing or foreign references need direct playtesting.

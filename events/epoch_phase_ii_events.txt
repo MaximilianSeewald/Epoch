@@ -1,4 +1,4 @@
-﻿namespace = epoch_ii
+namespace = epoch_ii
 
 # Yearly owner-local recovery: flags guard invitation dispatch; deposit migration
 # is idempotent and retries missing/foreign references. No global scan is used.
@@ -205,7 +205,7 @@ situation_event = {
 	}
 	option = {
 		name = epoch_ii.2.c
-		hidden_effect = { owner = { set_country_flag = epoch_ii_c1_suppression change_variable = { which = epoch_ii_resonance_stability value = 10 } epoch_ii_clamp_resonance_stability = yes set_situation_approach = epoch_ii_suppress_approach country_event = { id = epoch_ii.12 days = 1 } } }
+		hidden_effect = { owner = { set_country_flag = epoch_ii_c1_suppression change_variable = { which = epoch_ii_resonance_stability value = 10 } epoch_ii_clamp_resonance_stability = yes country_event = { id = epoch_ii.12 days = 1 } } set_situation_approach = epoch_ii_suppress_approach }
 		ai_chance = { factor = 33 }
 	}
 }
@@ -289,7 +289,7 @@ situation_event = {
 					type = epoch_nullwarden
 					name_list = "MACHINE1"
 					effect = {
-						set_graphical_culture = machine_01
+						set_graphical_culture = fallen_machine_empire_01
 						save_global_event_target_as = epoch_ii_nullwarden_country@root
 						set_faction_hostility = { target = root set_hostile = yes }
 					}
@@ -298,8 +298,8 @@ situation_event = {
 					name = "NAME_EPOCH_Unknown_Patrol"
 					effect = {
 						set_owner = event_target:epoch_ii_nullwarden_country@root
-						while = { count = 2 create_ship = { name = random design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = machine_01 } }
-						if = { limit = { root = { has_technology = tech_destroyers } } while = { count = 2 create_ship = { name = random design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = machine_01 } } }
+						while = { count = 2 create_ship = { name = random design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = fallen_machine_empire_01 } }
+						if = { limit = { root = { has_technology = tech_destroyers } } while = { count = 2 create_ship = { name = random design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = fallen_machine_empire_01 } } }
 						set_location = { target = event_target:epoch_ii_target_system@root distance = 0 angle = random }
 						set_fleet_stance = aggressive
 						auto_move_to_planet = { target = event_target:epoch_ii_target_planet@root }
@@ -370,9 +370,12 @@ country_event = {
 			set_country_flag = epoch_ii_ch2_resolved
 			epoch_ii_clamp_resonance_stability = yes
 		}
+		if = {
+			limit = { NOT = { exists = event_target:epoch_ii_nullwarden_fleet@root } }
+			add_resource = { physics_research = 200 alloys = 100 }
+		}
 		ai_chance = { factor = 60 }
-	
-	else = { set_country_flag = epoch_ii_nullwarden_engagement_recorded set_country_flag = epoch_ii_wreck_available change_variable = { which = epoch_ii_resonance_stability value = 10 } add_resource = { physics_research = 200 alloys = 100 } }
+		hidden_effect = { if = { limit = { NOT = { exists = event_target:epoch_ii_nullwarden_fleet@root } } set_country_flag = epoch_ii_nullwarden_engagement_recorded set_country_flag = epoch_ii_wreck_available change_variable = { which = epoch_ii_resonance_stability value = 10 } epoch_ii_clamp_resonance_stability = yes } }
 	}
 	option = { name = epoch_ii.15.evacuate trigger = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } hidden_effect = { event_target:epoch_ii_target_planet@root = { add_planet_devastation = 15 } epoch_ii_disengage_nullwarden_fleet = yes set_country_flag = epoch_ii_sensitive_objective_evacuated set_country_flag = epoch_ii_withdrawal_recorded set_country_flag = epoch_ii_signal_trace_available set_country_flag = epoch_ii_ch2_resolved change_variable = { which = epoch_ii_resonance_stability value = -10 } epoch_ii_clamp_resonance_stability = yes  } ai_chance = { factor = 30 } 
 	add_resource = { alloys = -100 energy = -200 }
@@ -786,7 +789,7 @@ situation_event = {
 						name = "NAME_EPOCH_Second_Force"
 						type = epoch_nullwarden
 						name_list = "MACHINE1"
-						effect = { set_graphical_culture = machine_01 save_global_event_target_as = epoch_ii_nullwarden_country@root set_faction_hostility = { target = root set_hostile = yes } }
+						effect = { set_graphical_culture = fallen_machine_empire_01 save_global_event_target_as = epoch_ii_nullwarden_country@root set_faction_hostility = { target = root set_hostile = yes } }
 					}
 				}
 				if = {
@@ -797,14 +800,14 @@ situation_event = {
 						name = "NAME_EPOCH_Second_Force"
 						effect = {
 							set_owner = event_target:epoch_ii_nullwarden_country@root
-							while = { count = 4 create_ship = { name = random design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = machine_01 } }
-							if = { limit = { root = { has_country_flag = epoch_ii_nullwarden_engagement_recorded } } while = { count = 2 create_ship = { name = random design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = machine_01 } } }
-							if = { limit = { root = { has_country_flag = epoch_ii_withdrawal_recorded } } while = { count = 2 create_ship = { name = random design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = machine_01 } } }
-							if = { limit = { root = { has_country_flag = epoch_ii_nullwarden_diverted } } create_ship = { name = random design = "NAME_EPOCH_Heavy_Suppressor" graphical_culture = machine_01 } }
-							if = { limit = { root = { has_technology = tech_destroyers } } create_ship = { name = random design = "NAME_EPOCH_Heavy_Suppressor" graphical_culture = machine_01 } }
-							if = { limit = { root = { has_country_flag = epoch_ii_network_exposed } } create_ship = { name = random design = "NAME_EPOCH_Heavy_Suppressor" graphical_culture = machine_01 } }
-							if = { limit = { root = { has_country_flag = epoch_ii_silent_system_broadcast } } create_ship = { name = random design = "NAME_EPOCH_Heavy_Suppressor" graphical_culture = machine_01 } }
-							if = { limit = { root = { check_variable = { which = epoch_ii_resonance_stability value < 30 } } } create_ship = { name = random design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = machine_01 } }
+							while = { count = 4 create_ship = { name = random design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = fallen_machine_empire_01 } }
+							if = { limit = { root = { has_country_flag = epoch_ii_nullwarden_engagement_recorded } } while = { count = 2 create_ship = { name = random design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = fallen_machine_empire_01 } } }
+							if = { limit = { root = { has_country_flag = epoch_ii_withdrawal_recorded } } while = { count = 2 create_ship = { name = random design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = fallen_machine_empire_01 } } }
+							if = { limit = { root = { has_country_flag = epoch_ii_nullwarden_diverted } } create_ship = { name = random design = "NAME_EPOCH_Heavy_Suppressor" graphical_culture = fallen_machine_empire_01 } }
+							if = { limit = { root = { has_technology = tech_destroyers } } create_ship = { name = random design = "NAME_EPOCH_Heavy_Suppressor" graphical_culture = fallen_machine_empire_01 } }
+							if = { limit = { root = { has_country_flag = epoch_ii_network_exposed } } create_ship = { name = random design = "NAME_EPOCH_Heavy_Suppressor" graphical_culture = fallen_machine_empire_01 } }
+							if = { limit = { root = { has_country_flag = epoch_ii_silent_system_broadcast } } create_ship = { name = random design = "NAME_EPOCH_Heavy_Suppressor" graphical_culture = fallen_machine_empire_01 } }
+							if = { limit = { root = { check_variable = { which = epoch_ii_resonance_stability value < 30 } } } create_ship = { name = random design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = fallen_machine_empire_01 } }
 							set_location = { target = event_target:epoch_ii_target_system@root distance = 0 angle = random }
 							set_fleet_stance = aggressive
 							auto_move_to_planet = { target = event_target:epoch_ii_target_planet@root }

@@ -3,11 +3,15 @@ building_epoch_resonance_laboratory = {
 	base_buildtime = 360
 	base_cap_amount = 1
 	category = research
+	building_sets = { research physics }
 	planet_limit = { base = 1 }
 	potential = { exists = owner owner = { has_country_flag = epoch_ii_lab_unlocked } }
 	allow = { has_owner = yes }
-	cost = { minerals = 600 }
-	upkeep = { energy = 4 }
+	resources = {
+		category = planet_buildings
+		cost = { minerals = 600 }
+		upkeep = { energy = 4 }
+	}
 	planet_modifier = { planet_jobs_physics_research_produces_mult = 0.05 planet_jobs_society_research_produces_mult = 0.05 }
 	triggered_planet_modifier = {
 		potential = { has_planet_flag = epoch_ii_controlled_resonance }
@@ -38,11 +42,15 @@ building_epoch_containment_infrastructure = {
 	base_buildtime = 360
 	base_cap_amount = 1
 	category = research
+	building_sets = { research physics }
 	planet_limit = { base = 1 }
 	potential = { exists = owner owner = { has_technology = tech_epoch_contamination_neutral_infrastructure } }
 	allow = { has_owner = yes }
-	cost = { minerals = 600 }
-	upkeep = { energy = 3 }
+	resources = {
+		category = planet_buildings
+		cost = { minerals = 600 }
+		upkeep = { energy = 3 }
+	}
 	planet_modifier = { planet_jobs_society_research_produces_mult = 0.05 planet_stability_add = 1 }
 	triggered_planet_modifier = { potential = { has_planet_flag = epoch_ii_latent_resonance } planet_jobs_society_research_produces_mult = 0.05 }
 	triggered_planet_modifier = { potential = { has_planet_flag = epoch_ii_active_resonance } planet_jobs_physics_research_produces_mult = 0.10 planet_stability_add = -1 }

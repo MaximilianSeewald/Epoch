@@ -1,4 +1,4 @@
-﻿namespace = epoch_core
+namespace = epoch_core
 
 # Country-local, idempotent campaign entry point.
 country_event = {
