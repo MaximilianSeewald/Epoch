@@ -43,3 +43,21 @@ tech_epoch_contamination_neutral_infrastructure = {
 	modifier = { country_society_research_produces_mult = 0.03 }
 	ai_weight = { weight = 1 }
 }
+
+tech_epoch_resonance_field_control = {
+	cost = @tier3cost2
+	area = engineering
+	tier = 3
+	category = { voidcraft materials }
+	prerequisites = { "tech_epoch_resonance_spectroscopy" }
+	potential = {
+		has_country_flag = epoch_ii_field_control_lead
+		OR = {
+			AND = { has_technology = tech_epoch_adaptive_resonance_armor has_technology = tech_epoch_contamination_neutral_infrastructure }
+			has_technology = tech_epoch_phased_sensors
+		}
+	}
+	weight = @tier3weight2
+	modifier = { country_physics_research_produces_mult = 0.03 }
+	ai_weight = { weight = 1 }
+}

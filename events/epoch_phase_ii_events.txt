@@ -115,6 +115,31 @@ country_event = {
 			set_timed_country_flag = { flag = epoch_ii_invite_recovery_armed days = 30 }
 			country_event = { id = epoch_ii.1 days = 1 }
 		}
+		if = {
+			limit = { has_country_flag = epoch_ii_handoff_block_c_ready NOR = { has_country_flag = epoch_ii_phase_complete has_country_flag = epoch_ii_active } }
+			# Older Block-B builds destroyed the shared situation and removed active.
+			# Resume in a C-only situation without replaying earlier chapters or resetting stability.
+			set_country_flag = epoch_ii_active
+			start_situation = { type = epoch_resonance_chamber_recovery target = root }
+			random_situation = { limit = { is_situation_type = epoch_resonance_chamber_recovery } set_situation_approach = epoch_ii_controlled_approach }
+		}
+		if = {
+			limit = { has_country_flag = epoch_ii_phase_complete NOR = { has_country_flag = epoch_ii_followup_roll_cooldown } OR = { has_country_flag = epoch_ii_ending_boundary has_country_flag = epoch_ii_ending_listen has_country_flag = epoch_ii_ending_outward has_country_flag = epoch_ii_ending_break } }
+			set_timed_country_flag = { flag = epoch_ii_followup_roll_cooldown days = 360 }
+			if = {
+				limit = { has_country_flag = epoch_ii_ending_listen }
+				random_list = { 20 = { country_event = { id = epoch_ii.139 } } 80 = { } }
+			}
+			else_if = {
+				limit = { has_country_flag = epoch_ii_ending_outward }
+				random_list = { 30 = { country_event = { id = epoch_ii.139 } } 70 = { } }
+			}
+			else_if = {
+				limit = { has_country_flag = epoch_ii_ending_break }
+				random_list = { 5 = { country_event = { id = epoch_ii.139 } } 95 = { } }
+			}
+			else = { random_list = { 5 = { country_event = { id = epoch_ii.139 } } 95 = { } } }
+		}
 	}
 }
 

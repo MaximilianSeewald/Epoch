@@ -20,6 +20,12 @@ epoch_resonance_protocol = {
 		stage_ch5_silence = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_red end = 140 on_first_enter = { situation_event = { id = epoch_ii.66 } } custom_tooltip = epoch_ii_stage_silent_system }
 		stage_ch6_research = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 150 custom_tooltip = epoch_ii_stage_ch6_research }
 		stage_ch6_resolution = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 170 on_first_enter = { situation_event = { id = epoch_ii.70 } } custom_tooltip = epoch_ii_stage_ch6_action }
+		stage_block_b_report = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 180 custom_tooltip = epoch_ii_stage_block_b_report }
+		stage_ch7_boundary = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 190 on_first_enter = { situation_event = { id = epoch_ii.120 } } custom_tooltip = epoch_ii_stage_ch7_boundary }
+		stage_ch7_counterpattern = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 200 on_first_enter = { situation_event = { id = epoch_ii.122 } } custom_tooltip = epoch_ii_stage_ch7_counterpattern }
+		stage_ch7_instability = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 210 on_first_enter = { situation_event = { id = epoch_ii.124 } } custom_tooltip = epoch_ii_stage_ch7_instability }
+		stage_ch7_control = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 220 on_first_enter = { situation_event = { id = epoch_ii.126 } } custom_tooltip = epoch_ii_stage_ch7_control }
+		stage_ch8_countermark = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 230 on_first_enter = { situation_event = { id = epoch_ii.128 } } custom_tooltip = epoch_ii_stage_ch8_countermark }
 	}
 	monthly_progress = {
 		base = 0
@@ -78,6 +84,30 @@ epoch_resonance_protocol = {
 		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch6_resolution owner = { has_country_flag = epoch_ii_ch6_resolved } situation_progress < 170 }
 		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch6_resolution owner = { has_country_flag = epoch_ii_ch6_resolved } situation_progress < 170 }
 		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch6_resolution owner = { has_country_flag = epoch_ii_ch6_resolved } situation_progress < 170 }
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_block_b_report owner = { has_country_flag = epoch_ii_handoff_block_c_ready } situation_progress < 180 }
+		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_block_b_report owner = { has_country_flag = epoch_ii_handoff_block_c_ready } situation_progress < 180 }
+		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_block_b_report owner = { has_country_flag = epoch_ii_handoff_block_c_ready } situation_progress < 180 }
+		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_block_b_report owner = { has_country_flag = epoch_ii_handoff_block_c_ready } situation_progress < 180 }
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch7_boundary owner = { has_country_flag = epoch_ii_ch7_boundary_resolved } situation_progress < 190 }
+		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch7_boundary owner = { has_country_flag = epoch_ii_ch7_boundary_resolved } situation_progress < 190 }
+		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch7_boundary owner = { has_country_flag = epoch_ii_ch7_boundary_resolved } situation_progress < 190 }
+		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch7_boundary owner = { has_country_flag = epoch_ii_ch7_boundary_resolved } situation_progress < 190 }
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch7_counterpattern owner = { has_country_flag = epoch_ii_ch7_counterpattern_resolved } situation_progress < 200 }
+		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch7_counterpattern owner = { has_country_flag = epoch_ii_ch7_counterpattern_resolved } situation_progress < 200 }
+		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch7_counterpattern owner = { has_country_flag = epoch_ii_ch7_counterpattern_resolved } situation_progress < 200 }
+		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch7_counterpattern owner = { has_country_flag = epoch_ii_ch7_counterpattern_resolved } situation_progress < 200 }
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch7_instability owner = { has_country_flag = epoch_ii_ch7_instability_resolved } situation_progress < 210 }
+		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch7_instability owner = { has_country_flag = epoch_ii_ch7_instability_resolved } situation_progress < 210 }
+		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch7_instability owner = { has_country_flag = epoch_ii_ch7_instability_resolved } situation_progress < 210 }
+		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch7_instability owner = { has_country_flag = epoch_ii_ch7_instability_resolved } situation_progress < 210 }
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch7_control owner = { has_country_flag = epoch_ii_ch7_control_resolved } situation_progress < 220 }
+		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch7_control owner = { has_country_flag = epoch_ii_ch7_control_resolved } situation_progress < 220 }
+		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch7_control owner = { has_country_flag = epoch_ii_ch7_control_resolved } situation_progress < 220 }
+		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch7_control owner = { has_country_flag = epoch_ii_ch7_control_resolved } situation_progress < 220 }
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch8_countermark owner = { has_country_flag = epoch_ii_phase_complete } situation_progress < 230 }
+		modifier = { add = 3 desc = epoch_ii_progress_intensive current_situation_approach = epoch_ii_intensive_approach current_stage = stage_ch8_countermark owner = { has_country_flag = epoch_ii_phase_complete } situation_progress < 230 }
+		modifier = { add = 1 desc = epoch_ii_progress_suppress current_situation_approach = epoch_ii_suppress_approach current_stage = stage_ch8_countermark owner = { has_country_flag = epoch_ii_phase_complete } situation_progress < 230 }
+		modifier = { add = 3 desc = epoch_ii_progress_exploit current_situation_approach = epoch_ii_exploit_approach current_stage = stage_ch8_countermark owner = { has_country_flag = epoch_ii_phase_complete } situation_progress < 230 }
 	}
 	triggered_blocked_desc = { trigger = { current_stage = stage_scar_report owner = { NOT = { has_country_flag = epoch_ii_ch1_resolved } } } text = epoch_ii_stage_scar_report }
 	triggered_blocked_desc = { trigger = { current_stage = stage_hunters_resolution owner = { NOT = { has_country_flag = epoch_ii_ch2_resolved } } } text = epoch_ii_stage_hunters_resolution }
@@ -89,10 +119,51 @@ epoch_resonance_protocol = {
 	triggered_blocked_desc = { trigger = { current_stage = stage_ch5_silence owner = { NOT = { has_country_flag = epoch_ii_ch5_resolved } } } text = epoch_ii_stage_silent_system }
 	triggered_blocked_desc = { trigger = { current_stage = stage_ch6_research owner = { NOT = { has_country_flag = epoch_ii_ch6_research_done } } } text = epoch_ii_stage_ch6_research }
 	triggered_blocked_desc = { trigger = { current_stage = stage_ch6_resolution owner = { NOT = { has_country_flag = epoch_ii_ch6_resolved } } } text = epoch_ii_stage_ch6_action }
+	triggered_blocked_desc = { trigger = { current_stage = stage_block_b_report owner = { NOT = { has_country_flag = epoch_ii_handoff_block_c_ready } } } text = epoch_ii_stage_block_b_report }
+	triggered_blocked_desc = { trigger = { current_stage = stage_ch7_boundary owner = { NOT = { has_country_flag = epoch_ii_ch7_boundary_resolved } } } text = epoch_ii_stage_ch7_boundary }
+	triggered_blocked_desc = { trigger = { current_stage = stage_ch7_counterpattern owner = { NOT = { has_country_flag = epoch_ii_ch7_counterpattern_resolved } } } text = epoch_ii_stage_ch7_counterpattern }
+	triggered_blocked_desc = { trigger = { current_stage = stage_ch7_instability owner = { NOT = { has_country_flag = epoch_ii_ch7_instability_resolved } } } text = epoch_ii_stage_ch7_instability }
+	triggered_blocked_desc = { trigger = { current_stage = stage_ch7_control owner = { NOT = { has_country_flag = epoch_ii_ch7_control_resolved } } } text = epoch_ii_stage_ch7_control }
+	triggered_blocked_desc = { trigger = { current_stage = stage_ch8_countermark owner = { NOT = { has_country_flag = epoch_ii_phase_complete } } } text = epoch_ii_stage_ch8_countermark }
 	on_monthly = { events = { epoch_ii.9 } }
 	approach = { name = epoch_ii_controlled_approach default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green potential = { owner = { has_country_flag = epoch_ii_active } } triggered_modifier = { potential = { situation_monthly_progress > 0 } country_physics_research_produces_mult = 0.02 } resources = { category = situations upkeep = { trigger = { situation_monthly_progress > 0 } energy = 2 } } ai_weight = { weight = 1 } }
 	approach = { name = epoch_ii_intensive_approach icon = GFX_situation_approach_fist icon_background = GFX_situation_approach_bg_red potential = { owner = { has_country_flag = epoch_ii_active } } triggered_modifier = { potential = { situation_monthly_progress > 0 } country_engineering_research_produces_mult = 0.04 } resources = { category = situations upkeep = { trigger = { situation_monthly_progress > 0 } energy = 5 } } ai_weight = { weight = 1 } }
 	approach = { name = epoch_ii_suppress_approach icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green potential = { owner = { has_country_flag = epoch_ii_active } } triggered_modifier = { potential = { situation_monthly_progress > 0 } country_physics_research_produces_mult = -0.02 } resources = { category = situations upkeep = { trigger = { situation_monthly_progress > 0 } energy = 4 alloys = 1 } } ai_weight = { weight = 1 } }
 	approach = { name = epoch_ii_exploit_approach icon = GFX_situation_approach_fist icon_background = GFX_situation_approach_bg_red potential = { owner = { has_country_flag = epoch_ii_active } } triggered_modifier = { potential = { situation_monthly_progress > 0 } country_physics_research_produces_mult = 0.03 } resources = { category = situations upkeep = { trigger = { situation_monthly_progress > 0 } energy = 6 } } ai_weight = { weight = 1 } }
-		on_progress_complete = { if = { limit = { owner = { has_country_flag = epoch_ii_ch3_resolved has_country_flag = epoch_ii_ch6_resolved } } owner = { set_country_flag = epoch_ii_block_a_complete set_country_flag = epoch_ii_handoff_ready set_country_flag = epoch_ii_block_b_complete remove_country_flag = epoch_ii_active country_event = { id = epoch_ii.72 days = 1 } } destroy_situation = this } }
+		on_progress_complete = { if = { limit = { owner = { has_country_flag = epoch_ii_ch3_resolved has_country_flag = epoch_ii_ch6_resolved has_country_flag = epoch_ii_phase_complete } } owner = { remove_country_flag = epoch_ii_active set_country_flag = epoch_ii_block_a_complete set_country_flag = epoch_ii_block_b_complete set_country_flag = epoch_ii_phase_iii_handoff_ready country_event = { id = epoch_ii.129 days = 1 } } destroy_situation = this } }
+}
+
+# Migration vehicle for saves where Block B's older completion callback already
+# destroyed epoch_resonance_protocol. It starts only at the saved Block-C handoff.
+epoch_resonance_chamber_recovery = {
+	picture = GFX_evt_black_hole
+	category = neutral
+	situation_log_category = developments
+	initial_progress = 0
+	progress_direction = monodirectional
+	permanent = yes
+	desc = { trigger = { always = yes } text = epoch_ii_situation_desc }
+	stages = {
+		stage_ch7_boundary = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 10 on_first_enter = { situation_event = { id = epoch_ii.120 } } custom_tooltip = epoch_ii_stage_ch7_boundary }
+		stage_ch7_counterpattern = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 20 on_first_enter = { situation_event = { id = epoch_ii.122 } } custom_tooltip = epoch_ii_stage_ch7_counterpattern }
+		stage_ch7_instability = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_red end = 30 on_first_enter = { situation_event = { id = epoch_ii.124 } } custom_tooltip = epoch_ii_stage_ch7_instability }
+		stage_ch7_control = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 40 on_first_enter = { situation_event = { id = epoch_ii.126 } } custom_tooltip = epoch_ii_stage_ch7_control }
+		stage_ch8_countermark = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 50 on_first_enter = { situation_event = { id = epoch_ii.128 } } custom_tooltip = epoch_ii_stage_ch8_countermark }
+	}
+	monthly_progress = {
+		base = 0
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch7_boundary owner = { has_country_flag = epoch_ii_ch7_boundary_resolved } }
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch7_counterpattern owner = { has_country_flag = epoch_ii_ch7_counterpattern_resolved } }
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch7_instability owner = { has_country_flag = epoch_ii_ch7_instability_resolved } }
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch7_control owner = { has_country_flag = epoch_ii_ch7_control_resolved } }
+		modifier = { add = 2 desc = epoch_ii_progress_controlled current_situation_approach = epoch_ii_controlled_approach current_stage = stage_ch8_countermark owner = { has_country_flag = epoch_ii_phase_complete } }
+	}
+	triggered_blocked_desc = { trigger = { current_stage = stage_ch7_boundary owner = { NOT = { has_country_flag = epoch_ii_ch7_boundary_resolved } } } text = epoch_ii_stage_ch7_boundary }
+	triggered_blocked_desc = { trigger = { current_stage = stage_ch7_counterpattern owner = { NOT = { has_country_flag = epoch_ii_ch7_counterpattern_resolved } } } text = epoch_ii_stage_ch7_counterpattern }
+	triggered_blocked_desc = { trigger = { current_stage = stage_ch7_instability owner = { NOT = { has_country_flag = epoch_ii_ch7_instability_resolved } } } text = epoch_ii_stage_ch7_instability }
+	triggered_blocked_desc = { trigger = { current_stage = stage_ch7_control owner = { NOT = { has_country_flag = epoch_ii_ch7_control_resolved } } } text = epoch_ii_stage_ch7_control }
+	triggered_blocked_desc = { trigger = { current_stage = stage_ch8_countermark owner = { NOT = { has_country_flag = epoch_ii_phase_complete } } } text = epoch_ii_stage_ch8_countermark }
+	on_monthly = { events = { epoch_ii.9 } }
+	approach = { name = epoch_ii_controlled_approach default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green potential = { owner = { has_country_flag = epoch_ii_active } } triggered_modifier = { potential = { situation_monthly_progress > 0 } country_physics_research_produces_mult = 0.02 } resources = { category = situations upkeep = { trigger = { situation_monthly_progress > 0 } energy = 2 } } ai_weight = { weight = 1 } }
+	on_progress_complete = { if = { limit = { owner = { has_country_flag = epoch_ii_phase_complete } } owner = { remove_country_flag = epoch_ii_active set_country_flag = epoch_ii_phase_iii_handoff_ready country_event = { id = epoch_ii.129 days = 1 } } destroy_situation = this } }
 }
