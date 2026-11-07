@@ -31,4 +31,9 @@ on_survey_planet = {
 	}
 }
 
+# Resolve only the campaign owner's saved second force when it is destroyed.
+on_fleet_destroyed_victim = {
+	events = { epoch_ii.81 }
+}
+
 

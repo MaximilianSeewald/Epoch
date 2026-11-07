@@ -79,6 +79,36 @@ epoch_core_silent_structure = {
 	planet_jobs_physics_research_produces_mult = 0.05
 }
 
+epoch_ii_resonance_latent = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_planet_surface.dds"
+	planet_jobs_physics_research_produces_mult = 0.02
+	planet_stability_add = -1
+}
+epoch_ii_resonance_active = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_hazardous_weather.dds"
+	planet_jobs_physics_research_produces_mult = 0.05
+	planet_jobs_produces_mult = -0.03
+	planet_stability_add = -2
+}
+epoch_ii_resonance_unstable = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_asteroid_impacts.dds"
+	planet_jobs_physics_research_produces_mult = 0.10
+	planet_jobs_produces_mult = -0.10
+	planet_stability_add = -5
+}
+epoch_ii_resonance_controlled = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_natural_beauty.dds"
+	planet_jobs_physics_research_produces_mult = 0.04
+	planet_jobs_produces_mult = 0.02
+	planet_stability_add = 2
+}
+
+epoch_ii_breakthrough_sacrifice = {
+	icon = "gfx/interface/icons/planet_modifiers/pm_wasteland.dds"
+	planet_jobs_produces_mult = -0.10
+	planet_stability_add = -2
+}
+
 epoch_core_structure_secured = {
 	icon = "gfx/interface/icons/planet_modifiers/pm_natural_beauty.dds"
 	planet_jobs_engineering_research_produces_mult = 0.05

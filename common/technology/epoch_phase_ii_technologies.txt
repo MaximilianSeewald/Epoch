@@ -20,3 +20,26 @@ tech_epoch_adaptive_resonance_armor = {
 	modifier = { ship_armor_mult = 0.05 }
 	ai_weight = { weight = 1 }
 }
+
+tech_epoch_phased_sensors = {
+	cost = @tier2cost2
+	area = physics
+	tier = 2
+	category = { computing particles }
+	prerequisites = { "tech_epoch_resonance_spectroscopy" "tech_sensors_2" }
+	potential = { has_country_flag = epoch_ii_sensor_lead }
+	weight = @tier2weight2
+	ai_weight = { weight = 1 }
+}
+
+tech_epoch_contamination_neutral_infrastructure = {
+	cost = @tier2cost2
+	area = society
+	tier = 2
+	category = { statecraft biology }
+	prerequisites = { "tech_epoch_resonance_spectroscopy" }
+	potential = { has_country_flag = epoch_ii_containment_neutral_infrastructure_lead }
+	weight = @tier2weight2
+	modifier = { country_society_research_produces_mult = 0.03 }
+	ai_weight = { weight = 1 }
+}

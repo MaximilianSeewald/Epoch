@@ -10,3 +10,18 @@ utility_component_template = {
 	resources = { category = ship_components cost = { alloys = 35 } upkeep = { energy = 0.1 } }
 	ai_weight = { weight = 1 }
 }
+
+utility_component_template = {
+	key = "SENSOR_EPOCH_PHASED"
+	size = medium
+	icon = "GFX_ship_part_sensor_3"
+	icon_frame = 1
+	power = -10
+	resources = { category = ship_components cost = { alloys = 6 } }
+	sensor_range = 4
+	hyperlane_range = 5
+	prerequisites = { "tech_epoch_phased_sensors" }
+	component_set = "sensor_components"
+	upgrades_to = "SENSOR_4"
+	ai_weight = { weight = 1 }
+}
