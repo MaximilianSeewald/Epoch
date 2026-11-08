@@ -1,5 +1,7 @@
 # Stage III – Engine Validation and Compatibility Contract
 
+**Opening update (2026-11-08):** the subsequent implementation request authorizes the first-offensive slice and static verification before player acceptance. Its [implementation record](stage-iii-opening-implementation.md) supersedes the earlier documentation-only boundary and pre-content runtime sequencing for that slice. All runtime proof requirements below remain unfulfilled release/acceptance gates; they are not waived or reported passed.
+
 **Status: mandatory future proof gates; no Stage-III runtime run or executable probe exists.** Target: installed Stellaris 4.5.3 (4e91), build 26325427. [Engine evidence](stage-iii-engine-evidence.md) contains source observations and absent test outputs. [ADR-002](../architecture/adr-002-stage-iii-integration.md) defines integration policies; [AP0–AP11](stage-iii-implementation-plan.md) defines sequencing. Source observations and static passes never grant implementation authorization.
 
 ## 1. Configured clock and hooks — AP1, blocking

@@ -1,0 +1,295 @@
+namespace = epoch_iii
+
+# No-scope simulation coordinator. Durable reservation is independent of every
+# empire's personal storyline, capital, survival or local UI choice.
+event = {
+ id = epoch_iii.1
+ hide_window = yes
+ is_triggered_only = yes
+ immediate = {
+  if = { limit = { NOT = { has_global_flag = epoch_iii_initialized } }
+   set_global_flag = epoch_iii_initialized
+   if = { limit = { mid_game_years_passed >= 0 }
+    set_global_flag = epoch_iii_unsupported_late_install
+    log = "EPOCH III: first initialization at/after midgame; automatic outbreak disabled (unsupported late installation)."
+   }
+   else = { set_global_flag = epoch_iii_schema_v1 }
+  }
+  if = { limit = { has_global_flag = epoch_iii_schema_v1 NOT = { has_global_flag = epoch_iii_unsupported_late_install } NOT = { has_global_flag = epoch_iii_first_repulsed } }
+   if = { limit = { mid_game_years_passed >= -20 mid_game_years_passed < 0 }
+    every_country = { limit = { epoch_iii_preparation_eligible = yes NOT = { has_country_flag = epoch_iii_warning_received } }
+     set_country_flag = epoch_iii_warning_received
+     country_event = { id = epoch_iii.5 }
+    }
+   }
+   if = { limit = { mid_game_years_passed >= 0 }
+    set_global_flag = epoch_iii_reserved
+    if = { limit = { NOT = { has_global_flag = epoch_iii_country_created } }
+     # One galaxy-wide selection per month only while placement is pending.
+     random_system = { limit = { epoch_iii_safe_front = yes }
+      save_global_event_target_as = epoch_iii_front
+     }
+     if = { limit = { NOT = { exists = event_target:epoch_iii_front } }
+      random_system = { limit = { epoch_iii_frontier_outpost = yes }
+       save_global_event_target_as = epoch_iii_front
+      }
+     }
+     if = { limit = { exists = event_target:epoch_iii_front }
+      set_global_flag = epoch_iii_country_created
+      create_country = { name = NAME_EPOCH_III_Convergence type = epoch_convergence name_list = MACHINE1
+       effect = {
+        set_country_flag = epoch_iii_identity_v1
+        set_variable = { which = epoch_iii_spent value = 0 }
+        set_variable = { which = epoch_iii_raids_destroyed value = 0 }
+        set_graphical_culture = fallen_machine_empire_01
+        save_global_event_target_as = epoch_iii_country
+       }
+      }
+     }
+     else_if = { limit = { NOT = { has_global_flag = epoch_iii_placement_pending } }
+      set_global_flag = epoch_iii_placement_pending
+      log = "EPOCH III: no safe frontier; reserved outbreak retries monthly without spawning."
+     }
+    }
+    # Identity recovery never creates another enemy or fabricates a death.
+    if = { limit = { has_global_flag = epoch_iii_country_created NOT = { exists = event_target:epoch_iii_country } }
+     every_country = { limit = { is_country_type = epoch_convergence has_country_flag = epoch_iii_identity_v1 }
+      save_global_event_target_as = epoch_iii_country
+     }
+    }
+    if = { limit = { exists = event_target:epoch_iii_country }
+     event_target:epoch_iii_country = { country_event = { id = epoch_iii.2 } }
+    }
+    else_if = { limit = { has_global_flag = epoch_iii_country_created NOT = { has_global_flag = epoch_iii_reference_fault } }
+     set_global_flag = epoch_iii_reference_fault
+     log = "EPOCH III: canonical country absent; dispatch suspended, no victory or replacement granted."
+    }
+   }
+  }
+ }
+}
+
+country_event = {
+ id = epoch_iii.2
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { is_country_type = epoch_convergence has_country_flag = epoch_iii_identity_v1 NOT = { has_global_flag = epoch_iii_first_repulsed } }
+ immediate = {
+  if = { limit = { NOT = { has_global_flag = epoch_iii_anchor_created } exists = event_target:epoch_iii_front }
+   set_global_flag = epoch_iii_anchor_created
+   create_fleet = { name = NAME_EPOCH_III_Anchor effect = {
+    set_owner = event_target:epoch_iii_country
+    set_fleet_flag = epoch_iii_anchor
+    create_ship = { design = NAME_EPOCH_III_Anchor graphical_culture = ai_01 }
+    set_location = { target = event_target:epoch_iii_front distance = 55 angle = 270 }
+    set_fleet_stance = aggressive
+    set_aggro_range_measure_from = return_point
+    set_aggro_range = 180
+    save_global_event_target_as = epoch_iii_anchor
+   } }
+   if = { limit = { exists = event_target:epoch_iii_anchor }
+    set_global_flag = epoch_iii_active
+   }
+   else = {
+    set_global_flag = epoch_iii_reference_fault
+    log = "EPOCH III: anchor creation failed; no public exposure or duplicate spawn."
+   }
+  }
+  if = { limit = { has_global_flag = epoch_iii_active }
+   if = { limit = { NOT = { has_global_flag = epoch_iii_anchor_destroyed } NOT = { exists = event_target:epoch_iii_anchor } }
+    random_owned_fleet = { limit = { has_fleet_flag = epoch_iii_anchor }
+     save_global_event_target_as = epoch_iii_anchor
+    }
+    if = { limit = { NOT = { exists = event_target:epoch_iii_anchor } NOT = { has_global_flag = epoch_iii_reference_fault } }
+     set_global_flag = epoch_iii_reference_fault
+     log = "EPOCH III: anchor identity absent without destruction proof; reinforcements stopped, objective unresolved."
+    }
+   }
+   if = { limit = { NOT = { has_country_flag = epoch_iii_reinforcement_cooldown } }
+    epoch_iii_spawn_raid = yes
+   }
+   every_owned_fleet = { limit = { has_fleet_flag = epoch_iii_raid }
+    fleet_event = { id = epoch_iii.30 }
+   }
+   every_country = { limit = { epoch_iii_public_empire = yes NOT = { has_country_flag = epoch_iii_enrolled } }
+    every_situation = { limit = { is_situation_type = epoch_iii_preparations } destroy_situation = this }
+    abort_special_project = { type = EPOCH_III_PREPARE }
+    epoch_iii_enroll = yes
+   }
+   if = { limit = {
+    has_global_flag = epoch_iii_anchor_destroyed
+    NOT = { any_owned_fleet = { OR = { has_fleet_flag = epoch_iii_raid has_fleet_flag = epoch_iii_anchor } } }
+    # Every spent raid must have a native destruction record. Missing or
+    # transferred fleets, MIA and retreat never satisfy the validator.
+    check_variable = { which = epoch_iii_raids_destroyed value >= epoch_iii_spent }
+   }
+    set_global_flag = epoch_iii_first_repulsed
+    remove_global_flag = epoch_iii_active
+    every_country = { limit = { has_country_flag = epoch_iii_enrolled NOT = { has_country_flag = epoch_iii_first_report_closed } }
+     set_country_flag = epoch_iii_first_report_closed
+     every_situation = { limit = { is_situation_type = epoch_iii_first_offensive } destroy_situation = this }
+     remove_modifier = epoch_iii_mobile_disruption
+     remove_modifier = epoch_iii_mobile_disruption_experienced
+     remove_modifier = epoch_iii_mobile_disruption_prepared
+     country_event = { id = epoch_iii.12 }
+    }
+   }
+  }
+ }
+}
+
+country_event = {
+ id = epoch_iii.5
+ title = epoch_iii.5.name
+ desc = epoch_iii.5.desc
+ picture = GFX_evt_black_hole
+ is_triggered_only = yes
+ trigger = { epoch_iii_preparation_eligible = yes mid_game_years_passed >= -20 mid_game_years_passed < 0 }
+ immediate = {
+  if = { limit = { NOT = { any_situation = { is_situation_type = epoch_iii_preparations } } }
+   start_situation = { type = epoch_iii_preparations target = root }
+  }
+ }
+ option = {
+  name = epoch_iii.prepare
+  trigger = { NOT = { has_country_flag = epoch_iii_prepared } NOT = { has_special_project = EPOCH_III_PREPARE } }
+  allow = { resource_stockpile_compare = { resource = energy value >= 500 } resource_stockpile_compare = { resource = alloys value >= 300 } }
+  tooltip = { add_resource = { energy = -500 alloys = -300 } custom_tooltip = epoch_iii.prepare.tt }
+  hidden_effect = { if = { limit = { epoch_iii_preparation_eligible = yes mid_game_years_passed >= -20 mid_game_years_passed < 0 NOT = { has_country_flag = epoch_iii_prepared } NOT = { has_special_project = EPOCH_III_PREPARE } resource_stockpile_compare = { resource = energy value >= 500 } resource_stockpile_compare = { resource = alloys value >= 300 } }
+   add_resource = { energy = -500 alloys = -300 }
+   enable_special_project = { name = EPOCH_III_PREPARE location = this owner = root }
+  } }
+  ai_chance = { factor = 100 }
+ }
+ option = { name = epoch_iii.acknowledge }
+}
+
+country_event = {
+ id = epoch_iii.10
+ title = epoch_iii.10.name
+ desc = { trigger = { is_regular_empire = yes } text = epoch_iii.10.desc }
+ desc = { trigger = { is_hive_empire = yes } text = epoch_iii.10.hive }
+ desc = { trigger = { is_machine_empire = yes } text = epoch_iii.10.machine }
+ picture = GFX_evt_black_hole
+ is_triggered_only = yes
+ immediate = { event_target:epoch_iii_front = { save_event_target_as = epoch_iii_front_location } }
+ option = { name = epoch_iii.10.respond custom_tooltip = epoch_iii.first_objectives hidden_effect = { country_event = { id = epoch_iii.11 } } }
+}
+
+country_event = {
+ id = epoch_iii.11
+ title = epoch_iii.10.name
+ desc = epoch_iii.11.desc
+ picture = GFX_evt_black_hole
+ is_triggered_only = yes
+ trigger = { has_country_flag = epoch_iii_enrolled }
+ immediate = { event_target:epoch_iii_front = { save_event_target_as = epoch_iii_front_location } }
+ option = {
+  name = epoch_iii.research
+  trigger = { NOT = { has_country_flag = epoch_iii_counterharmonics } NOT = { has_special_project = EPOCH_III_COUNTERHARMONICS } }
+  allow = { resource_stockpile_compare = { resource = energy value >= 300 } }
+  tooltip = { add_resource = { energy = -300 } custom_tooltip = epoch_iii.research.tt }
+  hidden_effect = { if = { limit = { has_country_flag = epoch_iii_enrolled NOT = { has_country_flag = epoch_iii_counterharmonics } NOT = { has_special_project = EPOCH_III_COUNTERHARMONICS } resource_stockpile_compare = { resource = energy value >= 300 } }
+   add_resource = { energy = -300 }
+   enable_special_project = { name = EPOCH_III_COUNTERHARMONICS location = this owner = root }
+  } }
+  ai_chance = { factor = 100 }
+ }
+ option = { name = epoch_iii.acknowledge custom_tooltip = epoch_iii.first_objectives }
+}
+
+country_event = {
+ id = epoch_iii.12
+ title = epoch_iii.12.name
+ desc = epoch_iii.12.desc
+ picture = GFX_evt_black_hole
+ is_triggered_only = yes
+ option = { name = epoch_iii.12.continue }
+}
+
+# Native research callback. Completion after M/opt-out never grants early prep.
+country_event = {
+ id = epoch_iii.20
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { epoch_iii_preparation_eligible = yes mid_game_years_passed >= -20 mid_game_years_passed < 0 NOT = { has_country_flag = epoch_iii_prepared } }
+ immediate = { set_country_flag = epoch_iii_prepared }
+}
+
+country_event = {
+ id = epoch_iii.21
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { epoch_iii_public_empire = yes has_country_flag = epoch_iii_enrolled NOT = { has_country_flag = epoch_iii_counterharmonics } }
+ immediate = {
+  set_country_flag = epoch_iii_counterharmonics
+  add_modifier = { modifier = epoch_iii_counterharmonics days = 3600 }
+  remove_modifier = epoch_iii_mobile_disruption
+  remove_modifier = epoch_iii_mobile_disruption_experienced
+  remove_modifier = epoch_iii_mobile_disruption_prepared
+ }
+}
+
+# Fleet-root strategy. Local hyperlane search, one expensive path check per
+# selected destination; 180-day replan covers stalled/lost/blocked orders.
+fleet_event = {
+ id = epoch_iii.30
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { has_fleet_flag = epoch_iii_raid exists = owner owner = { is_country_type = epoch_convergence } NOT = { is_in_combat = yes } NOT = { is_disabled = yes } }
+ immediate = {
+  if = { limit = { OR = {
+   NOT = { has_fleet_flag = epoch_iii_order_cooldown }
+   NOT = { exists = event_target:epoch_iii_goal@this }
+   solar_system = { is_same_value = event_target:epoch_iii_goal@root }
+  } }
+   if = { limit = { exists = event_target:epoch_iii_goal@this } clear_global_event_target = epoch_iii_goal@this }
+   solar_system = {
+    random_neighbor_system = {
+     limit = { exists = owner owner = { epoch_iii_public_empire = yes } NOT = { is_capital_system = yes } }
+     save_global_event_target_as = epoch_iii_goal@root
+    }
+    if = { limit = { NOT = { exists = event_target:epoch_iii_goal@root } }
+     random_neighbor_system = { limit = { NOT = { exists = owner } }
+      save_global_event_target_as = epoch_iii_goal@root
+     }
+    }
+   }
+   set_timed_fleet_flag = { flag = epoch_iii_order_cooldown days = 180 }
+   if = { limit = { exists = event_target:epoch_iii_goal@this can_access_system = event_target:epoch_iii_goal@this }
+    clear_fleet_actions = this
+    queue_actions = { move_to = event_target:epoch_iii_goal@this }
+   }
+  }
+ }
+}
+
+# Vanilla: This = destroyed fleet's owner, From = killer, FromFrom = victim
+# fleet. No battle-won, exit, absence, timer or cleanup grants destruction.
+country_event = {
+ id = epoch_iii.40
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = {
+  is_country_type = epoch_convergence
+  has_country_flag = epoch_iii_identity_v1
+  has_global_flag = epoch_iii_active
+  exists = fromfrom
+  fromfrom = { NOR = { has_fleet_flag = epoch_iii_death_recorded has_fleet_flag = epoch_iii_cleanup } OR = { has_fleet_flag = epoch_iii_anchor has_fleet_flag = epoch_iii_raid } }
+ }
+ immediate = {
+  fromfrom = { set_fleet_flag = epoch_iii_death_recorded }
+  if = { limit = { fromfrom = { has_fleet_flag = epoch_iii_anchor } }
+   set_global_flag = epoch_iii_anchor_destroyed
+   every_country = { limit = { has_country_flag = epoch_iii_enrolled }
+    every_situation = { limit = { is_situation_type = epoch_iii_first_offensive } add_situation_progress = 50 }
+   }
+  }
+  else = { change_variable = { which = epoch_iii_raids_destroyed value = 1 } }
+  # Conservative credit only to the native perpetrator, never invented allies.
+  if = { limit = { exists = from from = { epoch_iii_public_empire = yes } }
+   from = { set_country_flag = epoch_iii_military_contribution }
+  }
+  country_event = { id = epoch_iii.2 days = 1 }
+ }
+}

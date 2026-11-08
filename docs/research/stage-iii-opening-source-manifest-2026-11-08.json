@@ -1,0 +1,75 @@
+{
+  "existingGeneratedDocumentation": [
+    {
+      "path": "effects.log",
+      "sha256": "e6a5a3395e6693da3733011738fba23511bcca2cd91c20950df7d64249ef937a"
+    },
+    {
+      "path": "triggers.log",
+      "sha256": "b97f4e7a9b25092fe7a1a24e2502c041a29dc0184461b6f764c258e1192b1186"
+    },
+    {
+      "path": "modifiers.log",
+      "sha256": "9bb33165d13ef6fe550bb6b8b72717f9704c18dcd5c440c7f443b3ea28852ecd"
+    }
+  ],
+  "base": "f3e985615b9ca137b2d99727f76633e21e3066ef",
+  "installedSources": [
+    {
+      "path": "launcher-settings.json",
+      "sha256": "65f9b547c0d5194f885ec015ff46edba941d45e78706b5a92efb03d079fa07e9"
+    },
+    {
+      "path": "common/on_actions/00_on_actions.txt",
+      "sha256": "b85054a739808e7e9e213bb4d189fed1eeb930e8f16c9b36bdfdbe82ce59fe1f"
+    },
+    {
+      "path": "common/country_types/00_country_types.txt",
+      "sha256": "06586e223c8421c26de8864dedf8b3e4c51bba3e796e5d75668660c8b979b6c4"
+    },
+    {
+      "path": "common/ship_sizes/10_ai_ships.txt",
+      "sha256": "a551784e5442773b6a089f90c422ad40a7aba19e5d7e053b1cc77d08c39458e4"
+    },
+    {
+      "path": "common/global_ship_designs/ai_ship_designs.txt",
+      "sha256": "4f1f5519596e24fdbc1250f9e29939d199ffaa1809937ab35436115beb93a3c0"
+    },
+    {
+      "path": "common/section_templates/destroyer.txt",
+      "sha256": "c2cb6c9dd97b05fb0ceb15da9bcbfd8686b4b595c693b945ed22b6898f78c98d"
+    },
+    {
+      "path": "common/section_templates/ai.txt",
+      "sha256": "80d5da2391e15a6303a90be5905855a32ebcb642f738b6598d8aa717f448a91d"
+    },
+    {
+      "path": "common/special_projects/00_projects_infernals.txt",
+      "sha256": "bc9f069c6861a5994c348db797b00ad3dbba9f4392a651c2880603ead9e8f965"
+    },
+    {
+      "path": "events/marauder_events.txt",
+      "sha256": "a64e4e59b1ddeb93729135fff1411d9543bb1ac3291d593a5c7fe748d1d51bf3"
+    },
+    {
+      "path": "events/synthetic_dawn_events.txt",
+      "sha256": "22e6427938729ba5d218ceb0c73eab3388d95c4cfb81965a61f1fa5a005f8f89"
+    },
+    {
+      "path": "events/an4_events.txt",
+      "sha256": "43a890c475be0d16e3cf6aad5a8f8085ba9c8fa636481bae8faf79f077e13a8e"
+    },
+    {
+      "path": "events/infernals_crisis_events.txt",
+      "sha256": "da6d18c2642d2a0fd3357adff8e247ade87ab3f712b21daa1ef152d695017dfd"
+    },
+    {
+      "path": "events/astral_planes_events.txt",
+      "sha256": "9304465c7be91c7a08e19f08d7cc7e8a225c9ed89cddd358800bf9ea90b559ec"
+    }
+  ],
+  "runtimeExecuted": false,
+  "steamBuild": "26325427",
+  "date": "2026-11-08",
+  "game": "Stellaris 4.5.3 (4e91)"
+}

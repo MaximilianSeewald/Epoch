@@ -1,0 +1,32 @@
+# Scripted movement only. No native military/construction AI can spend budget.
+epoch_convergence = {
+ playable = no
+ has_pulse_events = no
+ has_deficits = no
+ needs_survey = no
+ has_complete_sensor = yes
+ has_capital = no
+ enforces_borders = no
+ diplomatic_wars = no
+ orbital_bombardment = no
+ attack_unarmed_orbital_stations = yes
+ destroys_starbases = yes
+ ship_disengagement = no
+ show_in_contacts_list = yes
+ government = no
+ mid_game_crisis = yes
+ faction = {
+  hostile = yes
+  neutral = no
+  auto_delete = no
+  needs_border_access = no
+  generate_borders = no
+  needs_colony = no
+ }
+ ai = { enabled = no }
+ modules = {
+  exclusive_diplomacy_module = { contact_rule = on_action_only }
+  basic_technology_module = { }
+  standard_event_module = { }
+ }
+}

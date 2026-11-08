@@ -1,0 +1,35 @@
+decision_epoch_iii_briefing = {
+ icon = decision_resources
+ owned_planets_only = yes
+ enactment_time = 0
+ potential = {
+  owner = { has_country_flag = epoch_iii_enrolled NOT = { has_country_flag = epoch_iii_counterharmonics } NOT = { has_special_project = EPOCH_III_COUNTERHARMONICS } }
+ }
+ effect = { owner = { country_event = { id = epoch_iii.11 } } }
+ ai_weight = { weight = 50 }
+}
+
+decision_epoch_iii_buffer = {
+ icon = decision_resources
+ owned_planets_only = yes
+ enactment_time = 90
+ resources = { category = decisions cost = { energy = 300 minerals = 200 } }
+ potential = { has_planet_flag = epoch_iii_exposed_v1 NOT = { has_planet_flag = epoch_iii_buffered } }
+ allow = {
+  owner = { OR = { has_country_flag = epoch_iii_prepared has_country_flag = epoch_iii_counterharmonics } }
+  OR = { has_modifier = epoch_iii_pressure_unprepared has_modifier = epoch_iii_pressure_experienced has_modifier = epoch_iii_pressure_prepared }
+ }
+ effect = {
+  tooltip = {
+   remove_modifier = epoch_iii_pressure_unprepared
+   remove_modifier = epoch_iii_pressure_experienced
+   remove_modifier = epoch_iii_pressure_prepared
+   add_modifier = { modifier = epoch_iii_pressure_buffered days = -1 }
+   custom_tooltip = epoch_iii.buffer.tt
+  }
+  hidden_effect = { if = { limit = { has_planet_flag = epoch_iii_exposed_v1 NOT = { has_planet_flag = epoch_iii_buffered } owner = { OR = { has_country_flag = epoch_iii_prepared has_country_flag = epoch_iii_counterharmonics } } }
+   epoch_iii_buffer_world = yes
+  } }
+ }
+ ai_weight = { weight = 100 }
+}

@@ -1,0 +1,32 @@
+epoch_iii_pressure_prepared = {
+ icon = "gfx/interface/icons/planet_modifiers/pm_hazardous_weather.dds"
+ planet_stability_add = -2
+ planet_jobs_produces_mult = -0.03
+}
+epoch_iii_pressure_experienced = {
+ icon = "gfx/interface/icons/planet_modifiers/pm_hazardous_weather.dds"
+ planet_stability_add = -4
+ planet_jobs_produces_mult = -0.07
+}
+epoch_iii_pressure_unprepared = {
+ icon = "gfx/interface/icons/planet_modifiers/pm_irradiated.dds"
+ planet_stability_add = -8
+ planet_jobs_produces_mult = -0.12
+}
+epoch_iii_pressure_buffered = {
+ icon = "gfx/interface/icons/planet_modifiers/pm_natural_beauty.dds"
+ planet_stability_add = -1
+ planet_jobs_produces_mult = -0.01
+}
+epoch_iii_mobile_disruption = {
+ ships_upkeep_mult = 0.15
+}
+epoch_iii_mobile_disruption_experienced = {
+ ships_upkeep_mult = 0.08
+}
+epoch_iii_mobile_disruption_prepared = {
+ ships_upkeep_mult = 0.03
+}
+epoch_iii_counterharmonics = {
+ ship_weapon_damage = 0.10
+}

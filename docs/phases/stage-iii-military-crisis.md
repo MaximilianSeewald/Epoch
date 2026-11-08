@@ -1,5 +1,7 @@
 # Stage III – The Nullwarden Convergence
 
+**Implementation update (2026-11-08):** the authorized first-offensive opening is implemented for static review and player acceptance. See [scope, parameters and evidence limits](stage-iii-opening-implementation.md). The full-stage design below remains binding; no runtime acceptance or full five-chapter completion is claimed.
+
 **Status: Binding design specification; NOT implemented or engine-validated.** Target: Stellaris 4.5.3 (current EPOCH base). Stage III is an actual galaxy-wide midgame crisis, not a private continuation of an empire's Stage-II situation. The design follows [EPOCH Architecture](../architecture.md), [galactic-crisis ADR](../architecture/adr-001-galactic-crisis.md), [story outline](stage-iii-narrative-outline.md), [implementation plan](stage-iii-implementation-plan.md), [engine contract](stage-iii-engine-contract.md), and [acceptance](stage-iii-acceptance.md).
 
 The [integration policy ADR-002](../architecture/adr-002-stage-iii-integration.md) defines the normative protected-world fallback, active Stage-I/II isolation, save support, safe placement, strategic scope and shared victory validator. The [evidence register](stage-iii-engine-evidence.md) separates installed source observations from still-required runtime proof. This specification is planning only; gameplay and executable probes require separate user authorization.

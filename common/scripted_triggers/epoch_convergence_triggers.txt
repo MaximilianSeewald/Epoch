@@ -1,0 +1,84 @@
+# Default includes subjects, genocidals, Hive/Machine and mobile player origins.
+epoch_iii_public_empire = { is_country_type = default }
+
+epoch_iii_preparation_eligible = {
+ epoch_iii_public_empire = yes
+ has_country_flag = epoch_res_schema_v1
+ has_country_flag = epoch_res_complete
+ has_country_flag = epoch_res_final_choice_v1
+ has_country_flag = epoch_res_stage_iii_ready
+ NOR = {
+  has_country_flag = epoch_core_campaign_opted_out
+  has_country_flag = epoch_res_final_choice_pending
+  has_country_flag = epoch_res_legacy_incompatible
+ }
+}
+
+# System scope. Never seize an asset or ambush a capital. A direct hyperlane
+# into an ordinary non-capital system provides an accessible first front.
+epoch_iii_safe_front = {
+ NOT = { exists = owner }
+ NOT = { exists = starbase }
+ NOT = { any_fleet_in_system = { always = yes } }
+ NOT = { any_system_planet = { is_colony = yes } }
+ any_neighbor_system = {
+  exists = owner
+  owner = { epoch_iii_public_empire = yes }
+  NOT = { is_capital_system = yes }
+ }
+}
+
+# Saturated-map fallback: an uninhabited ordinary frontier outpost, never a
+# fortified base or capital. Existing assets survive creation unchanged and
+# can only be lost in the resulting native battle. No ownership transfer.
+epoch_iii_frontier_outpost = {
+ exists = owner
+ owner = { epoch_iii_public_empire = yes }
+ NOT = { is_capital_system = yes }
+ NOT = { any_system_planet = { is_colony = yes } }
+ exists = starbase
+ starbase = { has_starbase_size = starbase_outpost }
+ NOT = { any_fleet_in_system = { fleet_power > 500 } }
+ any_neighbor_system = {
+  exists = owner
+  owner = { epoch_iii_public_empire = yes }
+  NOT = { is_capital_system = yes }
+ }
+ any_neighbor_system = {
+  OR = { NOT = { exists = owner } owner = { NOT = { is_same_value = prevprev.owner } } }
+ }
+}
+
+# Physical Planet/Colony scope. Conservative isolation: every world belonging
+# to an active campaign or an owner with a canonical old objective uses overlay.
+# This includes old targets without a saved completion flag, and all three
+# feature families. No old setter or carrier flag is used by this stage.
+epoch_iii_clean_carrier = {
+ owner = {
+  NOR = {
+   has_country_flag = epoch_core_campaign_active
+   has_country_flag = epoch_res_active
+   has_country_flag = epoch_ii_active
+   exists = event_target:epoch_core_world@this
+   exists = event_target:epoch_core_structure_site@this
+   exists = event_target:epoch_ii_target_planet@this
+  }
+ }
+ NOR = {
+  has_deposit = d_epoch_resonance_contamination_active
+  has_deposit = d_epoch_resonance_contamination_worsened
+  has_deposit = d_epoch_resonance_contamination_studied
+  has_deposit = d_epoch_resonance_contamination_contained
+  has_deposit = d_epoch_resonance_contamination_latent
+  has_deposit = d_epoch_resonance_contamination_resonant
+  has_deposit = d_epoch_resonance_contamination_unstable
+  has_deposit = d_epoch_resonance_contamination_controlled
+  has_deposit = d_epoch_resonance_scar
+  has_deposit = d_epoch_resonance_scar_altered
+  has_deposit = d_epoch_resonance_scar_healed
+  has_deposit = d_epoch_silent_structure_unsecured
+  has_deposit = d_epoch_silent_structure_investigated
+  has_deposit = d_epoch_silent_structure_secured
+  has_deposit = d_epoch_silent_structure_destroyed
+ }
+}

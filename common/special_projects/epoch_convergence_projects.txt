@@ -1,0 +1,28 @@
+# Native point-cost country research (infernals.1000 / INF_CRISIS_ENTROPY).
+# No Science Ship requirement is claimed; these divert real Physics research.
+special_project = {
+ key = EPOCH_III_PREPARE
+ cost = 900
+ tech_department = physics_technology
+ picture = GFX_evt_physics_research
+ event_scope = country_event
+ location = no
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { OR = { mid_game_years_passed >= 0 NOT = { epoch_iii_preparation_eligible = yes } } }
+ on_success = { country_event = { id = epoch_iii.20 } }
+ on_fail = { }
+ on_cancel = { }
+}
+special_project = {
+ key = EPOCH_III_COUNTERHARMONICS
+ cost = 1200
+ tech_department = physics_technology
+ picture = GFX_evt_physics_research
+ event_scope = country_event
+ location = no
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { NOT = { epoch_iii_public_empire = yes } }
+ on_success = { country_event = { id = epoch_iii.21 } }
+ on_fail = { }
+ on_cancel = { }
+}

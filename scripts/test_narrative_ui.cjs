@@ -3,6 +3,7 @@
 const fs=require('node:fs'),cp=require('node:child_process'),assert=require('node:assert/strict');
 const {parse,get,parsedByPath:current}=require('./test_clausewitz_structure.cjs');
 const base='e8dd01aedada5824e5b58fcfc1a12989eaa84f1c';
+const basePaths=new Set(cp.execFileSync('git',['ls-tree','-r','--name-only',base],{encoding:'utf8'}).trim().split(/\r?\n/));
 const old=p=>parse(cp.execFileSync('git',['show',`${base}:${p}`],{encoding:'utf8',maxBuffer:4*1024*1024}),p);
 let checks=0;const check=(v,m)=>{checks++;assert.ok(v,m);};
 const effects=new Map([...current].filter(([p])=>p.startsWith('common/scripted_effects/')).flatMap(([,v])=>v));
@@ -11,9 +12,9 @@ function depth(name,stack=[]){assert.ok(!stack.includes(name),`Recursive effect 
 const deepest=[...effects.keys()].map(k=>[k,depth(k)]).sort((a,b)=>b[1]-a[1]);
 for(const [name,d]of deepest)check(d<5,`${name}: ${d} scripted-effect expansions must stay below engine limit 5`);
 check(depth('epoch_res_repair_infection')<=3,'Infection repair has at most three scripted-effect levels');
-const baseEffects=new Map([...current].filter(([p])=>p.startsWith('common/scripted_effects/')).flatMap(([p])=>old(p)));
+const baseEffects=new Map([...current].filter(([p])=>p.startsWith('common/scripted_effects/')&&basePaths.has(p)).flatMap(([p])=>old(p)));
 function expand(b,map){return b.flatMap(([k,v])=>map.has(k)?expand(map.get(k),map):[[k,Array.isArray(v)?expand(v,map):v]]);}
-for(const [k,v]of effects){assert.deepEqual(expand(v,effects),expand(baseEffects.get(k),baseEffects),`${k}: flattened executable state changes must equal baseline`);checks++;}
+for(const [k,v]of effects)if(baseEffects.has(k)){assert.deepEqual(expand(v,effects),expand(baseEffects.get(k),baseEffects),`${k}: flattened executable state changes must equal baseline`);checks++;}
 const ui=new Set(['tooltip','custom_tooltip','custom_tooltip_with_modifiers']);
 function executable(b){return b.flatMap(([k,v])=>{
  if(k==='custom_tooltip'&&Array.isArray(v)&&get(v,'fail_text'))return executable(v.filter(([key])=>!['fail_text','success_text'].includes(key)));
@@ -28,7 +29,7 @@ function executable(b){return b.flatMap(([k,v])=>{
  return [[k,v]];
 });}
 const bugfixes=new Set(['epoch_res.101','epoch_res.11','epoch_res.111','epoch_core.22','epoch_core.51','epoch_core.52']);
-for(const [p,defs]of current)if(p.startsWith('events/')){
+for(const [p,defs]of current)if(p.startsWith('events/')&&basePaths.has(p)){
  const prior=new Map(old(p).filter(([,b])=>Array.isArray(b)).map(([k,b])=>[get(b,'id'),b]));
  for(const [,b]of defs){if(!Array.isArray(b))continue;const id=get(b,'id');if(!id||bugfixes.has(id))continue;assert.deepEqual(executable(b),executable(prior.get(id)),`${id}: presentation must preserve executable event tree`);checks++;}
 }
@@ -50,7 +51,7 @@ check(get(find(scar,'country_event'),'days')==='1','Scar follow-up leaves the na
 // Dynamic localization uses native local names, never script event_target promotion.
 const locs={};
 for(const lang of ['english','german']){
- const s=fs.readFileSync(`localisation/${lang}/epoch_core_l_${lang}.yml`,'utf8');
+ const s=fs.readdirSync(`localisation/${lang}`).filter(p=>p.endsWith('.yml')).map(p=>fs.readFileSync(`localisation/${lang}/${p}`,'utf8')).join('\n');
  const entries=[...s.matchAll(/^[ \t]*([\w.]+):\d+ "(.*)"\r?$/gm)];locs[lang]=new Map(entries.map(m=>[m[1],m[2]]));
  check(!/\[event_target:|\[[^\]]*@/.test(s),`${lang}: native local name aliases only`);
  for(const [key,value]of locs[lang]){

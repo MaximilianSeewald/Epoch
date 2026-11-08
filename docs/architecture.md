@@ -1,5 +1,7 @@
 # EPOCH Architecture
 
+Implementation status, 2026-11-08: the [Stage-III opening](phases/stage-iii-opening-implementation.md) through first-offensive repulsion is implemented for static review and player acceptance. The full crisis remains design scope; runtime gates remain open. The follow-up implementation request supersedes documentation-only authorization and pre-implementation probe sequencing for this limited slice.
+
 **Status: Binding.** This is the source of truth for campaign-wide rules. Stage details are defined once in the linked specifications; acceptance criteria are in [testing](testing.md), technical evidence and limits in [technical contract](technical-contract.md), and legacy code disposition in the [migration matrix](architecture/content-migration.md).
 
 ## Four stages

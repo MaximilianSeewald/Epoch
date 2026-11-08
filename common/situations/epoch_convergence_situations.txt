@@ -1,0 +1,35 @@
+epoch_iii_preparations = {
+ picture = GFX_evt_black_hole
+ category = neutral
+ situation_log_category = developments
+ initial_progress = 0
+ progress_direction = monodirectional
+ permanent = yes
+ desc = { trigger = { always = yes } text = epoch_iii_preparations_desc }
+ abort_trigger = { owner = { OR = { mid_game_years_passed >= 0 NOT = { epoch_iii_preparation_eligible = yes } } } }
+ stages = { stage_epoch_iii_listening = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 100 custom_tooltip = epoch_iii.prepare.tt } }
+ monthly_progress = { base = 0 }
+ approach = { name = epoch_iii_listen default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 10 } }
+ approach = { name = epoch_iii_prepare_report icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green on_select = { owner = { country_event = { id = epoch_iii.5 } } } ai_weight = { base = 20 modifier = { factor = 0 owner = { OR = { has_country_flag = epoch_iii_prepared has_special_project = EPOCH_III_PREPARE } } } } }
+ on_progress_complete = { }
+}
+
+epoch_iii_first_offensive = {
+ picture = GFX_evt_black_hole
+ category = negative
+ situation_log_category = developments
+ initial_progress = 0
+ progress_direction = monodirectional
+ permanent = yes
+ desc = { trigger = { always = yes } text = epoch_iii_first_offensive_desc }
+ stages = {
+  stage_epoch_iii_anchor = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 50 custom_tooltip = epoch_iii.anchor_goal }
+  stage_epoch_iii_remaining = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_blue end = 100 custom_tooltip = epoch_iii.remaining_goal }
+ }
+ # Only the native anchor destruction advances this display. The global
+ # validator still requires all mobile formations' native destruction records.
+ monthly_progress = { base = 0 }
+ approach = { name = epoch_iii_watch default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 10 } }
+ approach = { name = epoch_iii_briefing icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green on_select = { owner = { country_event = { id = epoch_iii.11 } } } ai_weight = { base = 20 modifier = { factor = 0 owner = { OR = { has_country_flag = epoch_iii_counterharmonics has_special_project = EPOCH_III_COUNTERHARMONICS } } } } }
+ on_progress_complete = { }
+}

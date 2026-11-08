@@ -1,5 +1,7 @@
 # Stage III – Priorisierter Implementierungsplan (AP0–AP11)
 
+**Fortschreibung 2026-11-08:** Der Folgeauftrag gibt den zusammenhängenden Auftakt bis zur Abwehr der ersten Offensive und statische Prüfung vor Spielerabnahme frei. Dieser Ausschnitt ist implementiert; die frühere Freigabegrenze und die Reihenfolge „Laufzeitprobe vor Implementierung“ gelten für diesen Auftrag nicht mehr. AP1–AP4/G1 sind weiterhin **nicht zur Laufzeit abgenommen**. Umfang und offene Nachweise: [Auftakt](stage-iii-opening-implementation.md). Der folgende Vollausbauplan bleibt für spätere Kapitel bestehen.
+
 Alle folgenden Implementierungs-/Probe-Arbeiten sind **zukünftig und bis zur Freigabe nicht begonnen**. Auch ein temporärer Testmod ist Implementierung und fällt unter die Freigabegrenze. P0 blockiert Produktionsentwicklung, P1 gehört zur spielbaren Kernversion, P2 zur Veröffentlichung/optionalen Erweiterung.
 
 | Paket | Prio / Abhängigkeit | Konkretes Ergebnis | Tests und Definition of Done |

@@ -1,0 +1,83 @@
+# Country scope. Cohort freezes only on actual public enrollment.
+epoch_iii_enroll = {
+ set_country_flag = epoch_iii_enrolled
+ if = { limit = { epoch_iii_preparation_eligible = yes has_country_flag = epoch_iii_prepared }
+  set_country_flag = epoch_iii_cohort_prepared
+ }
+ else_if = { limit = { epoch_iii_preparation_eligible = yes }
+  set_country_flag = epoch_iii_cohort_experienced
+ }
+ else = { set_country_flag = epoch_iii_cohort_uninitiated }
+ # One physical world, once. Conquest never reapplies damage to that world.
+ random_owned_planet = {
+  limit = { is_colony = yes exists = planet NOT = { has_planet_flag = epoch_iii_exposed_v1 } }
+  colony = {
+   set_planet_flag = epoch_iii_exposed_v1
+   if = { limit = { owner = { has_country_flag = epoch_iii_cohort_prepared } }
+    add_modifier = { modifier = epoch_iii_pressure_prepared days = -1 }
+   }
+   else_if = { limit = { owner = { has_country_flag = epoch_iii_cohort_experienced } }
+    add_modifier = { modifier = epoch_iii_pressure_experienced days = -1 }
+   }
+   else = { add_modifier = { modifier = epoch_iii_pressure_unprepared days = -1 } }
+   if = { limit = { epoch_iii_clean_carrier = yes owner = { has_country_flag = epoch_iii_cohort_uninitiated } }
+    add_deposit = d_epoch_resonance_contamination_active
+    set_planet_flag = epoch_iii_feature_added
+   }
+  }
+ }
+ # Mobile/colonyless empires have a genuine fleet-economic penalty as well.
+ if = { limit = { NOT = { any_owned_planet = { is_colony = yes } } }
+  if = { limit = { has_country_flag = epoch_iii_cohort_prepared }
+   add_modifier = { modifier = epoch_iii_mobile_disruption_prepared days = -1 }
+  }
+  else_if = { limit = { has_country_flag = epoch_iii_cohort_experienced }
+   add_modifier = { modifier = epoch_iii_mobile_disruption_experienced days = -1 }
+  }
+  else = { add_modifier = { modifier = epoch_iii_mobile_disruption days = -1 } }
+ }
+ establish_communications_no_message = event_target:epoch_iii_country
+ event_target:epoch_iii_front = { set_surveyed = { surveyed = yes surveyor = prev } }
+ start_situation = { type = epoch_iii_first_offensive target = event_target:epoch_iii_front }
+ if = { limit = { has_global_flag = epoch_iii_anchor_destroyed }
+  every_situation = { limit = { is_situation_type = epoch_iii_first_offensive } add_situation_progress = 50 }
+ }
+ country_event = { id = epoch_iii.10 }
+}
+
+# Crisis country scope. All call sites recheck source/phase; this also guards
+# queued callbacks and never replenishes lifetime spent after losses.
+epoch_iii_spawn_raid = {
+ if = { limit = {
+  has_global_flag = epoch_iii_active
+  NOT = { has_global_flag = epoch_iii_anchor_destroyed }
+  exists = event_target:epoch_iii_anchor
+  event_target:epoch_iii_anchor = { has_fleet_flag = epoch_iii_anchor exists = owner owner = { is_same_value = prevprev } }
+  check_variable = { which = epoch_iii_spent value < 4 }
+  count_owned_fleet = { count < 3 limit = { has_fleet_flag = epoch_iii_raid } }
+ }
+  change_variable = { which = epoch_iii_spent value = 1 }
+  set_timed_country_flag = { flag = epoch_iii_reinforcement_cooldown days = 720 }
+  create_fleet = { name = NAME_EPOCH_III_Hunters effect = {
+   set_owner = event_target:epoch_iii_country
+   set_fleet_flag = epoch_iii_raid
+   while = { count = 12 create_ship = { design = "NAME_EPOCH_Unknown_Skirmisher" graphical_culture = fallen_machine_empire_01 } }
+   while = { count = 6 create_ship = { design = "NAME_EPOCH_III_Enforcer" graphical_culture = fallen_machine_empire_01 } }
+   set_location = { target = event_target:epoch_iii_front distance = 90 angle = random }
+   set_fleet_stance = aggressive
+   set_aggro_range_measure_from = self
+   set_aggro_range = 250
+   fleet_event = { id = epoch_iii.30 days = 1 }
+  } }
+ }
+}
+
+# Colony scope: paid buffering never clears the shared families, private flags,
+# archaeology, devastation or another empire's projects. Scars remain physical.
+epoch_iii_buffer_world = {
+ remove_modifier = epoch_iii_pressure_prepared
+ remove_modifier = epoch_iii_pressure_experienced
+ remove_modifier = epoch_iii_pressure_unprepared
+ add_modifier = { modifier = epoch_iii_pressure_buffered days = -1 }
+ set_planet_flag = epoch_iii_buffered
+}
