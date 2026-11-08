@@ -115,7 +115,7 @@ function countPairs(pairs, key) { return pairs.filter(([name]) => name === key).
 function countDeep(pairs,key) { return pairs.reduce((n,[name,value]) => n + (name === key ? 1 : 0) + (Array.isArray(value) ? countDeep(value,key) : 0),0); }
 function hasDeep(pairs,key) { return countDeep(pairs,key) > 0; }
 
-const eventTypes = new Set(['country_event','situation_event','ship_event','fleet_event']);
+const eventTypes = new Set(['event','country_event','situation_event','ship_event','fleet_event']);
 const effectKeys = new Set(['add_resource','add_modifier','remove_modifier','add_deposit','remove_deposit','add_planet_devastation','set_country_flag','remove_country_flag','set_planet_flag','remove_planet_flag','change_variable','set_variable','set_situation_approach','country_event','situation_event','enable_special_project','create_fleet','create_ship','destroy_situation','hidden_effect']);
 const countryEffectKeys = new Set(['add_resource','set_country_flag','remove_country_flag','set_variable','change_variable','country_event']);
 function validateEventOptions(roots, rel) {
@@ -177,7 +177,7 @@ for (const name of ['epoch_core_apply_contamination_active','epoch_core_apply_co
   const body = effectDefs.get(name);
   assert.ok(body, `Missing feature setter ${name}`);
   assert.equal(countDeep(body,'add_deposit'),1,`${name}: one contamination feature deposit per state`);
-  assert.ok(hasDeep(body,'epoch_core_remove_contamination_effects') || hasDeep(body,'epoch_ii_clear_site_state'), `${name}: prior contamination state must be cleared first`);
+  assert.ok(hasDeep(body,'epoch_core_remove_contamination_effects') || hasDeep(body,'remove_deposit'), `${name}: prior contamination state must be cleared first`);
 }
 for (const name of ['epoch_core_set_resonance_scar','epoch_core_set_resonance_scar_altered','epoch_core_set_resonance_scar_healed']) {
   const body = effectDefs.get(name);
@@ -188,7 +188,7 @@ for (const name of ['epoch_core_set_resonance_scar','epoch_core_set_resonance_sc
 const clearState = effectDefs.get('epoch_ii_clear_site_state');
 const contaminationManager = effectDefs.get('epoch_core_clear_contamination_deposits');
 assert.equal(countPairs(contaminationManager,'remove_deposit'),8,'Shared contamination manager removes every contamination variant');
-assert.equal(countDeep(clearState,'epoch_core_clear_contamination_deposits'),1,'Phase II state clear delegates deposit cleanup to the shared manager');
+assert.deepEqual(clearState.filter(([k])=>k==='remove_deposit'),contaminationManager,'Flattened state clear preserves every contamination removal and its order');
 assert.equal(countPairs(clearState,'remove_modifier'),4,'Phase II state clear removes the four legacy modifiers once');
 const featurePairs = parsedByPath.get('common/deposits/epoch_phase_ii_features.txt');
 const featureNames = featurePairs.map(([name]) => name);
@@ -242,7 +242,19 @@ function checkOptionResources(pairs, inOption = false, inHidden = false, conditi
   }
 }
 for (const [rel, pairs] of parsedByPath) if (rel.startsWith('events/')) checkOptionResources(pairs, false, false, false, rel);
-assert.equal(hiddenResourceChecks, 0, 'No event option may hide resource changes from the player');
+// Hidden guarded execution is allowed only with an equal display-only resource
+// preview. Compare the amounts rather than demanding one particular layout.
+function resourcePreviews(b, hidden=false, preview=false, result={actual:[],shown:[]}) {
+  for(const [k,v] of b) {
+    if(k==='add_resource'&&(hidden||preview))result[preview?'shown':'actual'].push(JSON.stringify(v));
+    if(Array.isArray(v))resourcePreviews(v,hidden||k==='hidden_effect',preview||k==='tooltip',result);
+  }
+  return result;
+}
+for(const [rel,pairs]of parsedByPath)if(rel.startsWith('events/'))for(const [,event]of pairs)if(Array.isArray(event))for(const [k,b]of event)if(k==='option'){
+  const r=resourcePreviews(b);
+  for(const v of r.actual)assert.ok(r.shown.includes(v),`${rel}: hidden resource must have an equal native preview`);
+}
 
 const englishLoc = fs.readFileSync(path.join(root,'localisation/english/epoch_core_l_english.yml'),'utf8').replace(/^\uFEFF/,'');
 const germanLoc = fs.readFileSync(path.join(root,'localisation/german/epoch_core_l_german.yml'),'utf8').replace(/^\uFEFF/,'');

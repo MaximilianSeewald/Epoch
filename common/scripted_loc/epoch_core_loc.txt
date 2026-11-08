@@ -68,3 +68,18 @@ defined_text = { name = GetEpochSilenceSummary random = no
  text = { localization_key = epoch_res.silence.clean trigger = { has_country_flag = epoch_res_clean_samples } }
  text = { localization_key = epoch_res.silence.base  }
 }
+
+defined_text = { name = GetEpochContainmentSummary random = no
+ text = { localization_key = epoch_res.end.damage trigger = { has_country_flag = epoch_res_containment_failure } }
+ text = { localization_key = epoch_res.end.stable }
+}
+defined_text = { name = GetEpochNetworkChoiceSummary random = no
+ text = { localization_key = epoch_res.end.repeat trigger = { has_country_flag = epoch_res_network_exposed } }
+ text = { localization_key = epoch_res.end.pulse trigger = { has_country_flag = epoch_res_network_pulse } }
+ text = { localization_key = epoch_res.end.silent }
+}
+defined_text = { name = GetEpochClosingClass random = no
+ text = { localization_key = epoch_res.end.machine trigger = { is_machine_empire = yes } }
+ text = { localization_key = epoch_res.end.hive trigger = { is_hive_empire = yes } }
+ text = { localization_key = epoch_res.end.organic }
+}

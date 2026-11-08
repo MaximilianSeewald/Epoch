@@ -70,7 +70,7 @@ for (const [name,b] of decisions) if (!name.endsWith('resume')) {
   check(get(b,'allow').length>0&&get(b,'effect').length>0,`${name} active requirements and effects`);
   check(JSON.stringify(get(b,'potential')).includes('epoch_res_infected_for@owner'),`${name} rejects foreign/stale worlds`);
 }
-check(countDeep(effects.get('epoch_ii_clear_site_state'),'epoch_core_clear_contamination_deposits')===1,'Shared family clear');
+check(JSON.stringify(effects.get('epoch_ii_clear_site_state').filter(([k])=>k==='remove_deposit'))===JSON.stringify(effects.get('epoch_core_clear_contamination_deposits')),'Flattened shared family clear is identical');
 check(!JSON.stringify(effects.get('epoch_ii_clear_site_state')).includes('epoch_core_contamination_active_state'),'Old Stage-I penalties survive');
 check(JSON.stringify(E(59)).includes('epoch_res_interrupted_complete'),'All three station results gate handoff');
 const handoffWriters = [...eventDefs].filter(([,{b}])=>JSON.stringify(b).includes('"set_country_flag","epoch_res_stage_iii_ready"'));
@@ -110,6 +110,7 @@ function resolve(name,c) {
 function ctx(obj,c){return {...c,obj,prev:c.obj,prevprev:c.prev};}
 function test(b,c) {
   return b.every(([k,v])=>{
+    if(k==='custom_tooltip'&&Array.isArray(v))return test(v.filter(([key])=>!['fail_text','success_text'].includes(key)),c);
     if(k==='NOT'||k==='NOR')return !v.some(pair=>test([pair],c));
     if(k==='OR')return v.some(pair=>test([pair],c));
     if(k==='AND'||k==='limit')return test(v,c);
@@ -152,6 +153,8 @@ function test(b,c) {
 function run(b,c) {
   let branch=false;
   for(const [k,v] of b||[]) {
+    if(k==='tooltip')continue; // Native display-only effects never execute.
+    if(k==='hidden_effect'){run(v,c);continue;}
     if(k==='if'){branch=test(get(v,'limit'),c);if(branch)run(v.filter(([k])=>k!=='limit'),c);continue;}
     if(k==='else_if'){if(!branch&&test(get(v,'limit'),c)){branch=true;run(v.filter(([k])=>k!=='limit'),c);}continue;}
     if(k==='else'){if(!branch)run(v,c);continue;}
@@ -414,12 +417,22 @@ check(queued.includes('epoch_res.1')&&!x.country.flags.has('epoch_res_scar_compl
 const fundScar=E(1).filter(([k,b])=>k==='option'&&get(b,'name')==='epoch_res.begin')[0][1];
 run(fundScar.filter(([k])=>!['name','trigger','allow','ai_chance'].includes(k)),x.countryContext);
 check(x.country.projects.has('EPOCH_RES_SCAR'),'Paid replay creates a real SCAR project');
-x.callback(101);check(queued.includes('epoch_res.11')&&x.country.flags.has('epoch_res_scar_complete'),'Actual replayed SCAR opens the independent expedition briefing');
+x.callback(101);check(queued.includes('epoch_res.111')&&x.country.flags.has('epoch_res_scar_complete'),'Actual replayed SCAR queues the country-rooted follow-up dispatch');
+check(!x.country.projects.has('EPOCH_RES_BASELINE'),'Scar callback never grants the second project');
+check(test(get(E(111),'trigger'),x.countryContext),'Deferred dispatch accepts completed scar');
+run(get(E(111),'immediate'),x.countryContext);
+check(queued.includes('epoch_res.11'),'Deferred dispatch requests the independent expedition report');
+targets.set('epoch_res_baseline@empire',x.planet);
+run(get(E(11),'immediate'),x.countryContext);
+check(!test(get(E(111),'trigger'),x.countryContext)&&!test(get(E(11),'trigger'),x.countryContext),'Delivered/open report blocks repeated dispatch and duplicate windows');
+const scarBalance=x.country.resources.physics_research;
+x.callback(101);check(x.country.resources.physics_research===scarBalance,'Repeated native success grants no duplicate research');
 targets.set('epoch_res_baseline@empire',x.planet);
 const fundBaseline=E(11).filter(([k,b])=>k==='option'&&get(b,'name')==='epoch_res.baseline')[0][1];
 check(test(get(fundBaseline,'trigger'),x.countryContext)&&test(get(fundBaseline,'allow'),x.countryContext),'Independent expedition funding is available after the first success');
 run(fundBaseline.filter(([k])=>!['name','trigger','allow','ai_chance'].includes(k)),x.countryContext);
 check(x.country.projects.has('EPOCH_RES_BASELINE'),'Independent expedition funding creates its real project');
+check(!x.country.flags.has('epoch_res_baseline_report_open'),'Funding closes the report guard');
 x.callback(107);check(x.country.vars.epoch_res_chapter===2&&queued.includes('epoch_res.20'),'Actual BASELINE success enters chapter 2');
 
 // Separate archaeology regression: Colony and physical Planet are distinct in
@@ -450,10 +463,13 @@ assert.throws(()=>test([['planet',[['is_scope_type','planet']]]],{obj:site,root:
 check(test(get(coreE(51),'trigger'),arc.countryContext),'Only malformed unfinished EPOCH site qualifies for repair');
 run(get(coreE(51),'immediate'),arc.countryContext);
 check(site.alive===false&&queued.includes('epoch_core.44')&&!arc.country.flags.has('epoch_core_structure_phase_resolved'),'Legacy repair opens existing real-study recovery and never credits unfinished excavation');
+check(!test(get(coreE(51),'trigger'),arc.countryContext),'Retirement is idempotent after saved target removal');
 arc=archaeologyFixture();run(get(beginDig,'hidden_effect'),arc.countryContext);
 check(!test(get(coreE(51),'trigger'),arc.countryContext),'Correctly Planet-bound site is not migrated');
 arc=archaeologyFixture();site=make('resolved-legacy','archaeological_site');site.siteType='epoch_core_silent_structure';targets.set('epoch_core_structure_site@empire',site);arc.country.flags.add('epoch_core_structure_phase_resolved');
-check(!test(get(coreE(51),'trigger'),arc.countryContext),'Existing completed Stage-I result remains untouched');
+check(test(get(coreE(51),'trigger'),arc.countryContext),'Malformed completed site is retired as well');
+queued=[];run(get(coreE(51),'immediate'),arc.countryContext);
+check(site.alive===false&&arc.country.flags.has('epoch_core_structure_phase_resolved')&&!queued.includes('epoch_core.44'),'Completed Stage-I result survives retirement without replaying excavation or opening recovery');
 // Feedback regression: separate the physical Planet and Colony. Generated 4.5.3
 // docs explicitly say planet flags forward to the carrier; is_same_value does
 // not do that. Shared flags below model only that documented forwarding.

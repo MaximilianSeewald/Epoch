@@ -231,6 +231,17 @@ country_event = {
 	}
 	option = {
 		name = epoch_core.4.a
+if = { limit = { has_country_flag = epoch_core_first_echo_complete }
+ custom_tooltip = epoch_ui_recorded
+ if = { limit = { has_country_flag = epoch_core_initial_cautious }
+  tooltip = {
+   if = { limit = { has_country_flag = epoch_core_cautious_instrument_calibrated } add_resource = { physics_research = 250 society_research = 250 } }
+   else = { add_resource = { society_research = 350 } }
+  }
+ }
+ else_if = { limit = { NOT = { has_country_flag = epoch_core_aggressive_overdrive_committed } } tooltip = { add_resource = { physics_research = 250 } } }
+ else = { custom_tooltip = epoch_ui_findings_secured }
+}
 		hidden_effect = {
 		set_country_flag = epoch_core_quiet_watch_established
 		set_country_flag = epoch_core_expedition_project_enabled
@@ -257,6 +268,17 @@ country_event = {
 	}
 	option = {
 		name = epoch_core.5.a
+if = { limit = { has_country_flag = epoch_core_first_echo_complete }
+ custom_tooltip = epoch_ui_recorded
+ if = { limit = { has_country_flag = epoch_core_initial_cautious }
+  tooltip = {
+   if = { limit = { has_country_flag = epoch_core_cautious_instrument_calibrated } add_resource = { physics_research = 250 society_research = 250 } }
+   else = { add_resource = { society_research = 350 } }
+  }
+ }
+ else_if = { limit = { NOT = { has_country_flag = epoch_core_aggressive_overdrive_committed } } tooltip = { add_resource = { physics_research = 250 } } }
+ else = { custom_tooltip = epoch_ui_findings_secured }
+}
 		hidden_effect = {
 		set_country_flag = epoch_core_coordinates_recovered
 		set_country_flag = epoch_core_expedition_project_enabled
@@ -584,6 +606,21 @@ country_event = {
 	}
 	option = {
 		name = epoch_core.7.a
+if = { limit = { OR = { has_country_flag = epoch_core_expedition_survivors_found has_country_flag = epoch_core_expedition_recorder_recovered has_country_flag = epoch_core_expedition_spatial_wake_saved } }
+ custom_tooltip = epoch_ui_recorded
+ tooltip = {
+  if = { limit = { has_country_flag = epoch_core_expedition_survivors_found }
+   if = { limit = { NOT = { has_country_flag = epoch_core_signal_trace_degraded } has_country_flag = epoch_core_initial_cautious } add_resource = { physics_research = 300 society_research = 300 } }
+   else = { add_resource = { physics_research = 250 society_research = 250 } }
+  }
+  else_if = { limit = { has_country_flag = epoch_core_expedition_recorder_recovered }
+   if = { limit = { has_country_flag = epoch_core_expedition_salvage_ordered } add_resource = { engineering_research = 500 } }
+   else_if = { limit = { has_country_flag = epoch_core_signal_trace_degraded } add_resource = { engineering_research = 350 } }
+   else = { add_resource = { engineering_research = 400 } }
+  }
+  else = { add_resource = { physics_research = 200 society_research = 200 engineering_research = 200 } }
+ }
+}
 		hidden_effect = {
 		if = { limit = { has_country_flag = epoch_core_expedition_survivors_found } set_country_flag = epoch_core_expedition_survivor_testimony_saved }
 		if = { limit = { has_country_flag = epoch_core_expedition_recorder_recovered } set_country_flag = epoch_core_expedition_distortion_trace_saved }
@@ -797,12 +834,13 @@ country_event = {
 	}
 	option = {
 		name = epoch_core.22.a
+if = { limit = { has_country_flag = epoch_core_contamination_study_complete } custom_tooltip = epoch_ui_recorded tooltip = { add_resource = { society_research = 350 physics_research = 200 } } }
 		hidden_effect = {
 		set_country_flag = epoch_core_structure_study_ordered
 		if = {
 			limit = {
 				exists = event_target:epoch_core_world@root
-				event_target:epoch_core_world@root = { is_owned_by = root NOT = { exists = archaeological_site } }
+				event_target:epoch_core_world@root = { is_owned_by = root exists = planet NOT = { exists = archaeological_site } }
 			}
 			event_target:epoch_core_world@root = {
 				planet = {
@@ -816,7 +854,7 @@ country_event = {
 		if = {
 			limit = { NOT = { has_country_flag = epoch_core_structure_site_created } }
 			random_owned_planet = {
-				limit = { NOT = { exists = archaeological_site } }
+				limit = { exists = planet NOT = { exists = archaeological_site } }
 				planet = {
 					create_archaeological_site = epoch_core_silent_structure
 					archaeological_site = { save_global_event_target_as = epoch_core_structure_site@root }
@@ -1557,18 +1595,15 @@ country_event = {
 	}
 }
 
-# Owner-local repair for pre-fix Colony-bound sites only. Completed outcomes
-# and functioning physical-planet sites are left unchanged.
+# Retire malformed owner-local sites even after the inquiry has concluded.
+# Completed outcomes are preserved; only unfinished investigations use recovery.
 country_event = {
  id = epoch_core.51
  hide_window = yes
  is_triggered_only = yes
  trigger = {
-  epoch_core_active_campaign_empire = yes
+  is_country_type = default
   has_country_flag = epoch_core_structure_study_ordered
-  NOT = { has_country_flag = epoch_core_structure_phase_resolved }
-  exists = event_target:epoch_core_world@root
-  event_target:epoch_core_world@root = { is_owned_by = root }
   exists = event_target:epoch_core_structure_site@root
   event_target:epoch_core_structure_site@root = {
    is_site_type = epoch_core_silent_structure
@@ -1579,6 +1614,14 @@ country_event = {
   event_target:epoch_core_structure_site@root = { destroy_archaeological_site = this }
   clear_global_event_target = epoch_core_structure_site@root
   set_country_flag = epoch_core_structure_colony_site_retired
-  country_event = { id = epoch_core.44 }
+  if = { limit = { epoch_core_active_campaign_empire = yes NOT = { has_country_flag = epoch_core_structure_phase_resolved } } country_event = { id = epoch_core.44 } }
  }
+}
+
+# No scope in the global on_action; each retirement runs with its own country root.
+event = {
+ id = epoch_core.52
+ hide_window = yes
+ is_triggered_only = yes
+ immediate = { every_country = { limit = { is_country_type = default has_country_flag = epoch_core_structure_site_created } country_event = { id = epoch_core.51 } } }
 }

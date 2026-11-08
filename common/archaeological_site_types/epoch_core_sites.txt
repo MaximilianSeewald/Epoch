@@ -9,7 +9,7 @@ epoch_core_silent_structure = {
 	# Match the native vanilla pattern: allow is evaluated on the fleet and the
 	# site is supplied as from. The site is created only on the campaign world.
 	allow = {
-		from = { is_same_value = event_target:epoch_core_structure_site@root.owner }
+		from = { exists = planet is_same_value = event_target:epoch_core_structure_site@root.owner }
 		is_ship_class = shipclass_science_ship
 		exists = leader
 		leader = { leader_class = scientist }

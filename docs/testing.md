@@ -59,6 +59,8 @@ Separately test Stage I with a Colony-backed campaign world: a newly created Sil
 
 ## PR #13 feedback acceptance
 
+The subsequent [narrative/UI and runtime revision](narrative-ui-overhaul.md) adds the mandatory SCAR automatic-delivery, tooltip-only execution, legacy-site sanitation and spoiler-free finale checks. Test these on the patched PR head; the earlier checkpoint logs do not validate the revision.
+
 See [the correction and checkpoint handoff](stage-ii-feedback-fixes.md) for all ten findings, costs, native source evidence, saved-game recovery and remaining runtime checks. Run `scripts/test_epoch_regressions.ps1` with the target installation and generated script documentation available. The new native-evidence test accepts `EPOCH_SCRIPT_DOCUMENTATION` for another documentation directory.
 
 For the next in-game run, use separate copies of the existing checkpoints:

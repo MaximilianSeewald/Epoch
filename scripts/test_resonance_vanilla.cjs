@@ -39,7 +39,17 @@ for(const p of ['common/situations/epoch_phase_ii_situations.txt','common/situat
 const decisionIcon=path.join(vanilla,'gfx/interface/icons/decisions/decision_resources.dds');
 check(fs.existsSync(decisionIcon),'Decision icon uses the installed native resources texture');
 const loc=text(path.join(vanilla,'localisation/english/ancient_relics_events_l_english.yml'));
-check(loc.includes('[event_target:sentinels_planet.GetName]'),'Local event-target naming syntax is demonstrated by Vanilla');
+check(loc.includes('[battle_system.GetName]')&&loc.includes('[chosen_planet.GetName]'),'Native local aliases are used directly as name promotions');
+check(section('effects.log','tooltip').includes('Just a tooltip')&&section('effects.log','hidden_effect').includes('Prevent'),'Native display-only tooltip and hidden execution are documented');
+const colonyEvents=text(path.join(vanilla,'events/colony_events_2.txt'));
+check(/add_deposit = d_odd_factory[\s\S]{0,400}option = \{[\s\S]{0,80}tooltip = \{ add_deposit = d_odd_factory \}/.test(colonyEvents),'Vanilla colony.2015 displays an already executed immediate effect without replaying it');
+const nativeApproaches=text(path.join(vanilla,'common/situations/06_astral_planes_situations.txt'));
+check(nativeApproaches.includes('custom_tooltip_with_modifiers = approach_situation_the_seal_weave_astral_fabric_tt'),'Modifier-specific tooltips are a native approach field, not a generic effect command');
+const hooks=text(path.join(vanilla,'common/on_actions/00_on_actions.txt'));
+check(/# No scope, like on_game_start\s*# Does not run when loading MP saves due to OOS concerns\s*on_single_player_save_game_load/.test(hooks),'Load hook is global and SP-only; monthly global sweep covers MP');
+const globalStart=parse(text(path.join(vanilla,'events/game_start.txt')),'Native global events').find(([,b])=>Array.isArray(b)&&get(b,'id')==='game_start.1');
+check(globalStart[0]==='event'&&parsed.get('events/epoch_core_events.txt').find(([,b])=>Array.isArray(b)&&get(b,'id')==='epoch_core.52')[0]==='event','No-scope sanitation uses the native global event type');
+check(/custom_tooltip = \{\s*fail_text = decision_slave_colony_must_have_slave/.test(text(path.join(vanilla,'common/decisions/02_special_decisions.txt'))),'Decision conditions can expose natural fail_text while retaining original flag guards');
 for(const lang of ['english','german']){
  const p=path.join(process.argv[2]||path.resolve(__dirname,'..'),`localisation/${lang}/epoch_core_l_${lang}.yml`);
  const bytes=fs.readFileSync(p),s=bytes.toString('utf8');

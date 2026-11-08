@@ -21,7 +21,7 @@ on_country_type_changed = {
 
 # Owner-local, guarded recovery/migration for continuing Phase-I saves.
 on_yearly_pulse_country = {
-	events = { epoch_ii.0 epoch_res.81 }
+	events = { epoch_core.51 epoch_ii.0 epoch_res.81 }
 }
 
 # The signal is attached to the system a Science Ship actually surveys.
@@ -38,3 +38,7 @@ on_fleet_combat_joined_attacker = { events = { epoch_res.200 } }
 on_fleet_combat_joined_defender = { events = { epoch_res.200 } }
 # This = each fleet leaving battle, whether it won, fled, or was destroyed.
 on_fleet_exit_battle = { events = { epoch_res.203 } }
+
+# Global load/monthly hooks have no country root. Scan only saved owner-local sites.
+on_single_player_save_game_load = { events = { epoch_core.52 } }
+on_monthly_pulse = { events = { epoch_core.52 } }

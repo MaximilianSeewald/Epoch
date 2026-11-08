@@ -37,17 +37,19 @@ country_event = {
  is_triggered_only = yes
  trigger = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 1 } }
  immediate = { if = { limit = { NOT = { has_country_flag = epoch_res_scar_remote } exists = event_target:epoch_core_world@root event_target:epoch_core_world@root = { is_owned_by = root } } event_target:epoch_core_world@root = { save_global_event_target_as = epoch_res_scar@root } } }
- option = { name = epoch_res.begin
+ option = {
+ tooltip = { add_resource = { energy = -150 } } name = epoch_res.begin
  custom_tooltip = epoch_res.begin.tt
  trigger = { NOT = { has_country_flag = epoch_res_scar_complete }  NOT = { has_country_flag = epoch_res_scar_remote }  NOT = { has_special_project = EPOCH_RES_SCAR } NOT = { has_country_flag = epoch_res_scar_complete } exists = event_target:epoch_res_scar@root event_target:epoch_res_scar@root = { is_owned_by = root } }
     allow = { resource_stockpile_compare = { resource = energy value >= 150 } }
     if = { limit = { NOT = { has_country_flag = epoch_res_scar_complete }  NOT = { has_country_flag = epoch_res_scar_remote }  has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 1 } NOT = { has_special_project = EPOCH_RES_SCAR }  NOT = { has_special_project = EPOCH_RES_SCAR } NOT = { has_country_flag = epoch_res_scar_complete } exists = event_target:epoch_res_scar@root event_target:epoch_res_scar@root = { is_owned_by = root }   resource_stockpile_compare = { resource = energy value >= 150 }  }
- add_resource = { energy = -150 }enable_special_project = { name = EPOCH_RES_SCAR location = event_target:epoch_res_scar@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.archive
+ hidden_effect = { add_resource = { energy = -150 } }enable_special_project = { name = EPOCH_RES_SCAR location = event_target:epoch_res_scar@root owner = root }  } ai_chance = { factor = 1 } }option = {
+ tooltip = { add_resource = { energy = -450 } } name = epoch_res.archive
  trigger = { NOT = { has_country_flag = epoch_res_scar_complete } NOT = { has_special_project = EPOCH_RES_SCAR } OR = { has_country_flag = epoch_res_scar_remote NOT = { exists = event_target:epoch_res_scar@root } event_target:epoch_res_scar@root = { NOT = { is_owned_by = root } } event_target:epoch_res_scar@root = { solar_system = { NOT = { has_access_fleet = root } } } } }
  custom_tooltip = epoch_res.archive.tt
     allow = { resource_stockpile_compare = { resource = energy value >= 450 } }
     if = { limit = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 1 }   NOT = { has_country_flag = epoch_res_scar_complete } NOT = { has_special_project = EPOCH_RES_SCAR } OR = { has_country_flag = epoch_res_scar_remote NOT = { exists = event_target:epoch_res_scar@root } event_target:epoch_res_scar@root = { NOT = { is_owned_by = root } } event_target:epoch_res_scar@root = { solar_system = { NOT = { has_access_fleet = root } } } }   resource_stockpile_compare = { resource = energy value >= 450 }  }
- add_resource = { energy = -450 } abort_special_project = { type = EPOCH_RES_SCAR } set_country_flag = epoch_res_scar_remote epoch_res_home = yes capital_scope = { save_global_event_target_as = epoch_res_scar@root } enable_special_project = { name = EPOCH_RES_SCAR location = event_target:epoch_res_scar@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.later ai_chance = { factor = 0 } }
+ hidden_effect = { add_resource = { energy = -450 } } abort_special_project = { type = EPOCH_RES_SCAR } set_country_flag = epoch_res_scar_remote epoch_res_home = yes capital_scope = { save_global_event_target_as = epoch_res_scar@root } enable_special_project = { name = EPOCH_RES_SCAR location = event_target:epoch_res_scar@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.later ai_chance = { factor = 0 } }
 }
 
 ship_event = { id = epoch_res.101 hide_window = yes is_triggered_only = yes
@@ -73,7 +75,7 @@ ship_event = { id = epoch_res.101 hide_window = yes is_triggered_only = yes
  if = { limit = { OR = { has_country_flag = epoch_core_initial_aggressive has_country_flag = epoch_core_expedition_project_abandoned } } set_country_flag = epoch_res_signal_exposed }
  if = { limit = { has_country_flag = epoch_core_structure_secured } set_country_flag = epoch_res_prepared }
  if = { limit = { has_country_flag = epoch_core_contamination_neglected } set_country_flag = epoch_res_infection_primed }
- country_event = { id = epoch_res.11 }
+ country_event = { id = epoch_res.111 days = 1 }
 } } }
 
 country_event = {
@@ -148,7 +150,8 @@ if = { limit = {
   capital_scope = { enable_special_project = { name = EPOCH_RES_RECON location = this owner = root } }
  }
  ai_chance = { factor = 2 }
- }option = { name = epoch_res.recontact
+ }option = {
+ tooltip = { add_resource = { energy = -400 } } name = epoch_res.recontact
  trigger = {
  has_country_flag = epoch_res_absence_verified
  NOT = { has_country_flag = epoch_res_force_present }
@@ -166,7 +169,7 @@ if = { limit = {
   NOT = { has_country_flag = epoch_res_force_reissued }
   resource_stockpile_compare = { resource = energy value >= 400 }
  }
-  add_resource = { energy = -400 }
+  hidden_effect = { add_resource = { energy = -400 } }
   set_country_flag = epoch_res_force_reissued
   set_country_flag = epoch_res_replacement_pending
   remove_country_flag = epoch_res_force_spawned
@@ -174,6 +177,7 @@ if = { limit = {
  }
  ai_chance = { factor = 5 }
  } option = { name = epoch_res.fight
+ if = { limit = { NOT = { has_country_flag = epoch_res_baseline_remote } } custom_tooltip = epoch_ui_recorded tooltip = { add_resource = { physics_research = 200 } } }
 
      ai_chance = { factor = 1 } }
 }
@@ -191,7 +195,9 @@ country_event = {
 }
 country_event = {
  id = epoch_res.21 title = epoch_res.21.name desc = epoch_res.21.desc picture = GFX_evt_physics_research is_triggered_only = yes
- option = { name = epoch_res.ack }
+ option = { name = epoch_res.ack
+ custom_tooltip = epoch_ui_recorded
+ if = { limit = { exists = event_target:epoch_res_hunters@root event_target:epoch_res_hunters@root = { is_scope_type = fleet has_fleet_flag = epoch_res_hunters_for@root } } tooltip = { event_target:epoch_res_hunters@root = { add_modifier = { modifier = epoch_res_targeting_flaw days = 1800 } } } }  }
 }
 
 
@@ -308,17 +314,19 @@ country_event = {
   event_target:epoch_res_battle_system@root = { star = { save_global_event_target_as = epoch_res_wreck@root } }
  } }
 
- option = { name = epoch_res.salvage
+ option = {
+ tooltip = { add_resource = { energy = -200 } } name = epoch_res.salvage
  custom_tooltip = epoch_res.salvage.tt
  trigger = { NOT = { has_country_flag = epoch_res_salvage_complete }  NOT = { has_country_flag = epoch_res_wreck_remote }  NOT = { has_special_project = EPOCH_RES_WRECK } event_target:epoch_res_battle_system@root = { has_access_fleet = root } }
     allow = { resource_stockpile_compare = { resource = energy value >= 200 } }
     if = { limit = { NOT = { has_country_flag = epoch_res_salvage_complete }  NOT = { has_country_flag = epoch_res_wreck_remote }  has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 } NOT = { has_special_project = EPOCH_RES_WRECK }  NOT = { has_special_project = EPOCH_RES_WRECK } event_target:epoch_res_battle_system@root = { has_access_fleet = root }   resource_stockpile_compare = { resource = energy value >= 200 }  }
- add_resource = { energy = -200 } event_target:epoch_res_battle_system@root = { star = { save_global_event_target_as = epoch_res_wreck@root } } enable_special_project = { name = EPOCH_RES_WRECK location = event_target:epoch_res_wreck@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.battle_archive
+ hidden_effect = { add_resource = { energy = -200 } } event_target:epoch_res_battle_system@root = { star = { save_global_event_target_as = epoch_res_wreck@root } } enable_special_project = { name = EPOCH_RES_WRECK location = event_target:epoch_res_wreck@root owner = root }  } ai_chance = { factor = 1 } }option = {
+ tooltip = { add_resource = { energy = -600 } } name = epoch_res.battle_archive
  trigger = { NOT = { has_country_flag = epoch_res_salvage_complete } NOT = { has_special_project = EPOCH_RES_WRECK } OR = { has_country_flag = epoch_res_wreck_remote NOT = { exists = event_target:epoch_res_wreck@root } event_target:epoch_res_wreck@root = { solar_system = { NOT = { has_access_fleet = root } } } } }
  custom_tooltip = epoch_res.battle_archive.tt
     allow = { resource_stockpile_compare = { resource = energy value >= 600 } }
     if = { limit = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 }   NOT = { has_country_flag = epoch_res_salvage_complete } NOT = { has_special_project = EPOCH_RES_WRECK } OR = { has_country_flag = epoch_res_wreck_remote NOT = { exists = event_target:epoch_res_wreck@root } event_target:epoch_res_wreck@root = { solar_system = { NOT = { has_access_fleet = root } } } }   resource_stockpile_compare = { resource = energy value >= 600 }  }
- add_resource = { energy = -600 } abort_special_project = { type = EPOCH_RES_WRECK } set_country_flag = epoch_res_wreck_remote epoch_res_home = yes capital_scope = { save_global_event_target_as = epoch_res_wreck@root } enable_special_project = { name = EPOCH_RES_WRECK location = event_target:epoch_res_wreck@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.later ai_chance = { factor = 0 } }
+ hidden_effect = { add_resource = { energy = -600 } } abort_special_project = { type = EPOCH_RES_WRECK } set_country_flag = epoch_res_wreck_remote epoch_res_home = yes capital_scope = { save_global_event_target_as = epoch_res_wreck@root } enable_special_project = { name = EPOCH_RES_WRECK location = event_target:epoch_res_wreck@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.later ai_chance = { factor = 0 } }
 }
 
 ship_event = { id = epoch_res.103 hide_window = yes is_triggered_only = yes
@@ -348,17 +356,20 @@ country_event = {
  is_triggered_only = yes
  trigger = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 } has_country_flag = epoch_res_salvage_complete has_country_flag = epoch_res_signature_complete NOT = { has_country_flag = epoch_res_analysis_complete } }
 
- option = { name = epoch_res.careful
+ option = {
+ tooltip = { add_resource = { energy = -150 } } name = epoch_res.careful
+ if = { limit = { NOT = { has_country_flag = epoch_res_wreck_remote } } custom_tooltip = epoch_ui_recorded tooltip = { add_resource = { physics_research = 200 } } }
  custom_tooltip = epoch_res.careful.tt
  trigger = { NOT = { has_country_flag = epoch_res_analysis_complete }  OR = { NOT = { has_special_project = EPOCH_RES_COMPARE } NOT = { exists = event_target:epoch_res_home@root } event_target:epoch_res_home@root = { NOT = { is_owned_by = root } } } }
     allow = { resource_stockpile_compare = { resource = energy value >= 150 } }
     if = { limit = { NOT = { has_country_flag = epoch_res_analysis_complete }  has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 } NOT = { has_special_project = EPOCH_RES_COMPARE }  OR = { NOT = { has_special_project = EPOCH_RES_COMPARE } NOT = { exists = event_target:epoch_res_home@root } event_target:epoch_res_home@root = { NOT = { is_owned_by = root } } }   resource_stockpile_compare = { resource = energy value >= 150 }  }
- add_resource = { energy = -150 } abort_special_project = { type = EPOCH_RES_COMPARE } epoch_res_home = yes enable_special_project = { name = EPOCH_RES_COMPARE location = event_target:epoch_res_home@root owner = root }  } ai_chance = { factor = 4 } }option = { name = epoch_res.risk
+ hidden_effect = { add_resource = { energy = -150 } } abort_special_project = { type = EPOCH_RES_COMPARE } epoch_res_home = yes enable_special_project = { name = EPOCH_RES_COMPARE location = event_target:epoch_res_home@root owner = root }  } ai_chance = { factor = 4 } }option = {
+ tooltip = { add_resource = { energy = -100 } } name = epoch_res.risk
  custom_tooltip = epoch_res.risk.tt
  trigger = { NOT = { has_country_flag = epoch_res_analysis_complete }  NOT = { has_special_project = EPOCH_RES_COMPARE }  }
     allow = { resource_stockpile_compare = { resource = energy value >= 100 } }
     if = { limit = { NOT = { has_country_flag = epoch_res_analysis_complete }  has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 } NOT = { has_special_project = EPOCH_RES_COMPARE }  NOT = { has_special_project = EPOCH_RES_COMPARE }    resource_stockpile_compare = { resource = energy value >= 100 }  }
- add_resource = { energy = -100 }set_country_flag = epoch_res_risky_analysis epoch_res_home = yes enable_special_project = { name = EPOCH_RES_COMPARE location = event_target:epoch_res_home@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.later ai_chance = { factor = 0 } }
+ hidden_effect = { add_resource = { energy = -100 } }set_country_flag = epoch_res_risky_analysis epoch_res_home = yes enable_special_project = { name = EPOCH_RES_COMPARE location = event_target:epoch_res_home@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.later ai_chance = { factor = 0 } }
 }
 
 ship_event = { id = epoch_res.104 hide_window = yes is_triggered_only = yes
@@ -402,6 +413,10 @@ country_event = {
  }
 
  option = { name = epoch_res.ack
+ custom_tooltip = epoch_ui_recorded
+ tooltip = { add_research_option = tech_epoch_resonance_spectroscopy add_research_option = tech_epoch_contamination_neutral_infrastructure }
+ if = { limit = { has_country_flag = epoch_res_risky_analysis } custom_tooltip = epoch_ui_recorded tooltip = { add_resource = { physics_research = 600 } add_modifier = { modifier = epoch_res_signal_strain days = 1800 } } }
+ if = { limit = { has_country_flag = epoch_res_preparation_used } custom_tooltip = epoch_ui_recorded tooltip = { add_resource = { energy = 100 } } }
 
      ai_chance = { factor = 1 } }
 }
@@ -423,20 +438,22 @@ country_event = {
     enable_special_project = { name = EPOCH_RES_SILENCE location = event_target:epoch_res_silence@root owner = root } }
     if = { limit = { NOT = { has_country_flag = epoch_res_interrupted_complete } exists = event_target:epoch_res_interrupted@root NOT = { has_special_project = EPOCH_RES_INTERRUPTED } }
     enable_special_project = { name = EPOCH_RES_INTERRUPTED location = event_target:epoch_res_interrupted@root owner = root } }  } ai_chance = { factor = 4 } }option = {
+ tooltip = { add_resource = { energy = -300 } }
  trigger = { NOT = { has_country_flag = epoch_res_network_choice_made } } name = epoch_res.pulse
     allow = { resource_stockpile_compare = { resource = energy value >= 300 } }
  if = { limit = { has_country_flag = epoch_res_active check_variable = { which = epoch_res_chapter value = 5 } NOT = { has_country_flag = epoch_res_network_choice_made } }
     if = { limit = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 5 }   resource_stockpile_compare = { resource = energy value >= 300 }  }
- set_country_flag = epoch_res_network_choice_made add_resource = { energy = -300 } set_country_flag = epoch_res_network_pulse if = { limit = { NOT = { has_country_flag = epoch_res_reflection_complete } exists = event_target:epoch_res_reflection@root NOT = { has_special_project = EPOCH_RES_REFLECTION } }
+ set_country_flag = epoch_res_network_choice_made hidden_effect = { add_resource = { energy = -300 } } set_country_flag = epoch_res_network_pulse if = { limit = { NOT = { has_country_flag = epoch_res_reflection_complete } exists = event_target:epoch_res_reflection@root NOT = { has_special_project = EPOCH_RES_REFLECTION } }
     enable_special_project = { name = EPOCH_RES_REFLECTION location = event_target:epoch_res_reflection@root owner = root } }if = { limit = { NOT = { has_country_flag = epoch_res_silence_complete } exists = event_target:epoch_res_silence@root NOT = { has_special_project = EPOCH_RES_SILENCE } }
     enable_special_project = { name = EPOCH_RES_SILENCE location = event_target:epoch_res_silence@root owner = root } }
     if = { limit = { NOT = { has_country_flag = epoch_res_interrupted_complete } exists = event_target:epoch_res_interrupted@root NOT = { has_special_project = EPOCH_RES_INTERRUPTED } }
     enable_special_project = { name = EPOCH_RES_INTERRUPTED location = event_target:epoch_res_interrupted@root owner = root } }  }  } ai_chance = { factor = 1 } }option = {
+ tooltip = { add_resource = { energy = -150 } }
  trigger = { NOT = { has_country_flag = epoch_res_network_choice_made } } name = epoch_res.repeat
     allow = { resource_stockpile_compare = { resource = energy value >= 150 } }
  if = { limit = { has_country_flag = epoch_res_active check_variable = { which = epoch_res_chapter value = 5 } NOT = { has_country_flag = epoch_res_network_choice_made } }
     if = { limit = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 5 }   resource_stockpile_compare = { resource = energy value >= 150 }  }
- set_country_flag = epoch_res_network_choice_made add_resource = { energy = -150 } set_country_flag = epoch_res_network_exposed if = { limit = { NOT = { has_country_flag = epoch_res_reflection_complete } exists = event_target:epoch_res_reflection@root NOT = { has_special_project = EPOCH_RES_REFLECTION } }
+ set_country_flag = epoch_res_network_choice_made hidden_effect = { add_resource = { energy = -150 } } set_country_flag = epoch_res_network_exposed if = { limit = { NOT = { has_country_flag = epoch_res_reflection_complete } exists = event_target:epoch_res_reflection@root NOT = { has_special_project = EPOCH_RES_REFLECTION } }
     enable_special_project = { name = EPOCH_RES_REFLECTION location = event_target:epoch_res_reflection@root owner = root } }if = { limit = { NOT = { has_country_flag = epoch_res_silence_complete } exists = event_target:epoch_res_silence@root NOT = { has_special_project = EPOCH_RES_SILENCE } }
     enable_special_project = { name = EPOCH_RES_SILENCE location = event_target:epoch_res_silence@root owner = root } }
     if = { limit = { NOT = { has_country_flag = epoch_res_interrupted_complete } exists = event_target:epoch_res_interrupted@root NOT = { has_special_project = EPOCH_RES_INTERRUPTED } }
@@ -490,6 +507,7 @@ country_event = {
 
 
  option = { name = epoch_res.ack
+ if = { limit = { has_country_flag = epoch_res_network_pulse } custom_tooltip = epoch_ui_recorded tooltip = { add_resource = { physics_research = 150 } } }
 
      ai_chance = { factor = 1 } }
 }
@@ -503,6 +521,7 @@ country_event = {
 
 
  option = { name = epoch_res.ack
+ if = { limit = { has_country_flag = epoch_res_network_exposed } custom_tooltip = epoch_ui_recorded tooltip = { add_resource = { physics_research = 300 } add_modifier = { modifier = epoch_res_signal_strain days = 1800 } } }
 
      ai_chance = { factor = 1 } }
 }
@@ -580,12 +599,13 @@ country_event = {
  option = { name = epoch_res.retry_reflection trigger = { exists = event_target:epoch_res_reflection@root event_target:epoch_res_reflection_system@root = { has_access_fleet = root } }
 
     if = { limit = { NOT = { has_country_flag = epoch_res_reflection_complete } exists = event_target:epoch_res_reflection@root NOT = { has_special_project = EPOCH_RES_REFLECTION } }
-    enable_special_project = { name = EPOCH_RES_REFLECTION location = event_target:epoch_res_reflection@root owner = root } } ai_chance = { factor = 1 } }option = { name = epoch_res.remote_reflection
+    enable_special_project = { name = EPOCH_RES_REFLECTION location = event_target:epoch_res_reflection@root owner = root } } ai_chance = { factor = 1 } }option = {
+ tooltip = { add_resource = { energy = -800 } } name = epoch_res.remote_reflection
  trigger = { NOT = { has_country_flag = epoch_res_reflection_complete } NOT = { has_special_project = EPOCH_RES_REFLECTION } OR = { has_country_flag = epoch_res_reflection_remote NOT = { exists = event_target:epoch_res_reflection@root } event_target:epoch_res_reflection@root = { solar_system = { NOT = { has_access_fleet = root } } } } }
  custom_tooltip = epoch_res.remote_reflection.tt
     allow = { resource_stockpile_compare = { resource = energy value >= 800 } }
     if = { limit = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 5 }   NOT = { has_country_flag = epoch_res_reflection_complete } NOT = { has_special_project = EPOCH_RES_REFLECTION } OR = { has_country_flag = epoch_res_reflection_remote NOT = { exists = event_target:epoch_res_reflection@root } event_target:epoch_res_reflection@root = { solar_system = { NOT = { has_access_fleet = root } } } }   resource_stockpile_compare = { resource = energy value >= 800 }  }
- add_resource = { energy = -800 }abort_special_project = { type = EPOCH_RES_REFLECTION } set_country_flag = epoch_res_reflection_remote capital_scope = { save_global_event_target_as = epoch_res_reflection@root } enable_special_project = { name = EPOCH_RES_REFLECTION location = event_target:epoch_res_reflection@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.ack
+ hidden_effect = { add_resource = { energy = -800 } }abort_special_project = { type = EPOCH_RES_REFLECTION } set_country_flag = epoch_res_reflection_remote capital_scope = { save_global_event_target_as = epoch_res_reflection@root } enable_special_project = { name = EPOCH_RES_REFLECTION location = event_target:epoch_res_reflection@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.ack
 
      ai_chance = { factor = 1 } }
 }
@@ -603,12 +623,13 @@ country_event = {
     if = { limit = { NOT = { has_country_flag = epoch_res_silence_complete } exists = event_target:epoch_res_silence@root NOT = { has_special_project = EPOCH_RES_SILENCE } }
     enable_special_project = { name = EPOCH_RES_SILENCE location = event_target:epoch_res_silence@root owner = root } }
     if = { limit = { NOT = { has_country_flag = epoch_res_interrupted_complete } exists = event_target:epoch_res_interrupted@root NOT = { has_special_project = EPOCH_RES_INTERRUPTED } }
-    enable_special_project = { name = EPOCH_RES_INTERRUPTED location = event_target:epoch_res_interrupted@root owner = root } } ai_chance = { factor = 1 } }option = { name = epoch_res.remote_silence
+    enable_special_project = { name = EPOCH_RES_INTERRUPTED location = event_target:epoch_res_interrupted@root owner = root } } ai_chance = { factor = 1 } }option = {
+ tooltip = { add_resource = { energy = -800 } } name = epoch_res.remote_silence
  trigger = { NOT = { has_country_flag = epoch_res_silence_complete } NOT = { has_special_project = EPOCH_RES_SILENCE } OR = { has_country_flag = epoch_res_silence_remote NOT = { exists = event_target:epoch_res_silence@root } event_target:epoch_res_silence@root = { solar_system = { NOT = { has_access_fleet = root } } } } }
  custom_tooltip = epoch_res.remote_silence.tt
     allow = { resource_stockpile_compare = { resource = energy value >= 800 } }
     if = { limit = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 5 }   NOT = { has_country_flag = epoch_res_silence_complete } NOT = { has_special_project = EPOCH_RES_SILENCE } OR = { has_country_flag = epoch_res_silence_remote NOT = { exists = event_target:epoch_res_silence@root } event_target:epoch_res_silence@root = { solar_system = { NOT = { has_access_fleet = root } } } }   resource_stockpile_compare = { resource = energy value >= 800 }  }
- add_resource = { energy = -800 }abort_special_project = { type = EPOCH_RES_SILENCE } set_country_flag = epoch_res_silence_remote capital_scope = { save_global_event_target_as = epoch_res_silence@root } enable_special_project = { name = EPOCH_RES_SILENCE location = event_target:epoch_res_silence@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.ack
+ hidden_effect = { add_resource = { energy = -800 } }abort_special_project = { type = EPOCH_RES_SILENCE } set_country_flag = epoch_res_silence_remote capital_scope = { save_global_event_target_as = epoch_res_silence@root } enable_special_project = { name = EPOCH_RES_SILENCE location = event_target:epoch_res_silence@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.ack
 
      ai_chance = { factor = 1 } }
 }
@@ -626,8 +647,10 @@ country_event = {
 
 country_event = {
  id = epoch_res.11 title = epoch_res.11.name desc = epoch_res.11.desc picture = GFX_evt_ship_in_orbit is_triggered_only = yes
- trigger = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 1 } has_country_flag = epoch_res_scar_complete }
+ trigger = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 1 } has_country_flag = epoch_res_scar_complete NOT = { has_country_flag = epoch_res_baseline_report_open } NOT = { has_country_flag = epoch_res_baseline_complete } NOT = { has_special_project = EPOCH_RES_BASELINE } }
  immediate = {
+ set_country_flag = epoch_res_baseline_report_delivered
+ set_country_flag = epoch_res_baseline_report_open
   if = { limit = { NOT = { exists = event_target:epoch_res_baseline@root } }
    capital_scope = { solar_system = {
     closest_system = { limit = { has_access_fleet = root NOT = { is_same_value = prev } }
@@ -636,28 +659,34 @@ country_event = {
    } }
   }
  }
- option = { name = epoch_res.baseline
+ option = {
+ tooltip = { add_resource = { energy = -200 } } name = epoch_res.baseline
+ if = { limit = { NOT = { has_country_flag = epoch_res_scar_remote } } custom_tooltip = epoch_ui_recorded tooltip = { add_resource = { physics_research = 150 } } }
+ hidden_effect = { remove_country_flag = epoch_res_baseline_report_open }
  custom_tooltip = epoch_res.baseline.tt
 
   trigger = { NOT = { has_country_flag = epoch_res_baseline_complete }  NOT = { has_country_flag = epoch_res_baseline_remote }  exists = event_target:epoch_res_baseline@root NOT = { has_special_project = EPOCH_RES_BASELINE } NOT = { has_country_flag = epoch_res_baseline_complete } event_target:epoch_res_baseline@root = { solar_system = { has_access_fleet = root } } }
   allow = { resource_stockpile_compare = { resource = energy value >= 200 } }
   if = { limit = { NOT = { has_country_flag = epoch_res_baseline_complete }  NOT = { has_country_flag = epoch_res_baseline_remote }  has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 1 } NOT = { has_special_project = EPOCH_RES_BASELINE }  exists = event_target:epoch_res_baseline@root NOT = { has_special_project = EPOCH_RES_BASELINE } NOT = { has_country_flag = epoch_res_baseline_complete } event_target:epoch_res_baseline@root = { solar_system = { has_access_fleet = root } }   resource_stockpile_compare = { resource = energy value >= 200 }  }
- add_resource = { energy = -200 }
+ hidden_effect = { add_resource = { energy = -200 } }
   enable_special_project = { name = EPOCH_RES_BASELINE location = event_target:epoch_res_baseline@root owner = root }
    } ai_chance = { factor = 4 }
  }
- option = { name = epoch_res.baseline_remote
+ option = {
+ tooltip = { add_resource = { energy = -500 } } name = epoch_res.baseline_remote
+ hidden_effect = { remove_country_flag = epoch_res_baseline_report_open }
  trigger = { NOT = { has_country_flag = epoch_res_baseline_complete } NOT = { has_special_project = EPOCH_RES_BASELINE } OR = { has_country_flag = epoch_res_baseline_remote NOT = { exists = event_target:epoch_res_baseline@root } event_target:epoch_res_baseline@root = { solar_system = { NOT = { has_access_fleet = root } } } } }
  custom_tooltip = epoch_res.baseline_remote.tt
   allow = { resource_stockpile_compare = { resource = energy value >= 500 } }
   if = { limit = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 1 }   NOT = { has_country_flag = epoch_res_baseline_complete } NOT = { has_special_project = EPOCH_RES_BASELINE } OR = { has_country_flag = epoch_res_baseline_remote NOT = { exists = event_target:epoch_res_baseline@root } event_target:epoch_res_baseline@root = { solar_system = { NOT = { has_access_fleet = root } } } }   resource_stockpile_compare = { resource = energy value >= 500 }  }
- add_resource = { energy = -500 } abort_special_project = { type = EPOCH_RES_BASELINE }
+ hidden_effect = { add_resource = { energy = -500 } } abort_special_project = { type = EPOCH_RES_BASELINE }
   set_country_flag = epoch_res_baseline_remote
   capital_scope = { save_global_event_target_as = epoch_res_baseline@root }
   enable_special_project = { name = EPOCH_RES_BASELINE location = event_target:epoch_res_baseline@root owner = root }
    } ai_chance = { factor = 1 }
  }
- option = { name = epoch_res.later ai_chance = { factor = 0 } }
+ option = { name = epoch_res.later
+ hidden_effect = { remove_country_flag = epoch_res_baseline_report_open } ai_chance = { factor = 0 } }
 }
 ship_event = {
  id = epoch_res.107 hide_window = yes is_triggered_only = yes
@@ -689,22 +718,25 @@ ship_event = {
 country_event = {
  id = epoch_res.32 title = epoch_res.32.name desc = epoch_res.32.desc picture = GFX_evt_space_debris is_triggered_only = yes
  trigger = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 } has_country_flag = epoch_res_salvage_complete NOT = { has_country_flag = epoch_res_signature_complete } }
- option = { name = epoch_res.signature
+ option = {
+ tooltip = { add_resource = { energy = -150 } } name = epoch_res.signature
+ if = { limit = { NOT = { has_country_flag = epoch_res_wreck_remote } } custom_tooltip = epoch_ui_recorded tooltip = { add_resource = { engineering_research = 300 } } }
  custom_tooltip = epoch_res.signature.tt
 
   trigger = { NOT = { has_country_flag = epoch_res_signature_complete }  NOT = { has_country_flag = epoch_res_wreck_remote }  exists = event_target:epoch_res_wreck@root NOT = { has_special_project = EPOCH_RES_SIGNATURE } NOT = { has_country_flag = epoch_res_signature_complete } event_target:epoch_res_wreck@root = { solar_system = { has_access_fleet = root } } }
   allow = { resource_stockpile_compare = { resource = energy value >= 150 } }
   if = { limit = { NOT = { has_country_flag = epoch_res_signature_complete }  NOT = { has_country_flag = epoch_res_wreck_remote }  has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 } NOT = { has_special_project = EPOCH_RES_SIGNATURE }  exists = event_target:epoch_res_wreck@root NOT = { has_special_project = EPOCH_RES_SIGNATURE } NOT = { has_country_flag = epoch_res_signature_complete } event_target:epoch_res_wreck@root = { solar_system = { has_access_fleet = root } }   resource_stockpile_compare = { resource = energy value >= 150 }  }
- add_resource = { energy = -150 }
+ hidden_effect = { add_resource = { energy = -150 } }
   enable_special_project = { name = EPOCH_RES_SIGNATURE location = event_target:epoch_res_wreck@root owner = root }
    } ai_chance = { factor = 4 }
  }
- option = { name = epoch_res.signature_remote
+ option = {
+ tooltip = { add_resource = { energy = -450 } } name = epoch_res.signature_remote
  trigger = { NOT = { has_country_flag = epoch_res_signature_complete } NOT = { has_special_project = EPOCH_RES_SIGNATURE } OR = { has_country_flag = epoch_res_wreck_remote NOT = { exists = event_target:epoch_res_wreck@root } event_target:epoch_res_wreck@root = { solar_system = { NOT = { has_access_fleet = root } } } } }
  custom_tooltip = epoch_res.signature_remote.tt
   allow = { resource_stockpile_compare = { resource = energy value >= 450 } }
   if = { limit = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 3 }   NOT = { has_country_flag = epoch_res_signature_complete } NOT = { has_special_project = EPOCH_RES_SIGNATURE } OR = { has_country_flag = epoch_res_wreck_remote NOT = { exists = event_target:epoch_res_wreck@root } event_target:epoch_res_wreck@root = { solar_system = { NOT = { has_access_fleet = root } } } }   resource_stockpile_compare = { resource = energy value >= 450 }  }
- add_resource = { energy = -450 } abort_special_project = { type = EPOCH_RES_SIGNATURE }
+ hidden_effect = { add_resource = { energy = -450 } } abort_special_project = { type = EPOCH_RES_SIGNATURE }
   set_country_flag = epoch_res_signature_remote set_country_flag = epoch_res_wreck_remote capital_scope = { save_global_event_target_as = epoch_res_wreck@root }
   enable_special_project = { name = EPOCH_RES_SIGNATURE location = event_target:epoch_res_wreck@root owner = root }
    } ai_chance = { factor = 1 }
@@ -744,12 +776,13 @@ country_event = {
  option = { name = epoch_res.retry_interrupted trigger = { exists = event_target:epoch_res_interrupted@root event_target:epoch_res_interrupted_system@root = { has_access_fleet = root } }
 
     if = { limit = { NOT = { has_country_flag = epoch_res_interrupted_complete } exists = event_target:epoch_res_interrupted@root NOT = { has_special_project = EPOCH_RES_INTERRUPTED } }
-    enable_special_project = { name = EPOCH_RES_INTERRUPTED location = event_target:epoch_res_interrupted@root owner = root } } ai_chance = { factor = 1 } }option = { name = epoch_res.remote_interrupted
+    enable_special_project = { name = EPOCH_RES_INTERRUPTED location = event_target:epoch_res_interrupted@root owner = root } } ai_chance = { factor = 1 } }option = {
+ tooltip = { add_resource = { energy = -800 } } name = epoch_res.remote_interrupted
  trigger = { NOT = { has_country_flag = epoch_res_interrupted_complete } NOT = { has_special_project = EPOCH_RES_INTERRUPTED } OR = { has_country_flag = epoch_res_interrupted_remote NOT = { exists = event_target:epoch_res_interrupted@root } event_target:epoch_res_interrupted@root = { solar_system = { NOT = { has_access_fleet = root } } } } }
  custom_tooltip = epoch_res.remote_interrupted.tt
     allow = { resource_stockpile_compare = { resource = energy value >= 800 } }
     if = { limit = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 5 }   NOT = { has_country_flag = epoch_res_interrupted_complete } NOT = { has_special_project = EPOCH_RES_INTERRUPTED } OR = { has_country_flag = epoch_res_interrupted_remote NOT = { exists = event_target:epoch_res_interrupted@root } event_target:epoch_res_interrupted@root = { solar_system = { NOT = { has_access_fleet = root } } } }   resource_stockpile_compare = { resource = energy value >= 800 }  }
- add_resource = { energy = -800 }abort_special_project = { type = EPOCH_RES_INTERRUPTED } set_country_flag = epoch_res_interrupted_remote capital_scope = { save_global_event_target_as = epoch_res_interrupted@root } enable_special_project = { name = EPOCH_RES_INTERRUPTED location = event_target:epoch_res_interrupted@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.ack
+ hidden_effect = { add_resource = { energy = -800 } }abort_special_project = { type = EPOCH_RES_INTERRUPTED } set_country_flag = epoch_res_interrupted_remote capital_scope = { save_global_event_target_as = epoch_res_interrupted@root } enable_special_project = { name = EPOCH_RES_INTERRUPTED location = event_target:epoch_res_interrupted@root owner = root }  } ai_chance = { factor = 1 } }option = { name = epoch_res.ack
 
      ai_chance = { factor = 1 } }
 }
@@ -776,4 +809,11 @@ ship_event = { id = epoch_res.109 hide_window = yes is_triggered_only = yes
 country_event = {
  id = epoch_res.53 title = epoch_res.53.name desc = epoch_res.53.desc picture = GFX_evt_ship_in_orbit is_triggered_only = yes
  option = { name = epoch_res.ack ai_chance = { factor = 1 } }
+}
+
+# Leave the native project callback stack before evaluating country-keyed targets.
+country_event = {
+ id = epoch_res.111 hide_window = yes is_triggered_only = yes
+ trigger = { has_country_flag = epoch_res_active NOT = { has_country_flag = epoch_core_campaign_opted_out } check_variable = { which = epoch_res_chapter value = 1 } has_country_flag = epoch_res_scar_complete NOT = { has_country_flag = epoch_res_baseline_report_delivered } NOT = { has_country_flag = epoch_res_baseline_complete } NOT = { has_special_project = EPOCH_RES_BASELINE } }
+ immediate = { country_event = { id = epoch_res.11 } }
 }
