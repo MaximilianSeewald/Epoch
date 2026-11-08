@@ -28,35 +28,21 @@ special_project = {
  on_cancel = { }
 }
 
+# AMOEBAS_PACIFICATION_PROJECT: native point-cost research, no ship.
 special_project = {
  key = "EPOCH_RES_RECON"
- cost = 0
- days_to_research = 120
+ cost = 600
+ tech_department = physics_technology
  picture = GFX_evt_physics_research
- event_scope = ship_event
- location = yes
- requirements = { shipclass_science_ship = 1 leader = scientist }
+ event_scope = planet_event
+ location = no
  AI_wait_days = { weight = 5 }
- abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
- # Capture the assigned destination on the performing ship. The key is
- # project-specific and persists across save/load; a later reanchor cannot
- # silently turn this ship's old success into another destination's result.
- on_start = {
-  if = { limit = { exists = owner exists = event_target:epoch_res_home@owner }
-   event_target:epoch_res_home@owner = { save_global_event_target_as = epoch_res_project_recon@prev }
-  }
- }
- # Native success: This = performing ship. The observed From is the
- # project country, not the location. Supply the saved ship assignment
- # explicitly as FromFrom instead of guessing a native From chain.
- on_success = {
-  if = { limit = { exists = owner exists = event_target:epoch_res_project_recon@this }
-   ship_event = { id = epoch_res.102 scopes = { from = from fromfrom = event_target:epoch_res_project_recon@this } }
-  }
- }
+ abort_trigger = { OR = { NOT = { has_country_flag = epoch_res_active } NOT = { check_variable = { which = epoch_res_chapter value = 2 } } has_country_flag = epoch_res_military_victory } }
+ on_success = { prev = { country_event = { id = epoch_res.102 } } }
  on_fail = { }
  on_cancel = { }
 }
+
 
 special_project = {
  key = "EPOCH_RES_WRECK"

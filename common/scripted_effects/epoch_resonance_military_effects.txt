@@ -90,7 +90,7 @@ epoch_res_refresh_hunters = {
     }
     if = {
         limit = { NOT = { has_country_flag = epoch_res_enemy_valid } }
-        clear_global_event_target = epoch_res_enemy@root
+        if = { limit = { exists = event_target:epoch_res_enemy@root } clear_global_event_target = epoch_res_enemy@root }
     }
     if = {
         limit = { exists = event_target:epoch_res_hunters@root event_target:epoch_res_hunters@root = { is_scope_type = fleet } }
@@ -120,7 +120,7 @@ epoch_res_refresh_hunters = {
     }
     if = {
         limit = { NOT = { has_country_flag = epoch_res_force_present } }
-        clear_global_event_target = epoch_res_hunters@root
+        if = { limit = { exists = event_target:epoch_res_hunters@root } clear_global_event_target = epoch_res_hunters@root }
         # Recovery-only identity search: also finds a living force if both
         # primary targets were lost. It is not a periodic galaxy-wide dispatcher.
         every_country = {

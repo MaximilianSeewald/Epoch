@@ -8,11 +8,7 @@ stage_res_code = { icon = GFX_situation_stage_3 icon_background = GFX_situation_
 stage_res_infection = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 80 custom_tooltip = epoch_res_goal_infection }
 stage_res_network = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 100 custom_tooltip = epoch_res_goal_network } }
  monthly_progress = { base = 0 }
- approach = { name = epoch_res_observe default = yes icon = GFX_situation_approach_checklist icon_background = GFX_situation_approach_bg_blue ai_weight = { base = 10 } }
- approach = { name = epoch_res_recover icon = GFX_situation_approach_checklist icon_background = GFX_situation_approach_bg_blue
-  potential = { owner = { has_country_flag = epoch_res_active } }
-  on_select = { owner = { country_event = { id = epoch_res.80 } set_timed_country_flag = { flag = epoch_res_recovery_cooldown days = 180 } } }
-  ai_weight = { base = 0 }
- }
+ approach = { name = epoch_res_observe default = yes on_select = { custom_tooltip = epoch_res_observe_tt } icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 10 } }
+
  on_progress_complete = { }
 }

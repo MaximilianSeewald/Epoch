@@ -177,7 +177,7 @@ foreach ($language in @('english', 'german')) {
 	$relative = "localisation/$language/epoch_core_l_$language.yml"
 	$localizedPlayerText += @([System.IO.File]::ReadAllLines((Join-Path $Root $relative), [System.Text.Encoding]::UTF8) | Where-Object { $_ -match '^\s*[A-Za-z0-9_.]+:\d+\s+"' } | ForEach-Object { $_ -replace '^\s*[A-Za-z0-9_.]+:\d+\s+"', '' -replace '"\s*$', '' })
 }
-Assert-Check ((($localizedPlayerText -join "`n") -replace '\[[^\]]+\]', '') -notmatch '(?i)epoch_core|epoch_first_echo|EPOCH_|event.flag|set_country_flag|set_variable|debug|phase\s*(?:i|1)\b|kampagnenstatus|kampagnen-flagge') 'Player-facing localisations must not expose internal IDs, flags, variables, debugging, or phase labels'
+Assert-Check (((($localizedPlayerText -join "`n") -replace '\[[^\]]+\]', '') -replace '\$[^$]+\$', '') -notmatch '(?i)epoch_core|epoch_first_echo|EPOCH_|event.flag|set_country_flag|set_variable|debug|phase\s*(?:i|1)\b|kampagnenstatus|kampagnen-flagge') 'Player-facing localisations must not expose internal IDs, flags, variables, debugging, or phase labels outside native localization references'
 
 # Event ID coverage across event calls, project callbacks and on_action entries.
 $eventDefinitions = @([regex]::Matches($events, '(?m)^\s*id\s*=\s*epoch_core\.(\d+)\s*$') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
@@ -463,6 +463,8 @@ foreach ($approach in @($cautiousApproach,$intensiveApproach,$minimalApproach)) 
 Assert-Check ($LASTEXITCODE -eq 0) 'Parsed campaign-state regression must pass'
 & node (Join-Path $PSScriptRoot 'test_resonance.cjs') $Root $VanillaRoot
 Assert-Check ($LASTEXITCODE -eq 0) 'Five-chapter Resonance structural and invariant checks must pass'
+& node (Join-Path $PSScriptRoot 'test_resonance_vanilla.cjs') $Root $VanillaRoot
+Assert-Check ($LASTEXITCODE -eq 0) 'Feedback fixes must match installed native project, scope, localization and UI definitions'
 & node (Join-Path $PSScriptRoot 'test_clausewitz_structure.cjs') $Root $VanillaRoot
 Assert-Check ($LASTEXITCODE -eq 0) 'Clausewitz lexer/parser must validate every common/events text file and top-level scripted effects'
 & node (Join-Path $PSScriptRoot 'test_stellaris_runtime_log.cjs') --self-test

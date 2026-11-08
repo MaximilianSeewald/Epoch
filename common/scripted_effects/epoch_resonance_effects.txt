@@ -31,17 +31,79 @@ epoch_res_close = {
 
 # Only native science callbacks move the chapter variable. Monthly progress is zero.
 epoch_res_infect = {
-    if = { limit = { exists = event_target:epoch_core_world@root event_target:epoch_core_world@root = { is_owned_by = root } }
+    if = { limit = { exists = event_target:epoch_ii_target_planet@root } clear_global_event_target = epoch_ii_target_planet@root }
+    if = { limit = { exists = event_target:epoch_core_world@root event_target:epoch_core_world@root = { is_owned_by = root is_colony = yes exists = planet } }
         event_target:epoch_core_world@root = { save_global_event_target_as = epoch_ii_target_planet@root }
     }
-    else = { capital_scope = { save_global_event_target_as = epoch_ii_target_planet@root } }
+    else = { random_owned_planet = { limit = { is_colony = yes exists = planet } save_global_event_target_as = epoch_ii_target_planet@root } }
+    if = { limit = { exists = event_target:epoch_ii_target_planet@root }
+    event_target:epoch_ii_target_planet@root = { colony = { save_global_event_target_as = epoch_ii_target_planet@root } }
     epoch_ii_set_site_active = yes
     if = { limit = { OR = { has_country_flag = epoch_res_risky_analysis has_country_flag = epoch_res_infection_primed has_country_flag = epoch_res_signal_exposed } } epoch_ii_set_site_unstable = yes }
     if = { limit = { has_country_flag = epoch_core_contamination_contained NOT = { has_country_flag = epoch_res_risky_analysis } } epoch_ii_set_site_latent = yes }
-    event_target:epoch_ii_target_planet@root = { set_planet_flag = epoch_res_infected }
+    event_target:epoch_ii_target_planet@root = { set_planet_flag = epoch_res_infected set_planet_flag = epoch_res_infected_for@root }
     if = { limit = { has_country_flag = epoch_res_prepared NOT = { has_country_flag = epoch_res_preparation_used } }
         set_country_flag = epoch_res_preparation_used add_resource = { energy = 100 }
     }
+    }
+}
+
+# Country root. Colony and physical Planet are distinct identities in 4.5.3.
+# Planet flags are forwarded to the carrier by both scopes. Preserve all paid
+# actions and feature state on a valid saved world; only displaced sites restart.
+epoch_res_repair_infection = {
+    remove_country_flag = epoch_res_infection_target_valid
+    if = { limit = { exists = event_target:epoch_ii_target_planet@root }
+        event_target:epoch_ii_target_planet@root = {
+          if = { limit = { OR = { is_scope_type = planet is_scope_type = colony } }
+            if = { limit = { is_owned_by = root is_colony = yes exists = planet }
+                colony = { save_global_event_target_as = epoch_ii_target_planet@root }
+                root = { set_country_flag = epoch_res_infection_target_valid }
+            }
+          }
+        }
+    }
+    if = { limit = { NOT = { has_country_flag = epoch_res_infection_target_valid } exists = event_target:epoch_ii_target_planet@root }
+        clear_global_event_target = epoch_ii_target_planet@root
+    }
+    if = { limit = { NOT = { exists = event_target:epoch_ii_target_planet@root } }
+        random_owned_planet = { limit = { has_planet_flag = epoch_res_infected exists = planet }
+            save_global_event_target_as = epoch_ii_target_planet@root
+        }
+    }
+    if = { limit = { OR = {
+        NOT = { exists = event_target:epoch_ii_target_planet@root }
+        event_target:epoch_ii_target_planet@root = { NOT = { has_planet_flag = epoch_res_infected } }
+    } }
+        epoch_res_infect = yes
+        set_country_flag = epoch_res_displaced_infection
+    }
+    # Only the selected owned carrier may offer actions for this campaign.
+    every_owned_planet = { remove_planet_flag = epoch_res_infected_for@root }
+    if = { limit = { exists = event_target:epoch_ii_target_planet@root }
+        event_target:epoch_ii_target_planet@root = { set_planet_flag = epoch_res_infected_for@root }
+    }
+}
+
+# Two bounded hyperlane searches, no newly generated system and no capital
+# fallback. Prefer owned space 2-6 jumps away, then safe space within 1-8 jumps.
+# A native fleet path check rejects isolated pockets behind closed borders.
+epoch_res_find_battle_system = {
+    if = { limit = { exists = event_target:epoch_res_battle_system@root }
+        clear_global_event_target = epoch_res_battle_system@root
+    }
+    capital_scope = { solar_system = { save_global_event_target_as = epoch_res_home_system@root
+        closest_system = { min_steps = 2 max_steps = 6
+            limit = { epoch_res_safe_battle_system = yes exists = owner owner = { is_same_value = root } }
+            save_global_event_target_as = epoch_res_battle_system@root
+        }
+        if = { limit = { NOT = { exists = event_target:epoch_res_battle_system@root } }
+            closest_system = { min_steps = 1 max_steps = 8
+                limit = { epoch_res_safe_battle_system = yes }
+                save_global_event_target_as = epoch_res_battle_system@root
+            }
+        }
+    } }
 }
 epoch_res_finish_containment = {
     if = { limit = { has_country_flag = epoch_res_active check_variable = { which = epoch_res_chapter value = 4 } }
@@ -90,5 +152,37 @@ epoch_res_find_interrupted = {
     star = { save_global_event_target_as = epoch_res_interrupted@root }
    }
   }
+ }
+}
+
+# Reissue paid archive work for free, without duplicating active/completed projects.
+epoch_res_restore_archive_projects = {
+ if = { limit = { check_variable = { which = epoch_res_chapter value = 1 } has_country_flag = epoch_res_scar_remote NOT = { has_country_flag = epoch_res_scar_complete } NOT = { has_special_project = EPOCH_RES_SCAR } exists = capital_scope }
+  capital_scope = { save_global_event_target_as = epoch_res_scar@root }
+  enable_special_project = { name = EPOCH_RES_SCAR location = event_target:epoch_res_scar@root owner = root }
+ }
+ if = { limit = { check_variable = { which = epoch_res_chapter value = 1 } has_country_flag = epoch_res_baseline_remote NOT = { has_country_flag = epoch_res_baseline_complete } NOT = { has_special_project = EPOCH_RES_BASELINE } exists = capital_scope }
+  capital_scope = { save_global_event_target_as = epoch_res_baseline@root }
+  enable_special_project = { name = EPOCH_RES_BASELINE location = event_target:epoch_res_baseline@root owner = root }
+ }
+ if = { limit = { check_variable = { which = epoch_res_chapter value = 3 } has_country_flag = epoch_res_wreck_remote NOT = { has_country_flag = epoch_res_salvage_complete } NOT = { has_special_project = EPOCH_RES_WRECK } exists = capital_scope }
+  capital_scope = { save_global_event_target_as = epoch_res_wreck@root }
+  enable_special_project = { name = EPOCH_RES_WRECK location = event_target:epoch_res_wreck@root owner = root }
+ }
+ if = { limit = { check_variable = { which = epoch_res_chapter value = 3 } has_country_flag = epoch_res_signature_remote NOT = { has_country_flag = epoch_res_signature_complete } NOT = { has_special_project = EPOCH_RES_SIGNATURE } exists = capital_scope }
+  capital_scope = { save_global_event_target_as = epoch_res_wreck@root }
+  enable_special_project = { name = EPOCH_RES_SIGNATURE location = event_target:epoch_res_wreck@root owner = root }
+ }
+ if = { limit = { check_variable = { which = epoch_res_chapter value = 5 } has_country_flag = epoch_res_reflection_remote NOT = { has_country_flag = epoch_res_reflection_complete } NOT = { has_special_project = EPOCH_RES_REFLECTION } exists = capital_scope }
+  capital_scope = { save_global_event_target_as = epoch_res_reflection@root }
+  enable_special_project = { name = EPOCH_RES_REFLECTION location = event_target:epoch_res_reflection@root owner = root }
+ }
+ if = { limit = { check_variable = { which = epoch_res_chapter value = 5 } has_country_flag = epoch_res_silence_remote NOT = { has_country_flag = epoch_res_silence_complete } NOT = { has_special_project = EPOCH_RES_SILENCE } exists = capital_scope }
+  capital_scope = { save_global_event_target_as = epoch_res_silence@root }
+  enable_special_project = { name = EPOCH_RES_SILENCE location = event_target:epoch_res_silence@root owner = root }
+ }
+ if = { limit = { check_variable = { which = epoch_res_chapter value = 5 } has_country_flag = epoch_res_interrupted_remote NOT = { has_country_flag = epoch_res_interrupted_complete } NOT = { has_special_project = EPOCH_RES_INTERRUPTED } exists = capital_scope }
+  capital_scope = { save_global_event_target_as = epoch_res_interrupted@root }
+  enable_special_project = { name = EPOCH_RES_INTERRUPTED location = event_target:epoch_res_interrupted@root owner = root }
  }
 }

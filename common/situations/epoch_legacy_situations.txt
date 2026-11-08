@@ -5,5 +5,5 @@ epoch_resonance_chamber_recovery = {
  desc = { text = epoch_res_legacy_suspended trigger = { always = yes } }
  stages = { stage_res_retired = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 100 custom_tooltip = epoch_res_legacy_suspended } }
  monthly_progress = { base = 0 }
- approach = { name = epoch_res_observe default = yes icon = GFX_situation_approach_checklist icon_background = GFX_situation_approach_bg_blue ai_weight = { base = 1 } }
+ approach = { name = epoch_res_observe default = yes on_select = { custom_tooltip = epoch_res_observe_tt } icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 1 } }
 }

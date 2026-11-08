@@ -333,7 +333,7 @@ epoch_res.1.desc:0 "Die alte Frequenz ist zurück. [Root.GetEpochEchoSummary] [R
 epoch_res.recon:0 "Das Zielmuster analysieren."
 epoch_res.fight:0 "Unsere Flotten und Verteidigung vorbereiten."
 epoch_res.20.name:0 "Die ersten Jäger"
-epoch_res.20.desc:0 "Ein bewaffneter Verband ist im Hauptstadtsystem erschienen. Seine Waffen reagieren auf das alte Signal. Er greift Schiffe innerhalb seines Unterdrückungsbereichs an, verfolgt einen Rückzug jedoch nicht durch das Reich. Seine Stärke wurde beim Erstkontakt festgelegt. Wir können neu aufbauen und zurückkehren. Erst seine Vernichtung im Gefecht öffnet seine Aufzeichnungen.\n\nEin Aufklärungsprojekt bei der Hauptstadt kann eine Schwachstelle aufdecken. Verteidigungsplattformen und verbündete Flotten können unsere Kämpfer unterstützen."
+epoch_res.20.desc:0 "[Root.GetEpochHunterLocation] Eine bewaffnete Formation reagiert auf das alte Signal. Sie bewacht ihren Unterdrückungsbereich und verfolgt einen Rückzug nicht durch unser Reich. Ihre Stärke wurde beim Erstkontakt festgelegt. Erst ihre Zerstörung im Kampf öffnet ihre Aufzeichnungen.\n\nOptionale Aufklärung kostet 600 Physikforschung über ein Spezialprojekt ohne Schiff. Sie senkt den Waffenschaden der Jäger für 1800 Tage um 15%. Verteidigungsplattformen und verbündete Flotten können helfen."
 epoch_res.salvage:0 "Die Gefechtsfragmente bergen."
 epoch_res.battle_archive:0 "Gesicherte Gefechtsdaten rekonstruieren."
 epoch_res.30.name:0 "Der gebrochene Code"
@@ -343,7 +343,7 @@ epoch_res.risk:0 "Synchronisation erzwingen."
 epoch_res.31.name:0 "Ein Muster gegen das Signal"
 epoch_res.31.desc:0 "Die Fragmente passen zu Lücken in unseren alten Expeditionsdaten. Ein vorsichtiger Vergleich schützt das Archiv. Erzwungene Synchronisation liefert zusätzliche Physikdaten, kann aber die wiederkehrende Infektion verstärken. Beide Wege benötigen ein bemanntes Wissenschaftsschiff bei der Hauptstadt."
 epoch_res.40.name:0 "Die zweite Infektion"
-epoch_res.40.desc:0 "Die Korrekturfolge hat auf [event_target:epoch_ii_target_planet@Root.GetName] eine Reaktion ausgelöst. [Root.GetEpochResonanceClass]\n\nÖffnet die planetaren Entscheidungen. Errichtet eine Quarantäne, lokalisiert die Frequenz und stabilisiert die Fundstelle. Wissenschaftliche Proben verbessern unsere Messungen; ungesicherte Proben und Ausnutzung können das Feature instabil machen. Eine teure Notabschaltung bleibt verfügbar. Forschungshinweise stehen zur regulären Forschung bereit; Eindämmungsinfrastruktur verbessert Probenanalysen. Alte Narbe und Struktur bleiben unabhängig."
+epoch_res.40.desc:0 "[Root.GetEpochInfectedLocation] [Root.GetEpochResonanceClass]\n\nÖffnet die planetaren Entscheidungen. Errichtet eine Quarantäne, lokalisiert die Frequenz und stabilisiert die Fundstelle. Wissenschaftliche Proben verbessern unsere Messungen; ungesicherte Proben und Ausnutzung können das Feature instabil machen. Eine teure Notabschaltung bleibt verfügbar. Forschungshinweise stehen zur regulären Forschung bereit; Eindämmungsinfrastruktur verbessert Probenanalysen. Alte Narbe und Struktur bleiben unabhängig."
 epoch_res.listen:0 "Das Netzwerk stillhalten."
 epoch_res.pulse:0 "Einen kontrollierten Impuls senden."
 epoch_res.repeat:0 "Das Muster der Jäger wiederholen."
@@ -354,7 +354,7 @@ epoch_res.51.desc:0 "Die erste Station war ein Relais. Es wiederholt eine Übert
 epoch_res.52.name:0 "Ein Motor der Stille"
 epoch_res.52.desc:0 "Die zweite Fundstelle entfernt aktiv einen Teil der Übertragung. Ihre Struktur trägt denselben Korrekturcode wie die Jäger. [Root.GetEpochSilenceSummary] Dies war der lokale Schutzbereich von etwas viel Größerem."
 epoch_res.60.name:0 "Jenseits des Schutzbereichs"
-epoch_res.60.desc:0 "Fünf Untersuchungen ergeben nun eine Akte. Narbe, besiegte Jäger, gebrochener Code, Infektion und die drei Stationen gehören zum selben Konflikt. Die vernichtete Flotte war ein kleines Werkzeug eines größeren Unterdrückungsnetzes.\n\nGefechtsverluste, Planetenschäden, Forschung und gesendete Signale bleiben vermerkt. Unser unmittelbarer Schutzbereich ist gesichert. Dahinter lauschen möglicherweise bereits weitere Verbände. Ihr ursprünglicher Zweck bleibt unbekannt. Es hat keine neue Krise begonnen."
+epoch_res.60.desc:0 "Fünf Untersuchungen ergeben nun eine Akte. Narbe, besiegte Jäger, gebrochener Code, Infektion und die drei Stationen gehören zum selben Konflikt. Die vernichtete Flotte war ein kleines Werkzeug eines größeren Unterdrückungsnetzes.\n\nGefechtsverluste, Planetenschäden, Forschung und gesendete Signale bleiben vermerkt. Unser unmittelbarer Schutzbereich ist gesichert. Dahinter lauschen möglicherweise bereits weitere Verbände. Ihr ursprünglicher Zweck bleibt unbekannt. Es hat keine neue Krise begonnen.\n\nGebt Stage III frei oder beendet EPOCH dauerhaft. Beide Entscheidungen erhalten alle erforschten Daten, Schäden und aufgezeichneten Signale."
 epoch_res.retry_reflection:0 "Das Vor-Ort-Projekt erneut ansetzen."
 epoch_res.remote_reflection:0 "Fernmessungen finanzieren."
 epoch_res.70.name:0 "Eine Messung wiederherstellen"
@@ -383,7 +383,7 @@ epoch_resonance_protocol:0 "Resonanz"
 epoch_resonance_protocol_type:0 "Resonanz"
 epoch_resonance_protocol_desc:0 "Folgt der Narbe, besiegt die Jäger, analysiert ihren Code, dämmt die Infektion ein und kartiert das stille Netzwerk."
 epoch_resonance_protocol_monthly_change_tooltip:0 "Nur abgeschlossene Ziele bringen die Untersuchung voran."
-epoch_res_objectives:0 "Wissenschaftsprojekte markieren Expeditionsziele. Nutzt während der Infektion die Entscheidungen des betroffenen Planeten. Wählt Ziele wiederherstellen für unterbrochene Arbeiten oder Fernmessungen. Ein militärischer Sieg ist verpflichtend."
+epoch_res_objectives:0 "Wissenschaftsprojekte markieren Expeditionsziele. Nutzt während der Infektion die Entscheidungen des betroffenen Planeten. Nutzt Resonanzoperationen fortsetzen auf der Hauptstadt für unterbrochene Arbeiten oder Fernmessungen. Ein militärischer Sieg ist verpflichtend."
 epoch_res_observe:0 "Ziele verfolgen"
 epoch_res_observe_desc:0 "Führt die markierten Projekte und planetaren Entscheidungen aus."
 epoch_res_recover:0 "Ziele wiederherstellen"
@@ -399,17 +399,17 @@ epoch_res_goal_infection:0 "Die zweite Infektion"
 stage_res_network:0 "Das Netzwerk der Stille"
 epoch_res_goal_network:0 "Das Netzwerk der Stille"
 EPOCH_RES_SCAR:0 "Die wiederkehrende Narbe untersuchen"
-EPOCH_RES_SCAR_DESC:0 "Die wiederkehrende Narbe untersuchen. Benötigt ein Wissenschaftsschiff mit Wissenschaftler am markierten Ort. Unterbrochene Expeditionen können neu zugewiesen werden; bei Verlust der Fundstelle Ziele wiederherstellen nutzen."
+EPOCH_RES_SCAR_DESC:0 "Die wiederkehrende Narbe untersuchen. Benötigt ein Wissenschaftsschiff mit Wissenschaftler am markierten Ort. Unterbrochene Expeditionen können neu zugewiesen werden; bei Verlust der Fundstelle Resonanzoperationen fortsetzen auf der Hauptstadt nutzen."
 EPOCH_RES_RECON:0 "Das Zielmuster der Jäger analysieren"
-EPOCH_RES_RECON_DESC:0 "Das Zielmuster der Jäger analysieren. Benötigt ein Wissenschaftsschiff mit Wissenschaftler am markierten Ort. Unterbrochene Expeditionen können neu zugewiesen werden; bei Verlust der Fundstelle Ziele wiederherstellen nutzen."
+EPOCH_RES_RECON_DESC:0 "Optional: 600 Physikforschung über das native Projekt investieren. Kein Wissenschaftsschiff oder Wissenschaftler nötig. Abschluss: -15% Waffenschaden der Nullwächter für 1800 Tage. Vor dem Gefecht erforschen; der Sieg bricht offene Arbeit ab und erfordert weiterhin einen echten Kampf."
 EPOCH_RES_WRECK:0 "Gefechtsfragmente der Jäger bergen"
-EPOCH_RES_WRECK_DESC:0 "Gefechtsfragmente der Jäger bergen. Benötigt ein Wissenschaftsschiff mit Wissenschaftler am markierten Ort. Unterbrochene Expeditionen können neu zugewiesen werden; bei Verlust der Fundstelle Ziele wiederherstellen nutzen."
+EPOCH_RES_WRECK_DESC:0 "Gefechtsfragmente der Jäger bergen. Benötigt ein Wissenschaftsschiff mit Wissenschaftler am markierten Ort. Unterbrochene Expeditionen können neu zugewiesen werden; bei Verlust der Fundstelle Resonanzoperationen fortsetzen auf der Hauptstadt nutzen."
 EPOCH_RES_COMPARE:0 "Den Korrekturcode vergleichen"
-EPOCH_RES_COMPARE_DESC:0 "Den Korrekturcode vergleichen. Benötigt ein Wissenschaftsschiff mit Wissenschaftler am markierten Ort. Unterbrochene Expeditionen können neu zugewiesen werden; bei Verlust der Fundstelle Ziele wiederherstellen nutzen."
+EPOCH_RES_COMPARE_DESC:0 "Den Korrekturcode vergleichen. Benötigt ein Wissenschaftsschiff mit Wissenschaftler am markierten Ort. Unterbrochene Expeditionen können neu zugewiesen werden; bei Verlust der Fundstelle Resonanzoperationen fortsetzen auf der Hauptstadt nutzen."
 EPOCH_RES_REFLECTION:0 "Die verzögerte Reflexion messen"
-EPOCH_RES_REFLECTION_DESC:0 "Die verzögerte Reflexion messen. Benötigt ein Wissenschaftsschiff mit Wissenschaftler am markierten Ort. Unterbrochene Expeditionen können neu zugewiesen werden; bei Verlust der Fundstelle Ziele wiederherstellen nutzen."
+EPOCH_RES_REFLECTION_DESC:0 "Die verzögerte Reflexion messen. Benötigt ein Wissenschaftsschiff mit Wissenschaftler am markierten Ort. Unterbrochene Expeditionen können neu zugewiesen werden; bei Verlust der Fundstelle Resonanzoperationen fortsetzen auf der Hauptstadt nutzen."
 EPOCH_RES_SILENCE:0 "Die Unterdrückungsstation untersuchen"
-EPOCH_RES_SILENCE_DESC:0 "Die Unterdrückungsstation untersuchen. Benötigt ein Wissenschaftsschiff mit Wissenschaftler am markierten Ort. Unterbrochene Expeditionen können neu zugewiesen werden; bei Verlust der Fundstelle Ziele wiederherstellen nutzen."
+EPOCH_RES_SILENCE_DESC:0 "Die Unterdrückungsstation untersuchen. Benötigt ein Wissenschaftsschiff mit Wissenschaftler am markierten Ort. Unterbrochene Expeditionen können neu zugewiesen werden; bei Verlust der Fundstelle Resonanzoperationen fortsetzen auf der Hauptstadt nutzen."
 decision_epoch_res_quarantine:0 "Resonanzquarantäne errichten"
 decision_epoch_res_quarantine_desc:0 "Schränkt die Produktion ein und senkt die Kontamination auf einen latenten Zustand. Für sorgfältige Stabilisierung erforderlich."
 decision_epoch_res_localize:0 "Infektion lokalisieren"
@@ -489,3 +489,51 @@ epoch_resonance_chamber_recovery:0 "Eingestellte Akte"
 epoch_resonance_chamber_recovery_type:0 "Eingestellte Akte"
 epoch_resonance_chamber_recovery_desc:0 "Diese Untersuchung gehört zu einer früheren Akte."
 epoch_resonance_chamber_recovery_monthly_change_tooltip:0 "Die Operationen sind eingestellt."
+
+epoch_res_observe_tt:0 "Die Situation zeigt das aktuelle Kapitel. Blockierte Ziele werden mit Resonanzoperationen fortsetzen auf der Hauptstadt wiederhergestellt. Abgeschlossene Kapitel bleiben geschlossen."
+
+epoch_res.recon.tt:0 "Startet ein optionales Spezialprojekt: 600 Physikforschung, kein Schiff oder Wissenschaftler. Abschluss: -15% Waffenschaden der Nullwächter für 1800 Tage. Der echte militärische Sieg bleibt erforderlich."
+
+epoch_res.remote.tt:0 "Wiederherstellung nur bei fehlendem oder unzugänglichem Originalziel. Höhere Energiekosten; ein bemanntes Wissenschaftsschiff muss das Projekt im Heimatgebiet abschließen. Kein Felddatenbonus. Aktive Projekte können nicht doppelt gekauft werden."
+
+epoch_res.begin.tt:0 "150 Energie; bemanntes Wissenschaftsschiff, 180 Tage an der Originalfundstelle. Abschluss: 150 Physikforschung und Vorbereitung: 100 Energie zurück bei Beginn von Kapitel 4."
+
+epoch_res.baseline.tt:0 "200 Energie; bemanntes Wissenschaftsschiff, 180 Tage am Referenzstern. Abschluss: 200 Physikforschung und Vorbereitung für Kapitel 4 (einmalig 100 Energie, gemeinsam mit anderer Vorbereitung)."
+
+epoch_res.salvage.tt:0 "200 Energie; bemanntes Wissenschaftsschiff, 210 Tage am tatsächlichen Kampfort. Intakte Felddaten liefern 300 Ingenieurforschung. Fernrekonstruktion aus Kampfdaten kostet 600 Energie und verliert diesen Bonus."
+
+epoch_res.signature.tt:0 "150 Energie; bemanntes Wissenschaftsschiff, 150 Tage am Wrack. Felddaten liefern 200 Physikforschung und Vorbereitung für Kapitel 4 (einmalig 100 Energie). Archivarbeit kostet 450 Energie und gewährt diese Feldboni nicht."
+
+epoch_res.careful.tt:0 "150 Energie; bemanntes Wissenschaftsschiff, 180 Tage im Heimatgebiet. Schaltet beide Forschungsoptionen frei, ohne Signalbelastung oder erzwungene instabile Kontamination. Frühere Risiken bleiben wirksam."
+
+epoch_res.risk.tt:0 "100 Energie; bemanntes Wissenschaftsschiff, 180 Tage im Heimatgebiet. Beide Forschungsoptionen und 600 Physikforschung. Folgen: -2% Energieproduktion für 1800 Tage und instabile Kontamination in Kapitel 4. Zur Lösung sind Quarantäne und Isolation (350 Energie, 200 Mineralien, 5 Verwüstung) oder Notfalleindämmung erforderlich."
+
+epoch_res.hunter_location:0 "Die Formation befindet sich in [event_target:epoch_res_battle_location.GetName]. Ihr System wurde auf der Karte identifiziert."
+
+epoch_res.hunter_location_missing:0 "Derzeit ist kein sicheres erreichbares Zielsystem verfügbar. Öffnet einen Weg und setzt die Operationen von der Hauptstadt fort. Ein Kampf oder Sieg wurde nicht vorgetäuscht."
+
+epoch_res.infected_location:0 "Die Reaktion konzentriert sich auf [event_target:epoch_res_infected_world.GetName]."
+
+epoch_res.infected_location_missing:0 "Derzeit ist kein geeigneter besiedelter Planet verfügbar. Stellt eine Kolonie wieder her und setzt die Operationen von der Hauptstadt fort."
+
+epoch_res.21.name:0 "Eine Lücke im Zielmuster"
+
+epoch_res.21.desc:0 "Unsere Forschung hat den Feuerzyklus der Jäger entschlüsselt. Ihr Waffenschaden sinkt für 1800 Tage um 15%. Dies ist ein vorübergehendes taktisches Zeitfenster. Erst die echte Zerstörung der Formation öffnet die Wrackuntersuchung."
+
+epoch_res.continue:0 "EPOCH fortsetzen: Übergabe an Stage III freigeben."
+
+epoch_res.stop:0 "EPOCH dauerhaft beenden. Alle Folgen bleiben; keine spätere Stage beginnt."
+
+epoch_res.archive.tt:0 "450 Energie. $epoch_res.remote.tt$"
+
+epoch_res.baseline_remote.tt:0 "500 Energie. $epoch_res.remote.tt$"
+
+epoch_res.battle_archive.tt:0 "600 Energie. $epoch_res.remote.tt$"
+
+epoch_res.signature_remote.tt:0 "450 Energie. $epoch_res.remote.tt$"
+
+epoch_res.remote_reflection.tt:0 "800 Energie. $epoch_res.remote.tt$"
+
+epoch_res.remote_silence.tt:0 "800 Energie. $epoch_res.remote.tt$"
+
+epoch_res.remote_interrupted.tt:0 "800 Energie. $epoch_res.remote.tt$"

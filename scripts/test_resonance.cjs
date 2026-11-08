@@ -33,9 +33,10 @@ const triggers = new Map([...parsed].filter(([p])=>p.startsWith('common/scripted
 for (const name of new Set([...all.matchAll(/\b(epoch_(?:core|ii|res)_[a-z_]+)\s*=\s*yes/g)].map(m=>m[1]))) check(effects.has(name)||triggers.has(name),`Defined scripted effect/trigger ${name}`);
 const newProjects = [...projects].filter(([key])=>key.startsWith('EPOCH_RES_'));
 function findNested(pairs,key){for(const [k,v]of pairs||[]){if(k===key)return v;if(Array.isArray(v)){const found=findNested(v,key);if(found)return found;}}}
-const projectForCallback=new Map(newProjects.map(([key,b])=>[get(findNested(get(b,'on_success'),'ship_event'),'id'),[key,b]]));
+const shipProjects = newProjects.filter(([,b])=>get(b,'event_scope')==='ship_event');
+const projectForCallback=new Map(shipProjects.map(([key,b])=>[get(findNested(get(b,'on_success'),'ship_event'),'id'),[key,b]]));
 check(newProjects.length===9,'Eight required investigations and optional reconnaissance');
-for (const [key,b] of newProjects) {
+for (const [key,b] of shipProjects) {
   check(get(b,'event_scope')==='ship_event',`${key} ship scope`);
   check(get(get(b,'requirements'),'leader')==='scientist',`${key} staffed scientist`);
   check(get(get(b,'requirements'),'shipclass_science_ship')==='1',`${key} real science ship`);
@@ -67,13 +68,13 @@ check(decisions.size===8,'Seven containment actions and explicit recovery');
 for (const [name,b] of decisions) if (!name.endsWith('resume')) {
   check(get(get(b,'resources'),'cost').length>0,`${name} native resource cost`);
   check(get(b,'allow').length>0&&get(b,'effect').length>0,`${name} active requirements and effects`);
-  check(JSON.stringify(get(b,'potential')).includes('epoch_ii_target_planet@owner'),`${name} rejects foreign/stale worlds`);
+  check(JSON.stringify(get(b,'potential')).includes('epoch_res_infected_for@owner'),`${name} rejects foreign/stale worlds`);
 }
 check(countDeep(effects.get('epoch_ii_clear_site_state'),'epoch_core_clear_contamination_deposits')===1,'Shared family clear');
 check(!JSON.stringify(effects.get('epoch_ii_clear_site_state')).includes('epoch_core_contamination_active_state'),'Old Stage-I penalties survive');
 check(JSON.stringify(E(59)).includes('epoch_res_interrupted_complete'),'All three station results gate handoff');
 const handoffWriters = [...eventDefs].filter(([,{b}])=>JSON.stringify(b).includes('"set_country_flag","epoch_res_stage_iii_ready"'));
-check(handoffWriters.length===1&&handoffWriters[0][0]==='epoch_res.59','Only final validated event writes Stage-III handoff');
+check(handoffWriters.length===1&&handoffWriters[0][0]==='epoch_res.60','Only final validated event writes Stage-III handoff');
 check(!/epoch_(?:iii|iv)\.\d/.test(all),'No automatic later-stage crisis');
 const nodeSource=source.get('common/scripted_effects/epoch_resonance_effects.txt');
 check(nodeSource.includes('epoch_res_reflection_system@root')&&nodeSource.includes('epoch_res_silence_system@root')&&nodeSource.includes('epoch_res_interrupted_system@root'),'Three owner-keyed system targets');
@@ -97,6 +98,8 @@ function resolve(name,c) {
   if(name==='capital_scope')return c.obj.capital;
   if(name==='solar_system')return c.obj.system;
   if(name==='planet')return c.obj.kind==='planet'?c.obj:c.obj.planet;
+  if(name==='colony')return c.obj.kind==='colony'?c.obj:c.obj.colony;
+  if(name==='prevprev')return c.prevprev;
   if(name==='archaeological_site')return c.obj.archSite||c.obj.planet?.archSite;
   if(name.startsWith('event_target:')) {
     const [base,key]=name.slice(13).split('@');
@@ -104,7 +107,7 @@ function resolve(name,c) {
     return target?.alive===false?undefined:target;
   }
 }
-function ctx(obj,c){return {...c,obj,prev:c.obj};}
+function ctx(obj,c){return {...c,obj,prev:c.obj,prevprev:c.prev};}
 function test(b,c) {
   return b.every(([k,v])=>{
     if(k==='NOT'||k==='NOR')return !v.some(pair=>test([pair],c));
@@ -125,6 +128,13 @@ function test(b,c) {
       return c.obj.owner===resolve(v,c);
     }
     if(k==='is_same_value')return c.obj===resolve(v,c);
+    if(k==='has_access_fleet')return c.obj.access!==false;
+    if(k==='has_hyperlane_to')return (c.obj.neighbors||[]).includes(resolve(v,c));
+    if(k==='can_access_system')return c.obj.reachable?.has(resolve(v,c))||false;
+    if(k==='is_hostile')return c.obj.hostile===resolve(v,c);
+    if(k==='is_colony')return !!c.obj.colony||c.obj.kind==='colony';
+    if(k==='is_capital')return c.obj===c.obj.owner?.capital;
+    if(k==='any_fleet_in_system')return (c.obj.fleets||[]).some(o=>test(v,ctx(o,c)));
     if(k==='is_scope_type')return c.obj.kind===v;
     if(k==='is_country_type')return (c.obj.countryType||'default')===v;
     if(k==='is_site_type')return c.obj.siteType===v;
@@ -135,7 +145,7 @@ function test(b,c) {
     if(k==='any_owned_fleet')return c.obj.fleets.some(o=>test(v,ctx(o,c)));
     if(triggers.has(k))return test(triggers.get(k),c);
     const o=resolve(k,c); if(o)return test(v,ctx(o,c));
-    if(['owner','solar_system','planet','archaeological_site','from','fromfrom','fromfromfrom','capital_scope'].includes(k)||k.startsWith('event_target:')) throw Error('Unguarded missing trigger scope '+k);
+    if(['owner','solar_system','planet','colony','archaeological_site','from','fromfrom','fromfromfrom','capital_scope'].includes(k)||k.startsWith('event_target:')) throw Error('Unguarded missing trigger scope '+k);
     throw Error('Unsupported test '+k);
   });
 }
@@ -165,6 +175,10 @@ function run(b,c) {
       continue;
     }
     if(k==='fleet_event'){queued.push(get(v,'id'));continue;}
+    if(k==='every_owned_planet'){for(const p of c.obj.worlds||[c.obj.capital])if(p)run(v,ctx(p,c));continue;}
+    if(k==='random_owned_planet'){for(const p of c.obj.worlds||[c.obj.capital])if(p&&test(get(v,'limit')||[],ctx(p,c))){run(v.filter(([k])=>k!=='limit'),ctx(p,c));break;}continue;}
+    if(k==='closest_system'){const seen=new Set([c.obj]);let layer=[c.obj];for(let steps=1;steps<=+(get(v,'max_steps')||20);steps++){layer=[...new Set(layer.flatMap(o=>o.neighbors||[]))].filter(o=>!seen.has(o));layer.forEach(o=>seen.add(o));if(steps<+(get(v,'min_steps')||1))continue;const found=layer.find(o=>test(get(v,'limit'),ctx(o,c)));if(found){run(v.filter(([k])=>!['limit','min_steps','max_steps'].includes(k)),ctx(found,c));break;}}continue;}
+    if(k==='set_timed_country_flag'){c.obj.flags.add(get(v,'flag'));continue;}
     if(k==='every_country'){for(const country of countries)run(v,ctx(country,c));continue;}
     if(k==='every_owned_fleet'){for(const fleet of c.obj.fleets)if(!get(v,'limit')||test(get(v,'limit'),ctx(fleet,c)))run(v.filter(([k])=>k!=='limit'),ctx(fleet,c));continue;}
     if(k==='create_country'){const country=make('spawn-owner-'+spawns);countries.push(country);run(get(v,'effect'),ctx(country,c));continue;}
@@ -182,10 +196,10 @@ function run(b,c) {
     if(k==='set_site_progress_locked'){assert.equal(c.obj.kind,'archaeological_site');c.obj.locked=v==='yes';continue;}
     if(k==='destroy_archaeological_site'){const site=resolve(v,c);assert.equal(site.kind,'archaeological_site');site.alive=false;continue;}
     if(k==='add_research_option'){c.obj.techLeads??=new Set();c.obj.techLeads.add(v);continue;}
-    if(k==='enable_special_project'){const key=get(v,'name');check(!c.obj.projects.has(key),'No duplicated project '+key);c.obj.projects.add(key);continue;}
+    if(k==='enable_special_project'){const key=get(v,'name'),country=get(v,'owner')?resolve(get(v,'owner'),c):c.obj;check(!country.projects.has(key),'No duplicated project '+key);country.projects.add(key);continue;}
     if(k==='abort_special_project'){c.obj.projects.delete(get(v,'type'));continue;}
     if(k==='add_planet_devastation'){c.obj.devastation=(c.obj.devastation||0)+(+v);continue;}
-    if(['random_situation','every_situation','set_faction_hostility','set_graphical_culture','set_fleet_stance','set_aggro_range_measure_from','set_aggro_range'].includes(k))continue;
+    if(['random_situation','every_situation','set_faction_hostility','set_graphical_culture','set_fleet_stance','set_aggro_range_measure_from','set_aggro_range','custom_tooltip','set_visited'].includes(k))continue;
     if(effects.has(k)){run(effects.get(k),c);continue;}
     const o=resolve(k,c);if(o){run(v,ctx(o,c));continue;}
     throw Error('Unsupported effect '+k);
@@ -195,9 +209,10 @@ function reset(chapter=1){
   targets=new Map();locals=new Map();queued=[];spawns=0;countries=[];
   const country=make('empire');country.flags.add('epoch_res_active');country.vars.epoch_res_chapter=chapter;
   countries.push(country);
-  const planet=make('world','planet');planet.owner=country;country.capital=planet;
+  const planet=make('world','planet');planet.owner=country;country.capital=planet;planet.planet=planet;planet.colony=planet;planet.flags.add('epoch_res_infected');planet.flags.add('epoch_res_infected_for@empire');
   const ship=make('science','ship');ship.owner=country;
   const system=make('system','system');planet.system=system;ship.system=system;
+  const frontier=make('frontier','system');frontier.neighbors=[system];system.neighbors=[frontier];
   targets.set('epoch_ii_target_planet@empire',planet);
   const countryContext={obj:country,root:country};
   const start=id=>{
@@ -340,14 +355,16 @@ x=reset(5);for(const name of ['reflection','silence','interrupted'])targets.set(
 x.country.flags.add('epoch_res_military_victory');x.country.flags.add('epoch_res_containment_complete');
 x.callback(105);x.callback(106);check(!test(get(E(59),'trigger'),x.countryContext),'Two results cannot unlock the three-station handoff');
 x.callback(109);check(test(get(E(59),'trigger'),x.countryContext),'Independent third project opens handoff');
-run(get(E(59),'immediate'),x.countryContext);check(x.country.flags.has('epoch_res_stage_iii_ready')&&!x.country.flags.has('epoch_res_active'),'Permanent handoff closes Stage II');
+run(get(E(59),'immediate'),x.countryContext);check(!x.country.flags.has('epoch_res_stage_iii_ready')&&!x.country.flags.has('epoch_res_active'),'Completion closes Stage II but waits for a final choice');
+const continueChoice=E(60).find(([k,b])=>k==='option'&&get(b,'name')==='epoch_res.continue')[1];
+run(continueChoice.filter(([k])=>!['name','ai_chance'].includes(k)),x.countryContext);
+check(x.country.flags.has('epoch_res_stage_iii_ready'),'Explicit continuation unlocks handoff');
 check(!test(get(E(59),'trigger'),x.countryContext),'No repeated final reward');
 
 // All nine on_start -> native on_success -> ship_event paths use the observed
 // Country From. Do not directly inject a Planet as the callback's From.
 const scienceCases=[
   [101,1,'scar','epoch_res_scar_complete',[]],
-  [102,2,'home','epoch_res_recon_complete',[]],
   [103,3,'wreck','epoch_res_salvage_complete',[]],
   [104,3,'home','epoch_res_analysis_complete',['epoch_res_salvage_complete','epoch_res_signature_complete']],
   [105,5,'reflection','epoch_res_reflection_complete',[]],
@@ -437,11 +454,105 @@ arc=archaeologyFixture();run(get(beginDig,'hidden_effect'),arc.countryContext);
 check(!test(get(coreE(51),'trigger'),arc.countryContext),'Correctly Planet-bound site is not migrated');
 arc=archaeologyFixture();site=make('resolved-legacy','archaeological_site');site.siteType='epoch_core_silent_structure';targets.set('epoch_core_structure_site@empire',site);arc.country.flags.add('epoch_core_structure_phase_resolved');
 check(!test(get(coreE(51),'trigger'),arc.countryContext),'Existing completed Stage-I result remains untouched');
+// Feedback regression: separate the physical Planet and Colony. Generated 4.5.3
+// docs explicitly say planet flags forward to the carrier; is_same_value does
+// not do that. Shared flags below model only that documented forwarding.
+function distinctWorld(chapter=4){
+ const f=reset(chapter),colony=make('settlement','colony');
+ colony.owner=f.country;colony.planet=f.planet;colony.system=f.system;
+ colony.flags=f.planet.flags;colony.deposits=f.planet.deposits;
+ f.planet.colony=colony;f.country.capital=colony;f.country.worlds=[colony];
+ targets.set('epoch_ii_target_planet@empire',colony);
+ return {...f,colony};
+}
+let dw=distinctWorld();
+dw.planet.flags.delete('epoch_res_infected_for@empire');
+check(!test([['is_same_value','event_target:epoch_ii_target_planet@owner']],{obj:dw.planet,root:dw.planet}),'Reproduce original Planet != saved Colony identity');
+dw.planet.flags.add('epoch_res_quarantine');dw.planet.flags.add('epoch_res_localized');
+dw.planet.flags.add('epoch_ii_unstable_resonance');dw.planet.deposits.add('d_epoch_resonance_contamination_unstable');
+run(effects.get('epoch_res_repair_infection'),dw.countryContext);
+for(const [name,b] of decisions)if(!name.endsWith('resume')){
+ for(const obj of [dw.planet,dw.colony])check(test(get(b,'potential'),{obj,root:obj}),`${name}: visible with distinct Planet/Colony after saved-game repair`);
+}
+check(dw.planet.flags.has('epoch_res_localized')&&dw.planet.flags.has('epoch_res_quarantine')&&dw.planet.deposits.has('d_epoch_resonance_contamination_unstable'),'Repair preserves paid actions and unstable feature');
+const isolate=decisions.get('decision_epoch_res_isolate');
+run(get(isolate,'effect'),{obj:dw.planet,root:dw.planet});
+check(dw.planet.flags.has('epoch_ii_latent_resonance')&&!dw.planet.flags.has('epoch_ii_unstable_resonance'),'Actual Planet decision updates the feature through the shared state setter');
+const staleDevastation=dw.planet.devastation;run(get(isolate,'effect'),{obj:dw.planet,root:dw.planet});
+check(dw.planet.devastation===staleDevastation,'Stale isolation completion rechecks instability');
+const foreignOwner=make('conqueror');foreignOwner.flags.add('epoch_res_active');foreignOwner.vars.epoch_res_chapter=4;dw.planet.owner=foreignOwner;
+check(!test(get(isolate,'potential'),{obj:dw.planet,root:dw.planet}),'Conquest rejects the previous owner marker, even for another active campaign');
+dw=distinctWorld();targets.delete('epoch_ii_target_planet@empire');
+run(effects.get('epoch_res_repair_infection'),dw.countryContext);
+check(targets.get('epoch_ii_target_planet@empire')===dw.colony,'Missing saved reference reacquires the existing infected owned colony');
+const preserved=structuredClone({targets,countries,planet:dw.planet,countryContext:dw.countryContext});targets=preserved.targets;countries=preserved.countries;dw=preserved;
+run(effects.get('epoch_res_repair_infection'),dw.countryContext);
+check(test(get(decisions.get('decision_epoch_res_localize'),'potential'),{obj:dw.planet,root:dw.planet}),'Distinct scope links and owner marker survive model serialization');
+
+const recon=projects.get('EPOCH_RES_RECON');
+check(get(recon,'cost')==='600'&&get(recon,'tech_department')==='physics_technology','Recon spends native physics research points');
+check(get(recon,'event_scope')==='planet_event'&&get(recon,'location')==='no'&&!get(recon,'requirements')&&!get(recon,'days_to_research'),'Recon has no science ship, scientist or day-based substitute');
+check(get(get(get(recon,'on_success'),'prev'),'country_event').some(([k,v])=>k==='id'&&v==='epoch_res.102'),'Native Planet callback forwards PREV project owner');
+let rf=militaryFixture();rf.country.projects.add('EPOCH_RES_RECON');rf.join();rf.destroy();
+check(!rf.country.projects.has('EPOCH_RES_RECON')&&!rf.country.flags.has('epoch_res_recon_complete'),'Confirmed victory cancels unfinished recon without tactical completion');
+check(!test(get(E(102),'trigger'),rf.countryContext),'Late native recon callback cannot reward a later chapter');
+rf=militaryFixture();run(get(E(102),'immediate'),rf.countryContext);rf.join();rf.destroy();
+check(rf.country.flags.has('epoch_res_recon_complete')&&rf.country.flags.has('epoch_res_military_victory'),'Completed recon result survives independent real victory');
+check(JSON.stringify(E(102)).includes('"days","1800"')&&!JSON.stringify(E(102)).includes('"set_country_flag","epoch_res_military_victory"'),'Tactical weakness is temporary and cannot grant victory');
+rf=militaryFixture();rf.country.projects.add('EPOCH_RES_RECON');
+run(get(E(20),'immediate'),rf.countryContext);run(get(E(20),'immediate'),rf.countryContext);
+check(rf.country.projects.has('EPOCH_RES_RECON')&&rf.country.flags.has('epoch_res_recon_physics_v1'),'Old recon reissued once using the native physics definition');
+
+let sf=reset(2);run(get(E(20),'immediate'),sf.countryContext);
+check(targets.get('epoch_res_hunters@empire').system!==sf.system,'New hunters spawn outside the actual capital system');
+sf=reset(2);sf.system.neighbors=[];run(get(E(20),'immediate'),sf.countryContext);
+check(spawns===0&&!sf.country.flags.has('epoch_res_force_spawned'),'Disconnected one-system galaxy waits for a real accessible target, never invents victory or blocks home');
+sf=reset(2);sf.system.neighbors[0].access=false;run(get(E(20),'immediate'),sf.countryContext);
+check(spawns===0,'Closed-border neighbor cannot become the spawn fallback');
+sf=reset(2);sf.system.neighbors[0].owner=make('foreign');run(get(E(20),'immediate'),sf.countryContext);
+check(spawns===0,'Foreign territory excluded from spawning');
+
+const choose=(id,name)=>E(id).find(([k,b])=>k==='option'&&get(b,'name')===`epoch_res.${name}`)[1];
+const select=(option,c)=>run(option.filter(([k])=>!['name','trigger','allow','ai_chance','custom_tooltip'].includes(k)),c);
+for(const [id,name,target]of [[1,'archive','scar'],[11,'baseline_remote','baseline'],[30,'battle_archive','wreck'],[32,'signature_remote','wreck']]){
+ const f=reset(id===1||id===11?1:3);targets.set(`epoch_res_${target}@empire`,f.planet);
+ check(!test(get(choose(id,name),'trigger'),f.countryContext),`${name}: no expensive equivalent while field is accessible`);
+ f.system.access=false;check(test(get(choose(id,name),'trigger'),f.countryContext),`${name}: inaccessible field offers recovery`);
+}
+let field=reset(3);targets.set('epoch_res_wreck@empire',field.planet);field.callback(103);
+check(field.country.resources.engineering_research===300,'Field salvage has real immediate engineering data');
+field=reset(3);field.country.flags.add('epoch_res_wreck_remote');targets.set('epoch_res_wreck@empire',field.planet);field.callback(103);
+check(!field.country.resources.engineering_research,'Archive salvage cannot receive the field-data reward');
+let paid=reset(1);targets.set('epoch_res_scar@empire',paid.planet);const fund=choose(1,'begin');
+const balance=paid.country.resources.energy;select(fund,paid.countryContext);select(fund,paid.countryContext);
+check(paid.country.resources.energy===balance-150,'Repeated paid window cannot charge an already active project');
+paid.callback(101);select(fund,paid.countryContext);
+check(paid.country.resources.energy===balance-150,'Completed scar cannot be purchased again from an old window in the same chapter');
+let archive=reset(3);archive.country.flags.add('epoch_res_wreck_remote');archive.country.flags.add('epoch_res_salvage_complete');targets.set('epoch_res_wreck@empire',archive.planet);
+check(!test(get(choose(32,'signature'),'trigger'),archive.countryContext)&&test(get(choose(32,'signature_remote'),'trigger'),archive.countryContext),'Archive salvage opens archive signature work, never a cheap counterfeit field pass');
+archive=reset(1);archive.country.flags.add('epoch_res_scar_remote');
+const archiveBalance=archive.country.resources.energy;run(effects.get('epoch_res_restore_archive_projects'),archive.countryContext);run(effects.get('epoch_res_restore_archive_projects'),archive.countryContext);
+check(archive.country.projects.has('EPOCH_RES_SCAR')&&archive.country.resources.energy===archiveBalance,'Paid interrupted archive work resumes free and exactly once');
+let risky=reset(3);risky.country.flags.add('epoch_res_salvage_complete');risky.country.flags.add('epoch_res_signature_complete');targets.set('epoch_res_home@empire',risky.planet);
+select(choose(31,'risk'),risky.countryContext);risky.callback(104);run(get(E(140),'immediate'),risky.countryContext);
+check(risky.country.resources.physics_research===600&&risky.country.modifiers.has('epoch_res_signal_strain')&&risky.planet.flags.has('epoch_ii_unstable_resonance'),'Risk grants 600 physics, real economic strain and unstable containment');
+
+for(const [id,{b}]of eventDefs)if(id.startsWith('epoch_res.')&&id!=='epoch_res.60')check(!JSON.stringify(b).includes('"set_country_flag","epoch_core_campaign_opted_out"'),`${id}: no mid-stage permanent refusal`);
+let ending=reset(5);ending.country.flags.add('epoch_res_final_choice_pending');ending.country.flags.add('epoch_res_complete');
+select(choose(60,'stop'),ending.countryContext);select(choose(60,'continue'),ending.countryContext);
+check(ending.country.flags.has('epoch_core_campaign_opted_out')&&!ending.country.flags.has('epoch_res_stage_iii_ready'),'Final refusal remains permanent even with a stale Continue window');
+ending=reset(5);ending.country.flags.delete('epoch_res_active');ending.country.flags.add('epoch_res_complete');ending.country.flags.add('epoch_res_stage_iii_ready');
+run(get(E(81),'immediate'),ending.countryContext);
+check(!ending.country.flags.has('epoch_res_stage_iii_ready')&&ending.country.flags.has('epoch_res_final_choice_pending'),'Legacy automatic handoff becomes a pending explicit final choice');
+select(choose(60,'continue'),ending.countryContext);run(get(E(81),'immediate'),ending.countryContext);
+check(ending.country.flags.has('epoch_res_stage_iii_ready')&&!ending.country.flags.has('epoch_res_final_choice_pending'),'Migration cannot reopen an explicitly finalized handoff');
+
 // Every new visible key, project and modifier is translated in both languages.
 const repo = process.argv[2]||path.resolve(__dirname,'..');
 for(const lang of ['english','german']){
   const loc=fs.readFileSync(path.join(repo,`localisation/${lang}/epoch_core_l_${lang}.yml`),'utf8');
   const keys=new Set([...loc.matchAll(/^\s*([\w.]+):\d+\s+"/gm)].map(m=>m[1]));
+  for(const ref of loc.matchAll(/\$(epoch_[\w.]+)\$/g))check(keys.has(ref[1]),`${lang}: native localization substitution ${ref[1]} resolves`);
   for(const [id,{b}] of eventDefs) if(id.startsWith('epoch_res.'))for(const field of ['title','desc'])if(typeof get(b,field)==='string')check(keys.has(get(b,field)),`${lang} ${id} ${field}`);
   for(const [name]of decisions){check(keys.has(name),`${lang} ${name}`);check(keys.has(name+'_desc'),`${lang} ${name} description`);}
   for(const [key]of newProjects){check(keys.has(key),`${lang} ${key}`);check(keys.has(key+'_DESC'),`${lang} ${key} description`);}

@@ -1,4 +1,12 @@
 # Country-scoped closing assessment; first matching entry wins.
+defined_text = { name = GetEpochHunterLocation random = no
+ text = { localization_key = epoch_res.hunter_location trigger = { exists = event_target:epoch_res_battle_location } }
+ text = { localization_key = epoch_res.hunter_location_missing }
+}
+defined_text = { name = GetEpochInfectedLocation random = no
+ text = { localization_key = epoch_res.infected_location trigger = { exists = event_target:epoch_res_infected_world } }
+ text = { localization_key = epoch_res.infected_location_missing }
+}
 defined_text = {
 	name = GetEpochEchoSummary
 	random = no
