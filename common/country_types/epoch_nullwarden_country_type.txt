@@ -7,11 +7,13 @@ epoch_nullwarden = {
 	has_capital = no
 	enforces_borders = no
 	diplomatic_wars = no
+	orbital_bombardment = no
+	attack_unarmed_orbital_stations = no
 	ship_disengagement = no
 	show_in_contacts_list = yes
 	government = no
 	faction = {
-		neutral = yes
+		neutral = no
 		hostile = no
 		auto_delete = no
 		needs_border_access = no
@@ -20,4 +22,9 @@ epoch_nullwarden = {
 		hostile_when_attacked = no
 	}
 	ai = { enabled = no }
+ modules = {
+  exclusive_diplomacy_module = { contact_rule = on_action_only }
+  basic_technology_module = { }
+  standard_event_module = { }
+ }
 }

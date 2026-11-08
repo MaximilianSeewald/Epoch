@@ -91,11 +91,11 @@ foreach ($entry in @(
 
 # The binding campaign contract must remain linked and must not regress to the
 # original First Echo / expedition-only PR scope.
-foreach ($section in @('First Echo', 'Missing Expedition', 'First Contamination', 'The Silent Structure', 'Phase I Conclusion')) {
+foreach ($section in @('First Echo', 'Missing Expedition', 'First Contamination', 'The Silent Structure', 'Phase-I Conclusion')) {
 	Assert-Check ($phaseSpec.Contains($section)) "Binding Phase I specification is missing section: $section"
 }
-Assert-Check ($phaseSpec -match 'PR #6 now contains the five-section implementation and remains open until successful full in-game acceptance') 'Phase I specification must distinguish implementation from final in-game acceptance'
-foreach ($requirement in @('permanent exit', 'AI', 'multiple simultaneous empires', 'save/load', 'multiplayer', 'VERIFIED', 'RUNTIME', 'negative consequence', 'in-world language', 'preserve uncertainty')) {
+Assert-Check ($phaseSpec -match 'does not establish complete multiplayer, AI, or alternative-path validation') 'Phase I specification must distinguish implementation from final in-game acceptance'
+foreach ($requirement in @('permanent exit', 'AI', 'Each empire', 'save/load', 'multiplayer', 'Engine-specific', 'negative gameplay consequence', 'in-world', 'Preserve uncertainty')) {
 	Assert-Check ($phaseSpec.Contains($requirement)) "Binding Phase I specification is missing requirement: $requirement"
 }
 Assert-Check ((Read-ProjectFile 'docs/architecture.md') -match 'phases/phase-i-first-contact\.md') 'Architecture overview must link to the binding Phase I specification'
@@ -177,7 +177,7 @@ foreach ($language in @('english', 'german')) {
 	$relative = "localisation/$language/epoch_core_l_$language.yml"
 	$localizedPlayerText += @([System.IO.File]::ReadAllLines((Join-Path $Root $relative), [System.Text.Encoding]::UTF8) | Where-Object { $_ -match '^\s*[A-Za-z0-9_.]+:\d+\s+"' } | ForEach-Object { $_ -replace '^\s*[A-Za-z0-9_.]+:\d+\s+"', '' -replace '"\s*$', '' })
 }
-Assert-Check (($localizedPlayerText -join "`n") -notmatch '(?i)epoch_core|epoch_first_echo|EPOCH_|event.flag|set_country_flag|set_variable|debug|phase\s*(?:i|1)\b|kampagnenstatus|kampagnen-flagge') 'Player-facing localisations must not expose internal IDs, flags, variables, debugging, or phase labels'
+Assert-Check (((($localizedPlayerText -join "`n") -replace '\[[^\]]+\]', '') -replace '\$[^$]+\$', '') -notmatch '(?i)epoch_core|epoch_first_echo|EPOCH_|event.flag|set_country_flag|set_variable|debug|phase\s*(?:i|1)\b|kampagnenstatus|kampagnen-flagge') 'Player-facing localisations must not expose internal IDs, flags, variables, debugging, or phase labels outside native localization references'
 
 # Event ID coverage across event calls, project callbacks and on_action entries.
 $eventDefinitions = @([regex]::Matches($events, '(?m)^\s*id\s*=\s*epoch_core\.(\d+)\s*$') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
@@ -339,11 +339,11 @@ Assert-Check ($features -notmatch 'category\s*=\s*deposit_cat_blockers') 'No EPO
 Assert-Check (@($featureDefinitions | Where-Object { $_ -match '^d_epoch_resonance_contamination_' }).Count -eq 8 -and @($featureDefinitions | Where-Object { $_ -match '^d_epoch_resonance_scar' }).Count -eq 3 -and @($featureDefinitions | Where-Object { $_ -match '^d_epoch_silent_structure_' }).Count -eq 4 -and $featureDefinitions.Count -eq 15) 'All feature deposits must belong to exactly the three defined logical families'
 $contaminationClear = Get-Block $scriptedEffects '(?m)^epoch_core_clear_contamination_deposits\s*=\s*\{' 'Shared contamination family state cleanup'
 foreach ($state in @('active','worsened','studied','contained','latent','resonant','unstable','controlled')) { Assert-Check ($contaminationClear -match "remove_deposit\s*=\s*d_epoch_resonance_contamination_$state\b") "Contamination transitions must remove prior $state state" }
-Assert-Check ((Get-Block $scriptedEffects '(?m)^epoch_ii_clear_site_state\s*=\s*\{' 'Phase II state cleanup') -match 'epoch_core_clear_contamination_deposits\s*=\s*yes') 'Phase II setters must delegate to the shared contamination-family manager'
+Assert-Check (([regex]::Matches((Get-Block $scriptedEffects '(?m)^epoch_ii_clear_site_state\s*=\s*\{' 'Phase II state cleanup'), 'remove_deposit\s*=')).Count -eq 8) 'Flattened Phase II cleanup must remove all eight contamination deposits'
 $phaseTwoContaminationClear = Get-Block $scriptedEffects '(?m)^epoch_ii_clear_site_state\s*=\s*\{' 'Phase II state cleanup'
 Assert-Check ($phaseTwoContaminationClear -match 'remove_modifier\s*=\s*epoch_ii_resonance_active' -and $phaseTwoContaminationClear -notmatch 'remove_planet_flag\s*=\s*epoch_core_contamination_(active|worsened|studied)_state') 'Phase-I consequences must survive Phase-II transitions'
 foreach ($setter in @('epoch_core_apply_contamination_active','epoch_core_apply_contamination_worsened','epoch_core_apply_contamination_studied')) { Assert-Check ((Get-Block $scriptedEffects "(?m)^$setter\s*=\s*\{" $setter) -match 'epoch_core_remove_contamination_effects\s*=\s*yes') "$setter must use shared contamination cleanup" }
-foreach ($setter in @('epoch_ii_set_site_latent','epoch_ii_set_site_active','epoch_ii_set_site_unstable','epoch_ii_set_site_controlled')) { Assert-Check ((Get-Block $scriptedEffects "(?m)^$setter\s*=\s*\{" $setter) -match 'epoch_ii_clear_site_state\s*=\s*yes') "$setter must clear the contamination family before setting its state" }
+foreach ($setter in @('epoch_ii_set_site_latent','epoch_ii_set_site_active','epoch_ii_set_site_unstable','epoch_ii_set_site_controlled')) { Assert-Check ((Get-Block $scriptedEffects "(?m)^$setter\s*=\s*\{" $setter) -match 'remove_deposit\s*=\s*d_epoch_resonance_contamination_active[\s\S]*remove_deposit\s*=\s*d_epoch_resonance_contamination_controlled[\s\S]*set_planet_flag') "$setter must clear the contamination family before setting its state" }
 foreach ($setter in @('epoch_core_set_resonance_scar','epoch_core_set_resonance_scar_altered','epoch_core_set_resonance_scar_healed')) { Assert-Check ((Get-Block $scriptedEffects "(?m)^$setter\s*=\s*\{" $setter) -match 'epoch_core_clear_resonance_scar\s*=\s*yes') "$setter must enforce one scar state" }
 foreach ($setter in @('epoch_core_set_structure_unsecured','epoch_core_set_structure_secured','epoch_core_set_structure_investigated','epoch_core_set_structure_destroyed')) { Assert-Check ((Get-Block $scriptedEffects "(?m)^$setter\s*=\s*\{" $setter) -match 'epoch_core_clear_structure_state\s*=\s*yes') "$setter must enforce one structure state" }
 Assert-Check ($contaminationClear -notmatch 'd_epoch_resonance_scar|d_epoch_silent_structure_' -and (Get-Block $scriptedEffects '(?m)^epoch_core_clear_resonance_scar\s*=\s*\{' 'Scar family clear') -notmatch 'd_epoch_resonance_contamination_|d_epoch_silent_structure_' -and (Get-Block $scriptedEffects '(?m)^epoch_core_clear_structure_state\s*=\s*\{' 'Structure family clear') -notmatch 'd_epoch_resonance_contamination_|d_epoch_resonance_scar') 'The three feature-family managers must leave the other two families untouched'
@@ -375,7 +375,7 @@ if ((Test-Path -LiteralPath $vanillaSituationPath) -and (Test-Path -LiteralPath 
 } else { Write-Output "VANILLA SITUATION/PROJECT SOURCE CHECK skipped: no source under $VanillaRoot." }
 Assert-Check ((Get-EventBlock $events 22) -notmatch 'add_situation_progress\s*=\s*20' -and (Get-EventBlock $events 22) -match 'epoch_core_structure_site_creation_failed[\s\S]*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.44') 'Creating the archaeological site must not count as excavation progress; missing sites open recovery choices'
 Assert-Check ((Get-EventBlock $events 44) -match 'EPOCH_STRUCTURE_REMOTE_STUDY[\s\S]*epoch_core_structure_choice_recorded' -and (Get-EventBlock $events 44) -match 'epoch_core.44.b[\s\S]*epoch_core_structure_choice_recorded') 'A destroyed or missing site must offer remote study or explicit closure'
-Assert-Check ((Get-EventBlock $events 43) -match 'name\s*=\s*epoch_core\.43\.a[\s\S]*from\s*=\s*\{\s*set_site_progress_locked\s*=\s*yes' -and (Get-EventBlock $events 43) -match 'destroy_archaeological_site\s*=\s*this' -and (Get-EventBlock $events 43) -match 'epoch_core_structure_investigated') 'The final callback must terminally lock the secured site, destroy it only on the destruction path, or record investigation'
+Assert-Check ((Get-EventBlock $events 43) -match 'name\s*=\s*epoch_core\.43\.a[\s\S]*event_target:epoch_core_structure_site@root.owner\s*=\s*\{\s*set_site_progress_locked\s*=\s*yes' -and (Get-EventBlock $events 43) -match 'destroy_archaeological_site\s*=\s*this' -and (Get-EventBlock $events 43) -match 'epoch_core_structure_investigated') 'The final callback must terminally lock the saved owned site, destroy it only on the destruction path, or record investigation'
 $activeContaminationEffect = Get-Block $scriptedEffects '(?m)^epoch_core_apply_contamination_active\s*=\s*\{' 'class-specific active contamination effect'
 $worsenedContaminationEffect = Get-Block $scriptedEffects '(?m)^epoch_core_apply_contamination_worsened\s*=\s*\{' 'class-specific worsened contamination effect'
 Assert-Check ($activeContaminationEffect -match 'set_planet_flag\s*=\s*epoch_core_contamination_active_state' -and $activeContaminationEffect -match 'add_deposit\s*=\s*d_epoch_resonance_contamination' -and $features -match 'epoch_core_contamination_active_state[\s\S]*?planet_jobs_food_produces_mult\s*=\s*-0\.05' -and $features -match 'epoch_core_contamination_active_state[\s\S]*?planet_jobs_unity_produces_mult\s*=\s*-0\.05' -and $features -match 'epoch_core_contamination_active_state[\s\S]*?planet_jobs_energy_produces_mult\s*=\s*-0\.05') 'Active contamination uses one Planetary Feature with class-specific planetary economy effects'
@@ -402,7 +402,7 @@ Assert-Check ((Get-EventBlock $events 31) -match 'EPOCH_FIRST_ECHO_[A-Z_]+' -and
 Assert-Check ((Get-EventBlock $events 32) -match 'epoch_core_echo_second_abandoned' -and (Get-EventBlock $events 32) -match 'EPOCH_ECHO_[A-Z_]+' -and (Get-EventBlock $events 32) -notmatch 'country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.(?:4|5)' -and (Get-EventBlock $events 48) -match 'has_country_flag\s*=\s*epoch_core_echo_second_abandoned[\s\S]*country_event\s*=\s*\{\s*id\s*=\s*epoch_core\.4') 'A follow-up failure offers retry or abandonment; explicit abandonment unlocks the expedition at its Situation threshold'
 $conclusionChoiceText = (($englishLoc + $germanLoc) -split "`r?`n" | Where-Object { $_ -match '^\s*epoch_core\.23\.[ab]:0' }) -join "`n"
 Assert-Check ($conclusionChoiceText -notmatch '(?i)campaign|participat|phase|einstieg|kampagne|teilnahme|zukünftigen phasen') 'Conclusion options must use only in-world language'
-Assert-Check (($englishLoc + $germanLoc) -notmatch '(?i)UAP|Universal Ascension|original purpose|ursprüngliche zivilisation|ursprüngliche Zweck|eigentliche Zweck') 'Phase I closing text must not reveal the later purpose or UAP'
+Assert-Check ((($englishLoc + $germanLoc) -split "`r?`n" | Where-Object { $_ -match '^epoch_core\.' }) -join "`n" -notmatch '(?i)UAP|Universal Ascension|original purpose|ursprüngliche zivilisation|ursprüngliche Zweck|eigentliche Zweck') 'Phase I closing text must not reveal the later purpose or UAP'
 
 # AI routes and absent-object recovery must be explicit at each blocking step.
 foreach ($id in @(2,3,4,5,6,7,20,22,23,40,41,42,43)) {
@@ -461,16 +461,12 @@ foreach ($approach in @($cautiousApproach,$intensiveApproach,$minimalApproach)) 
 }
 & node (Join-Path $PSScriptRoot 'test_phase_i_flow.cjs') $Root
 Assert-Check ($LASTEXITCODE -eq 0) 'Parsed campaign-state regression must pass'
-& node (Join-Path $PSScriptRoot 'test_phase_ii_block_a.cjs') $Root
-Assert-Check ($LASTEXITCODE -eq 0) 'Phase II Block A static regression must pass'
-& node (Join-Path $PSScriptRoot 'test_phase_ii_flow_model.cjs') $Root
-Assert-Check ($LASTEXITCODE -eq 0) 'Phase II Block A transition model must pass'
-& node (Join-Path $PSScriptRoot 'test_phase_ii_block_b.cjs') $Root
-Assert-Check ($LASTEXITCODE -eq 0) 'Phase II Block B transition and recovery model must pass'
-& node (Join-Path $PSScriptRoot 'test_phase_ii_block_c.cjs') $Root
-Assert-Check ($LASTEXITCODE -eq 0) 'Phase II Block C ending, technology, project, localization, and recovery checks must pass'
-& node (Join-Path $PSScriptRoot 'test_phase_ii_campaign_flow.cjs') $Root
-Assert-Check ($LASTEXITCODE -eq 0) 'Full eight-chapter Phase II campaign progression model must pass'
+& node (Join-Path $PSScriptRoot 'test_resonance.cjs') $Root $VanillaRoot
+Assert-Check ($LASTEXITCODE -eq 0) 'Five-chapter Resonance structural and invariant checks must pass'
+& node (Join-Path $PSScriptRoot 'test_resonance_vanilla.cjs') $Root $VanillaRoot
+Assert-Check ($LASTEXITCODE -eq 0) 'Feedback fixes must match installed native project, scope, localization and UI definitions'
+& node (Join-Path $PSScriptRoot 'test_narrative_ui.cjs') $Root $VanillaRoot
+Assert-Check ($LASTEXITCODE -eq 0) 'Narrative/UI changes must preserve baseline gameplay and bounded effect expansion'
 & node (Join-Path $PSScriptRoot 'test_clausewitz_structure.cjs') $Root $VanillaRoot
 Assert-Check ($LASTEXITCODE -eq 0) 'Clausewitz lexer/parser must validate every common/events text file and top-level scripted effects'
 & node (Join-Path $PSScriptRoot 'test_stellaris_runtime_log.cjs') --self-test

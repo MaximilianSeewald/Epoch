@@ -43,6 +43,9 @@ d_epoch_resonance_contamination_contained = {
 # preserve any still-active Phase-I state flags, so the economic effects stack
 # exactly as in the former separate-modifier implementation.
 d_epoch_resonance_contamination_latent = {
+	triggered_planet_modifier = { potential = { owner = { is_regular_empire = yes } } planet_jobs_food_produces_mult = -0.01 }
+	triggered_planet_modifier = { potential = { owner = { is_hive_empire = yes } } planet_jobs_unity_produces_mult = -0.01 }
+	triggered_planet_modifier = { potential = { owner = { is_machine_empire = yes } } planet_jobs_energy_produces_mult = -0.01 }
 	is_for_colonizable = yes
 	category = deposit_cat_rare
 	icon = d_metal_boneyard
@@ -60,6 +63,9 @@ d_epoch_resonance_contamination_latent = {
 }
 
 d_epoch_resonance_contamination_resonant = {
+	triggered_planet_modifier = { potential = { owner = { is_regular_empire = yes } } planet_jobs_food_produces_mult = -0.03 }
+	triggered_planet_modifier = { potential = { owner = { is_hive_empire = yes } } planet_jobs_unity_produces_mult = -0.03 }
+	triggered_planet_modifier = { potential = { owner = { is_machine_empire = yes } } planet_jobs_energy_produces_mult = -0.03 }
 	is_for_colonizable = yes
 	category = deposit_cat_rare
 	icon = d_radioactive_wasteland
@@ -77,6 +83,9 @@ d_epoch_resonance_contamination_resonant = {
 }
 
 d_epoch_resonance_contamination_unstable = {
+	triggered_planet_modifier = { potential = { owner = { is_regular_empire = yes } } planet_jobs_food_produces_mult = -0.06 }
+	triggered_planet_modifier = { potential = { owner = { is_hive_empire = yes } } planet_jobs_unity_produces_mult = -0.06 }
+	triggered_planet_modifier = { potential = { owner = { is_machine_empire = yes } } planet_jobs_energy_produces_mult = -0.06 }
 	is_for_colonizable = yes
 	category = deposit_cat_rare
 	icon = d_radioactive_wasteland
@@ -94,6 +103,9 @@ d_epoch_resonance_contamination_unstable = {
 }
 
 d_epoch_resonance_contamination_controlled = {
+	triggered_planet_modifier = { potential = { owner = { is_regular_empire = yes } } planet_jobs_food_produces_mult = 0.01 }
+	triggered_planet_modifier = { potential = { owner = { is_hive_empire = yes } } planet_jobs_unity_produces_mult = 0.01 }
+	triggered_planet_modifier = { potential = { owner = { is_machine_empire = yes } } planet_jobs_energy_produces_mult = 0.01 }
 	is_for_colonizable = yes
 	category = deposit_cat_rare
 	icon = d_metal_boneyard

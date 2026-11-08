@@ -1,0 +1,162 @@
+# Fleet scope. A record belongs to this exact hostile fleet and its current
+# engagement, not to a country-wide historical participation flag.
+epoch_res_open_engagement = {
+    if = {
+        limit = {
+            OR = {
+                NOT = { has_fleet_flag = epoch_res_engagement_open }
+                has_fleet_flag = epoch_res_engagement_ended
+                NOT = { exists = event_target:epoch_res_engagement_system@this }
+                solar_system = { NOT = { is_same_value = event_target:epoch_res_engagement_system@prev } }
+            }
+        }
+        remove_fleet_flag = epoch_res_owner_participated
+        remove_fleet_flag = epoch_res_engagement_ended
+        set_fleet_flag = epoch_res_engagement_open
+        solar_system = { save_global_event_target_as = epoch_res_engagement_system@prev }
+    }
+}
+
+# Fleet scope, Root = the native join callback's fleet. Only a participant named
+# by that callback can mark this engagement. No same-system fleet scan is used.
+epoch_res_check_participant = {
+    if = {
+        limit = {
+            exists = owner
+            owner = {
+                has_country_flag = epoch_res_active
+                NOT = { has_country_flag = epoch_core_campaign_opted_out }
+                check_variable = { which = epoch_res_chapter value = 2 }
+                is_same_value = event_target:epoch_res_join_owner
+            }
+            solar_system = { is_same_value = event_target:epoch_res_join_system }
+        }
+        event_target:epoch_res_join_hunters = { set_fleet_flag = epoch_res_owner_participated }
+        owner = { set_country_flag = epoch_res_combat_participation }
+    }
+}
+
+# Called for each fleet named by the join callback. Root/From/FromFrom/FromFromFrom
+# are kept intact; local event targets only connect these callback participants.
+epoch_res_track_join = {
+    if = {
+        limit = {
+            has_fleet_flag = epoch_res_hunters
+            exists = owner
+            exists = solar_system
+            owner = {
+                has_country_flag = epoch_res_warden
+                exists = event_target:epoch_res_owner@this
+                event_target:epoch_res_owner@this = { is_scope_type = country }
+                event_target:epoch_res_owner@this = {
+                    has_country_flag = epoch_res_active
+                    NOT = { has_country_flag = epoch_core_campaign_opted_out }
+                    check_variable = { which = epoch_res_chapter value = 2 }
+                }
+            }
+        }
+        save_event_target_as = epoch_res_join_hunters
+        solar_system = { save_event_target_as = epoch_res_join_system }
+        owner = { event_target:epoch_res_owner@this = { save_event_target_as = epoch_res_join_owner } }
+        epoch_res_open_engagement = yes
+        root = { epoch_res_check_participant = yes }
+        if = { limit = { exists = from } from = { epoch_res_check_participant = yes } }
+        if = { limit = { exists = fromfrom } fromfrom = { epoch_res_check_participant = yes } }
+        if = { limit = { exists = fromfromfrom } fromfromfrom = { epoch_res_check_participant = yes } }
+    }
+}
+
+# Country scope, Root = campaign country. Validate every target before entering
+# its scope. The reciprocal link (or the independent country identity) is proof
+# of ownership; a shared generic Nullwarden flag by itself is never sufficient.
+epoch_res_refresh_hunters = {
+    remove_country_flag = epoch_res_enemy_valid
+    remove_country_flag = epoch_res_force_present
+    remove_country_flag = epoch_res_absence_verified
+    if = {
+        limit = { exists = event_target:epoch_res_enemy@root event_target:epoch_res_enemy@root = { is_scope_type = country } }
+        event_target:epoch_res_enemy@root = {
+            if = {
+                limit = {
+                    has_country_flag = epoch_res_warden
+                    OR = {
+                        AND = { exists = event_target:epoch_res_owner@this event_target:epoch_res_owner@this = { is_same_value = root } }
+                        AND = { has_country_flag = epoch_res_warden_for@root NOT = { exists = event_target:epoch_res_owner@this } }
+                    }
+                }
+                root = { set_country_flag = epoch_res_enemy_valid save_global_event_target_as = epoch_res_owner@prev }
+            }
+        }
+    }
+    if = {
+        limit = { NOT = { has_country_flag = epoch_res_enemy_valid } }
+        if = { limit = { exists = event_target:epoch_res_enemy@root } clear_global_event_target = epoch_res_enemy@root }
+    }
+    if = {
+        limit = { exists = event_target:epoch_res_hunters@root event_target:epoch_res_hunters@root = { is_scope_type = fleet } }
+        event_target:epoch_res_hunters@root = {
+            if = {
+                limit = {
+                    has_fleet_flag = epoch_res_hunters
+                    has_fleet_flag = epoch_res_hunters_for@root
+                }
+                root = { set_country_flag = epoch_res_force_present }
+                if = { limit = { exists = owner }
+                    owner = {
+                        if = { limit = {
+                            has_country_flag = epoch_res_warden
+                            OR = {
+                                AND = { exists = event_target:epoch_res_owner@this event_target:epoch_res_owner@this = { is_same_value = root } }
+                                AND = { has_country_flag = epoch_res_warden_for@root NOT = { exists = event_target:epoch_res_owner@this } }
+                            }
+                        }
+                            save_global_event_target_as = epoch_res_enemy@root
+                            root = { set_country_flag = epoch_res_enemy_valid save_global_event_target_as = epoch_res_owner@prev }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if = {
+        limit = { NOT = { has_country_flag = epoch_res_force_present } }
+        if = { limit = { exists = event_target:epoch_res_hunters@root } clear_global_event_target = epoch_res_hunters@root }
+        # Recovery-only identity search: also finds a living force if both
+        # primary targets were lost. It is not a periodic galaxy-wide dispatcher.
+        every_country = {
+            if = {
+                limit = {
+                    has_country_flag = epoch_res_warden
+                    OR = {
+                        AND = { exists = event_target:epoch_res_owner@this event_target:epoch_res_owner@this = { is_same_value = root } }
+                        AND = { has_country_flag = epoch_res_warden_for@root NOT = { exists = event_target:epoch_res_owner@this } }
+                    }
+                }
+                set_country_flag = epoch_res_warden_for@root
+                root = { set_country_flag = epoch_res_enemy_valid set_country_flag = epoch_res_identity_v1 save_global_event_target_as = epoch_res_owner@prev }
+                if = {
+                    limit = { root = { NOT = { has_country_flag = epoch_res_force_present } } }
+                    save_global_event_target_as = epoch_res_enemy@root
+                }
+                every_owned_fleet = {
+                    limit = { has_fleet_flag = epoch_res_hunters }
+                    set_fleet_flag = epoch_res_hunters_for@root
+                    save_global_event_target_as = epoch_res_hunters@root
+                    owner = { save_global_event_target_as = epoch_res_enemy@root }
+                    root = { set_country_flag = epoch_res_force_present }
+                }
+            }
+            # Independent fleet identity still blocks a duplicate if its owner
+            # has changed. Never mutate that foreign country's campaign state.
+            every_owned_fleet = {
+                limit = { has_fleet_flag = epoch_res_hunters has_fleet_flag = epoch_res_hunters_for@root }
+                save_global_event_target_as = epoch_res_hunters@root
+                root = { set_country_flag = epoch_res_force_present }
+            }
+        }
+        if = {
+            limit = { has_country_flag = epoch_res_identity_v1 NOT = { has_country_flag = epoch_res_force_present } }
+            set_country_flag = epoch_res_absence_verified
+        }
+    }
+}

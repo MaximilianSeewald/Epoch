@@ -1,186 +1,255 @@
 special_project = {
-	key = "EPOCH_II_SCAR_SURVEY"
-	days_to_research = 180
-	timelimit = 1080
-	tech_department = society_technology
-	picture = GFX_evt_contingency_planet
-	event_scope = ship_event
-	requirements = { shipclass_science_ship = 1 leader = scientist }
-	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
-	on_start = { ship_event = { id = epoch_ii.30 } }
-	on_success = { ship_event = { id = epoch_ii.3 } }
-	on_fail = { country_event = { id = epoch_ii.8 } }
-	on_cancel = { country_event = { id = epoch_ii.23 } }
+ key = "EPOCH_RES_SCAR"
+ cost = 0
+ days_to_research = 180
+ picture = GFX_evt_physics_research
+ event_scope = ship_event
+ location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_scar@owner }
+   event_target:epoch_res_scar@owner = { save_global_event_target_as = epoch_res_project_scar@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_scar@this }
+   ship_event = { id = epoch_res.101 scopes = { from = from fromfrom = event_target:epoch_res_project_scar@this } }
+  }
+ }
+ on_fail = { }
+ on_cancel = { }
+}
+
+# AMOEBAS_PACIFICATION_PROJECT: native point-cost research, no ship.
+special_project = {
+ key = "EPOCH_RES_RECON"
+ cost = 600
+ tech_department = physics_technology
+ picture = GFX_evt_physics_research
+ event_scope = planet_event
+ location = no
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { OR = { NOT = { has_country_flag = epoch_res_active } NOT = { check_variable = { which = epoch_res_chapter value = 2 } } has_country_flag = epoch_res_military_victory } }
+ on_success = { prev = { country_event = { id = epoch_res.102 } } }
+ on_fail = { }
+ on_cancel = { }
+}
+
+
+special_project = {
+ key = "EPOCH_RES_WRECK"
+ cost = 0
+ days_to_research = 210
+ picture = GFX_evt_physics_research
+ event_scope = ship_event
+ location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_wreck@owner }
+   event_target:epoch_res_wreck@owner = { save_global_event_target_as = epoch_res_project_wreck@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_wreck@this }
+   ship_event = { id = epoch_res.103 scopes = { from = from fromfrom = event_target:epoch_res_project_wreck@this } }
+  }
+ }
+ on_fail = { }
+ on_cancel = { }
 }
 
 special_project = {
-	key = "EPOCH_II_SIGNAL_DIVERSION"
-	days_to_research = 240
-	timelimit = 1080
-	tech_department = physics_technology
-	picture = GFX_evt_unknown_ships
-	event_scope = ship_event
-	requirements = { shipclass_science_ship = 1 leader = scientist }
-	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
-	on_start = { ship_event = { id = epoch_ii.32 } }
-	on_success = { ship_event = { id = epoch_ii.6 } }
-	on_fail = { country_event = { id = epoch_ii.18 } }
-	on_cancel = { country_event = { id = epoch_ii.24 } }
+ key = "EPOCH_RES_COMPARE"
+ cost = 0
+ days_to_research = 180
+ picture = GFX_evt_physics_research
+ event_scope = ship_event
+ location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_home@owner }
+   event_target:epoch_res_home@owner = { save_global_event_target_as = epoch_res_project_compare@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_compare@this }
+   ship_event = { id = epoch_res.104 scopes = { from = from fromfrom = event_target:epoch_res_project_compare@this } }
+  }
+ }
+ on_fail = { }
+ on_cancel = { }
 }
 
 special_project = {
-	key = "EPOCH_II_CODE_ARCHIVE"
-	days_to_research = 300
-	timelimit = 1080
-	tech_department = physics_technology
-	picture = GFX_evt_physics_research
-	event_scope = ship_event
-	requirements = { shipclass_science_ship = 1 leader = scientist }
-	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
-	on_start = { ship_event = { id = epoch_ii.31 } }
-	on_success = { ship_event = { id = epoch_ii.10 } }
-	on_fail = { country_event = { id = epoch_ii.11 } }
-	on_cancel = { country_event = { id = epoch_ii.25 } }
+ key = "EPOCH_RES_REFLECTION"
+ cost = 0
+ days_to_research = 210
+ picture = GFX_evt_physics_research
+ event_scope = ship_event
+ location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_reflection@owner }
+   event_target:epoch_res_reflection@owner = { save_global_event_target_as = epoch_res_project_reflection@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_reflection@this }
+   ship_event = { id = epoch_res.105 scopes = { from = from fromfrom = event_target:epoch_res_project_reflection@this } }
+  }
+ }
+ on_fail = { }
+ on_cancel = { }
 }
 
 special_project = {
-	key = "EPOCH_II_CODE_FORENSICS"
-	days_to_research = 180
-	timelimit = 1080
-	tech_department = engineering_technology
-	picture = GFX_evt_space_debris
-	event_scope = ship_event
-	requirements = { shipclass_science_ship = 1 leader = scientist }
-	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
-	on_start = { ship_event = { id = epoch_ii.31 } }
-	on_success = { ship_event = { id = epoch_ii.10 } }
-	on_fail = { country_event = { id = epoch_ii.11 } }
-	on_cancel = { country_event = { id = epoch_ii.25 } }
+ key = "EPOCH_RES_SILENCE"
+ cost = 0
+ days_to_research = 240
+ picture = GFX_evt_physics_research
+ event_scope = ship_event
+ location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_silence@owner }
+   event_target:epoch_res_silence@owner = { save_global_event_target_as = epoch_res_project_silence@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_silence@this }
+   ship_event = { id = epoch_res.106 scopes = { from = from fromfrom = event_target:epoch_res_project_silence@this } }
+  }
+ }
+ on_fail = { }
+ on_cancel = { }
 }
 
 special_project = {
-	key = "EPOCH_II_CODE_RECONSTRUCTION"
-	days_to_research = 90
-	timelimit = 1080
-	tech_department = physics_technology
-	picture = GFX_evt_space_debris
-	event_scope = ship_event
-	requirements = { shipclass_science_ship = 1 leader = scientist }
-	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
-	on_start = { ship_event = { id = epoch_ii.31 } }
-	on_success = { ship_event = { id = epoch_ii.10 } }
-	on_fail = { country_event = { id = epoch_ii.11 } }
-	on_cancel = { country_event = { id = epoch_ii.25 } }
+ key = "EPOCH_RES_BASELINE"
+ cost = 0
+ days_to_research = 180
+ picture = GFX_evt_physics_research
+ event_scope = ship_event
+ location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_baseline@owner }
+   event_target:epoch_res_baseline@owner = { save_global_event_target_as = epoch_res_project_baseline@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_baseline@this }
+   ship_event = { id = epoch_res.107 scopes = { from = from fromfrom = event_target:epoch_res_project_baseline@this } }
+  }
+ }
+ on_fail = { }
+ on_cancel = { }
 }
 
 special_project = {
-	key = "EPOCH_II_NODE_REFLECTION"
-	days_to_research = 180
-	timelimit = 1080
-	tech_department = physics_technology
-	picture = GFX_evt_the_beholder
-	event_scope = ship_event
-	requirements = { shipclass_science_ship = 1 leader = scientist }
-	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }
-	on_success = { ship_event = { id = epoch_ii.74 } }
-	on_fail = { country_event = { id = epoch_ii.77 } }
-	on_cancel = { country_event = { id = epoch_ii.77 } }
+ key = "EPOCH_RES_SIGNATURE"
+ cost = 0
+ days_to_research = 150
+ picture = GFX_evt_physics_research
+ event_scope = ship_event
+ location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_wreck@owner }
+   event_target:epoch_res_wreck@owner = { save_global_event_target_as = epoch_res_project_signature@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_signature@this }
+   ship_event = { id = epoch_res.108 scopes = { from = from fromfrom = event_target:epoch_res_project_signature@this } }
+  }
+ }
+ on_fail = { }
+ on_cancel = { }
 }
 
 special_project = {
-	key = "EPOCH_II_NODE_INTERRUPTED"
-	days_to_research = 180
-	timelimit = 1080
-	tech_department = society_technology
-	picture = GFX_evt_ship_in_orbit
-	event_scope = ship_event
-	requirements = { shipclass_science_ship = 1 leader = scientist }
-	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }
-	on_success = { ship_event = { id = epoch_ii.75 } }
-	on_fail = { country_event = { id = epoch_ii.77 } }
-	on_cancel = { country_event = { id = epoch_ii.77 } }
-}
-
-special_project = {
-	key = "EPOCH_II_SILENT_SYSTEM"
-	days_to_research = 240
-	timelimit = 1080
-	tech_department = physics_technology
-	picture = GFX_evt_alien_planet
-	event_scope = ship_event
-	requirements = { shipclass_science_ship = 1 leader = scientist }
-	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }
-	on_success = { ship_event = { id = epoch_ii.76 } }
-	on_fail = { country_event = { id = epoch_ii.77 } }
-	on_cancel = { country_event = { id = epoch_ii.77 } }
-}
-
-special_project = {
-	key = "EPOCH_II_NODE_TRAP"
-	days_to_research = 180
-	timelimit = 1080
-	tech_department = engineering_technology
-	picture = GFX_evt_ship_under_attack
-	event_scope = ship_event
-	requirements = { shipclass_science_ship = 1 leader = scientist }
-	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
-	on_success = { ship_event = { id = epoch_ii.78 } }
-	on_fail = { country_event = { id = epoch_ii.80 } }
-	on_cancel = { country_event = { id = epoch_ii.80 } }
-}
-
-special_project = {
-	key = "EPOCH_II_SCIENCE_COUNTERMEASURE"
-	days_to_research = 240
-	timelimit = 1080
-	tech_department = physics_technology
-	picture = GFX_evt_ship_under_attack
-	event_scope = ship_event
-	requirements = { shipclass_science_ship = 1 leader = scientist }
-	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { is_owned_by = root } } } }
-	on_success = { ship_event = { id = epoch_ii.79 } }
-	on_fail = { country_event = { id = epoch_ii.80 } }
-	on_cancel = { country_event = { id = epoch_ii.80 } }
-}
-
-special_project = {
-	key = "EPOCH_II_CHAMBER_BOUNDARY"
-	days_to_research = 180
-	timelimit = 1080
-	tech_department = physics_technology
-	picture = GFX_evt_unknown_ships
-	event_scope = ship_event
-	requirements = { shipclass_science_ship = 1 leader = scientist }
-	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }
-	on_success = { ship_event = { id = epoch_ii.136 } }
-	on_fail = { country_event = { id = epoch_ii.131 } }
-	on_cancel = { country_event = { id = epoch_ii.131 } }
-}
-
-special_project = {
-	key = "EPOCH_II_CHAMBER_COUNTERPATTERN"
-	days_to_research = 240
-	timelimit = 1080
-	tech_department = society_technology
-	picture = GFX_evt_society_research
-	event_scope = ship_event
-	requirements = { shipclass_science_ship = 1 leader = scientist }
-	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }
-	on_success = { ship_event = { id = epoch_ii.137 } }
-	on_fail = { country_event = { id = epoch_ii.133 } }
-	on_cancel = { country_event = { id = epoch_ii.133 } }
-}
-
-special_project = {
-	key = "EPOCH_II_CHAMBER_CONTROL"
-	days_to_research = 270
-	timelimit = 1080
-	tech_department = engineering_technology
-	picture = GFX_evt_engineering_research
-	event_scope = ship_event
-	requirements = { shipclass_science_ship = 1 leader = scientist }
-	abort_trigger = { OR = { NOT = { exists = fromfrom } fromfrom = { NOT = { has_access_fleet = root } } } }
-	on_success = { ship_event = { id = epoch_ii.138 } }
-	on_fail = { country_event = { id = epoch_ii.135 } }
-	on_cancel = { country_event = { id = epoch_ii.135 } }
+ key = "EPOCH_RES_INTERRUPTED"
+ cost = 0
+ days_to_research = 210
+ picture = GFX_evt_physics_research
+ event_scope = ship_event
+ location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { NOT = { has_country_flag = epoch_res_active } }
+ # Capture the assigned destination on the performing ship. The key is
+ # project-specific and persists across save/load; a later reanchor cannot
+ # silently turn this ship's old success into another destination's result.
+ on_start = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_interrupted@owner }
+   event_target:epoch_res_interrupted@owner = { save_global_event_target_as = epoch_res_project_interrupted@prev }
+  }
+ }
+ # Native success: This = performing ship. The observed From is the
+ # project country, not the location. Supply the saved ship assignment
+ # explicitly as FromFrom instead of guessing a native From chain.
+ on_success = {
+  if = { limit = { exists = owner exists = event_target:epoch_res_project_interrupted@this }
+   ship_event = { id = epoch_res.109 scopes = { from = from fromfrom = event_target:epoch_res_project_interrupted@this } }
+  }
+ }
+ on_fail = { }
+ on_cancel = { }
 }

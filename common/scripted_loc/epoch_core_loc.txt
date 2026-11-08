@@ -1,4 +1,12 @@
 # Country-scoped closing assessment; first matching entry wins.
+defined_text = { name = GetEpochHunterLocation random = no
+ text = { localization_key = epoch_res.hunter_location trigger = { exists = event_target:epoch_res_battle_location } }
+ text = { localization_key = epoch_res.hunter_location_missing }
+}
+defined_text = { name = GetEpochInfectedLocation random = no
+ text = { localization_key = epoch_res.infected_location trigger = { exists = event_target:epoch_res_infected_world } }
+ text = { localization_key = epoch_res.infected_location_missing }
+}
 defined_text = {
 	name = GetEpochEchoSummary
 	random = no
@@ -26,3 +34,52 @@ defined_text = {
 	text = { localization_key = epoch_core.summary.contamination_neglected }
 }
 
+
+defined_text = { name = GetEpochStructureSummary random = no
+ text = { localization_key = epoch_res.structure.destroyed trigger = { has_country_flag = epoch_core_structure_destroyed } }
+ text = { localization_key = epoch_res.structure.secured trigger = { has_country_flag = epoch_core_structure_secured } }
+ text = { localization_key = epoch_res.structure.studied trigger = { has_country_flag = epoch_core_structure_investigated } }
+ text = { localization_key = epoch_res.structure.unknown  }
+}
+
+defined_text = { name = GetEpochScarSummary random = no
+ text = { localization_key = epoch_res.scar  }
+}
+
+defined_text = { name = GetEpochResonanceClass random = no
+ text = { localization_key = epoch_res.class.machine trigger = { is_machine_empire = yes } }
+ text = { localization_key = epoch_res.class.hive trigger = { is_hive_empire = yes } }
+ text = { localization_key = epoch_res.class.organic  }
+}
+
+defined_text = { name = GetEpochBattleSummary random = no
+ text = { localization_key = epoch_res.battle.loss trigger = { has_country_flag = epoch_res_military_losses } }
+ text = { localization_key = epoch_res.battle.win  }
+}
+
+defined_text = { name = GetEpochReflectionSummary random = no
+ text = { localization_key = epoch_res.reflect.remote trigger = { has_country_flag = epoch_res_reflection_remote } }
+ text = { localization_key = epoch_res.reflect.prepared trigger = { has_country_flag = epoch_core_structure_secured } }
+ text = { localization_key = epoch_res.reflect.base  }
+}
+
+defined_text = { name = GetEpochSilenceSummary random = no
+ text = { localization_key = epoch_res.silence.exposed trigger = { has_country_flag = epoch_res_network_exposed } }
+ text = { localization_key = epoch_res.silence.clean trigger = { has_country_flag = epoch_res_clean_samples } }
+ text = { localization_key = epoch_res.silence.base  }
+}
+
+defined_text = { name = GetEpochContainmentSummary random = no
+ text = { localization_key = epoch_res.end.damage trigger = { has_country_flag = epoch_res_containment_failure } }
+ text = { localization_key = epoch_res.end.stable }
+}
+defined_text = { name = GetEpochNetworkChoiceSummary random = no
+ text = { localization_key = epoch_res.end.repeat trigger = { has_country_flag = epoch_res_network_exposed } }
+ text = { localization_key = epoch_res.end.pulse trigger = { has_country_flag = epoch_res_network_pulse } }
+ text = { localization_key = epoch_res.end.silent }
+}
+defined_text = { name = GetEpochClosingClass random = no
+ text = { localization_key = epoch_res.end.machine trigger = { is_machine_empire = yes } }
+ text = { localization_key = epoch_res.end.hive trigger = { is_hive_empire = yes } }
+ text = { localization_key = epoch_res.end.organic }
+}

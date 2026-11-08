@@ -48,14 +48,28 @@ epoch_core_remove_contamination_effects = {
 	remove_modifier = epoch_core_contamination_studied_hive
 	remove_modifier = epoch_core_contamination_studied_machine
 	remove_modifier = epoch_core_contamination_active
-	epoch_core_clear_contamination_deposits = yes
+	remove_deposit = d_epoch_resonance_contamination_active
+	remove_deposit = d_epoch_resonance_contamination_worsened
+	remove_deposit = d_epoch_resonance_contamination_studied
+	remove_deposit = d_epoch_resonance_contamination_contained
+	remove_deposit = d_epoch_resonance_contamination_latent
+	remove_deposit = d_epoch_resonance_contamination_resonant
+	remove_deposit = d_epoch_resonance_contamination_unstable
+	remove_deposit = d_epoch_resonance_contamination_controlled
 	remove_planet_flag = epoch_core_contamination_active_state
 	remove_planet_flag = epoch_core_contamination_worsened_state
 	remove_planet_flag = epoch_core_contamination_studied_state
 	remove_planet_flag = epoch_core_contamination_contained_state
 	if = {
 		limit = { NOR = { has_planet_flag = epoch_ii_latent_resonance has_planet_flag = epoch_ii_active_resonance has_planet_flag = epoch_ii_unstable_resonance has_planet_flag = epoch_ii_controlled_resonance } }
-			epoch_core_clear_contamination_deposits = yes
+			remove_deposit = d_epoch_resonance_contamination_active
+	remove_deposit = d_epoch_resonance_contamination_worsened
+	remove_deposit = d_epoch_resonance_contamination_studied
+	remove_deposit = d_epoch_resonance_contamination_contained
+	remove_deposit = d_epoch_resonance_contamination_latent
+	remove_deposit = d_epoch_resonance_contamination_resonant
+	remove_deposit = d_epoch_resonance_contamination_unstable
+	remove_deposit = d_epoch_resonance_contamination_controlled
 	}
 }
 
@@ -160,14 +174,13 @@ epoch_core_migrate_planetary_features = {
 	}
 }
 
-# Resonance stability is an empire-local campaign variable bounded to 0–100.
 epoch_ii_start_invitation_clock = {
 	if = {
 		limit = { NOT = { has_country_flag = epoch_ii_invitation_clock_started } }
 		set_country_flag = epoch_ii_wait_scheduled
 		set_country_flag = epoch_ii_invitation_clock_started
 		random_list = {
-			1 = { set_variable = { which = epoch_ii_invitation_delay_days value = 1780 } set_timed_country_flag = { flag = epoch_ii_invitation_clock days = 1780 } country_event = { id = epoch_ii.1 days = 1780 } }
+			1 = { set_variable = { which = epoch_ii_invitation_delay_days value = 1800 } set_timed_country_flag = { flag = epoch_ii_invitation_clock days = 1800 } country_event = { id = epoch_ii.1 days = 1800 } }
 			1 = { set_variable = { which = epoch_ii_invitation_delay_days value = 1810 } set_timed_country_flag = { flag = epoch_ii_invitation_clock days = 1810 } country_event = { id = epoch_ii.1 days = 1810 } }
 			1 = { set_variable = { which = epoch_ii_invitation_delay_days value = 1840 } set_timed_country_flag = { flag = epoch_ii_invitation_clock days = 1840 } country_event = { id = epoch_ii.1 days = 1840 } }
 			1 = { set_variable = { which = epoch_ii_invitation_delay_days value = 1870 } set_timed_country_flag = { flag = epoch_ii_invitation_clock days = 1870 } country_event = { id = epoch_ii.1 days = 1870 } }
@@ -178,193 +191,17 @@ epoch_ii_start_invitation_clock = {
 	}
 }
 
-# Keep chapter targets inside the campaign owner's current territory. A lost
-# Phase-I world falls back to the capital or another owned planet.
-epoch_ii_refresh_campaign_target = {
-	if = {
-		limit = { OR = { NOT = { exists = event_target:epoch_ii_target_planet@root } event_target:epoch_ii_target_planet@root = { NOT = { is_owned_by = root } } } }
-		if = {
-			limit = { exists = capital_scope }
-			capital_scope = { save_global_event_target_as = epoch_ii_target_planet@root solar_system = { save_global_event_target_as = epoch_ii_target_system@root } }
-			remove_country_flag = epoch_ii_no_owned_campaign_planet
-		}
-		else_if = {
-			limit = { any_owned_planet = { always = yes } }
-			random_owned_planet = { save_global_event_target_as = epoch_ii_target_planet@root solar_system = { save_global_event_target_as = epoch_ii_target_system@root } }
-			remove_country_flag = epoch_ii_no_owned_campaign_planet
-		}
-		else = { set_country_flag = epoch_ii_no_owned_campaign_planet }
-	}
-}
-
-# A resolved withdrawal or successful signal lure de-escalates only the
-# campaign owner's relation and orders the living fleet toward empty space.
-# The fleet remains in the galaxy and can still be fought by the player.
-epoch_ii_disengage_nullwarden_fleet = {
-	if = {
-		limit = { has_country_flag = epoch_ii_nullwarden_disengage_complete }
-		set_country_flag = epoch_ii_nullwarden_disengage_complete
-	}
-	else_if = {
-		limit = { exists = event_target:epoch_ii_nullwarden_fleet@root }
-		event_target:epoch_ii_nullwarden_fleet@root = { owner = { save_global_event_target_as = epoch_ii_nullwarden_country@root } }
-		if = {
-			limit = { NOT = { has_country_flag = epoch_ii_nullwarden_disengage_issued } }
-			event_target:epoch_ii_nullwarden_fleet@root = {
-				owner = { set_faction_hostility = { target = root set_hostile = no set_neutral = yes } }
-				clear_orders = yes
-				set_fleet_stance = evasive
-			}
-			set_country_flag = epoch_ii_nullwarden_disengage_issued
-			set_country_flag = epoch_ii_nullwarden_retreat_pending
-		}
-		if = {
-			limit = {
-				has_country_flag = epoch_ii_nullwarden_route_queued
-				exists = event_target:epoch_ii_retreat_system@root
-				event_target:epoch_ii_retreat_system@root = { has_access_fleet = event_target:epoch_ii_nullwarden_country@root }
-			}
-			event_target:epoch_ii_nullwarden_fleet@root = {
-				if = {
-					limit = { solar_system = { is_same_value = event_target:epoch_ii_retreat_system@root } }
-					set_fleet_stance = passive
-					root = { remove_country_flag = epoch_ii_nullwarden_retreat_pending remove_country_flag = epoch_ii_nullwarden_route_queued remove_country_flag = epoch_ii_retreat_destination_found set_country_flag = epoch_ii_nullwarden_disengage_complete }
-				}
-			}
-		}
-		else = {
-			remove_country_flag = epoch_ii_nullwarden_route_queued
-			remove_country_flag = epoch_ii_retreat_destination_found
-			event_target:epoch_ii_nullwarden_fleet@root = {
-				set_fleet_stance = evasive
-				random_system = {
-					limit = {
-						has_owner = no
-						has_access_fleet = event_target:epoch_ii_nullwarden_country@root
-						distance = { source = prev.solar_system use_bypasses = no min_jumps = 2 max_jumps = 4 }
-						NOT = { is_same_value = event_target:epoch_ii_target_system@root }
-					}
-					save_global_event_target_as = epoch_ii_retreat_system@root
-					root = { set_country_flag = epoch_ii_retreat_destination_found }
-				}
-				if = {
-					limit = { root = { NOT = { has_country_flag = epoch_ii_retreat_destination_found } } }
-					closest_system = {
-						limit = {
-							has_owner = no
-							has_access_fleet = event_target:epoch_ii_nullwarden_country@root
-							NOT = { is_same_value = prev.solar_system }
-							NOT = { is_same_value = event_target:epoch_ii_target_system@root }
-						}
-						save_global_event_target_as = epoch_ii_retreat_system@root
-						root = { set_country_flag = epoch_ii_retreat_destination_found }
-					}
-				}
-				if = {
-					limit = { root = { NOT = { has_country_flag = epoch_ii_retreat_destination_found } } }
-					closest_system = {
-						limit = {
-							has_access_fleet = event_target:epoch_ii_nullwarden_country@root
-							NOT = { is_same_value = prev.solar_system }
-							NOT = { is_same_value = event_target:epoch_ii_target_system@root }
-						}
-						save_global_event_target_as = epoch_ii_retreat_system@root
-						root = { set_country_flag = epoch_ii_retreat_destination_found }
-					}
-				}
-				if = {
-					limit = { root = { has_country_flag = epoch_ii_retreat_destination_found } }
-					queue_actions = { move_to = event_target:epoch_ii_retreat_system@root }
-					root = { set_country_flag = epoch_ii_nullwarden_route_queued set_country_flag = epoch_ii_nullwarden_retreat_pending }
-				}
-				else = { set_fleet_stance = passive root = { set_country_flag = epoch_ii_nullwarden_retreat_pending } }
-			}
-		}
-	}
-	else = {
-		remove_country_flag = epoch_ii_nullwarden_retreat_pending
-		remove_country_flag = epoch_ii_nullwarden_route_queued
-		remove_country_flag = epoch_ii_retreat_destination_found
-		set_country_flag = epoch_ii_nullwarden_disengage_complete
-	}
-}
-
-# The Chapter 6 fleet has its own saved target and idempotency flags, but uses
-# the same neutralize-then-retreat policy as the Block A force.
-epoch_ii_disengage_second_nullwarden_fleet = {
-	if = {
-		limit = { exists = event_target:epoch_ii_second_fleet@root }
-		event_target:epoch_ii_second_fleet@root = { owner = { save_global_event_target_as = epoch_ii_second_nullwarden_country@root } }
-		if = {
-			limit = { NOT = { has_country_flag = epoch_ii_second_force_disengage_issued } }
-			event_target:epoch_ii_second_fleet@root = {
-				owner = { set_faction_hostility = { target = root set_hostile = no set_neutral = yes } }
-				clear_orders = yes
-				set_fleet_stance = evasive
-			}
-			set_country_flag = epoch_ii_second_force_disengage_issued
-			set_country_flag = epoch_ii_second_force_retreat_pending
-		}
-		if = {
-			limit = { has_country_flag = epoch_ii_second_force_route_queued exists = event_target:epoch_ii_second_retreat_system@root event_target:epoch_ii_second_retreat_system@root = { has_access_fleet = event_target:epoch_ii_second_nullwarden_country@root } }
-			event_target:epoch_ii_second_fleet@root = {
-				if = {
-					limit = { solar_system = { is_same_value = event_target:epoch_ii_second_retreat_system@root } }
-					set_fleet_stance = passive
-					root = { remove_country_flag = epoch_ii_second_force_retreat_pending remove_country_flag = epoch_ii_second_force_route_queued remove_country_flag = epoch_ii_second_force_no_safe_route set_country_flag = epoch_ii_second_force_disengage_complete }
-				}
-			}
-		}
-		else = {
-			remove_country_flag = epoch_ii_second_force_route_queued
-			remove_country_flag = epoch_ii_second_retreat_destination_found
-			event_target:epoch_ii_second_fleet@root = {
-				set_fleet_stance = evasive
-				random_system = {
-					limit = { has_owner = no has_access_fleet = event_target:epoch_ii_second_nullwarden_country@root distance = { source = prev.solar_system use_bypasses = no min_jumps = 2 max_jumps = 4 } NOT = { is_same_value = event_target:epoch_ii_target_system@root } }
-					save_global_event_target_as = epoch_ii_second_retreat_system@root
-					root = { set_country_flag = epoch_ii_second_retreat_destination_found }
-				}
-				if = {
-					limit = { root = { NOT = { has_country_flag = epoch_ii_second_retreat_destination_found } } }
-					closest_system = {
-						limit = { has_access_fleet = event_target:epoch_ii_second_nullwarden_country@root NOT = { is_same_value = prev.solar_system } NOT = { is_same_value = event_target:epoch_ii_target_system@root } }
-						save_global_event_target_as = epoch_ii_second_retreat_system@root
-						root = { set_country_flag = epoch_ii_second_retreat_destination_found }
-					}
-				}
-				if = {
-					limit = { root = { has_country_flag = epoch_ii_second_retreat_destination_found } }
-					queue_actions = { move_to = event_target:epoch_ii_second_retreat_system@root }
-					root = { remove_country_flag = epoch_ii_second_force_no_safe_route set_country_flag = epoch_ii_second_force_route_queued set_country_flag = epoch_ii_second_force_retreat_pending }
-				}
-				else = { set_fleet_stance = evasive root = { set_country_flag = epoch_ii_second_force_no_safe_route set_country_flag = epoch_ii_second_force_retreat_pending } }
-			}
-		}
-	}
-	else = {
-		remove_country_flag = epoch_ii_second_force_retreat_pending
-		remove_country_flag = epoch_ii_second_force_route_queued
-		remove_country_flag = epoch_ii_second_force_no_safe_route
-		set_country_flag = epoch_ii_second_force_disengage_complete
-	}
-}
-
-epoch_ii_clamp_resonance_stability = {
-	if = {
-		limit = { check_variable = { which = epoch_ii_resonance_stability value > 100 } }
-		set_variable = { which = epoch_ii_resonance_stability value = 100 }
-	}
-	if = {
-		limit = { check_variable = { which = epoch_ii_resonance_stability value < 0 } }
-		set_variable = { which = epoch_ii_resonance_stability value = 0 }
-	}
-}
-
-# Resonance phases share the same contamination blocker entry. This preserves
-# their original Phase II economy while leaving the permanent scar independent.
 epoch_ii_clear_site_state = {
-	epoch_core_clear_contamination_deposits = yes
+# Keep leaf cleanup expanded here and in the four setters: infection recovery
+# must remain below the engine's five-level scripted-effect initialization limit.
+	remove_deposit = d_epoch_resonance_contamination_active
+	remove_deposit = d_epoch_resonance_contamination_worsened
+	remove_deposit = d_epoch_resonance_contamination_studied
+	remove_deposit = d_epoch_resonance_contamination_contained
+	remove_deposit = d_epoch_resonance_contamination_latent
+	remove_deposit = d_epoch_resonance_contamination_resonant
+	remove_deposit = d_epoch_resonance_contamination_unstable
+	remove_deposit = d_epoch_resonance_contamination_controlled
 	remove_planet_flag = epoch_ii_latent_resonance
 	remove_planet_flag = epoch_ii_active_resonance
 	remove_planet_flag = epoch_ii_unstable_resonance
@@ -376,115 +213,74 @@ epoch_ii_clear_site_state = {
 }
 
 epoch_ii_set_site_latent = {
-	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_latent_resonance add_deposit = d_epoch_resonance_contamination_latent } }
+	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { remove_deposit = d_epoch_resonance_contamination_active
+	remove_deposit = d_epoch_resonance_contamination_worsened
+	remove_deposit = d_epoch_resonance_contamination_studied
+	remove_deposit = d_epoch_resonance_contamination_contained
+	remove_deposit = d_epoch_resonance_contamination_latent
+	remove_deposit = d_epoch_resonance_contamination_resonant
+	remove_deposit = d_epoch_resonance_contamination_unstable
+	remove_deposit = d_epoch_resonance_contamination_controlled
+	remove_planet_flag = epoch_ii_latent_resonance
+	remove_planet_flag = epoch_ii_active_resonance
+	remove_planet_flag = epoch_ii_unstable_resonance
+	remove_planet_flag = epoch_ii_controlled_resonance
+	remove_modifier = epoch_ii_resonance_latent
+	remove_modifier = epoch_ii_resonance_active
+	remove_modifier = epoch_ii_resonance_unstable
+	remove_modifier = epoch_ii_resonance_controlled set_planet_flag = epoch_ii_latent_resonance add_deposit = d_epoch_resonance_contamination_latent } }
 }
 epoch_ii_set_site_active = {
-	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_active_resonance add_deposit = d_epoch_resonance_contamination_resonant } }
+	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { remove_deposit = d_epoch_resonance_contamination_active
+	remove_deposit = d_epoch_resonance_contamination_worsened
+	remove_deposit = d_epoch_resonance_contamination_studied
+	remove_deposit = d_epoch_resonance_contamination_contained
+	remove_deposit = d_epoch_resonance_contamination_latent
+	remove_deposit = d_epoch_resonance_contamination_resonant
+	remove_deposit = d_epoch_resonance_contamination_unstable
+	remove_deposit = d_epoch_resonance_contamination_controlled
+	remove_planet_flag = epoch_ii_latent_resonance
+	remove_planet_flag = epoch_ii_active_resonance
+	remove_planet_flag = epoch_ii_unstable_resonance
+	remove_planet_flag = epoch_ii_controlled_resonance
+	remove_modifier = epoch_ii_resonance_latent
+	remove_modifier = epoch_ii_resonance_active
+	remove_modifier = epoch_ii_resonance_unstable
+	remove_modifier = epoch_ii_resonance_controlled set_planet_flag = epoch_ii_active_resonance add_deposit = d_epoch_resonance_contamination_resonant } }
 }
 epoch_ii_set_site_unstable = {
-	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_unstable_resonance add_deposit = d_epoch_resonance_contamination_unstable } }
+	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { remove_deposit = d_epoch_resonance_contamination_active
+	remove_deposit = d_epoch_resonance_contamination_worsened
+	remove_deposit = d_epoch_resonance_contamination_studied
+	remove_deposit = d_epoch_resonance_contamination_contained
+	remove_deposit = d_epoch_resonance_contamination_latent
+	remove_deposit = d_epoch_resonance_contamination_resonant
+	remove_deposit = d_epoch_resonance_contamination_unstable
+	remove_deposit = d_epoch_resonance_contamination_controlled
+	remove_planet_flag = epoch_ii_latent_resonance
+	remove_planet_flag = epoch_ii_active_resonance
+	remove_planet_flag = epoch_ii_unstable_resonance
+	remove_planet_flag = epoch_ii_controlled_resonance
+	remove_modifier = epoch_ii_resonance_latent
+	remove_modifier = epoch_ii_resonance_active
+	remove_modifier = epoch_ii_resonance_unstable
+	remove_modifier = epoch_ii_resonance_controlled set_planet_flag = epoch_ii_unstable_resonance add_deposit = d_epoch_resonance_contamination_unstable } }
 }
 epoch_ii_set_site_controlled = {
-	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { epoch_ii_clear_site_state = yes set_planet_flag = epoch_ii_controlled_resonance add_deposit = d_epoch_resonance_contamination_controlled } }
-}
-
-epoch_ii_close_campaign = {
-	set_country_flag = epoch_ii_closed_by_choice
-	remove_country_flag = epoch_ii_active
-	epoch_ii_disengage_nullwarden_fleet = yes
-	abort_special_project = { type = EPOCH_II_SCAR_SURVEY }
-	abort_special_project = { type = EPOCH_II_SIGNAL_DIVERSION }
-	abort_special_project = { type = EPOCH_II_CODE_ARCHIVE }
-	abort_special_project = { type = EPOCH_II_CODE_FORENSICS }
-	abort_special_project = { type = EPOCH_II_CODE_RECONSTRUCTION }
-	random_situation = { limit = { is_situation_type = epoch_resonance_protocol } destroy_situation = this }
-}
-
-epoch_ii_chamber_dispatch_boundary = {
-	if = {
-		limit = { exists = event_target:epoch_ii_chamber_system@root event_target:epoch_ii_chamber_system@root = { has_access_fleet = root } }
-		event_target:epoch_ii_chamber_system@root = { enable_special_project = { name = EPOCH_II_CHAMBER_BOUNDARY location = this owner = root } }
-	}
-	else = { country_event = { id = epoch_ii.131 days = 1 } }
-}
-epoch_ii_chamber_dispatch_counterpattern = {
-	if = {
-		limit = { exists = event_target:epoch_ii_chamber_system@root event_target:epoch_ii_chamber_system@root = { has_access_fleet = root } }
-		event_target:epoch_ii_chamber_system@root = { enable_special_project = { name = EPOCH_II_CHAMBER_COUNTERPATTERN location = this owner = root } }
-	}
-	else = { country_event = { id = epoch_ii.133 days = 1 } }
-}
-epoch_ii_chamber_dispatch_control = {
-	if = {
-		limit = { exists = event_target:epoch_ii_chamber_system@root event_target:epoch_ii_chamber_system@root = { has_access_fleet = root } }
-		event_target:epoch_ii_chamber_system@root = { enable_special_project = { name = EPOCH_II_CHAMBER_CONTROL location = this owner = root } }
-	}
-	else = { country_event = { id = epoch_ii.135 days = 1 } }
-}
-
-epoch_ii_ch8_clear_ending = {
-	remove_country_flag = epoch_ii_ending_boundary
-	remove_country_flag = epoch_ii_ending_listen
-	remove_country_flag = epoch_ii_ending_outward
-	remove_country_flag = epoch_ii_ending_break
-	remove_modifier = epoch_ii_ending_boundary
-	remove_modifier = epoch_ii_ending_guarded_listening
-	remove_modifier = epoch_ii_ending_outward_signal
-	remove_modifier = epoch_ii_ending_broken_instrument
-}
-
-epoch_ii_resolve_ch8_boundary = {
-	if = {
-		limit = { NOR = { has_country_flag = epoch_ii_ending_boundary has_country_flag = epoch_ii_ending_listen has_country_flag = epoch_ii_ending_outward has_country_flag = epoch_ii_ending_break } }
-		epoch_ii_ch8_clear_ending = yes
-		set_country_flag = epoch_ii_ending_boundary
-		add_modifier = { modifier = epoch_ii_ending_boundary days = -1 }
-		set_country_flag = epoch_ii_phase_complete
-		set_country_flag = epoch_ii_phase_iii_suppression_map
-		change_variable = { which = epoch_ii_resonance_stability value = 12 }
-		epoch_ii_clamp_resonance_stability = yes
-		if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } epoch_ii_set_site_controlled = yes }
-	}
-}
-epoch_ii_resolve_ch8_listen = {
-	if = {
-		limit = { NOR = { has_country_flag = epoch_ii_ending_boundary has_country_flag = epoch_ii_ending_listen has_country_flag = epoch_ii_ending_outward has_country_flag = epoch_ii_ending_break } }
-		epoch_ii_ch8_clear_ending = yes
-		set_country_flag = epoch_ii_ending_listen
-		add_modifier = { modifier = epoch_ii_ending_guarded_listening days = -1 }
-		set_country_flag = epoch_ii_phase_complete
-		set_country_flag = epoch_ii_phase_iii_live_channel
-		change_variable = { which = epoch_ii_resonance_stability value = -5 }
-		epoch_ii_clamp_resonance_stability = yes
-		if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } epoch_ii_set_site_controlled = yes event_target:epoch_ii_target_planet@root = { set_planet_flag = epoch_ii_countermark_channel } }
-	}
-}
-epoch_ii_resolve_ch8_outward = {
-	if = {
-		limit = { NOR = { has_country_flag = epoch_ii_ending_boundary has_country_flag = epoch_ii_ending_listen has_country_flag = epoch_ii_ending_outward has_country_flag = epoch_ii_ending_break } }
-		epoch_ii_ch8_clear_ending = yes
-		set_country_flag = epoch_ii_ending_outward
-		add_modifier = { modifier = epoch_ii_ending_outward_signal days = -1 }
-		set_country_flag = epoch_ii_network_exposed
-		set_country_flag = epoch_ii_phase_complete
-		set_country_flag = epoch_ii_phase_iii_outbound_bearing
-		change_variable = { which = epoch_ii_resonance_stability value = -12 }
-		epoch_ii_clamp_resonance_stability = yes
-		if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } epoch_ii_set_site_active = yes }
-	}
-}
-epoch_ii_resolve_ch8_break = {
-	if = {
-		limit = { NOR = { has_country_flag = epoch_ii_ending_boundary has_country_flag = epoch_ii_ending_listen has_country_flag = epoch_ii_ending_outward has_country_flag = epoch_ii_ending_break } }
-		epoch_ii_ch8_clear_ending = yes
-		set_country_flag = epoch_ii_ending_break
-		add_modifier = { modifier = epoch_ii_ending_broken_instrument days = -1 }
-		set_country_flag = epoch_ii_chamber_ruined
-		set_country_flag = epoch_ii_phase_complete
-		set_country_flag = epoch_ii_phase_iii_damaged_fragment
-		change_variable = { which = epoch_ii_resonance_stability value = 8 }
-		epoch_ii_clamp_resonance_stability = yes
-		if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } epoch_ii_set_site_unstable = yes event_target:epoch_ii_target_planet@root = { set_planet_flag = epoch_ii_chamber_ruined add_modifier = { modifier = epoch_ii_chamber_ruin days = -1 } } }
-		else = { set_country_flag = epoch_ii_archive_damaged }
-	}
+	if = { limit = { exists = event_target:epoch_ii_target_planet@root event_target:epoch_ii_target_planet@root = { is_owned_by = root } } event_target:epoch_ii_target_planet@root = { remove_deposit = d_epoch_resonance_contamination_active
+	remove_deposit = d_epoch_resonance_contamination_worsened
+	remove_deposit = d_epoch_resonance_contamination_studied
+	remove_deposit = d_epoch_resonance_contamination_contained
+	remove_deposit = d_epoch_resonance_contamination_latent
+	remove_deposit = d_epoch_resonance_contamination_resonant
+	remove_deposit = d_epoch_resonance_contamination_unstable
+	remove_deposit = d_epoch_resonance_contamination_controlled
+	remove_planet_flag = epoch_ii_latent_resonance
+	remove_planet_flag = epoch_ii_active_resonance
+	remove_planet_flag = epoch_ii_unstable_resonance
+	remove_planet_flag = epoch_ii_controlled_resonance
+	remove_modifier = epoch_ii_resonance_latent
+	remove_modifier = epoch_ii_resonance_active
+	remove_modifier = epoch_ii_resonance_unstable
+	remove_modifier = epoch_ii_resonance_controlled set_planet_flag = epoch_ii_controlled_resonance add_deposit = d_epoch_resonance_contamination_controlled } }
 }

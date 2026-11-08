@@ -1,0 +1,12 @@
+# Galactic object, Root = the campaign country. No foreign empire's colony or
+# guardian is commandeered. Direct neighbors also work before a fleet is built.
+epoch_res_safe_battle_system = {
+    NOT = { is_same_value = event_target:epoch_res_home_system@root }
+    has_access_fleet = root
+    OR = { NOT = { exists = owner } owner = { is_same_value = root } }
+    NOT = { any_fleet_in_system = { exists = owner owner = { is_hostile = root } } }
+    OR = {
+        has_hyperlane_to = event_target:epoch_res_home_system@root
+        root = { any_owned_fleet = { can_access_system = prevprev } }
+    }
+}

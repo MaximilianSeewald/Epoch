@@ -1,60 +1,18 @@
 building_epoch_resonance_laboratory = {
-	icon = building_physics_lab_2
-	base_buildtime = 360
-	base_cap_amount = 1
-	category = research
-	building_sets = { research physics }
-	planet_limit = { base = 1 }
-	potential = { exists = owner owner = { has_country_flag = epoch_ii_lab_unlocked } }
-	allow = { has_owner = yes }
-	resources = {
-		category = planet_buildings
-		cost = { minerals = 600 }
-		upkeep = { energy = 4 }
-	}
-	planet_modifier = { planet_jobs_physics_research_produces_mult = 0.05 planet_jobs_society_research_produces_mult = 0.05 }
-	triggered_planet_modifier = {
-		potential = { has_planet_flag = epoch_ii_controlled_resonance }
-		planet_jobs_physics_research_produces_mult = 0.10
-		planet_stability_add = 1
-	}
-	triggered_planet_modifier = {
-		potential = { has_planet_flag = epoch_ii_unstable_resonance }
-		planet_jobs_physics_research_produces_mult = 0.15
-		planet_stability_add = -3
-	}
-	triggered_planet_modifier = {
-		potential = { has_planet_flag = epoch_ii_active_resonance }
-		planet_jobs_physics_research_produces_mult = 0.10
-		planet_stability_add = -1
-	}
-	triggered_planet_modifier = {
-		potential = { has_planet_flag = epoch_ii_latent_resonance }
-		planet_jobs_physics_research_produces_mult = 0.05
-		planet_stability_add = 1
-	}
-	prerequisites = { tech_epoch_contamination_neutral_infrastructure }
-	ai_weight = { weight = 1 }
+ icon = building_physics_lab_2 base_buildtime = 240 base_cap_amount = 1 category = research
+ building_sets = { research } planet_limit = { base = 1 }
+ prerequisites = { tech_epoch_resonance_spectroscopy }
+ potential = { exists = owner owner = { has_technology = tech_epoch_resonance_spectroscopy } }
+ resources = { category = planet_buildings cost = { minerals = 400 } upkeep = { energy = 3 } }
+ planet_modifier = { planet_jobs_physics_research_produces_mult = 0.05 }
+ ai_weight = { weight = 2 }
 }
-
 building_epoch_containment_infrastructure = {
-	icon = building_society_lab
-	base_buildtime = 360
-	base_cap_amount = 1
-	category = research
-	building_sets = { research physics }
-	planet_limit = { base = 1 }
-	potential = { exists = owner owner = { has_technology = tech_epoch_contamination_neutral_infrastructure } }
-	allow = { has_owner = yes }
-	resources = {
-		category = planet_buildings
-		cost = { minerals = 600 }
-		upkeep = { energy = 3 }
-	}
-	planet_modifier = { planet_jobs_society_research_produces_mult = 0.05 planet_stability_add = 1 }
-	triggered_planet_modifier = { potential = { has_planet_flag = epoch_ii_latent_resonance } planet_jobs_society_research_produces_mult = 0.05 }
-	triggered_planet_modifier = { potential = { has_planet_flag = epoch_ii_active_resonance } planet_jobs_physics_research_produces_mult = 0.10 planet_stability_add = -1 }
-	triggered_planet_modifier = { potential = { has_planet_flag = epoch_ii_unstable_resonance } planet_jobs_physics_research_produces_mult = 0.15 planet_stability_add = -4 }
-	triggered_planet_modifier = { potential = { has_planet_flag = epoch_ii_controlled_resonance } planet_jobs_physics_research_produces_mult = 0.10 planet_stability_add = 2 }
-	ai_weight = { weight = 1 }
+ icon = building_society_lab base_buildtime = 240 base_cap_amount = 1 category = research
+ building_sets = { research } planet_limit = { base = 1 }
+ prerequisites = { tech_epoch_contamination_neutral_infrastructure }
+ potential = { exists = owner owner = { has_technology = tech_epoch_contamination_neutral_infrastructure } }
+ resources = { category = planet_buildings cost = { minerals = 500 } upkeep = { energy = 3 } }
+ planet_modifier = { planet_jobs_society_research_produces_mult = 0.05 planet_stability_add = 2 }
+ ai_weight = { weight = 2 modifier = { factor = 5 has_planet_flag = epoch_res_infected } }
 }
