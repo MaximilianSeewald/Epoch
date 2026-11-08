@@ -8,7 +8,7 @@
 2. **Missing Expedition.** The player assigns an existing owned Science Ship and scientist to a destination Special Project. The success callback identifies the ship that performed it; only that ship is removed. Search and rescue use native projects or equivalent game mechanics and have conditional outcomes, including loss. Failure/cancellation can be retried or explicitly abandoned.
 3. **First Contamination.** A real owned planet/object receives a native persistent gameplay state. Investigation, containment, neglect, and possible spread have consequential effects, varied by empire class and influenced by earlier outcomes.
 4. **The Silent Structure.** Earlier clues lead to a located structure implemented as a real four-stage Archaeological Site with Science Ship/scientist requirements and archaeology callbacks. Investigation, securing, and destruction are distinct actions with persistent results.
-5. **Phase-I Conclusion.** Summarize the actual outcomes of sections 1–4. The player continues or makes an in-world permanent exit choice. Exit blocks re-entry and later campaign dispatch for that empire. Consequences remain.
+5. **Phase-I Conclusion.** Summarize the actual outcomes of sections 1–4. The player continues or makes an in-world permanent exit choice. Exit blocks re-entry and later personal campaign dispatch for that empire. Consequences remain. The public, physical Stage-III crisis is the explicit exception: no immunity from galactic danger, no reopening of private missions or ascension entitlement (see [ADR-001](../architecture/adr-001-galactic-crisis.md)).
 
 ## Campaign requirements
 

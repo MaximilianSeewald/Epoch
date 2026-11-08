@@ -1,0 +1,158 @@
+{
+  "analysisDate": "2026-11-08",
+  "repository": "MaximilianSeewald/Epoch",
+  "localMain": "6db578dcbf0165983b29f9ab752db2aeb97aafc1",
+  "remoteMainVerifiedVia": "GitHub fetch_commit(main): 6db578dcbf0165983b29f9ab752db2aeb97aafc1",
+  "zip": {
+    "path": "EPOCH_Stage_III_Dokumentation_2026-11-08.zip",
+    "sha256": "780fe16c65d97f6b16f4bae69b2942598bc825b120e85e3cb37ccf61d321da0d",
+    "entries": [
+      {
+        "path": "README.md",
+        "bytes": 2769,
+        "sha256": "f9e0ab2340bbee1e1e061a21e2ad5cee2146d4bce90be5ebd3221be5274da7d7"
+      },
+      {
+        "path": "STAGE3_README.md",
+        "bytes": 5157,
+        "sha256": "d25a9c6c7b0c655b715f68aef21f50d47778502a43f192931aa9bc53fdf822f0"
+      },
+      {
+        "path": "STAGE3_SOURCE_NOTES.md",
+        "bytes": 1927,
+        "sha256": "81c74c36549428ffeaaf7e45aad8fb43ef3fac65634c71e0b2b9ba3f2778f306"
+      },
+      {
+        "path": "apply_stage3_docs.py",
+        "bytes": 7158,
+        "sha256": "c3e289cceddca16b5d88b91567a6fe4e9ff4094fcc050ef42de91b49f697e7d9"
+      },
+      {
+        "path": "docs/architecture/adr-001-galactic-crisis.md",
+        "bytes": 6194,
+        "sha256": "53e6d382e1334505f67f6e7ef37a89c4926f6ab46ca3639f4e5ba0b425e577df"
+      },
+      {
+        "path": "docs/architecture.md",
+        "bytes": 6730,
+        "sha256": "fbf0d38c633b398a4e56f17c9ad2a76491ea0c245f887ca5c7de9c24f5143599"
+      },
+      {
+        "path": "docs/phases/stage-iii-acceptance.md",
+        "bytes": 8118,
+        "sha256": "39b46050c5c1ba8cfb419e35a037f09e9abc96dd96b50206702125ebe5042b24"
+      },
+      {
+        "path": "docs/phases/stage-iii-engine-contract.md",
+        "bytes": 8138,
+        "sha256": "05e6a43dc0426dfe54990e4e587f42db65334f1e7d6ca97e3d664c20de492e09"
+      },
+      {
+        "path": "docs/phases/stage-iii-implementation-plan.md",
+        "bytes": 9455,
+        "sha256": "2838c2d9bbc2725577064fa903a147065fef0a5bae0488217e78afa72fbde6f6"
+      },
+      {
+        "path": "docs/phases/stage-iii-military-crisis.md",
+        "bytes": 22359,
+        "sha256": "464545498a6ff446bf2c8c6d0f2f4c09b53345d2c7be3dbecb696270f99506f3"
+      },
+      {
+        "path": "docs/phases/stage-iii-narrative-outline.md",
+        "bytes": 6396,
+        "sha256": "b741df91225e5c17ce49a96153faabd923d75ea5cc0aa5e1877e26b77d497848"
+      },
+      {
+        "path": "docs/phases/stage-iv-ascension.md",
+        "bytes": 2549,
+        "sha256": "ade34fe662e100eb6f9393c24723dbbf8dacfa10ea23080b629e0fdd25fc9bb5"
+      },
+      {
+        "path": "docs/story-bible.md",
+        "bytes": 5747,
+        "sha256": "52cc26440d5448215542326a42e5174c2e8cace8afe597df81f947668ca2b4f7"
+      },
+      {
+        "path": "updates/content-migration.append.md",
+        "bytes": 1211,
+        "sha256": "ce324136ab5e0a377d142766bdf1df250735c15b571b092457e3899637c692a7"
+      },
+      {
+        "path": "updates/phase-ii-resonance.append.md",
+        "bytes": 1164,
+        "sha256": "2bb17ee78215b2ac737be40b5aff4ef427ef542ef89c6fffd05e6f43a7a255c3"
+      },
+      {
+        "path": "updates/technical-contract.append.md",
+        "bytes": 2272,
+        "sha256": "0b707bff301d915548beb3eab204160e419eab92dd6ae937ad14d4565d14295c"
+      },
+      {
+        "path": "updates/testing.append.md",
+        "bytes": 2565,
+        "sha256": "94cf26a0790140d33aa024aab37a15db204170a26b203d7e8e6fc482a03c153e"
+      }
+    ]
+  },
+  "installedVersion": "Cygnus v4.5.3 (4e91)",
+  "steamBuild": "26325427",
+  "sources": [
+    {
+      "path": "INSTALL/launcher-settings.json",
+      "sha256": "65f9b547c0d5194f885ec015ff46edba941d45e78706b5a92efb03d079fa07e9"
+    },
+    {
+      "path": "INSTALL/common/on_actions/00_on_actions.txt",
+      "sha256": "b85054a739808e7e9e213bb4d189fed1eeb930e8f16c9b36bdfdbe82ce59fe1f"
+    },
+    {
+      "path": "INSTALL/common/country_types/00_country_types.txt",
+      "sha256": "06586e223c8421c26de8864dedf8b3e4c51bba3e796e5d75668660c8b979b6c4"
+    },
+    {
+      "path": "INSTALL/events/marauder_events.txt",
+      "sha256": "a64e4e59b1ddeb93729135fff1411d9543bb1ac3291d593a5c7fe748d1d51bf3"
+    },
+    {
+      "path": "INSTALL/events/synthetic_dawn_events.txt",
+      "sha256": "22e6427938729ba5d218ceb0c73eab3388d95c4cfb81965a61f1fa5a005f8f89"
+    },
+    {
+      "path": "INSTALL/events/gray_goo_events.txt",
+      "sha256": "ba3ad4cc48bc7cedf836207a6470f3513433ea501287bfb9ae805c51b795a25e"
+    },
+    {
+      "path": "INSTALL/events/grand_archive_events.txt",
+      "sha256": "1e3f769c1693d1cee3c137708f84eafebbbfedd726bc730eb41999b49f1c5ccf"
+    },
+    {
+      "path": "INSTALL/events/an4_events.txt",
+      "sha256": "43a890c475be0d16e3cf6aad5a8f8085ba9c8fa636481bae8faf79f077e13a8e"
+    },
+    {
+      "path": "INSTALL/events/crisis_events_1.txt",
+      "sha256": "9d411e67a74162bab8107aa527030cec519c2d52275e11bca97b3c3cbfd62e01"
+    },
+    {
+      "path": "INSTALL/common/script_values/00_script_values.txt",
+      "sha256": "a68fa3ba8854feb2ca888c0faa63faad7505209febe33b270fd5d83b63df7468"
+    },
+    {
+      "path": "INSTALL/common/script_values/02_script_values_astral_planes.txt",
+      "sha256": "1c54cb0253126247c676d12f167291243ef265904c61ed6feabb8cbf07bec0d9"
+    },
+    {
+      "path": "SCRIPT_DOCUMENTATION/effects.log",
+      "sha256": "e6a5a3395e6693da3733011738fba23511bcca2cd91c20950df7d64249ef937a"
+    },
+    {
+      "path": "SCRIPT_DOCUMENTATION/triggers.log",
+      "sha256": "b97f4e7a9b25092fe7a1a24e2502c041a29dc0184461b6f764c258e1192b1186"
+    },
+    {
+      "path": "SCRIPT_DOCUMENTATION/scopes.log",
+      "sha256": "fcc55c6c93b46db35448a4b985541216de340da3ef914faeb0d7a09c1a925acb"
+    }
+  ],
+  "runtimeTestsExecuted": false
+}
