@@ -1,6 +1,6 @@
 # Content Migration and Documentation Authority
 
-**Status: Stage-II code replacement completed; runtime acceptance open.** Current architecture and stage specs govern behavior; Git history is the archive. This register describes the actual replacement, not future instructions.
+**Status: Stage-II code replacement completed; main player route reported accepted; independent alternative-path/AI/MP acceptance remains open. Stage III is documentation only.** Current architecture and stage specs govern behavior; Git history is the archive. This register describes the actual replacement, not future instructions.
 
 | Content | Implemented disposition |
 |---|---|
@@ -26,3 +26,16 @@ New games and Stage-I/pre-entry saves retain the Stage-I foundation and continua
 ## Remaining work
 
 Perform the connected gameplay run in [testing](../testing.md), particularly native death-hook attribution, AI science/decision behavior, return-point fleet containment, save loading of retired situations, lost targets, simultaneous empires and host/client MP. Verify new logs. Source patterns and static interpreters cannot certify engine behavior or balance. Stage-III/IV implementations and optional Gigastructures package validation remain separate work.
+
+<!-- EPOCH_STAGE_III_DESIGN_V1:content-migration -->
+
+## Stage-III design boundary; no code migration yet
+
+Stage III is **not** implemented by this documentation update. Its global crisis design intentionally differs from the personal country-local Stage-I/II structure; see [ADR-001](adr-001-galactic-crisis.md) and the [Stage-III implementation plan](../phases/stage-iii-implementation-plan.md). No existing Stage-II callback, project key, opt-out flag, accumulated planet feature, or invitation clock is to be reused as the global activation flag. The Stage-II `epoch_res_stage_iii_ready` record controls a country's personal preparation/eligibility, not whether a universal outbreak occurs.
+
+Legacy save handling must be designed and validated independently before Stage III adds persistent global objects. The global coordinator must initialize exactly once in a compatible old save, avoid re-awarding old stages, and never create a second living crisis after load. Old personal refusals remain binding for private content while public galactic danger is unavoidable. There are no Stage-III legacy save conversions or runtime guarantees at this point.
+<!-- /EPOCH_STAGE_III_DESIGN_V1:content-migration -->
+
+### Stage-III v1 initialization policy
+
+[ADR-002 I03/I05](adr-002-stage-iii-integration.md) defines the future supported initialization matrix: fresh/compatible old saves first initialized before M; P..M receives only remaining preparation; already supported III-schema saves resume after M. First installation at/after M is not automatically supported and must fail closed with a diagnosis, no ambush, fake victory or invented prior warning. Unknown newer schemas cannot be reset. This is a design target awaiting native proof, not an implemented migration. Stage-II prototype suspension and all prior costs/clocks remain unchanged.

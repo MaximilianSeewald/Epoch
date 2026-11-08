@@ -1,0 +1,11 @@
+PASS: 5287 parsed campaign-state checks (all research/wait gates, approaches, offsets, save-state dispatch, alternatives). Static model only.
+PASS: 28 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 1135 Resonance contract/interpreted-script assertions. Engine, AI, balance, save/load and MP remain unverified.
+PASS: 28 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 33 installed Vanilla/script-documentation evidence checks. Native UI and callbacks require in-game acceptance.
+PASS: 28 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 1873 narrative/UI/baseline assertions; maximum scripted-effect depth 3 (epoch_core_migrate_planetary_features). Display-only previews excluded from execution.
+PASS: 28 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: runtime log classifier self-test (root causes, EPOCH cascades, foreign diagnostics).
+LOG REVIEW: no log directory found at C:\Users\Maxim\.codex\visualizations\2026\11\08\01a1bbc9-4df5-7d43-bc6b-386bea757555\no-runtime-logs.
+PASS: 707 static regression checks passed. This is not an in-game validation.

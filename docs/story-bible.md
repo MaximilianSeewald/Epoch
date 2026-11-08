@@ -6,7 +6,7 @@
 
 Across the galaxy, unrelated incidents share a subtle signature: corrupted ship records, impossible biological changes, anomalous machine behavior, abandoned structures, and distortions in space-time. They first appear to be separate problems. Their common origin remains unclear.
 
-The player initially encounters a dangerous mystery, not a promised ascension. No empire type is immune: organics, Hive Minds, and Machine Intelligences interpret and experience the signal differently.
+The player initially encounters a dangerous mystery, not a promised ascension. No empire type is immune: organics, Hive Minds, and Machine Intelligences interpret and experience the signal differently. Stage III becomes a shared galactic crisis even for empires that never personally investigated it.
 
 ## Narrative families
 
@@ -20,11 +20,15 @@ The player initially encounters a dangerous mystery, not a promised ascension. N
 
 1. **Stage I – First Contact:** local symptoms, expedition, contamination, and silent structure. Five sections end in a consequential decision and lasting cost.
 2. **Stage II – Resonance:** exactly five chapters follow the old signal, the first real Nullwarden fleet, broken code, a second planetary infection, and multiple silent-network systems. The stage closes its immediate investigation without revealing the wider purpose.
-3. **Stage III – Military Crisis:** adapted Nullwardens and the larger convergence threat create a real military escalation and strategic crisis.
+3. **Stage III – The Nullwarden Convergence:** one galactic crisis begins around the configured Mid-Game Start Year. Stage-II-complete explicit continuers may prepare from M−20; other empires encounter the same physical threat with greater initial planetary exposure. All histories remain country-local. See the [narrative outline](phases/stage-iii-narrative-outline.md).
 4. **Stage IV – Ascension:** the larger system and Universal Ascension Protocol are revealed. The player pursues a mechanically meaningful ascension and may heal accumulated harm through deliberate actions.
 
-The deeper system may have sought to connect forms of intelligence without erasing identity. Its remnants cannot reliably distinguish voluntary participation from forced assimilation. The final choices should reflect this uncertainty; they must not be telegraphed in early content.
+The deeper system may have sought to connect forms of intelligence without erasing identity. Its remnants cannot reliably distinguish voluntary participation from forced assimilation. This is an internal authoring hypothesis, not a Stage-III revelation or established canon. The final choices should reflect this uncertainty; they must not be telegraphed in early content.
 
 ## Narrative quality rules
 
 Every major arc has an introduction and concrete mystery; investigation with meaningful choices; escalation; consequences carried into later play; resolution or deliberate open end; and a connection to the wider mystery. Valid story verbs include research, quarantine, diplomacy, sacrifice, endurance, exploitation, and combat. Narrative presentation never substitutes for the actual projects, fleets, planetary effects, and costs required by the stage contract.
+
+## Stage-III public and personal knowledge
+
+Public crisis reports state only observable facts. Veterans may recall only their own saved outcomes; nonparticipants receive no invented expedition memories. Permanent personal refusal still bars private preparation and ascension, but not public warnings or real danger. Generic post-outbreak defense remains available to everyone. Bio, Hive and Machine voices remain distinct; the global war never writes old story rewards or reveals the Architects/UAP. The [Stage-III narrative outline](phases/stage-iii-narrative-outline.md) supplies all five dramatic beats.

@@ -32,7 +32,7 @@ The source review did not comprehensively verify AI weights, localization/UI ass
 - EPOCH Core contains no hard Gigastructures references and works without the optional compatibility mod. Integration belongs in a separately packaged mod. Dependency syntax, launcher recognition/activation, package boundaries, and load order are not verified by the source corpus and require release checks.
 - Provide English and German localization. Use valid Vanilla or original art rather than placeholders. Show actual resource deltas in native option tooltips where supported. Verify feature-panel placement, state refresh, localization, and economic effects in game.
 - Require save/load, AI coverage, simultaneous-empire isolation, host/client MP, fresh logs, and Vanilla-only/optional-mod checks. Static/source evidence never substitutes for these acceptance runs.
-- No new start origin/civic/free start bonus or discovery technology. Do not use global singleton campaign state or foreign event targets.
+- No new start origin/civic/free start bonus or discovery technology. Stages I/II use no global singleton campaign state or foreign personal targets. Stage III alone owns one galaxy-wide crisis; personal history and rewards remain country-local (see [ADR-001](architecture/adr-001-galactic-crisis.md)).
 
 
 ## Stage-II implementation source review
@@ -61,3 +61,18 @@ Regression fixtures now pass native Country From through the actual project `on_
 ## PR #13 feedback evidence (4.5.3)
 
 The [feedback correction handoff](stage-ii-feedback-fixes.md) supersedes the earlier nine-science-ship description: eight required projects retain their ship-bound callback proof, while optional reconnaissance now follows Vanilla `AMOEBAS_PACIFICATION_PROJECT` (600 Physics points, no ship, `planet_event`, `location = no`, PREV Country forwarding). Generated scope/effect/trigger documentation confirms distinct Planet/Colony identities and shared carrier flags; the seven Decisions use country-keyed carrier flags rather than direct target identity. `test_resonance_vanilla.cjs` reads the installed sources and generated docs and verifies the native callback, scope promotions, UI assets and localization syntax. This is source evidence, not runtime acceptance.
+
+<!-- EPOCH_STAGE_III_DESIGN_V1:technical-contract -->
+
+## Stage-III global-crisis engine contract (design gate; not validated)
+
+The Stage-III [specification](phases/stage-iii-military-crisis.md), [ADR-001](architecture/adr-001-galactic-crisis.md) and [engine validation plan](phases/stage-iii-engine-contract.md) introduce a **single global threat**, unlike the owner-local Stages I/II. **Do not retrofit global state into Stage I/II.** Galaxy activation cannot require `epoch_res_stage_iii_ready`; that flag controls *early private preparation* and later personal entitlement only. All ordinary spacefaring empires, including permanent private-story opt-outs, must physically experience the crisis; uninitiated countries receive stronger authentic planetary effects. Global shared facts (live enemy/anchors, military victory) and country-local history/rewards must be modeled separately.
+
+The intended start is relative to the *configured* midgame year: preparation at **M−20** only for Stage-II-complete continuers, universal outbreak **around M**, even with no participants. Verify actual 4.5.3 native expressions and supported contexts for the configured midgame year and a pre-M offset. Installed `marauder.151` and `syndaw.400` provide source evidence for negative comparisons (`>= -10`); exact -20/0 timing, hook delivery and save/MP behavior remain untested. The [evidence register](phases/stage-iii-engine-evidence.md) records the distinction. No fixed-date fallback is part of the plan.
+
+Technical work must first prove, with native source and actual test: idempotent galaxy coordinator (including MP host/client); non-neutral **mobile strategic** Nullwarden fleets (not only Stage-II static tactical aggro); genuine anchor objects and bounded reinforcement shutdown; legitimate movement/war and planet/Colony owner scopes; full-economy effects with exclusivity across existing feature families; and combat/coalition credit without speculative callback ordering. All Gigastructures integration remains optional and separate. Add no Vanilla crisis override or global campaign-completion shortcut.
+
+The binding [Stage-III acceptance matrix](phases/stage-iii-acceptance.md) distinguishes source evidence, simulated regression and actual EPOCH runtime evidence. None is currently claimed as passed for Stage III.
+<!-- /EPOCH_STAGE_III_DESIGN_V1:technical-contract -->
+
+The [ADR-002 integration policy](architecture/adr-002-stage-iii-integration.md) is normative: protect active Stage-I/II objectives and contained/controlled/studied/healed states; use a genuine supplementary modifier when no conflict-free family placement exists; do not reuse old infection/mission setters as a global API. Safe placement may delay activation; v1 automatic first initialization must be before M. Source-supported global dispatch does not imply an exposed host-only command.
