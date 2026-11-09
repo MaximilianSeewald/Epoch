@@ -14,20 +14,22 @@ decision_epoch_iii_buffer = {
  owned_planets_only = yes
  enactment_time = 90
  resources = { category = decisions cost = { energy = 300 minerals = 200 } }
- potential = { has_planet_flag = epoch_iii_exposed_v1 NOT = { has_planet_flag = epoch_iii_buffered } }
+ potential = { OR = { has_planet_flag = epoch_iii_exposed_v1 has_planet_flag = epoch_iii_scar_exposed } NOT = { has_planet_flag = epoch_iii_buffered } }
  allow = {
   owner = { OR = { has_country_flag = epoch_iii_prepared has_country_flag = epoch_iii_counterharmonics } }
-  OR = { has_modifier = epoch_iii_pressure_unprepared has_modifier = epoch_iii_pressure_experienced has_modifier = epoch_iii_pressure_prepared }
+  OR = { has_modifier = epoch_iii_pressure_unprepared has_modifier = epoch_iii_pressure_experienced has_modifier = epoch_iii_pressure_prepared has_modifier = epoch_iii_scar_pressure has_modifier = epoch_iii_scar_shielded }
  }
  effect = {
   tooltip = {
    remove_modifier = epoch_iii_pressure_unprepared
    remove_modifier = epoch_iii_pressure_experienced
    remove_modifier = epoch_iii_pressure_prepared
+   remove_modifier = epoch_iii_scar_pressure
+   remove_modifier = epoch_iii_scar_shielded
    add_modifier = { modifier = epoch_iii_pressure_buffered days = -1 }
    custom_tooltip = epoch_iii.buffer.tt
   }
-  hidden_effect = { if = { limit = { has_planet_flag = epoch_iii_exposed_v1 NOT = { has_planet_flag = epoch_iii_buffered } owner = { OR = { has_country_flag = epoch_iii_prepared has_country_flag = epoch_iii_counterharmonics } } }
+  hidden_effect = { if = { limit = { OR = { has_planet_flag = epoch_iii_exposed_v1 has_planet_flag = epoch_iii_scar_exposed } NOT = { has_planet_flag = epoch_iii_buffered } owner = { OR = { has_country_flag = epoch_iii_prepared has_country_flag = epoch_iii_counterharmonics } } }
    epoch_iii_buffer_world = yes
   } }
  }

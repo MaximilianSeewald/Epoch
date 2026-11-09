@@ -30,3 +30,11 @@ epoch_iii_mobile_disruption_prepared = {
 epoch_iii_counterharmonics = {
  ship_weapon_damage = 0.10
 }
+
+epoch_iii_emergency = { starbase_shipyard_build_speed_mult = 0.20 }
+epoch_iii_disrupted_network = { ship_weapon_damage = -0.20 ship_shield_mult = -0.20 }
+epoch_iii_scar_pressure = { planet_jobs_produces_mult = -0.10 planet_stability_add = -5 }
+epoch_iii_scar_shielded = { planet_jobs_produces_mult = -0.03 planet_stability_add = -2 }
+epoch_iii_veterans = { ship_fire_rate_mult = 0.05 }
+
+epoch_iii_decoding = { all_technology_research_speed = 0.10 }

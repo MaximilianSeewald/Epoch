@@ -26,3 +26,63 @@ special_project = {
  on_fail = { }
  on_cancel = { }
 }
+
+special_project = {
+ key = EPOCH_III_SITE_1
+ days_to_research = 180
+ tech_department = physics_technology
+ picture = GFX_evt_space_debris
+ event_scope = ship_event
+ location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { OR = { NOT = { has_global_flag = epoch_iii_active } has_global_flag = epoch_iii_site_1_studied } }
+ on_success = { ship_event = { id = epoch_iii.61 } }
+ on_fail = { }
+ on_cancel = { }
+}
+
+special_project = {
+ key = EPOCH_III_SITE_2
+ days_to_research = 180
+ tech_department = physics_technology
+ picture = GFX_evt_space_debris
+ event_scope = ship_event
+ location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { OR = { NOT = { has_global_flag = epoch_iii_active } has_global_flag = epoch_iii_site_2_studied } }
+ on_success = { ship_event = { id = epoch_iii.62 } }
+ on_fail = { }
+ on_cancel = { }
+}
+
+special_project = {
+ key = EPOCH_III_SITE_3
+ days_to_research = 180
+ tech_department = physics_technology
+ picture = GFX_evt_space_debris
+ event_scope = ship_event
+ location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { OR = { NOT = { has_global_flag = epoch_iii_active } has_global_flag = epoch_iii_site_3_studied } }
+ on_success = { ship_event = { id = epoch_iii.63 } }
+ on_fail = { }
+ on_cancel = { }
+}
+
+special_project = {
+ key = EPOCH_III_SITE_4
+ days_to_research = 180
+ tech_department = physics_technology
+ picture = GFX_evt_space_debris
+ event_scope = ship_event
+ location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { OR = { NOT = { has_global_flag = epoch_iii_active } has_global_flag = epoch_iii_site_4_studied } }
+ on_success = { ship_event = { id = epoch_iii.64 } }
+ on_fail = { }
+ on_cancel = { }
+}

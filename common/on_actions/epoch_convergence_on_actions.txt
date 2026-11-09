@@ -3,3 +3,5 @@ on_game_start = { events = { epoch_iii.1 } }
 on_monthly_pulse = { events = { epoch_iii.1 } }
 on_mid_game_pulse = { events = { epoch_iii.1 } }
 on_fleet_destroyed_victim = { events = { epoch_iii.40 } }
+
+on_ship_destroyed_victim = { events = { epoch_iii.41 } }

@@ -9,7 +9,7 @@ epoch_iii_preparations = {
  abort_trigger = { owner = { OR = { mid_game_years_passed >= 0 NOT = { epoch_iii_preparation_eligible = yes } } } }
  stages = { stage_epoch_iii_listening = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 100 custom_tooltip = epoch_iii.prepare.tt } }
  monthly_progress = { base = 0 }
- approach = { name = epoch_iii_listen default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 10 } }
+ approach = { name = epoch_iii_listen on_select = { custom_tooltip = epoch_iii.listen.tt } default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 10 } }
  approach = { name = epoch_iii_prepare_report icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green on_select = { owner = { country_event = { id = epoch_iii.5 } } } ai_weight = { base = 20 modifier = { factor = 0 owner = { OR = { has_country_flag = epoch_iii_prepared has_special_project = EPOCH_III_PREPARE } } } } }
  on_progress_complete = { }
 }
@@ -23,13 +23,41 @@ epoch_iii_first_offensive = {
  permanent = yes
  desc = { trigger = { always = yes } text = epoch_iii_first_offensive_desc }
  stages = {
-  stage_epoch_iii_anchor = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 50 custom_tooltip = epoch_iii.anchor_goal }
-  stage_epoch_iii_remaining = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_blue end = 100 custom_tooltip = epoch_iii.remaining_goal }
+  stage_epoch_iii_borders = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 25 custom_tooltip = epoch_iii.anchor_goal }
+  stage_epoch_iii_foci = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_blue end = 50 custom_tooltip = epoch_iii.fronts.tt }
+  stage_epoch_iii_convergence = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 75 custom_tooltip = epoch_iii.command.tt }
+  stage_epoch_iii_last = { icon = GFX_situation_stage_4 icon_background = GFX_situation_stage_frame_blue end = 100 custom_tooltip = epoch_iii.remaining_goal }
  }
- # Only the native anchor destruction advances this display. The global
- # validator still requires all mobile formations' native destruction records.
  monthly_progress = { base = 0 }
- approach = { name = epoch_iii_watch default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 10 } }
+ approach = { name = epoch_iii_watch on_select = { custom_tooltip = epoch_iii.watch.tt } default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 10 } }
  approach = { name = epoch_iii_briefing icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green on_select = { owner = { country_event = { id = epoch_iii.11 } } } ai_weight = { base = 20 modifier = { factor = 0 owner = { OR = { has_country_flag = epoch_iii_counterharmonics has_special_project = EPOCH_III_COUNTERHARMONICS } } } } }
+ on_progress_complete = { }
+}
+
+# A native Situation Log target provides map navigation to each public front.
+epoch_iii_front_marker = {
+ picture = GFX_evt_black_hole
+ category = negative
+ situation_log_category = developments
+ initial_progress = 0
+ progress_direction = monodirectional
+ permanent = yes
+ desc = { trigger = { target = { is_same_value = event_target:epoch_iii_front_1 } } text = epoch_iii.front.interdiction }
+ desc = { trigger = { target = { is_same_value = event_target:epoch_iii_front_2 } } text = epoch_iii.front.scar }
+ desc = { trigger = { exists = event_target:epoch_iii_front_3 target = { is_same_value = event_target:epoch_iii_front_3 } } text = epoch_iii.front.signal }
+ desc = { trigger = { exists = event_target:epoch_iii_front_4 target = { is_same_value = event_target:epoch_iii_front_4 } } text = epoch_iii.front.reserve }
+ abort_trigger = { OR = { NOT = { has_global_flag = epoch_iii_active }
+  target = {
+   OR = {
+    AND = { has_global_flag = epoch_iii_front_1_destroyed exists = event_target:epoch_iii_front_1 is_same_value = event_target:epoch_iii_front_1 }
+    AND = { has_global_flag = epoch_iii_front_2_destroyed exists = event_target:epoch_iii_front_2 is_same_value = event_target:epoch_iii_front_2 }
+    AND = { has_global_flag = epoch_iii_front_3_destroyed exists = event_target:epoch_iii_front_3 is_same_value = event_target:epoch_iii_front_3 }
+    AND = { has_global_flag = epoch_iii_front_4_destroyed exists = event_target:epoch_iii_front_4 is_same_value = event_target:epoch_iii_front_4 }
+   }
+  }
+ } }
+ stages = { stage_epoch_iii_front = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 100 } }
+ monthly_progress = { base = 0 }
+ approach = { name = epoch_iii_watch on_select = { custom_tooltip = epoch_iii.watch.tt } default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 10 } }
  on_progress_complete = { }
 }
