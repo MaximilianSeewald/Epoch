@@ -1,5 +1,8 @@
 # Stage III – Narrative Outline / Story Bible Extension
 
+> **Current contract, second playtest (2026-11-09):** The user tested `2c95edf` and authorized the connected fixes in [second-playtest implementation](stage-iii-second-playtest.md). Required victory: every registered anchor and the unique command ship destroyed in combat; surviving minor formations withdraw afterward and never gate victory. Five globally synchronized chapters remain. Science/diplomacy cannot replace military objectives. Earlier residual-fleet hunt and opening-only approval gates are superseded. New changes have static regression evidence; new native display, retreat and MP results remain unverified.
+
+
 **Status: binding tone and story beats, not actual localization or verified dialogue.** Working stage title: **The Nullwarden Convergence / Die Konvergenz der Nullwächter**. The term 'convergence' may be an in-world scientific conjecture, never a prematurely proven explanation. Follow existing `docs/story-bible.md` and the Stage-I/II narrative/UI review.
 
 ## The information boundary

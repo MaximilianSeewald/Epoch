@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-09",
+  "target": "4.5.3 (4e91)",
+  "evidence": "Installed source only; no new engine run",
+  "sources": [
+    {
+      "path": "launcher-settings.json",
+      "sha256": "65f9b547c0d5194f885ec015ff46edba941d45e78706b5a92efb03d079fa07e9"
+    },
+    {
+      "path": "events/gray_goo_events.txt",
+      "sha256": "ba3ad4cc48bc7cedf836207a6470f3513433ea501287bfb9ae805c51b795a25e"
+    },
+    {
+      "path": "events/marauder_events.txt",
+      "sha256": "a64e4e59b1ddeb93729135fff1411d9543bb1ac3291d593a5c7fe748d1d51bf3"
+    },
+    {
+      "path": "events/anomaly_events_1.txt",
+      "sha256": "ac64083e469952b059d565be537a6161d0578dcc9b63e0bf2be35e67b7841e2c"
+    },
+    {
+      "path": "events/ancient_relics_site_spawn_event.txt",
+      "sha256": "3fae76b2807262d54da6ac95678477da46367ff440f16e334fca17ac71e725a7"
+    },
+    {
+      "path": "common/on_actions/00_on_actions.txt",
+      "sha256": "b85054a739808e7e9e213bb4d189fed1eeb930e8f16c9b36bdfdbe82ce59fe1f"
+    },
+    {
+      "path": "common/global_ship_designs/ai_ship_designs.txt",
+      "sha256": "4f1f5519596e24fdbc1250f9e29939d199ffaa1809937ab35436115beb93a3c0"
+    },
+    {
+      "path": "common/intel_categories/04_intel_military.txt",
+      "sha256": "c2f8e07555b55e0343e18d26ff7ea0e8324dfc64be9ec18a54ba48f91cae1d6d"
+    },
+    {
+      "path": "common/ship_sizes/10_ai_ships.txt",
+      "sha256": "a551784e5442773b6a089f90c422ad40a7aba19e5d7e053b1cc77d08c39458e4"
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 # Stage III – Installed Engine Evidence Register
 
+**Opening update (2026-11-08):** the first-offensive slice is now implemented against PR #14 main, with new installed-source checks and static guard tests. See [implementation evidence and player checklist](stage-iii-opening-implementation.md) and [static transcript](../research/stage-iii-opening-static-checks-2026-11-08.txt). All **Not executed** runtime rows below remain unchanged; no new engine probe, combat, save or MP run occurred.
+
 **Status: source observations and existing static baseline only; no Stage-III runtime test executed.** Reviewed 2026-11-08 against main `6db578dcbf0165983b29f9ab752db2aeb97aafc1`, Stellaris 4.5.3 (4e91), Steam build 26325427. Existing generated documentation was read, not regenerated. File hashes are in the [manifest](../research/stage-iii-source-manifest-2026-11-08.json). The [engine contract](stage-iii-engine-contract.md) defines still-required proofs; [ADR-002](../architecture/adr-002-stage-iii-integration.md) states planning policies.
 
 Labels: **Q** = inspected source/documented interface; **S** = executed static check; **V** = design proposal; **R** = required actual engine result still absent. Q or S never certifies AI mobility, object lifetime, save persistence or MP. In particular, source-supported negative timing is no longer wholly unknown, but exact -20/0 boundaries remain R.

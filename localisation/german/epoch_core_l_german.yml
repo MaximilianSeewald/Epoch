@@ -18,7 +18,7 @@
  epoch_core.5.desc:0 "Die schmale Spur endet an Koordinaten jenseits der Vermessungsroute. Aus dieser Entfernung lässt sich das Echo nicht von einer heftigen räumlichen Verzerrung trennen. Wir haben eine Peilung, aber keinen verlässlichen Bericht über die Bedingungen an ihrem Ende.\n\nEine Expedition könnte die Quelle unmittelbar untersuchen. Die Einsatzleitung kann die Rückkehr des entsandten Schiffs nicht zusichern."
  epoch_core.5.a:0 "Ein Wissenschaftsschiff unserer Wahl entlang der geborgenen Peilung entsenden."
  epoch_core.6.name:0 "Die vermisste Expedition"
- epoch_core.6.desc.cautious:0 "Das Suchschiff erreicht die letzte Telemetrie, findet aber keinen Peilsender. Jenseits der letzten Position des vermissten Schiffs pulsiert ein Signal weiter – gleichmäßig genug, um ihm zu folgen, doch zu schwach, um sein Ziel zu erkennen."
+ epoch_core.6.desc.cautious:0 "Das Suchschiff erreicht die letzte Telemetrie, findet aber keinen Peilsender. Jenseits der letzten Position des vermissten Schiffs pulsiert ein Signal weiter  -  gleichmäßig genug, um ihm zu folgen, doch zu schwach, um sein Ziel zu erkennen."
  epoch_core.6.desc.aggressive:0 "Am Ende der geborgenen Peilung messen die Instrumente eine scharfe Verzerrung. Die Expedition ist verschwunden. Ihr Datenrekorder könnte noch intakt sein, doch hier ist das Rücksignal stärker."
  epoch_core.6.desc.degraded:0 "Die übersteuerten Instrumente haben die schmale Spur verloren. Die Expedition ist verschwunden, und nur eine beschädigte Messung weist auf das stärkere Rücksignal."
  epoch_core.6.desc.standard:0 "An der letzten Position der Expedition herrscht Stille. Jenseits des Endes ihrer Telemetrie pulsiert ein schmaler Impuls weiter."

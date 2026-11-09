@@ -471,6 +471,8 @@ Assert-Check ($LASTEXITCODE -eq 0) 'Narrative/UI changes must preserve baseline 
 Assert-Check ($LASTEXITCODE -eq 0) 'Clausewitz lexer/parser must validate every common/events text file and top-level scripted effects'
 & node (Join-Path $PSScriptRoot 'test_stellaris_runtime_log.cjs') --self-test
 Assert-Check ($LASTEXITCODE -eq 0) 'Runtime log classifier must separate root causes, cascades, and foreign errors'
+& node (Join-Path $PSScriptRoot 'test_stage_iii.cjs') $Root $VanillaRoot
+Assert-Check ($LASTEXITCODE -eq 0) 'Stage-III opening guards, finite physical-source budget and old-stage isolation must pass (static only)'
 
 # Summarize existing test logs by source. Old EPOCH failures are reported as
 # evidence from the pre-fix run; unrelated-mod/base-game errors are separated.

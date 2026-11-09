@@ -1,5 +1,8 @@
 # ADR-002: Stage-III Integration, Safety and Evidence Policies
 
+> **Current contract, second playtest (2026-11-09):** The user tested `2c95edf` and authorized the connected fixes in [second-playtest implementation](../phases/stage-iii-second-playtest.md). Required victory: every registered anchor and the unique command ship destroyed in combat; surviving minor formations withdraw afterward and never gate victory. Five globally synchronized chapters remain. Science/diplomacy cannot replace military objectives. Earlier residual-fleet hunt and opening-only approval gates are superseded. New changes have static regression evidence; new native display, retreat and MP results remain unverified.
+
+
 **Status: normative planning contract; no gameplay implementation or runtime acceptance.** Date: 2026-11-08. Refines [ADR-001](adr-001-galactic-crisis.md) and resolves the alternatives in the [archived analysis](../research/stage-iii-analysis-2026-11-08.md). This documentation task authorizes neither production gameplay nor executable test mods; both require separate user authorization. A later implementation must meet the engine gates rather than treating the policies below as proven Engine behavior.
 
 ## Authority and unchanged mechanics
@@ -58,9 +61,9 @@ Reinforcement callbacks recheck living source, current phase and budget at execu
 
 ## I07 — Shared function validator and truthful national credit
 
-Military breakthrough requires every registered function disabled and the real unique commandant destroyed. Scientific interruption requires military/strategic access to two distinct functions, actual multi-site research at at least two valid physical locations, and a final node operation that disables all remaining functions and physically deactivates/withdraws the command network. Scientific withdrawal is not a fictional kill. Combined-function stations on small maps must still provide two genuine research locations.
+Military breakthrough requires every registered function disabled and the real unique commandant destroyed. Science-supported military victory requires real node destruction before access to physical research sites. One study restricts logistics; two weaken surviving weapons/shields. Every registered node, the unique command ship and surviving hostile formations must still be destroyed in combat. Scientific withdrawal is prohibited. Combined-function stations on small maps must still provide two genuine research locations.
 
-Joint containment is a cooperation mode over those same physical shutdown/destruction requirements, with independent proven contributions by at least two empires, not a third timer/counter-only completion predicate. Solo/isolated empires retain military/scientific solutions. A common validator owns global resolution; country rewards are independently guarded.
+Joint containment is a cooperation mode over those same physical shutdown/destruction requirements, with independent proven contributions by at least two empires, not a third timer/counter-only completion predicate. Solo/isolated empires retain military and science-supported military solutions. A common validator owns global resolution; country rewards are independently guarded.
 
 Track active, contested, destroyed, scientifically disabled and unresolved-reference states separately. Missing targets never satisfy a function. Native victim-destruction scopes, actual participant/target identity and cleanup reason are mandatory. `on_space_battle_won` includes exits/disengagement and is not sufficient. Do not infer the unique commandant ship's death from a different escort or entire-fleet reference. Coalition recognition can be conservative; do not invent damage percentages or shared kills when only the final blow is proven. All world scars, private refusal and Stage-IV prerequisites survive global victory.
 

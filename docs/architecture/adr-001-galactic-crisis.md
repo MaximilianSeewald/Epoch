@@ -1,5 +1,8 @@
 # ADR-001: A Single Galactic Nullwarden Crisis with Per-Empire History
 
+> **Current contract, second playtest (2026-11-09):** The user tested `2c95edf` and authorized the connected fixes in [second-playtest implementation](../phases/stage-iii-second-playtest.md). Required victory: every registered anchor and the unique command ship destroyed in combat; surviving minor formations withdraw afterward and never gate victory. Five globally synchronized chapters remain. Science/diplomacy cannot replace military objectives. Earlier residual-fleet hunt and opening-only approval gates are superseded. New changes have static regression evidence; new native display, retreat and MP results remain unverified.
+
+
 **Status: ACCEPTED — design decision, not implementation evidence.** Date: 2026-11-08. Applies to Stage III only. Supersedes the previous *country-local only / no galaxy-wide singleton* rule **for the global crisis lifecycle**, while preserving its ownership and independence constraints for Stages I/II and personal rewards.
 
 ## Context

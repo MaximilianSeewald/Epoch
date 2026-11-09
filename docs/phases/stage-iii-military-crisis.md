@@ -1,6 +1,11 @@
 # Stage III – The Nullwarden Convergence
 
-**Status: Binding design specification; NOT implemented or engine-validated.** Target: Stellaris 4.5.3 (current EPOCH base). Stage III is an actual galaxy-wide midgame crisis, not a private continuation of an empire's Stage-II situation. The design follows [EPOCH Architecture](../architecture.md), [galactic-crisis ADR](../architecture/adr-001-galactic-crisis.md), [story outline](stage-iii-narrative-outline.md), [implementation plan](stage-iii-implementation-plan.md), [engine contract](stage-iii-engine-contract.md), and [acceptance](stage-iii-acceptance.md).
+> **Current contract, second playtest (2026-11-09):** The user tested `2c95edf` and authorized the connected fixes in [second-playtest implementation](stage-iii-second-playtest.md). Required victory: every registered anchor and the unique command ship destroyed in combat; surviving minor formations withdraw afterward and never gate victory. Five globally synchronized chapters remain. Science/diplomacy cannot replace military objectives. Earlier residual-fleet hunt and opening-only approval gates are superseded. New changes have static regression evidence; new native display, retreat and MP results remain unverified.
+
+
+**Implementation update (2026-11-08):** the authorized first-offensive opening is implemented for static review and player acceptance. See [scope, parameters and evidence limits](stage-iii-opening-implementation.md). The full-stage design below remains binding; no runtime acceptance or full five-chapter completion is claimed.
+
+**Status: binding specification, connected implementation present; new engine acceptance pending.** Target: Stellaris 4.5.3 (current EPOCH base). Stage III is an actual galaxy-wide midgame crisis, not a private continuation of an empire's Stage-II situation. The design follows [EPOCH Architecture](../architecture.md), [galactic-crisis ADR](../architecture/adr-001-galactic-crisis.md), [story outline](stage-iii-narrative-outline.md), [implementation plan](stage-iii-implementation-plan.md), [engine contract](stage-iii-engine-contract.md), and [acceptance](stage-iii-acceptance.md).
 
 The [integration policy ADR-002](../architecture/adr-002-stage-iii-integration.md) defines the normative protected-world fallback, active Stage-I/II isolation, save support, safe placement, strategic scope and shared victory validator. The [evidence register](stage-iii-engine-evidence.md) separates installed source observations from still-required runtime proof. This specification is planning only; gameplay and executable probes require separate user authorization.
 
@@ -63,7 +68,7 @@ Three distinguishable functions are traced in the interference: interdiction, pl
 
 - **Interdiction front:** heavily guarded anchor; real defensive station and fleet, contested access and logistics.
 - **Scar front:** real owned planets and nearby systems are affected by existing EPOCH contamination/scar family states, with class-compatible economic effects. Resolve or mitigate with actual decisions/buildings/projects. No arbitrary pop deletion or unbounded spread.
-- **Signal front:** protected relay enables bounded reinforcements. The relay is a real destructible or scientifically deactivatable object. Capture is optional and cannot be claimed without a separately validated ownership/control mechanic.
+- **Signal front:** protected relay enables bounded reinforcements. The relay is a real destructible defended object. Science becomes available at the secured wreck site after military destruction. Capture is optional and cannot be claimed without a separately validated ownership/control mechanic.
 - **Interdependence:** destroying or disabling a relay **actually** reduces future reinforcements; securing a scar site lowers local hazard; military success unlocks previously inaccessible scientific work.
 
 There are three **functional roles**, not necessarily precisely three physical fronts in every galaxy. Small maps may expose two suitable anchor systems with combined functions; larger maps may have four stations but no more than the defined bounded budget. The global victory contract always requires all remaining active anchor *functions* to be disabled.
@@ -122,10 +127,10 @@ With one valid colony: Prepared = a small, non-zero local crisis impact; Uniniti
 | Route | Required real objectives | Distinct outcome |
 |---|---|---|
 | **Military breakthrough** | Neutralize every active anchor function; genuinely destroy the command formation in a validated final battle | Strong wreck/salvage opportunity, high expected losses |
-| **Scientific interruption** | Secure access to at least two distinct anchor functions via real military/strategic actions; complete research at at least two genuine physical sites and a final key-node operation that disables every remaining function and physically deactivates/withdraws the command network | Can deactivate/withdraw command network without inventing destruction, at substantial research/infrastructure cost; some damage remains |
-| **Joint containment** | Cooperative defense and anchor operations with independently proven contributions from at least two empires satisfy the same military or scientific physical shutdown objectives, through one shared validator | Distributed effort, asymmetric national credit and losses; not a third free timer victory |
+| **Science-supported military victory** | Destroy defended nodes in actual combat; study secured wrecks at two distinct physical sites; destroy all remaining nodes, the unique command ship and surviving formations in combat | One study restricts other sources; two studies weaken surviving weapons/shields by 20%. No scientific withdrawal or automatic ship destruction |
+| **Joint military victory** | At least two empires make native combat contributions; all defended nodes, the unique command ship and surviving formations meet the identical military validator | Distributed fighting; conservative per-empire combat credit and once-only rewards |
 
-Joint containment is a cooperation mode, not a separate timer/counter victory predicate. A solo or isolated empire can use the military or scientific procedure without coalition membership.
+Joint military victory is a cooperation mode over the same battle requirements. A solo or isolated empire can use the direct military or science-supported military procedure without coalition membership.
 
 No route may finish by paying a single resource at an event, waiting a countdown, deleting a target reference, or using an unverified fight callback. Cases where a station is lost/inaccessible need bounded replacement or alternative real targets, not automatic objective credit. The game ends the **crisis**, not the player's EPOCH storyline automatically.
 

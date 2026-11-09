@@ -28,7 +28,7 @@ for (const [id,{b}] of eventDefs) if (id.startsWith('epoch_ii.') && !['epoch_ii.
   check(!get(b,'immediate')&&!get(b,'option'),'Queued legacy receivers are inert');
 }
 for (const ref of all.matchAll(/\bid\s*=\s*(epoch_(?:core|ii|res)\.\d+)/g)) check(eventDefs.has(ref[1]),`Defined event ${ref[1]}`);
-for (const ref of all.matchAll(/\b(?:type|name)\s*=\s*(EPOCH_[A-Z_]+)/g)) check(projects.has(ref[1]),`Defined project ${ref[1]}`);
+for (const ref of all.matchAll(/\b(?:type|name)\s*=\s*(EPOCH_[A-Z0-9_]+)/g)) check(projects.has(ref[1]),`Defined project ${ref[1]}`);
 const triggers = new Map([...parsed].filter(([p])=>p.startsWith('common/scripted_triggers/')).flatMap(([,v])=>v));
 for (const name of new Set([...all.matchAll(/\b(epoch_(?:core|ii|res)_[a-z_]+)\s*=\s*yes/g)].map(m=>m[1]))) check(effects.has(name)||triggers.has(name),`Defined scripted effect/trigger ${name}`);
 const newProjects = [...projects].filter(([key])=>key.startsWith('EPOCH_RES_'));
@@ -75,7 +75,8 @@ check(!JSON.stringify(effects.get('epoch_ii_clear_site_state')).includes('epoch_
 check(JSON.stringify(E(59)).includes('epoch_res_interrupted_complete'),'All three station results gate handoff');
 const handoffWriters = [...eventDefs].filter(([,{b}])=>JSON.stringify(b).includes('"set_country_flag","epoch_res_stage_iii_ready"'));
 check(handoffWriters.length===1&&handoffWriters[0][0]==='epoch_res.60','Only final validated event writes Stage-III handoff');
-check(!/epoch_(?:iii|iv)\.\d/.test(all),'No automatic later-stage crisis');
+const personalSources = [...source].filter(([p]) => !p.includes('convergence')).map(([,s]) => s).join('\n');
+check(!/epoch_(?:iii|iv)\.\d/.test(personalSources),'Stage I/II never dispatch the independent galactic crisis');
 const nodeSource=source.get('common/scripted_effects/epoch_resonance_effects.txt');
 check(nodeSource.includes('epoch_res_reflection_system@root')&&nodeSource.includes('epoch_res_silence_system@root')&&nodeSource.includes('epoch_res_interrupted_system@root'),'Three owner-keyed system targets');
 check(countDeep(effects.get('epoch_res_find_interrupted'),'NOT')===3,'Third station excludes previous systems and the capital');

@@ -1,5 +1,7 @@
 # Acceptance and Verification
 
+Stage III's next connected run follows the [second-playtest changes and focused acceptance sequence](phases/stage-iii-second-playtest.md). Earlier foundational matrices remain coverage references; they do not require repeated player signoffs for already confirmed opening mechanics.
+
 **Status: Binding test criteria.** Stage design is in the [stage specifications](phases/); engine evidence limits are in the [technical contract](technical-contract.md). This file is an acceptance plan, not a completed test report.
 
 ## Evidence discipline
@@ -75,7 +77,9 @@ For the next in-game run, use separate copies of the existing checkpoints:
 
 <!-- EPOCH_STAGE_III_DESIGN_V1:testing -->
 
-## Stage III — The Nullwarden Convergence (not implemented)
+## Stage III — The Nullwarden Convergence (opening implemented; runtime unverified)
+
+The authorized [first-offensive slice](phases/stage-iii-opening-implementation.md) is implemented and adds `scripts/test_stage_iii.cjs` to the regression suite. Its source/guard checks are static. The full-stage matrix below remains future runtime acceptance; the [new static transcript](research/stage-iii-opening-static-checks-2026-11-08.txt) does not replace any in-game case.
 
 **Design acceptance only.** Use the full [Stage-III acceptance matrix](phases/stage-iii-acceptance.md) and [engine contract](phases/stage-iii-engine-contract.md); no Stage-III results exist yet. This section changes the earlier blanket cross-stage assertion that permanently opted-out empires receive no later EPOCH objects: **a universal physical galactic crisis is a deliberate exception**, while personal storyline, early preparation and personal ascension stay declined.
 

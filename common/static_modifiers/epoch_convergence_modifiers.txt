@@ -1,0 +1,62 @@
+epoch_iii_pressure_prepared = {
+ icon = "gfx/interface/icons/planet_modifiers/pm_hazardous_weather.dds"
+ planet_stability_add = -2
+ planet_jobs_produces_mult = -0.03
+}
+epoch_iii_pressure_experienced = {
+ icon = "gfx/interface/icons/planet_modifiers/pm_hazardous_weather.dds"
+ planet_stability_add = -4
+ planet_jobs_produces_mult = -0.07
+}
+epoch_iii_pressure_unprepared = {
+ icon = "gfx/interface/icons/planet_modifiers/pm_irradiated.dds"
+ planet_stability_add = -8
+ planet_jobs_produces_mult = -0.12
+}
+epoch_iii_pressure_buffered = {
+ icon = "gfx/interface/icons/planet_modifiers/pm_natural_beauty.dds"
+ planet_stability_add = -1
+ planet_jobs_produces_mult = -0.01
+}
+epoch_iii_mobile_disruption = {
+ ships_upkeep_mult = 0.15
+}
+epoch_iii_mobile_disruption_experienced = {
+ ships_upkeep_mult = 0.08
+}
+epoch_iii_mobile_disruption_prepared = {
+ ships_upkeep_mult = 0.03
+}
+epoch_iii_counterharmonics = {
+ damage_vs_country_type_epoch_convergence_mult = 0.10
+}
+
+epoch_iii_emergency = { starbase_shipyard_build_speed_mult = 0.20 }
+epoch_iii_disrupted_network = { ship_weapon_damage = -0.20 ship_shield_mult = -0.20 }
+epoch_iii_scar_pressure = { planet_jobs_produces_mult = -0.10 planet_stability_add = -5 }
+epoch_iii_scar_shielded = { planet_jobs_produces_mult = -0.03 planet_stability_add = -2 }
+epoch_iii_veterans = { ship_fire_rate_mult = 0.05 }
+
+epoch_iii_decoding = { all_technology_research_speed = 0.10 }
+
+epoch_iii_command_pressure = { ship_fire_rate_mult = 0.15 ship_speed_mult = 0.15 }
+
+epoch_iii_interdiction_field = { ship_shield_mult = 0.20 }
+
+epoch_iii_defense_light = { planet_jobs_produces_mult = 0.02 planet_stability_add = 1 }
+epoch_iii_defense_medium = { planet_jobs_produces_mult = 0.03 planet_stability_add = 2 }
+epoch_iii_defense_heavy = { planet_jobs_produces_mult = 0.05 planet_stability_add = 3 }
+epoch_iii_studied_network = { ship_weapon_damage = -0.10 }
+
+# Bounded tiers: early normal, late normal, late high difficulty. Galaxy size
+# already changes front count; crisis-strength >=2 already changes raid size.
+# Only damage changes: approximately +12% effective weapon damage relative to
+# each previous tier (also 12-15% with wreck debuffs). No second durability boost.
+epoch_iii_force_base = { ship_weapon_damage = 0.29 ship_hull_mult = 0.20 }
+epoch_iii_force_late = { ship_weapon_damage = 0.40 ship_hull_mult = 0.35 }
+epoch_iii_force_hard = { ship_weapon_damage = 0.51 ship_hull_mult = 0.50 }
+epoch_iii_bastion_hull = { ship_hull_mult = 0.75 ship_armor_mult = 0.35 }
+epoch_iii_contamination_rising = { planet_jobs_produces_mult = -0.03 planet_stability_add = -2 }
+epoch_iii_contamination_severe = { planet_jobs_produces_mult = -0.06 planet_stability_add = -4 }
+epoch_iii_containment = { planet_jobs_produces_mult = -0.02 }
+epoch_iii_sample_insight = { country_physics_tech_research_speed = 0.05 }

@@ -1,0 +1,81 @@
+{
+  "date": "2026-11-09",
+  "target": "Stellaris 4.5.3 (4e91)",
+  "baseline": "2c95edfc781cce3e76e6eb73f8dfd6dd069af63e",
+  "evidence": "Installed source and read-only prior-player-save/log inspection; no new runtime scene observed",
+  "installedSources": [
+    {
+      "path": "launcher-settings.json",
+      "sha256": "65f9b547c0d5194f885ec015ff46edba941d45e78706b5a92efb03d079fa07e9"
+    },
+    {
+      "path": "common/ship_sizes/10_ai_ships.txt",
+      "sha256": "a551784e5442773b6a089f90c422ad40a7aba19e5d7e053b1cc77d08c39458e4"
+    },
+    {
+      "path": "common/ship_sizes/14_graygoo_ships.txt",
+      "sha256": "79b220a0a4043ecbc962ef54a4287027e5bf79312320a6165f8a71ddf83e892f"
+    },
+    {
+      "path": "gfx/models/ships/ai_01/_ai_01_ships_entities.asset",
+      "sha256": "9e9d5c3330955c9db50acf71e1d4879aa86a960a8f1b096e5758252a81ea5155"
+    },
+    {
+      "path": "events/gray_goo_events.txt",
+      "sha256": "ba3ad4cc48bc7cedf836207a6470f3513433ea501287bfb9ae805c51b795a25e"
+    },
+    {
+      "path": "events/crisis_events_1.txt",
+      "sha256": "9d411e67a74162bab8107aa527030cec519c2d52275e11bca97b3c3cbfd62e01"
+    },
+    {
+      "path": "events/caravaneer_events.txt",
+      "sha256": "2d14f409322d493271577c7bc2a7c3fd679f7022cc1a9b96b16729cf52d74c8d"
+    },
+    {
+      "path": "common/event_chains/00_event_chains.txt",
+      "sha256": "2bbac13973747e3e56fdb4176befd36790f533d72315d8762b25540ed60a0474"
+    },
+    {
+      "path": "common/intel_categories/04_intel_military.txt",
+      "sha256": "c2f8e07555b55e0343e18d26ff7ea0e8324dfc64be9ec18a54ba48f91cae1d6d"
+    },
+    {
+      "path": "interface/situation_log.gfx",
+      "sha256": "082abe099d151be69cfe103a27bf8275434f5e0d065f0de0464caf11442f25a5"
+    }
+  ],
+  "generatedDocumentation": [
+    {
+      "path": "effects.log",
+      "sha256": "b8b0caabe570428a431801d77dcbe50bdc5469dcde6e6c95d5a09affaa072de4"
+    },
+    {
+      "path": "triggers.log",
+      "sha256": "cc31fd8c44e394ff5eb5952a68a31a420f36099ad4bc677944a1f8bc3e3cdbac"
+    },
+    {
+      "path": "scopes.log",
+      "sha256": "ef84fab8ef3ed1bcbbeef51589bb696524faead22f5c931b4ac34bbb57b63f53"
+    },
+    {
+      "path": "modifiers.log",
+      "sha256": "4da3323ac935f44a5c602304d20c21267193039d5eaae407d7401398e51f0354"
+    }
+  ],
+  "priorPlayerSave": {
+    "name": "autosave_2271.01.01.sav",
+    "sha256": "7d65527166eda50dc08c26a119e01b372c86fd7738595d6849150bcec85d98cc",
+    "observed": "Military-intel contact: Interdiction fleet, origin 132, power 3251.53906, one large and two small AI military stations; already-destroyed anchor flags"
+  },
+  "priorPlayerLog": {
+    "name": "error.log",
+    "sha256": "fa2b75c4a116c96923abc2cb70fbff8b0403ee26edf95c19912c8485470dc379",
+    "observed": "28 EPOCH-related scope/target diagnostic header lines among 34 EPOCH-related header lines; not a fresh log"
+  },
+  "runtimeAttempt": {
+    "tool": "Computer Use sky.launch_app",
+    "result": "Computer Use app approval timed out",
+    "newRuntimePass": false
+  }
+}

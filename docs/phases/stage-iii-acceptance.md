@@ -1,6 +1,9 @@
 # Stage III – Acceptance Matrix and Test Checkpoints
 
-**Status: binding acceptance requirements; no Stage-III gameplay implementation or passing run exists yet.** Target Stellaris 4.5.3. Use exact mod SHA, build, galaxy settings, crisis multiplier, chosen Mid-Game Start Year, origin/empire class, seed, enabled mods, save checkpoints, fresh error/game logs and screenshots for UI. A passed unit test is **not** a passed native run.
+> **Current contract, second playtest (2026-11-09):** The user tested `2c95edf` and authorized the connected fixes in [second-playtest implementation](stage-iii-second-playtest.md). Required victory: every registered anchor and the unique command ship destroyed in combat; surviving minor formations withdraw afterward and never gate victory. Five globally synchronized chapters remain. Science/diplomacy cannot replace military objectives. Earlier residual-fleet hunt and opening-only approval gates are superseded. New changes have static regression evidence; new native display, retreat and MP results remain unverified.
+
+
+**Status: binding acceptance requirements; full campaign implemented statically, new connected run pending.** Target Stellaris 4.5.3. Use exact mod SHA, build, galaxy settings, crisis multiplier, chosen Mid-Game Start Year, origin/empire class, seed, enabled mods, save checkpoints, fresh error/game logs and screenshots for UI. A passed unit test is **not** a passed native run.
 
 [ADR-002 I01–I07](../architecture/adr-002-stage-iii-integration.md) resolves integration edge cases and is part of every test expectation. [AP0–AP11](stage-iii-implementation-plan.md) and the [engine contract](stage-iii-engine-contract.md) define gates. All T/E/F/R/N/X cases below are **planned, not executed for Stage III**.
 
@@ -37,9 +40,9 @@
 
 - **R01**: Interdiction, scar/hazard and signal relay fronts have distinct effects on real systems or planets and valid targets. Small galaxy has safe reduced physical topology without skipping required functional objectives.
 - **R02**: Stage-II preparation changes a real tactical condition, but does not instantly clear front or crisis. Untested countries have generic after-M defense path.
-- **R03**: **Military victory:** all active anchor functions genuinely disabled and unique command formation genuinely beaten, then one global resolution.
-- **R04**: **Scientific interruption:** valid military/strategic access to two distinct functions, real science at at least two physical locations and a final node operation disabling every remaining function; only then actual command-network deactivation/withdrawal. A button with energy payment alone never qualifies.
-- **R05**: **Coalition containment:** at least two independent empires' proven physical contributions satisfy the same military/scientific function validator without gifting another empire a personal Stage-II history or reward.
+- **R03**: **Military victory:** all registered defended nodes genuinely destroyed in combat and unique command formation genuinely beaten, then one global resolution.
+- **R04**: **Science-supported military victory:** projects require a scientist-led science ship at a physically secured wreck site after native node destruction. One distinct study restricts all surviving sources to four sorties; two restrict weapons/shields by 20%. Every registered node, the unique command ship and all remaining formations still require real combat destruction. Completing every project without these battle records must never win.
+- **R05**: **Joint military victory:** at least two ordinary empires earn independent native combat contributions and share the exact R03/R04 destruction validator. No allied damage percentage or personal Stage-II history is fabricated. Solo victory remains possible.
 - **R06**: Inaccessible/destroyed sites, missing scientists, fallen fleets, landlocked empires and lost owners have bounded owner-safe recovery, no automatic success.
 - **R07**: After global end: no new waves, anchors retired once, existing planet scars remain, individual credits/losses are persistent, no global replay on save/load.
 

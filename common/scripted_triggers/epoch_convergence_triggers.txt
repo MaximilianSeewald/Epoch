@@ -1,0 +1,178 @@
+# Default includes subjects, genocidals, Hive/Machine and mobile player origins.
+epoch_iii_public_empire = { is_country_type = default }
+
+epoch_iii_affected_world = {
+ OR = { has_planet_flag = epoch_iii_exposed_v1 has_planet_flag = epoch_iii_scar_exposed }
+}
+
+epoch_iii_old_world_unclaimed = {
+ owner = {
+  NOR = {
+   has_country_flag = epoch_core_campaign_active
+   has_country_flag = epoch_res_active
+   has_country_flag = epoch_ii_active
+   exists = event_target:epoch_core_world@this
+   exists = event_target:epoch_core_structure_site@this
+   exists = event_target:epoch_ii_target_planet@this
+  }
+ }
+}
+
+epoch_iii_preparation_eligible = {
+ epoch_iii_public_empire = yes
+ has_country_flag = epoch_res_schema_v1
+ has_country_flag = epoch_res_complete
+ has_country_flag = epoch_res_final_choice_v1
+ has_country_flag = epoch_res_stage_iii_ready
+ NOR = {
+  has_country_flag = epoch_core_campaign_opted_out
+  has_country_flag = epoch_res_final_choice_pending
+  has_country_flag = epoch_res_legacy_incompatible
+ }
+}
+
+# System scope. Never seize an asset or ambush a capital. A direct hyperlane
+# into an ordinary non-capital system provides an accessible first front.
+epoch_iii_safe_front = {
+ NOT = { exists = owner }
+ NOT = { exists = starbase }
+ NOT = { any_fleet_in_system = { always = yes } }
+ NOT = { any_system_planet = { is_colony = yes } }
+ any_neighbor_system = {
+  exists = owner
+  owner = { epoch_iii_public_empire = yes }
+  NOT = { is_capital_system = yes }
+ }
+}
+
+# Saturated-map fallback: an uninhabited ordinary frontier outpost, never a
+# fortified base or capital. Existing assets survive creation unchanged and
+# can only be lost in the resulting native battle. No ownership transfer.
+epoch_iii_frontier_outpost = {
+ exists = owner
+ owner = { epoch_iii_public_empire = yes }
+ NOT = { is_capital_system = yes }
+ NOT = { any_system_planet = { is_colony = yes } }
+ exists = starbase
+ starbase = { has_starbase_size = starbase_outpost }
+ NOT = { any_fleet_in_system = { fleet_power > 500 } }
+ any_neighbor_system = {
+  exists = owner
+  owner = { epoch_iii_public_empire = yes }
+  NOT = { is_capital_system = yes }
+ }
+ any_neighbor_system = {
+  OR = { NOT = { exists = owner } owner = { NOT = { is_same_value = prevprev.owner } } }
+ }
+}
+
+# Physical Planet/Colony scope. Conservative isolation: every world belonging
+# to an active campaign or an owner with a canonical old objective uses overlay.
+# This includes old targets without a saved completion flag, and all three
+# feature families. No old setter or carrier flag is used by this stage.
+epoch_iii_clean_carrier = {
+ owner = {
+  NOR = {
+   has_country_flag = epoch_core_campaign_active
+   has_country_flag = epoch_res_active
+   has_country_flag = epoch_ii_active
+   exists = event_target:epoch_core_world@this
+   exists = event_target:epoch_core_structure_site@this
+   exists = event_target:epoch_ii_target_planet@this
+  }
+ }
+ NOR = {
+  has_deposit = d_epoch_resonance_contamination_active
+  has_deposit = d_epoch_resonance_contamination_worsened
+  has_deposit = d_epoch_resonance_contamination_studied
+  has_deposit = d_epoch_resonance_contamination_contained
+  has_deposit = d_epoch_resonance_contamination_latent
+  has_deposit = d_epoch_resonance_contamination_resonant
+  has_deposit = d_epoch_resonance_contamination_unstable
+  has_deposit = d_epoch_resonance_contamination_controlled
+  has_deposit = d_epoch_resonance_scar
+  has_deposit = d_epoch_resonance_scar_altered
+  has_deposit = d_epoch_resonance_scar_healed
+  has_deposit = d_epoch_silent_structure_unsecured
+  has_deposit = d_epoch_silent_structure_investigated
+  has_deposit = d_epoch_silent_structure_secured
+  has_deposit = d_epoch_silent_structure_destroyed
+ }
+}
+
+# Colony scope; never use an older feature chain as a transmission source.
+epoch_iii_spread_source = {
+ epoch_iii_affected_world = yes
+ epoch_iii_old_world_unclaimed = yes
+ NOR = {
+  has_planet_flag = epoch_iii_spread_received
+  has_planet_flag = epoch_iii_contained
+  has_planet_flag = epoch_iii_buffered
+  has_planet_flag = epoch_iii_treated
+ }
+ OR = {
+  has_modifier = epoch_iii_pressure_unprepared
+  has_modifier = epoch_iii_pressure_experienced
+  has_modifier = epoch_iii_pressure_prepared
+  has_modifier = epoch_iii_scar_pressure
+  has_modifier = epoch_iii_scar_shielded
+ }
+}
+
+epoch_iii_spread_target = {
+ epoch_iii_clean_carrier = yes
+ NOR = {
+  has_planet_flag = epoch_core_contamination_active_state
+  has_planet_flag = epoch_core_contamination_worsened_state
+  has_planet_flag = epoch_core_contamination_studied_state
+  has_planet_flag = epoch_core_contamination_contained_state
+  has_planet_flag = epoch_core_resonance_scar
+  has_planet_flag = epoch_core_resonance_scar_altered
+  has_planet_flag = epoch_core_resonance_scar_healed
+  has_planet_flag = epoch_ii_latent_resonance
+  has_planet_flag = epoch_ii_active_resonance
+  has_planet_flag = epoch_ii_unstable_resonance
+  has_planet_flag = epoch_ii_controlled_resonance
+  has_planet_flag = epoch_res_infected
+  epoch_iii_affected_world = yes
+  has_planet_flag = epoch_iii_spread_received
+  has_planet_flag = epoch_iii_contained
+  has_planet_flag = epoch_iii_buffered
+  has_planet_flag = epoch_iii_treated
+ }
+}
+
+# Lifetime imported-world caps of 1/2/3 at <8/8/20 colonies. No refunds on
+# treatment, loss or source destruction; annual attempts are separately finite.
+epoch_iii_spread_capacity = {
+ OR = {
+  check_variable = { which = epoch_iii_spread_worlds value < 1 }
+  AND = { num_owned_planets >= 8 check_variable = { which = epoch_iii_spread_worlds value < 2 } }
+  AND = { num_owned_planets >= 20 check_variable = { which = epoch_iii_spread_worlds value < 3 } }
+ }
+}
+
+epoch_iii_all_nodes_destroyed = {
+ has_global_flag = epoch_iii_front_1_destroyed has_global_flag = epoch_iii_front_2_destroyed
+ OR = { NOT = { has_global_flag = epoch_iii_front_3_registered } has_global_flag = epoch_iii_front_3_destroyed }
+ OR = { NOT = { has_global_flag = epoch_iii_front_4_registered } has_global_flag = epoch_iii_front_4_destroyed }
+}
+
+# Spread fronts across one navigable hyperlane region; retain safe-asset rules.
+epoch_iii_spaced_front = {
+ NOT = { has_star_flag = epoch_iii_front_site }
+ OR = { epoch_iii_safe_front = yes epoch_iii_frontier_outpost = yes }
+ distance = { source = event_target:epoch_iii_front_1 type = hyperlane min_jumps = 4 max_jumps = 80 }
+ OR = { NOT = { exists = event_target:epoch_iii_front_2 } distance = { source = event_target:epoch_iii_front_2 type = hyperlane min_jumps = 3 max_jumps = 80 } }
+ OR = { NOT = { exists = event_target:epoch_iii_front_3 } distance = { source = event_target:epoch_iii_front_3 type = hyperlane min_jumps = 3 max_jumps = 80 } }
+}
+
+epoch_iii_scar_capacity = {
+ OR = {
+  check_variable = { which = epoch_iii_scar_worlds value < 1 }
+  AND = { num_owned_planets >= 8 check_variable = { which = epoch_iii_scar_worlds value < 2 } }
+  AND = { num_owned_planets >= 12 check_variable = { which = epoch_iii_scar_worlds value < 3 } }
+  AND = { num_owned_planets >= 20 check_variable = { which = epoch_iii_scar_worlds value < 5 } }
+  AND = { num_owned_planets >= 40 check_variable = { which = epoch_iii_scar_worlds value < 10 } }
+ }
+}

@@ -1,5 +1,8 @@
 # EPOCH – The Echo Beyond
 
+> **Current contract, second playtest (2026-11-09):** The user tested `2c95edf` and authorized the connected fixes in [second-playtest implementation](phases/stage-iii-second-playtest.md). Required victory: every registered anchor and the unique command ship destroyed in combat; surviving minor formations withdraw afterward and never gate victory. Five globally synchronized chapters remain. Science/diplomacy cannot replace military objectives. Earlier residual-fleet hunt and opening-only approval gates are superseded. New changes have static regression evidence; new native display, retreat and MP results remain unverified.
+
+
 **Status: Current narrative direction.** Campaign shape is the binding four-stage architecture. This bible describes narrative intent, not implemented or verified gameplay mechanics.
 
 ## Core premise
