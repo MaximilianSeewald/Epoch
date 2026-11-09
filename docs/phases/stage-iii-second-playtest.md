@@ -1,5 +1,7 @@
 # Stage III: Änderungen nach dem zweiten Ingame-Test
 
+Historischer Stand des zweiten Tests. Der erfolgreiche dritte Spielertest und die aktuellen Abschlusskorrekturen stehen im [Folgebericht](stage-iii-third-playtest.md). Seine Abnahmeentscheidung ersetzt die hier noch offenen vollständigen Ingame-Testanforderungen.
+
 Stand: 2026-11-09. Branch `feature/stage-iii-convergence`, PR #15, Ausgangspunkt `2c95edfc781cce3e76e6eb73f8dfd6dd069af63e`. Ziel bleibt Stellaris 4.5.3 (4e91). Dieser Bericht ersetzt ältere Anforderungen an eine vollständige Restflottenjagd sowie frühere Beschränkungen auf den Krisenauftakt. Stage I/II behalten ihre ausführbaren Definitionen unverändert; ihre Lokalisierung erhält ausschließlich kompatible Interpunktion.
 
 ## Konkrete Spielerbefunde

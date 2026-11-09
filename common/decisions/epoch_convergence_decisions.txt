@@ -17,7 +17,9 @@ decision_epoch_iii_buffer = {
  resources = { category = decisions cost = { energy = 300 minerals = 200 } }
  potential = { OR = { has_planet_flag = epoch_iii_exposed_v1 has_planet_flag = epoch_iii_scar_exposed } NOT = { has_planet_flag = epoch_iii_buffered } }
  allow = {
-  OR = { NOT = { has_global_flag = epoch_iii_active } owner = { OR = { has_country_flag = epoch_iii_prepared has_country_flag = epoch_iii_counterharmonics } } }
+  custom_tooltip = { fail_text = epoch_iii.buffer.requirement
+   OR = { NOT = { has_global_flag = epoch_iii_active } owner = { OR = { has_country_flag = epoch_iii_prepared has_country_flag = epoch_iii_counterharmonics } } }
+  }
   OR = { has_modifier = epoch_iii_pressure_unprepared has_modifier = epoch_iii_pressure_experienced has_modifier = epoch_iii_pressure_prepared has_modifier = epoch_iii_scar_pressure has_modifier = epoch_iii_scar_shielded }
  }
  effect = {
@@ -28,7 +30,6 @@ decision_epoch_iii_buffer = {
    remove_modifier = epoch_iii_scar_pressure
    remove_modifier = epoch_iii_scar_shielded
    add_modifier = { modifier = epoch_iii_pressure_buffered days = -1 }
-   custom_tooltip = epoch_iii.buffer.tt
   }
   hidden_effect = { if = { limit = { OR = { has_planet_flag = epoch_iii_exposed_v1 has_planet_flag = epoch_iii_scar_exposed } NOT = { has_planet_flag = epoch_iii_buffered } OR = { NOT = { has_global_flag = epoch_iii_active } owner = { OR = { has_country_flag = epoch_iii_prepared has_country_flag = epoch_iii_counterharmonics } } } }
    epoch_iii_buffer_world = yes
@@ -45,10 +46,11 @@ decision_epoch_iii_contain = {
  resources = { category = decisions cost = { energy = 150 minerals = 100 } }
  potential = { epoch_iii_affected_world = yes NOT = { has_planet_flag = epoch_iii_contained } NOT = { has_planet_flag = epoch_iii_treated } }
  effect = {
-  if = { limit = { epoch_iii_affected_world = yes NOT = { has_planet_flag = epoch_iii_treated } }
+  tooltip = { add_modifier = { modifier = epoch_iii_containment days = -1 } custom_tooltip = epoch_iii.contain.tt }
+  hidden_effect = { if = { limit = { epoch_iii_affected_world = yes NOT = { has_planet_flag = epoch_iii_treated } }
    set_planet_flag = epoch_iii_contained
    add_modifier = { modifier = epoch_iii_containment days = -1 }
-  }
+  } }
  }
  ai_weight = { weight = 80 }
 }
@@ -60,7 +62,14 @@ decision_epoch_iii_investigate = {
  resources = { category = decisions cost = { energy = 250 } }
  potential = { has_global_flag = epoch_iii_active epoch_iii_affected_world = yes NOT = { has_planet_flag = epoch_iii_sampled } NOT = { has_planet_flag = epoch_iii_treated } }
  effect = {
-  custom_tooltip = epoch_iii.sample.tt
+  tooltip = {
+   owner = { add_resource = { physics_research = 400 } }
+   if = { limit = { has_planet_flag = epoch_iii_contained } owner = { add_modifier = { modifier = epoch_iii_sample_insight days = 720 } } }
+   else = { random_list = {
+    70 = { owner = { add_modifier = { modifier = epoch_iii_sample_insight days = 720 } } }
+    30 = { add_planet_devastation = 10 add_modifier = { modifier = epoch_iii_contamination_severe days = -1 } }
+   } }
+  }
   hidden_effect = { if = { limit = { has_global_flag = epoch_iii_active epoch_iii_affected_world = yes NOT = { has_planet_flag = epoch_iii_sampled } NOT = { has_planet_flag = epoch_iii_treated } }
    set_planet_flag = epoch_iii_sampled
    owner = { add_resource = { physics_research = 400 } }
@@ -83,7 +92,18 @@ decision_epoch_iii_treat = {
  resources = { category = decisions cost = { energy = 400 minerals = 300 alloys = 100 } }
  potential = { epoch_iii_affected_world = yes NOT = { has_planet_flag = epoch_iii_treated } }
  effect = {
-  custom_tooltip = epoch_iii.treat.tt
+  tooltip = {
+   remove_modifier = epoch_iii_contamination_rising
+   remove_modifier = epoch_iii_contamination_severe
+   remove_modifier = epoch_iii_containment
+   remove_modifier = epoch_iii_pressure_unprepared
+   remove_modifier = epoch_iii_pressure_experienced
+   remove_modifier = epoch_iii_pressure_prepared
+   remove_modifier = epoch_iii_scar_pressure
+   remove_modifier = epoch_iii_scar_shielded
+   add_modifier = { modifier = epoch_iii_pressure_buffered days = -1 }
+   custom_tooltip = epoch_iii.treat.tt
+  }
   hidden_effect = { if = { limit = { epoch_iii_affected_world = yes NOT = { has_planet_flag = epoch_iii_treated } }
    set_planet_flag = epoch_iii_treated
    set_planet_flag = epoch_iii_contained

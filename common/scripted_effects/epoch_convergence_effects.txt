@@ -621,7 +621,11 @@ epoch_iii_update_chapter = {
   }
    set_variable = { which = epoch_iii_chapter value = 5 }
    set_global_flag = epoch_iii_chapter_5
-   every_country = { limit = { has_country_flag = epoch_iii_enrolled } country_event = { id = epoch_iii.52 } }
+   # Keep chapter V in the shared display; a simultaneous final kill gets
+   # only the victory report from the caller's immediate resolution check.
+   if = { limit = { NOT = { has_global_flag = epoch_iii_command_destroyed } }
+    every_country = { limit = { has_country_flag = epoch_iii_enrolled } country_event = { id = epoch_iii.52 } }
+   }
   }
   every_country = { limit = { has_country_flag = epoch_iii_enrolled epoch_iii_public_empire = yes } epoch_iii_sync_display = yes }
   if = { limit = { has_global_flag = epoch_iii_chapter_5 }
@@ -816,6 +820,47 @@ epoch_iii_contamination_tick = {
     add_modifier = { modifier = epoch_iii_contamination_severe days = -1 }
    }
    else = { add_modifier = { modifier = epoch_iii_contamination_rising days = -1 } }
+  }
+ }
+}
+
+# Country scope. Three annual opportunities total, one 25% roll per empire,
+# independent of source count. Persist counters before rolling for save/load.
+# Imported worlds cannot transmit, including after conquest.
+epoch_iii_spread_tick = {
+ if = { limit = { has_global_flag = epoch_iii_active NOT = { has_global_flag = epoch_iii_scar_disabled }
+  has_global_flag = epoch_iii_front_2_registered exists = event_target:epoch_iii_anchor_2
+  event_target:epoch_iii_anchor_2 = { owner = { is_country_type = epoch_convergence has_country_flag = epoch_iii_identity_v1 } }
+  check_variable = { which = epoch_iii_spread_attempts value < 3 }
+ }
+  # The coordinator also runs after battles. A native timed flag, rather
+  # than pulse counting, prevents several battles from shortening the year.
+  if = { limit = { NOT = { has_country_flag = epoch_iii_spread_started } }
+   set_country_flag = epoch_iii_spread_started
+   set_timed_country_flag = { flag = epoch_iii_spread_cooldown days = 360 }
+  }
+  else_if = { limit = { NOT = { has_country_flag = epoch_iii_spread_cooldown } }
+   set_timed_country_flag = { flag = epoch_iii_spread_cooldown days = 360 }
+   change_variable = { which = epoch_iii_spread_attempts value = 1 }
+   if = { limit = { epoch_iii_spread_capacity = yes
+    any_owned_planet = { is_colony = yes exists = planet colony = { epoch_iii_spread_source = yes } }
+   }
+    random_list = {
+     75 = { }
+     25 = {
+      random_owned_planet = { limit = { is_colony = yes exists = planet colony = { epoch_iii_spread_target = yes } }
+       colony = {
+        set_planet_flag = epoch_iii_spread_received
+        set_planet_flag = epoch_iii_scar_exposed
+        set_planet_flag = epoch_iii_feature_added
+        owner = { change_variable = { which = epoch_iii_spread_worlds value = 1 } }
+        add_deposit = d_epoch_resonance_contamination_active
+        add_modifier = { modifier = epoch_iii_scar_pressure days = -1 }
+       }
+      }
+     }
+    }
+   }
   }
  }
 }

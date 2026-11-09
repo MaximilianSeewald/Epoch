@@ -81,8 +81,12 @@ function test(b,c) {
    const [valueKey,value] = v.find(([key])=>key.startsWith('value'));
    return compare(c.obj.resources[get(v,'resource')]||0,split(valueKey)[1],+value);
   }
-  if(['any_owned_fleet','any_fleet_in_system','any_system_planet','any_neighbor_system'].includes(k)) {
-   const list=c.obj[k==='any_neighbor_system'?'neighbors':k==='any_system_planet'?'planets':'fleets'];
+  if(k==='count_country') {
+   const [countKey,n]=v.find(([key])=>key.startsWith('count'));
+   return compare(countries.filter(o=>test(get(v,'limit'),scope(o,c))).length,split(countKey)[1],+n);
+  }
+  if(['any_owned_fleet','any_owned_planet','any_fleet_in_system','any_system_planet','any_neighbor_system'].includes(k)) {
+   const list=c.obj[k==='any_neighbor_system'?'neighbors':['any_system_planet','any_owned_planet'].includes(k)?'planets':'fleets'];
    return list.some(o=>test(v,scope(o,c)));
   }
   if(k==='count_owned_fleet') {
@@ -296,7 +300,8 @@ for(const lang of ['english','german']) {
    for(const [stage]of get(def,'stages'))localized(key+'_'+stage);
    for(const [field,approach]of def)if(field==='approach') {
     const name=get(approach,'name');localized(name);localized(name+'_desc');
-    check(get(approach,'on_select')?.length>0,`${key}/${name}: useful selection effect or tooltip`);
+    if(['epoch_iii_listen','epoch_iii_watch'].includes(name))check(!get(approach,'on_select'),`${name}: no redundant tooltip for observation`);
+    else check(get(approach,'on_select')?.length>0,`${key}/${name}: useful selection effect`);
    }
   }
  }
@@ -324,7 +329,7 @@ walk(normalized('common/scripted_effects/epoch_convergence_effects.txt'),(k,v)=>
 // Execute the parsed coordinator and absolute projection against several empire
 // objects. This verifies script semantics within this explicit static subset,
 // not native hooks, native scheduling, save serialization or multiplayer.
-let countries=[], notices=[], commands=0;
+let countries=[], notices=[], commands=0, rollBranch='25';
 function targetKey(v,c){const [name,key]=v.split('@');return name+(key?'@'+resolve(key,c)?.id:'');}
 function run(b,c) {
  let branch=false;
@@ -339,6 +344,7 @@ function run(b,c) {
   if(k==='set_variable'){c.obj.vars[get(v,'which')]=+get(v,'value');continue;}
   if(k==='change_variable'){const n=get(v,'which');c.obj.vars[n]=(c.obj.vars[n]||0)+ +get(v,'value');continue;}
   if(k==='set_global_flag'){globalFlags.add(v);continue;}
+  if(k==='remove_global_flag'){globalFlags.delete(v);continue;}
   if(k==='set_country_flag'||k==='set_fleet_flag'||k==='set_ship_flag'||k==='set_planet_flag'){c.obj.flags.add(v);continue;}
   if(k==='remove_country_flag'||k==='remove_fleet_flag'){c.obj.flags.delete(v);continue;}
   if(k==='set_timed_fleet_flag'){c.obj.flags.add(get(v,'flag'));continue;}
@@ -355,6 +361,11 @@ function run(b,c) {
 
   if(k==='set_timed_country_flag'){c.obj.flags.add(get(v,'flag'));continue;}
   if(k==='add_modifier'){c.obj.modifiers.add(get(v,'modifier'));continue;}
+  if(k==='add_deposit'){c.obj.deposits.add(v);continue;}
+  if(k==='random_list'){run(get(v,rollBranch),c);continue;}
+  if(k==='abort_special_project'){c.obj.projects?.delete(get(v,'type'));continue;}
+  if(k==='fleet_event'){(c.obj.scheduled??=[]).push(v);continue;}
+  if(k==='destroy_situation'){const a=c.obj.owner.situations;a.splice(a.indexOf(c.obj),1);continue;}
   if(k==='remove_modifier'){c.obj.modifiers.delete(v);continue;}
   if(k==='set_situation_progress'){c.obj.progress=+v;continue;}
   if(k==='start_situation'){(c.obj.situations??=[]).push({...make(get(v,'type')),progress:0,target:resolve(get(v,'target'),c)});continue;}
@@ -366,9 +377,9 @@ function run(b,c) {
   if(k==='set_visited'||k==='set_surveyed')continue; // no sensor simulation
   if(k==='set_aggro_range_measure_from'||k==='set_aggro_range'){c.obj[k]=v;continue;}
   if(k==='epoch_iii_spawn_command'){commands++;globalFlags.add('epoch_iii_command_created');continue;}
-  if(k==='every_country'||k==='every_situation'||k==='every_owned_fleet'||k==='every_owned_planet'||k==='random_owned_fleet') {
-   const list=k==='every_country'?countries:k==='every_situation'?c.obj.situations||[]:k==='every_owned_planet'?c.obj.planets:c.obj.fleets;
-   for(const o of list){const sub=scope(o,c);if(!get(v,'limit')||test(get(v,'limit'),sub)){run(v.filter(([x])=>x!=='limit'),sub);if(k==='random_owned_fleet')break;}}
+  if(k==='every_country'||k==='every_situation'||k==='every_owned_fleet'||k==='every_owned_planet'||k==='random_owned_fleet'||k==='random_owned_planet') {
+   const list=k==='every_country'?countries:k==='every_situation'?[...(c.obj.situations||[])]:['every_owned_planet','random_owned_planet'].includes(k)?c.obj.planets:c.obj.fleets;
+   for(const o of list){const sub=scope(o,c);if(!get(v,'limit')||test(get(v,'limit'),sub)){run(v.filter(([x])=>x!=='limit'),sub);if(k.startsWith('random_'))break;}}
    continue;
   }
   if(effects.has(k)){run(effects.get(k),c);continue;}
@@ -626,4 +637,140 @@ for(const lang of ['english','german'])for(const file of fs.readdirSync(path.joi
  if(lang==='german')check(/[äöüß]/.test(loc),file+': German letters retained');
  if(lang==='english')check(loc.includes("'"),file+': ordinary apostrophes retained');
 }
+// Final corrections after the successful third connected player test.
+// Actual parsed chapter/resolution scripts, including repeat/reload-style calls.
+for(const fronts of [2,3,4])for(const finalCommandKill of [false,true]) {
+ countries=[participant(),participant()];notices=[];
+ authority.vars={epoch_iii_chapter:4};authority.fleets=[];
+ targets={epoch_iii_country:authority};
+ globalFlags=flags('epoch_iii_active','epoch_iii_chapters_v2','epoch_iii_command_created','epoch_iii_command_engaged');
+ for(let i=1;i<=fronts;i++){globalFlags.add(`epoch_iii_front_${i}_registered`);globalFlags.add(`epoch_iii_front_${i}_destroyed`);}
+ if(finalCommandKill)globalFlags.add('epoch_iii_command_destroyed');
+ update();
+ check(authority.vars.epoch_iii_chapter===5&&displayed().every(n=>n===81),'Final military milestone still synchronizes chapter V');
+ check(notices.filter(([,id])=>id==='epoch_iii.52').length===(finalCommandKill?0:2),'Simultaneous victory suppresses only chapter-V narrative');
+ if(!finalCommandKill){
+  check(test(get(E(52),'trigger'),ctx(countries[0])),'Earlier chapter V can display its own event');
+  run(get(E(52),'immediate'),ctx(countries[0]));
+  check(!test(get(E(52),'trigger'),ctx(countries[0])),'Chapter-V presentation reserves a durable per-country guard');
+ }
+ globalFlags.add('epoch_iii_command_destroyed');
+ // Destroying the situation is native; attach the owner used by this evaluator.
+ for(const c of countries)for(const s of c.situations)s.owner=c;
+ run(resolution,ctx(authority));
+ check(globalFlags.has('epoch_iii_first_repulsed')&&!globalFlags.has('epoch_iii_active'),'Final kill resolves immediately');
+ check(notices.filter(([,id])=>id==='epoch_iii.12').length===2,'Exactly one victory report per participant');
+ check(!test(get(E(52),'trigger'),ctx(countries[1])),'Queued chapter-V report cannot appear after final kill');
+ for(let i=0;i<3;i++){update();run(resolution,ctx(authority));}
+ check(notices.filter(([,id])=>id==='epoch_iii.12').length===2,'Repeated parallel/reload-style callback cannot duplicate victory');
+}
+
+const spread=effects.get('epoch_iii_spread_tick');
+const spreadSetup=(n=20)=>{
+ const empire={...participant(),numColonies:n};
+ const add=()=>{const colony={...make(),owner:empire};empire.planets.push({...make(),owner:empire,planet:colony,colony});return colony;};
+ const source=add();source.flags.add('epoch_iii_exposed_v1');source.modifiers.add('epoch_iii_pressure_unprepared');
+ for(let i=0;i<9;i++)add();
+ globalFlags=flags('epoch_iii_active','epoch_iii_front_2_registered');
+ targets={epoch_iii_anchor_2:{...make(),owner:authority}};rollBranch='25';
+ run(spread,ctx(empire)); // reserve the first native 360-day interval
+ let months=0;
+ return {empire,source,tick:()=>{
+  if(++months%12===0)empire.flags.delete('epoch_iii_spread_cooldown'); // explicit native-expiry boundary
+  run(spread,ctx(empire));
+ }};
+};
+{
+ const {empire}=spreadSetup();
+ for(let battle=0;battle<1000;battle++)run(spread,ctx(empire));
+ check(!empire.vars.epoch_iii_spread_attempts&&!empire.vars.epoch_iii_spread_worlds,'Battle callbacks cannot accelerate the native annual cooldown');
+ const restored=structuredClone(empire);for(let pulse=0;pulse<100;pulse++)run(spread,ctx(restored));
+ check(restored.flags.has('epoch_iii_spread_cooldown')&&!restored.vars.epoch_iii_spread_attempts,'Reload-style restored cooldown does not reopen attempts');
+ check(JSON.stringify(spread).includes('"days","360"'),'Native cooldown is explicitly 360 days');
+}
+for(const [n,cap]of [[1,1],[7,1],[8,2],[19,2],[20,3],[40,3],[100,3]]) {
+ const {empire,tick}=spreadSetup(n);
+ for(let m=0;m<11;m++)tick();check(!empire.vars.epoch_iii_spread_attempts,'No transmission roll before twelve active months');
+ tick();check(empire.vars.epoch_iii_spread_worlds===1,'One annual opportunity infects at most one same-owner colony');
+ for(let m=0;m<1200;m++)tick();
+ check(empire.vars.epoch_iii_spread_attempts===3,'Three attempts total even over a century of monthly pulses');
+ check(empire.vars.epoch_iii_spread_worlds===cap,'Lifetime imported-world cap at '+n+' colonies');
+ check(empire.planets.filter(p=>p.colony.flags.has('epoch_iii_spread_received')).length===cap,'Physical infections match bounded country count');
+ for(const p of empire.planets.filter(p=>p.colony.flags.has('epoch_iii_spread_received'))){
+  check(p.colony.deposits.has('d_epoch_resonance_contamination_active'),'New exposure has a real planetary feature');
+  check(!test(triggers.get('epoch_iii_spread_source'),ctx(p.colony)),'Imported infection never becomes a source');
+ }
+}
+for(const blocker of ['epoch_iii_contained','epoch_iii_buffered','epoch_iii_treated','epoch_iii_spread_received']) {
+ const {empire,source,tick}=spreadSetup();source.flags.add(blocker);
+ for(let m=0;m<36;m++)tick();check(!empire.vars.epoch_iii_spread_worlds,blocker+' stops transmission');
+}
+for(const stop of ['anchor_destroyed','anchor_absent','anchor_foreign','crisis_over']) {
+ const {empire,tick}=spreadSetup();tick();
+ if(stop==='anchor_destroyed')globalFlags.add('epoch_iii_scar_disabled');
+ if(stop==='anchor_absent')delete targets.epoch_iii_anchor_2;
+ if(stop==='anchor_foreign')targets.epoch_iii_anchor_2.owner=make();
+ if(stop==='crisis_over')globalFlags.delete('epoch_iii_active');
+ for(let m=0;m<120;m++)tick();check(!empire.vars.epoch_iii_spread_attempts&&!empire.vars.epoch_iii_spread_worlds,stop+' stops new transmission');
+}
+{
+ const {empire,tick}=spreadSetup();rollBranch='75';for(let m=0;m<120;m++)tick();
+ check(empire.vars.epoch_iii_spread_attempts===3&&!empire.vars.epoch_iii_spread_worlds,'Failed rolls consume their finite opportunities');
+ const success=get(get(spread,'if'),'else_if');
+ check(JSON.stringify(success).includes('random_list')&&JSON.stringify(success).includes('"75"')&&JSON.stringify(success).includes('"25"'),'One 25% roll is explicit in the parsed script');
+}
+{
+ const {empire,source,tick}=spreadSetup();
+ for(const [deposit]of parsedByPath.get('common/deposits/epoch_phase_ii_features.txt')){
+  const candidate=empire.planets[1].colony;candidate.deposits=flags(deposit);
+  check(!test(triggers.get('epoch_iii_spread_target'),ctx(candidate)),'Every old active/completed deposit rejects infection: '+deposit);
+ }
+ const candidate=empire.planets[1].colony;candidate.deposits.clear();
+ for(const [,flag]of get(triggers.get('epoch_iii_spread_target'),'NOR').filter(([k])=>k==='has_planet_flag')){
+  candidate.flags=flags(flag);check(!test(triggers.get('epoch_iii_spread_target'),ctx(candidate)),'Legacy/protected flag rejects infection: '+flag);
+ }
+ candidate.flags.clear();
+ for(const active of ['epoch_core_campaign_active','epoch_res_active','epoch_ii_active']){
+  empire.flags.add(active);check(!test(triggers.get('epoch_iii_spread_target'),ctx(candidate)),'Active old campaign rejects infection: '+active);empire.flags.delete(active);
+ }
+ for(const target of ['epoch_core_world','epoch_core_structure_site','epoch_ii_target_planet']){
+  empire.id='spreadOwner';targets[target+'@spreadOwner']=candidate;
+  check(!test(triggers.get('epoch_iii_spread_target'),ctx(candidate)),'Canonical old objective rejects infection: '+target);delete targets[target+'@spreadOwner'];
+ }
+ for(let m=0;m<12;m++)tick();source.flags.add('epoch_iii_contained');
+ const count=empire.vars.epoch_iii_spread_worlds;for(let m=0;m<120;m++)tick();
+ check(count===1&&empire.vars.epoch_iii_spread_worlds===count,'Contained original plus imported colonies cannot form a chain');
+ check(empire.planets[1].colony.modifiers.has('epoch_iii_scar_pressure'),'Stopping transmission leaves existing damage');
+}
+check(!JSON.stringify(spread).includes('country_event')&&!JSON.stringify(spread).includes('while'),'Transmission adds neither mandatory events nor loops');
+check(JSON.stringify(E(2)).includes('epoch_iii_spread_tick'),'Existing monthly coordinator invokes finite spread');
+for(const id of [1,2]){
+ const species=[];walk(E(id),(k,v)=>{if(k==='create_species')species.push(v);});
+ check(species.length===1&&get(species[0],'class')==='ROBOT'&&get(species[0],'namelist')==='MACHINE1','Creation/recovery use explicit ROBOT namelist');
+ check(JSON.stringify(species[0]).includes('trait_machine_unit'),'Nullwarden machine identity retained');
+}
+check(/class = ROBOT\s+name = NAME_Surveillance_Bots\s+namelist = "MACHINE1"/.test(native('events/ancient_relics_arcsite_events_2.txt')),'Installed 4.5.3 explicitly uses ROBOT plus MACHINE1');
+check(fs.existsSync(path.join(vanilla,'common/name_lists/MACHINE1.txt')),'Machine namelist exists in installed Vanilla');
+check(!JSON.stringify(E(70)).includes('set_fleet_stance'),'End-of-crisis retirement never requests unsupported evasive stance');
+check(JSON.stringify(E(70)).indexOf('epoch_iii_cleanup')<JSON.stringify(E(70)).indexOf('clear_fleet_actions'),'Cleanup marking precedes withdrawal commands');
+const forceModifiers=new Map(normalized('common/static_modifiers/epoch_convergence_modifiers.txt'));
+for(const [tier,oldDamage,oldHull]of [['base',.15,.20],['late',.25,.35],['hard',.35,.50]]){
+ const b=forceModifiers.get('epoch_iii_force_'+tier);
+ for(const science of [0,-.1,-.2]){
+  const increase=(1+ +get(b,'ship_weapon_damage')+science)/(1+oldDamage+science)-1;
+  check(increase>=.10&&increase<=.15,'Actual weapon-damage increase stays within 10-15%: '+tier+'/'+science);
+ }
+ check(+get(b,'ship_hull_mult')===oldHull&&b.length===2,'No compounded durability/rate/size multiplier: '+tier);
+}
+for(const lang of ['english','german']){
+ const loc=new Map([...text(`localisation/${lang}/epoch_convergence_l_${lang}.yml`).matchAll(/^\s*([\w.]+):0 "(.*)"/gm)].map(m=>[m[1],m[2]]));
+ const ui=[...loc].filter(([k])=>/\.tt$|_goal$|_objectives$|_desc$|_DESC$|\.poi\..*desc$|monthly_change_tooltip$|\.front\./.test(k)&&!/^epoch_iii\.\d+\./.test(k));
+ for(const [k,v]of ui){
+  check(v.length<=200,'Concise Stage-III UI text: '+lang+'/'+k);
+  check(!/\b(?:later chapters?|future events?|second (?:distinct )?study|final engagement begins|spätere[nrs]? Kapitel|zukünftige[nrs]? Ereignisse|zweite[nrs]? Untersuchung)\b/i.test(v),'No future chapter instructions: '+lang+'/'+k);
+  check(!/epoch_iii[._]|epoch_core[._]|epoch_res[._]|epoch_ii[._]/.test(v.replace(/\$[^$]+\$/g,'')),'No internal flags/event IDs: '+lang+'/'+k);
+ }
+}
+for(const id of [10,11,50,51,52])for(const [,option]of E(id).filter(([k])=>k==='option'))if(get(option,'name')==='epoch_iii.acknowledge')check(!get(option,'custom_tooltip'),'Acknowledgment '+id+' has no instructional tooltip');
+for(const key of ['investigate','treat','buffer','contain'])check(get(get(decisions.get('decision_epoch_iii_'+key),'effect'),'tooltip')?.length>0,'Native planetary preview: '+key);
 console.log(`PASS: ${checks} Stage-III source/guard/isolation assertions. Static only; no engine, AI, save/load or MP validation.`);

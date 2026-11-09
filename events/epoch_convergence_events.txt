@@ -47,7 +47,7 @@ event = {
      }
      if = { limit = { exists = event_target:epoch_iii_front }
       set_global_flag = epoch_iii_country_created
-      create_species = { name = NAME_EPOCH_III_Warden plural = NAME_EPOCH_III_Wardens class = ROBOT portrait = default_robot
+      create_species = { name = NAME_EPOCH_III_Warden plural = NAME_EPOCH_III_Wardens class = ROBOT portrait = default_robot namelist = MACHINE1
        traits = { trait = trait_machine_unit } effect = { save_global_event_target_as = epoch_iii_species }
       }
       create_country = { species = event_target:epoch_iii_species name = NAME_EPOCH_III_Convergence type = epoch_convergence name_list = MACHINE1
@@ -92,7 +92,7 @@ country_event = {
   # Older opening saves had no founder species. Supply the transmission
   # portrait without replacing their country or existing ships.
   if = { limit = { NOT = { exists = event_target:epoch_iii_species } }
-   create_species = { name = NAME_EPOCH_III_Warden plural = NAME_EPOCH_III_Wardens class = ROBOT portrait = default_robot
+   create_species = { name = NAME_EPOCH_III_Warden plural = NAME_EPOCH_III_Wardens class = ROBOT portrait = default_robot namelist = MACHINE1
     traits = { trait = trait_machine_unit } effect = { save_global_event_target_as = epoch_iii_species }
    }
   }
@@ -114,6 +114,7 @@ country_event = {
     if = { limit = { any_situation = { is_situation_type = epoch_iii_first_offensive current_situation_approach = epoch_iii_shield } } set_country_flag = epoch_iii_shield_response }
     else = { remove_country_flag = epoch_iii_shield_response }
     epoch_iii_update_defenses = yes
+    epoch_iii_spread_tick = yes
     every_owned_planet = { limit = { is_colony = yes exists = planet } colony = { epoch_iii_contamination_tick = yes } }
     if = { limit = { has_global_flag = epoch_iii_command_created NOT = { has_country_flag = epoch_iii_command_transmitted } } country_event = { id = epoch_iii.51 } }
    }
@@ -157,13 +158,13 @@ country_event = {
  is_triggered_only = yes
  immediate = { event_target:epoch_iii_front = { save_event_target_as = epoch_iii_front_location } }
  option = { name = epoch_iii.10.decode
-  custom_tooltip = epoch_iii.decode.tt
+  tooltip = { add_modifier = { modifier = epoch_iii_decoding days = 1800 } }
   hidden_effect = { if = { limit = { has_global_flag = epoch_iii_active } add_modifier = { modifier = epoch_iii_decoding days = 1800 } country_event = { id = epoch_iii.11 } } }
   ai_chance = { factor = 50 }
  }
  option = { name = epoch_iii.10.respond
   tooltip = { add_modifier = { modifier = epoch_iii_emergency days = 1800 } }
-  custom_tooltip = epoch_iii.first_objectives hidden_effect = { if = { limit = { has_global_flag = epoch_iii_active } add_modifier = { modifier = epoch_iii_emergency days = 1800 } country_event = { id = epoch_iii.11 } } } ai_chance = { factor = 50 } }
+  hidden_effect = { if = { limit = { has_global_flag = epoch_iii_active } add_modifier = { modifier = epoch_iii_emergency days = 1800 } country_event = { id = epoch_iii.11 } } } ai_chance = { factor = 50 } }
 }
 
 country_event = {
@@ -188,7 +189,7 @@ country_event = {
   } }
   ai_chance = { factor = 100 }
  }
- option = { name = epoch_iii.acknowledge custom_tooltip = epoch_iii.first_objectives }
+ option = { name = epoch_iii.acknowledge }
 }
 
 country_event = {
@@ -448,7 +449,7 @@ country_event = {
  desc = epoch_iii.50.desc
  picture = GFX_evt_black_hole
  is_triggered_only = yes
- option = { name = epoch_iii.acknowledge custom_tooltip = epoch_iii.fronts.tt }
+ option = { name = epoch_iii.acknowledge }
 }
 
 country_event = {
@@ -460,7 +461,7 @@ country_event = {
  is_triggered_only = yes
  trigger = { has_global_flag = epoch_iii_active has_global_flag = epoch_iii_command_created NOT = { has_country_flag = epoch_iii_command_transmitted } }
  immediate = { set_country_flag = epoch_iii_command_transmitted }
- option = { name = epoch_iii.acknowledge custom_tooltip = epoch_iii.command.tt }
+ option = { name = epoch_iii.acknowledge }
 }
 
 country_event = {
@@ -469,7 +470,9 @@ country_event = {
  desc = epoch_iii.52.desc
  picture = GFX_evt_black_hole
  is_triggered_only = yes
- option = { name = epoch_iii.acknowledge custom_tooltip = epoch_iii.remaining_goal }
+ trigger = { has_global_flag = epoch_iii_active NOT = { has_global_flag = epoch_iii_command_destroyed } NOT = { has_country_flag = epoch_iii_last_reported } }
+ immediate = { set_country_flag = epoch_iii_last_reported }
+ option = { name = epoch_iii.acknowledge }
 }
 
 # Native fleet ROOT, FROM system: real border crossing, independent of observers.
@@ -532,7 +535,8 @@ fleet_event = {
   clear_fleet_actions = this
   set_aggro_range = 0
   if = { limit = { NOT = { has_fleet_flag = epoch_iii_station } }
-   set_fleet_stance = evasive
+   # Military fleets do not support evasive stance. Cleared orders and zero
+   # aggro allow native departure without changing the fleet's stance.
    if = { limit = { exists = solar_system exists = event_target:epoch_iii_front_1 can_access_system = event_target:epoch_iii_front_1 }
     queue_actions = { move_to = event_target:epoch_iii_front_1 }
    }

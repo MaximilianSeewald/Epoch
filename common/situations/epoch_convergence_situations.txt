@@ -7,9 +7,9 @@ epoch_iii_preparations = {
  permanent = yes
  desc = { trigger = { always = yes } text = epoch_iii_preparations_desc }
  abort_trigger = { owner = { OR = { mid_game_years_passed >= 0 NOT = { epoch_iii_preparation_eligible = yes } } } }
- stages = { stage_epoch_iii_listening = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 100 custom_tooltip = epoch_iii.prepare.tt } }
+ stages = { stage_epoch_iii_listening = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 100 custom_tooltip = epoch_iii_preparations_desc } }
  monthly_progress = { base = 0 }
- approach = { name = epoch_iii_listen on_select = { custom_tooltip = epoch_iii.listen.tt } default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 10 } }
+ approach = { name = epoch_iii_listen default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 10 } }
  approach = { name = epoch_iii_prepare_report icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green on_select = { owner = { country_event = { id = epoch_iii.5 } } } ai_weight = { base = 20 modifier = { factor = 0 owner = { OR = { has_country_flag = epoch_iii_prepared has_special_project = EPOCH_III_PREPARE } } } } }
  on_progress_complete = { }
 }
@@ -32,7 +32,7 @@ epoch_iii_first_offensive = {
  monthly_progress = { base = 0 }
 
  approach = { name = epoch_iii_mobilize default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green
-  on_select = { custom_tooltip = epoch_iii.local_response owner = { remove_country_flag = epoch_iii_shield_response epoch_iii_update_defenses = yes } }
+  on_select = { hidden_effect = { owner = { remove_country_flag = epoch_iii_shield_response epoch_iii_update_defenses = yes } } }
   modifier = { starbase_shipyard_build_speed_mult = 0.10 starbase_shipyard_build_cost_mult = 0.10 ships_upkeep_mult = 0.05 }
   resources = { category = situations
    upkeep = { energy = 4 alloys = 1  }
@@ -43,7 +43,7 @@ epoch_iii_first_offensive = {
   ai_weight = { base = 20 }
  }
  approach = { name = epoch_iii_analyze icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green
-  on_select = { custom_tooltip = epoch_iii.local_response owner = { remove_country_flag = epoch_iii_shield_response epoch_iii_update_defenses = yes country_event = { id = epoch_iii.11 } } }
+  on_select = { hidden_effect = { owner = { remove_country_flag = epoch_iii_shield_response epoch_iii_update_defenses = yes country_event = { id = epoch_iii.11 } } } }
   allow = { owner = { NOT = { has_deficit = energy } } }
   modifier = { damage_vs_country_type_epoch_convergence_mult = 0.10 all_technology_research_speed = -0.05 starbase_shipyard_build_speed_mult = -0.10 }
   resources = { category = situations
@@ -55,7 +55,7 @@ epoch_iii_first_offensive = {
   ai_weight = { base = 15 modifier = { factor = 2 owner = { has_special_project = EPOCH_III_COUNTERHARMONICS } } }
  }
  approach = { name = epoch_iii_shield icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green
-  on_select = { custom_tooltip = epoch_iii.local_response owner = { set_country_flag = epoch_iii_shield_response epoch_iii_update_defenses = yes } }
+  on_select = { hidden_effect = { owner = { set_country_flag = epoch_iii_shield_response epoch_iii_update_defenses = yes } } }
   allow = { owner = { NOT = { has_deficit = energy } } }
   custom_tooltip_with_modifiers = epoch_iii.shield_effects
   modifier = { planet_jobs_produces_mult = -0.02 }
@@ -69,7 +69,7 @@ epoch_iii_first_offensive = {
  }
  approach = { name = epoch_iii_counterattack icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green
   potential = { has_global_flag = epoch_iii_chapter_3 }
-  on_select = { custom_tooltip = epoch_iii.local_response owner = { remove_country_flag = epoch_iii_shield_response epoch_iii_update_defenses = yes } }
+  on_select = { hidden_effect = { owner = { remove_country_flag = epoch_iii_shield_response epoch_iii_update_defenses = yes } } }
   allow = { owner = { NOR = { has_deficit = energy has_deficit = alloys } } }
   modifier = { damage_vs_country_type_epoch_convergence_mult = 0.20 ships_upkeep_mult = 0.15 all_technology_research_speed = -0.10 }
   resources = { category = situations
@@ -91,5 +91,5 @@ epoch_iii_front_marker = {
  abort_trigger = { always = yes }
  stages = { stage_epoch_iii_front = { icon = GFX_situation_stage_1 end = 100 } }
  monthly_progress = { base = 0 }
- approach = { name = epoch_iii_watch default = yes on_select = { custom_tooltip = epoch_iii.watch.tt } icon = GFX_situation_approach_research ai_weight = { base = 1 } }
+ approach = { name = epoch_iii_watch default = yes icon = GFX_situation_approach_research ai_weight = { base = 1 } }
 }
