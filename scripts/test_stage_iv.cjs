@@ -48,12 +48,13 @@ function test(b,c) {
     if(k==='is_in_combat')return !!c.obj.combat===(v==='yes');
     if(k==='has_hp')return cmp(c.obj.hp,op,+v);
     if(k==='has_technology')return c.obj.techs.has(v);
+    if(k==='is_variable_set')return Object.hasOwn(c.obj.vars,v);
     if(k==='resource_stockpile_compare'){const [key,value]=v.find(([x])=>x.startsWith('value'));return cmp(c.obj.resources[get(v,'resource')]||0,key.split('__')[1]||'eq',+value);}
     if(k==='is_country_type'||k==='is_situation_type')return c.obj.type===v;
     if(k==='is_same_value')return c.obj===resolve(v,c);
     if(k==='is_owned_by')return c.obj.owner===resolve(v,c);
     if(k==='is_colony')return !!c.obj.colony===(v==='yes');
-    if(k==='check_variable') { const [key,value]=v.find(([x])=>x.startsWith('value')); return cmp(c.obj.vars[get(v,'which')]||0,key.split('__')[1]||'eq',+value); }
+    if(k==='check_variable') { const [key,value]=v.find(([x])=>x.startsWith('value')); const variable=get(v,'which'); assert.ok(Object.hasOwn(c.obj.vars,variable),'guard unset check_variable: '+variable); return cmp(c.obj.vars[variable],key.split('__')[1]||'eq',+value); }
     if(k==='any_country')return countries.some(o=>test(v,scope(o,c)));
     if(k==='any_owned_planet')return c.obj.planets.some(o=>test(v,scope(o,c)));
     if(k==='any_owned_ship')return c.obj.ships.some(o=>test(v,scope(o,c)));
@@ -74,7 +75,7 @@ function run(b,c) {
     if(k==='add_resource'){for(const [r,n]of v)c.obj.resources[r]=(c.obj.resources[r]||0)+Number(n);continue;}
     if(k==='create_fleet'){fleetCreations++;continue;} // native boundary: count requests, never simulate combat
     if(k==='set_variable'){c.obj.vars[get(v,'which')]=+get(v,'value');continue;}
-    if(k==='change_variable'){c.obj.vars[get(v,'which')]=(c.obj.vars[get(v,'which')]||0)+Number(get(v,'value'));continue;}
+    if(k==='change_variable'){const variable=get(v,'which');assert.ok(Object.hasOwn(c.obj.vars,variable),'initialize before change_variable: '+variable);c.obj.vars[variable]+=Number(get(v,'value'));continue;}
     if(k==='add_deposit'){c.obj.deposits.add(v);continue;}
     if(k==='remove_deposit'){c.obj.deposits.delete(v);continue;}
     if(k==='remove_modifier'){c.obj.modifiers.delete(v);continue;}
@@ -239,10 +240,38 @@ for(const scenario of ['missing','target-only-lost','enemy-reference','victory-r
  check(requests===1&&a.vars.epoch_iv_recoveries===1,'stale recovery cannot create duplicate');
  check(a.resources.energy===8000&&a.resources.alloys===6000&&!a.flags.has('epoch_iv_protocol_key'),'recovery pays and never grants a key');
 }
+for(const initial of [undefined,0,1,2]){
+ const {a}=setup();delete targets['epoch_iv_ship@A'];delete targets['epoch_iv_principal@EA'];let requests=0;
+ if(initial!==undefined)a.vars.epoch_iv_recoveries=initial;
+ const allowed=2-(initial??0);
+ nativeSpawn=()=>{requests++;targets['epoch_iv_ship@A']=make('replacement'+requests);a.flags.add('epoch_iv_judge_created');};
+ for(let attempt=0;attempt<3;attempt++){
+  run(effects.get('epoch_iv_restore_judge'),context(a));
+  // A stale request must not spend again while the replacement still exists.
+  run(effects.get('epoch_iv_restore_judge'),context(a));
+  delete targets['epoch_iv_ship@A'];
+ }
+ nativeSpawn=null;
+ check(requests===allowed&&a.vars.epoch_iv_recoveries===2,'exact recovery allowance from '+String(initial));
+ check(a.resources.energy===10000-2000*allowed&&a.resources.alloys===10000-4000*allowed,'each allowed replacement pays once from '+String(initial));
+ check(!test(triggers.get('epoch_iv_judge_missing'),context(a))&&!a.flags.has('epoch_iv_protocol_key'),'third recovery blocked without key from '+String(initial));
+}
+{const {a}=setup();
+ assert.throws(()=>test(parse('check_variable = { which = epoch_iv_recoveries value = 0 }','unset regression'),context(a)),/guard unset check_variable/);checks++;
+ assert.throws(()=>run(parse('change_variable = { which = epoch_iv_recoveries value = 1 }','unset regression'),context(a)),/initialize before change_variable/);checks++;
+}
 {const {a,enemy,ship}=setup(),f=make('battle');f.owner=enemy;f.combat=true;f.flags.add('epoch_iv_judge');f.ships=[ship];ship.hp=15000;targets['epoch_iv_principal@EA']=ship;fleetCreations=0;
  for(let i=0;i<4;i++)run(get(E(52),'immediate'),context(f));
  check(f.flags.has('epoch_iv_verdict')&&f.flags.has('epoch_iv_broken'),'large hull jump traverses both phases');
  check(fleetCreations===1&&f.modifiers.has('epoch_iv_judge_broken')&&!f.modifiers.has('epoch_iv_judge_verdict'),'one escort wave and terminal phase');
+ check(JSON.stringify(a.calls)===JSON.stringify(['epoch_iv.54']),'large jump sends only the final-phase combat report, once');
+}
+{const {a,enemy,ship}=setup(),f=make('gradual');f.owner=enemy;f.combat=true;f.flags.add('epoch_iv_judge');f.ships=[ship];targets['epoch_iv_principal@EA']=ship;fleetCreations=0;
+ ship.hp=40000;run(get(E(52),'immediate'),context(f));run(get(E(52),'immediate'),context(f));
+ check(JSON.stringify(a.calls)===JSON.stringify(['epoch_iv.53']),'ordinary 70-percent transition reports once');
+ ship.hp=15000;run(get(E(52),'immediate'),context(f));run(get(E(52),'immediate'),context(f));
+ check(JSON.stringify(a.calls)===JSON.stringify(['epoch_iv.53','epoch_iv.54']),'separate 30-percent transition retains its report once');
+ check(fleetCreations===1&&f.modifiers.has('epoch_iv_judge_broken'),'ordinary transitions retain mechanics and one escort wave');
 }
 {const {a}=setup();check(!test(triggers.get('epoch_iv_ai_action_available'),context(a)),'AI does not open idle menu');
  a.vars.epoch_iv_chapter=4;a.techs.add('tech_epoch_iv_materials');check(test(triggers.get('epoch_iv_ai_action_available'),context(a)),'AI funded construction is actionable');

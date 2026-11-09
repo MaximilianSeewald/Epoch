@@ -652,6 +652,10 @@ epoch_iv_restore_judge = {
    energy = -2000
    alloys = -4000
   }
+  if = {
+   limit = { NOT = { is_variable_set = epoch_iv_recoveries } }
+   set_variable = { which = epoch_iv_recoveries value = 0 }
+  }
   change_variable = {
    which = epoch_iv_recoveries
    value = 1

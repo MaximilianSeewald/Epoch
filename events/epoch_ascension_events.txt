@@ -1158,10 +1158,20 @@ fleet_event = {
       set_aggro_range = 300
      }
     }
-    owner = {
-     event_target:epoch_iv_claimant@this = {
-      country_event = {
-       id = epoch_iv.53
+    if = {
+     limit = {
+      NOT = {
+       any_owned_ship = {
+        has_ship_flag = epoch_iv_principal
+        has_hp < 18000
+       }
+      }
+     }
+     owner = {
+      event_target:epoch_iv_claimant@this = {
+       country_event = {
+        id = epoch_iv.53
+       }
       }
      }
     }
