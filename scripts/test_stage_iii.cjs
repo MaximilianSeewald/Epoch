@@ -1,4 +1,4 @@
-// Focused static tests of the actual opening's guards and definitions. Native
+// Focused static tests of the full crisis's guards and definitions. Native
 // travel, combat, research delivery, saves and MP are deliberately not emulated.
 const fs = require('node:fs'), path = require('node:path'), cp = require('node:child_process');
 const assert = require('node:assert/strict');
@@ -18,8 +18,8 @@ const effects = new Map(normalized('common/scripted_effects/epoch_convergence_ef
 const E = id => events.get(`epoch_iii.${id}`);
 function walk(b, fn) { for(const [k,v] of b) { fn(k,v,b); if(Array.isArray(v)) walk(v,fn); } }
 function findIf(b, name) { let found; walk(b,(k,v)=>{if(k==='if' && Array.isArray(get(v,'limit')) && get(v,'limit').some(([key,val])=>key===name||val===name)) found=v;}); assert.ok(found,name); return found; }
-const spawnGate = get(get(effects.get('epoch_iii_spawn_raid'),'if'),'limit');
-const victoryGate = get(findIf(get(E(2),'immediate'),'epoch_iii_anchor_destroyed'),'limit');
+const resolution = effects.get('epoch_iii_check_resolution');
+const victoryGate = [...get(findIf(resolution,'epoch_iii_command_created'),'limit'), ...get(findIf(resolution,'epoch_iii_command_destroyed'),'limit')];
 const flags = (...f) => new Set(f);
 const make = (type='default') => ({type,flags:flags(),vars:{},fleets:[],planets:[],deposits:flags(),modifiers:flags(),neighbors:[],resources:{energy:1000,alloys:1000}});
 let globalFlags, targets, offset;
@@ -43,7 +43,7 @@ function test(b,c) {
   if(triggers.has(k))return test(triggers.get(k),c)===(v==='yes');
   if(k==='exists')return !!resolve(v,c);
   if(k==='has_global_flag')return globalFlags.has(v);
-  if(['has_country_flag','has_fleet_flag','has_planet_flag'].includes(k))return c.obj.flags.has(v);
+  if(['has_country_flag','has_fleet_flag','has_planet_flag','has_ship_flag'].includes(k))return c.obj.flags.has(v);
   if(k==='is_country_type')return c.obj.type===v;
   if(k==='mid_game_years_passed')return compare(offset,op,+v);
   if(k==='has_deposit')return c.obj.deposits.has(v);
@@ -104,35 +104,63 @@ check(!test(get(E(20),'trigger'),ctx(prepared)),'Repeated prep result is idempot
 const enemy=make('epoch_convergence'); enemy.flags.add('epoch_iii_identity_v1');
 const anchor=make(); anchor.owner=enemy; anchor.flags.add('epoch_iii_anchor');
 const raid=()=>{const f=make();f.owner=enemy;f.flags.add('epoch_iii_raid');return f;};
-targets={epoch_iii_anchor:anchor}; globalFlags=flags('epoch_iii_active');
-for(const spent of [0,1,3,4,5])for(const live of [0,2,3]) {
- enemy.vars.epoch_iii_spent=spent; enemy.fleets=Array.from({length:live},raid);
- check(test(spawnGate,ctx(enemy))===(spent<4&&live<3),`Finite lifetime ${spent} / live ${live}`);
+// Execute the actual per-source gates across all four identities, caps and
+// cross-front signal/research states. This is static guard evaluation only.
+anchor.flags.add('epoch_iii_front_1');
+for (let i=1;i<=4;i++) {
+ const gate=get(findIf(effects.get('epoch_iii_front_operations'),`epoch_iii_front_${i}_registered`),'limit');
+ anchor.flags=flags('epoch_iii_anchor',`epoch_iii_front_${i}`);
+ targets={[`epoch_iii_anchor_${i}`]:anchor};
+ for(const signal of [false,true])for(const science of [false,true])
+ for(const spent of [0,2,3,4,5,6,7])for(const live of [0,11,12]) {
+  globalFlags=flags('epoch_iii_active',`epoch_iii_front_${i}_registered`);
+  if(signal)globalFlags.add('epoch_iii_signal_disabled');
+  if(science)globalFlags.add('epoch_iii_logistics_disrupted');
+  enemy.vars[`epoch_iii_source_${i}_spent`]=spent;
+  enemy.fleets=Array.from({length:live},raid);
+  check(test(gate,ctx(enemy))===(spent<6&&(!signal||spent<3)&&(!science||spent<4)&&live<12),`Source ${i}: spent ${spent}, live ${live}, signal ${signal}, science ${science}`);
+ }
+ enemy.fleets=[];enemy.vars[`epoch_iii_source_${i}_spent`]=0;
+ globalFlags=flags('epoch_iii_active',`epoch_iii_front_${i}_registered`,`epoch_iii_front_${i}_destroyed`);
+ check(!test(gate,ctx(enemy)),`Source ${i}: destroyed source rejects queued dispatch`);
+ globalFlags.delete(`epoch_iii_front_${i}_destroyed`); targets={};
+ check(!test(gate,ctx(enemy)),`Source ${i}: absent source is not a spawn permit`);
+ targets={[`epoch_iii_anchor_${i}`]:anchor};anchor.owner=make();
+ check(!test(gate,ctx(enemy)),`Source ${i}: foreign object cannot supply reinforcements`);anchor.owner=enemy;
 }
-enemy.vars.epoch_iii_spent=1; enemy.fleets=[];
-globalFlags.add('epoch_iii_anchor_destroyed');
-check(!test(spawnGate,ctx(enemy)),'Queued reinforcement after real source death cannot spawn');
-globalFlags.delete('epoch_iii_anchor_destroyed'); targets={};
-check(!test(spawnGate,ctx(enemy)),'Missing source is no permission to spawn');
-targets={epoch_iii_anchor:anchor}; anchor.owner=make();
-check(!test(spawnGate,ctx(enemy)),'Foreign source is no permission to spawn'); anchor.owner=enemy;
-globalFlags=flags('epoch_iii_anchor_destroyed','epoch_iii_active');
-for(const deaths of [0,1,2,3])for(const live of [0,1]) {
- enemy.vars={epoch_iii_spent:3,epoch_iii_raids_destroyed:deaths}; enemy.fleets=Array.from({length:live},raid);
- check(test(victoryGate,ctx(enemy))===(deaths>=3&&live===0),`No victory from absence/retreat: deaths=${deaths}, live=${live}`);
+// All required fronts, ship death, fleet death and guard death are independent
+// obligations. A science result never substitutes for any military obligation.
+const won=['epoch_iii_active','epoch_iii_command_created','epoch_iii_command_destroyed','epoch_iii_front_1_destroyed','epoch_iii_front_2_destroyed'];
+for(const fronts of [2,3,4])for(const scientific of [false,true]) {
+ globalFlags=flags(...won);
+ if(scientific)globalFlags.add('epoch_iii_science_support');
+ for(let i=3;i<=fronts;i++) {globalFlags.add(`epoch_iii_front_${i}_registered`);globalFlags.add(`epoch_iii_front_${i}_destroyed`);}
+ enemy.vars={epoch_iii_spent:3,epoch_iii_raids_destroyed:3,epoch_iii_guards_created:fronts,epoch_iii_guards_destroyed:fronts};enemy.fleets=[];
+ check(test(victoryGate,ctx(enemy)),`${fronts} fronts: earned military victory, science=${scientific}`);
+ for(const flag of ['epoch_iii_command_created','epoch_iii_command_destroyed',...Array.from({length:fronts},(_,i)=>`epoch_iii_front_${i+1}_destroyed`)]) {
+  globalFlags.delete(flag);check(!test(victoryGate,ctx(enemy)),`Missing ${flag} cannot win`);globalFlags.add(flag);
+ }
+ for(const key of ['epoch_iii_raids_destroyed','epoch_iii_guards_destroyed']) {
+  enemy.vars[key]--;check(!test(victoryGate,ctx(enemy)),`Missing ${key} blocks scripted removal/retreat`);enemy.vars[key]++;
+ }
+ for(const role of ['epoch_iii_raid','epoch_iii_guard','epoch_iii_anchor']) {
+  const fleet=make();fleet.flags.add(role);enemy.fleets=[fleet];
+  check(!test(victoryGate,ctx(enemy)),`Surviving ${role} blocks victory`);enemy.fleets=[];
+ }
 }
-enemy.vars={epoch_iii_spent:3,epoch_iii_raids_destroyed:3}; enemy.fleets=[];
-globalFlags.delete('epoch_iii_anchor_destroyed');
-check(!test(victoryGate,ctx(enemy)),'Missing anchor reference cannot substitute for destruction');
-const victim=raid(); enemy.fromfrom=victim;
-globalFlags.add('epoch_iii_active');
-check(test(get(E(40),'trigger'),ctx(enemy)),'Native death of identified raid is accepted');
+const victim=raid(); enemy.fromfrom=victim;enemy.from=make();enemy.fromfromfrom=make();
+globalFlags=flags('epoch_iii_active');
+check(test(get(E(40),'trigger'),ctx(enemy)),'Native death of identified raid with combatant is accepted');
 victim.flags.add('epoch_iii_death_recorded');
 check(!test(get(E(40),'trigger'),ctx(enemy)),'Repeated native death is rejected'); victim.flags.delete('epoch_iii_death_recorded');
 victim.flags.add('epoch_iii_cleanup');
 check(!test(get(E(40),'trigger'),ctx(enemy)),'Script cleanup cannot award military credit'); victim.flags.delete('epoch_iii_cleanup');
-victim.flags.clear();
-check(!test(get(E(40),'trigger'),ctx(enemy)),'An unrelated victim cannot count');
+delete enemy.fromfromfrom;
+check(!test(get(E(40),'trigger'),ctx(enemy)),'No perpetrator fleet: removal cannot masquerade as combat');enemy.fromfromfrom=make();
+victim.flags.clear();check(!test(get(E(40),'trigger'),ctx(enemy)),'Unrelated victim cannot count');
+victim.flags.add('epoch_iii_commandant');
+check(test(get(E(41),'trigger'),ctx(enemy)),'Unique command ship death accepted independently of surviving escort');
+victim.flags.clear();check(!test(get(E(41),'trigger'),ctx(enemy)),'Escort death cannot impersonate command ship');
 const world=make(); world.owner=make();
 targets={}; globalFlags=flags();
 check(test(triggers.get('epoch_iii_clean_carrier'),ctx(world)),'Clean uninitiated world can receive existing feature');
@@ -188,7 +216,8 @@ for(const [p,s]of newFiles) {
 }
 const source=text('events/epoch_convergence_events.txt');
 check(source.indexOf('set_global_flag = epoch_iii_country_created')<source.indexOf('create_country ='),'Reservation precedes country creation');
-check(source.indexOf('set_global_flag = epoch_iii_anchor_created')<source.indexOf('create_fleet ='),'Anchor reservation precedes spawn');
+const fleetSource=text('common/scripted_effects/epoch_convergence_effects.txt');
+check(fleetSource.indexOf('set_global_flag = epoch_iii_full_formations_created')<fleetSource.indexOf('create_fleet ='),'Formation reservation precedes every initial spawn');
 check(source.includes('epoch_iii_unsupported_late_install'),'Unsupported late installs fail closed');
 check(source.includes('NOT = { has_global_flag = epoch_iii_first_repulsed }'),'Terminal milestone prevents reactivation');
 check(!source.includes('destroy_fleet ='),'No simulated combat victories/cleanup');
@@ -225,6 +254,47 @@ check(native('common/special_projects/00_projects_infernals.txt').includes('even
 check(native('common/country_types/00_country_types.txt').split('gray_goo = {')[1].split('mechanocalibrator = {')[0].includes('hostile = yes'),'Native hostile faction semantics');
 const componentText=fs.readdirSync(path.join(vanilla,'common/component_templates')).filter(f=>f.endsWith('.txt')).map(f=>native('common/component_templates/'+f)).join('\n');
 for(const [,design]of parsedByPath.get('common/global_ship_designs/epoch_convergence_designs.txt')) {
- walk(design,(k,v)=>{if(k==='required_component'||k==='template'&&typeof v==='string'&&!v.includes('DESTROYER_')&&!v.includes('ai_station'))check(componentText.includes(v),`Installed ship component ${v}`);});
+ walk(design,(k,v)=>{if(k==='required_component')check(componentText.includes(v),`Installed required component ${v}`);if(k==='component')check(componentText.includes(get(v,'template')),`Installed weapon/utility ${get(v,'template')}`);});
 }
+// UI references and new interfaces are checked against actual definitions,
+// not inferred from a balanced brace tree.
+const allConvergence=[...parsedByPath].filter(([p])=>p.includes('convergence'));
+for(const lang of ['english','german']) {
+ const entries=new Set([...text(`localisation/${lang}/epoch_convergence_l_${lang}.yml`).matchAll(/^\s*([\w.]+):\d+ /gm)].map(m=>m[1]));
+ const localized=key=>check(entries.has(key),`${lang}: localization ${key}`);
+ for(const [p,defs]of allConvergence) {
+  walk(defs,(k,v)=>{
+   if(['title','text','custom_tooltip','name','desc'].includes(k)&&typeof v==='string'&&/^(?:epoch_iii\.|NAME_EPOCH_III_)/.test(v))localized(v);
+  });
+  if(p.includes('/static_modifiers/'))for(const [key]of defs){localized(key);localized(key+'_desc');}
+  if(p.includes('/special_projects/'))for(const [,def]of defs){const key=get(def,'key');localized(key);localized(key+'_DESC');}
+  if(p.includes('/situations/'))for(const [key,def]of defs) {
+   localized(key);localized(key+'_type');localized(key+'_desc');localized(key+'_monthly_change_tooltip');
+   for(const [stage]of get(def,'stages'))localized(key+'_'+stage);
+   for(const [field,approach]of def)if(field==='approach') {
+    const name=get(approach,'name');localized(name);localized(name+'_desc');
+    check(get(approach,'on_select')?.length>0,`${key}/${name}: useful selection effect or tooltip`);
+   }
+  }
+ }
+}
+const modifierDoc=fs.readFileSync(path.join(docs,'modifiers.log'),'utf8');
+for(const [name,body]of parsedByPath.get('common/static_modifiers/epoch_convergence_modifiers.txt'))
+ for(const [key]of body)if(key!=='icon')check(modifierDoc.includes('- '+key+','),`${name}: native economic/combat modifier ${key}`);
+for(const key of ['create_species','every_owned_ship','set_visited','add_intel_report','set_star_flag','every_neighbor_system'])check(effectDoc.includes(key+' -'),`Native new effect ${key}`);
+check(native('events/gray_goo_events.txt').includes('diplomatic = yes'),'Native Tempest diplomatic transmission');
+check(native('events/anomaly_events_1.txt').includes('portrait = "default_robot"'),'Native non-DLC robot portrait');
+check(native('common/intel_categories/04_intel_military.txt').includes('intel_military_fleets'),'Native military intel contains fleet locations');
+check(/category = military level = 4/.test(fleetSource),'Fleet visibility report is a real intel tier, not a 0..100 percentage');
+check(/every_owned_ship = \{ set_ship_flag = epoch_iii_commandant/.test(fleetSource),'Unique command ship identified before escort creation');
+for(const i of [61,62,63,64]) {
+ const callback=E(i);
+ check(!JSON.stringify(callback).includes('epoch_iii_first_repulsed'),`Research ${i} never resolves crisis`);
+ check(get(callback,'trigger').some(([k,v])=>k==='solar_system'&&get(v,'is_same_value')===`event_target:epoch_iii_front_${i-60}`),`Research ${i} validates physical site`);
+}
+// Station fleets cannot accept the mobile aggressive stance reported in the
+// player's log. Apply it only to native mobile formations.
+walk(normalized('common/scripted_effects/epoch_convergence_effects.txt'),(k,v)=>{
+ if(k==='create_fleet'&&JSON.stringify(get(v,'effect')).includes('"set_fleet_flag","epoch_iii_anchor"'))check(!JSON.stringify(v).includes('set_fleet_stance'),'Anchor has no unsupported fleet stance');
+});
 console.log(`PASS: ${checks} Stage-III source/guard/isolation assertions. Static only; no engine, AI, save/load or MP validation.`);

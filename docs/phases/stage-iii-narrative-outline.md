@@ -1,5 +1,8 @@
 # Stage III – Narrative Outline / Story Bible Extension
 
+> **Current contract, 2026-11-09:** The post-playtest implementation request supersedes the opening-only scope and earlier pre-implementation approval gates. The connected five-chapter campaign is implemented for static review; new gameplay has **not** been run in Stellaris. The user's first test confirms only the previous opening at `b421408`. All resolution variants now require destruction of every registered fortified node, the unique command ship in actual combat, and surviving hostile formations. Science weakens logistics and combat; it never withdraws, deletes or automatically defeats the command formation. Cooperation uses this same military validator. See [current implementation](stage-iii-full-implementation.md).
+
+
 **Status: binding tone and story beats, not actual localization or verified dialogue.** Working stage title: **The Nullwarden Convergence / Die Konvergenz der Nullwächter**. The term 'convergence' may be an in-world scientific conjecture, never a prematurely proven explanation. Follow existing `docs/story-bible.md` and the Stage-I/II narrative/UI review.
 
 ## The information boundary

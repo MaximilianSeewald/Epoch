@@ -28,7 +28,7 @@ for (const [id,{b}] of eventDefs) if (id.startsWith('epoch_ii.') && !['epoch_ii.
   check(!get(b,'immediate')&&!get(b,'option'),'Queued legacy receivers are inert');
 }
 for (const ref of all.matchAll(/\bid\s*=\s*(epoch_(?:core|ii|res)\.\d+)/g)) check(eventDefs.has(ref[1]),`Defined event ${ref[1]}`);
-for (const ref of all.matchAll(/\b(?:type|name)\s*=\s*(EPOCH_[A-Z_]+)/g)) check(projects.has(ref[1]),`Defined project ${ref[1]}`);
+for (const ref of all.matchAll(/\b(?:type|name)\s*=\s*(EPOCH_[A-Z0-9_]+)/g)) check(projects.has(ref[1]),`Defined project ${ref[1]}`);
 const triggers = new Map([...parsed].filter(([p])=>p.startsWith('common/scripted_triggers/')).flatMap(([,v])=>v));
 for (const name of new Set([...all.matchAll(/\b(epoch_(?:core|ii|res)_[a-z_]+)\s*=\s*yes/g)].map(m=>m[1]))) check(effects.has(name)||triggers.has(name),`Defined scripted effect/trigger ${name}`);
 const newProjects = [...projects].filter(([key])=>key.startsWith('EPOCH_RES_'));

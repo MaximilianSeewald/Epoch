@@ -1,5 +1,8 @@
 # Stage III – Priorisierter Implementierungsplan (AP0–AP11)
 
+> **Current contract, 2026-11-09:** The post-playtest implementation request supersedes the opening-only scope and earlier pre-implementation approval gates. The connected five-chapter campaign is implemented for static review; new gameplay has **not** been run in Stellaris. The user's first test confirms only the previous opening at `b421408`. All resolution variants now require destruction of every registered fortified node, the unique command ship in actual combat, and surviving hostile formations. Science weakens logistics and combat; it never withdraws, deletes or automatically defeats the command formation. Cooperation uses this same military validator. See [current implementation](stage-iii-full-implementation.md).
+
+
 **Fortschreibung 2026-11-08:** Der Folgeauftrag gibt den zusammenhängenden Auftakt bis zur Abwehr der ersten Offensive und statische Prüfung vor Spielerabnahme frei. Dieser Ausschnitt ist implementiert; die frühere Freigabegrenze und die Reihenfolge „Laufzeitprobe vor Implementierung“ gelten für diesen Auftrag nicht mehr. AP1–AP4/G1 sind weiterhin **nicht zur Laufzeit abgenommen**. Umfang und offene Nachweise: [Auftakt](stage-iii-opening-implementation.md). Der folgende Vollausbauplan bleibt für spätere Kapitel bestehen.
 
 Alle folgenden Implementierungs-/Probe-Arbeiten sind **zukünftig und bis zur Freigabe nicht begonnen**. Auch ein temporärer Testmod ist Implementierung und fällt unter die Freigabegrenze. P0 blockiert Produktionsentwicklung, P1 gehört zur spielbaren Kernversion, P2 zur Veröffentlichung/optionalen Erweiterung.

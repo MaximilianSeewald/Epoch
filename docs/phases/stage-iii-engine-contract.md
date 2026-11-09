@@ -1,5 +1,8 @@
 # Stage III – Engine Validation and Compatibility Contract
 
+> **Current contract, 2026-11-09:** The post-playtest implementation request supersedes the opening-only scope and earlier pre-implementation approval gates. The connected five-chapter campaign is implemented for static review; new gameplay has **not** been run in Stellaris. The user's first test confirms only the previous opening at `b421408`. All resolution variants now require destruction of every registered fortified node, the unique command ship in actual combat, and surviving hostile formations. Science weakens logistics and combat; it never withdraws, deletes or automatically defeats the command formation. Cooperation uses this same military validator. See [current implementation](stage-iii-full-implementation.md).
+
+
 **Opening update (2026-11-08):** the subsequent implementation request authorizes the first-offensive slice and static verification before player acceptance. Its [implementation record](stage-iii-opening-implementation.md) supersedes the earlier documentation-only boundary and pre-content runtime sequencing for that slice. All runtime proof requirements below remain unfulfilled release/acceptance gates; they are not waived or reported passed.
 
 **Status: mandatory future proof gates; no Stage-III runtime run or executable probe exists.** Target: installed Stellaris 4.5.3 (4e91), build 26325427. [Engine evidence](stage-iii-engine-evidence.md) contains source observations and absent test outputs. [ADR-002](../architecture/adr-002-stage-iii-integration.md) defines integration policies; [AP0–AP11](stage-iii-implementation-plan.md) defines sequencing. Source observations and static passes never grant implementation authorization.
@@ -36,7 +39,7 @@ Persist object identity/generation separately from the three functional roles. T
 
 Ship/fleet/starbase destruction hooks differ in scope. `on_space_battle_won` is not destruction proof. Test destroyed-object lifetime and join/exit/death ordering with direct/allied/foreign final blows, retreat, commandant death with surviving escort and cleanup removal. Do not presume a battle ID or damage attribution. Conservative national credit is acceptable; fictional participation is not. Simultaneous research callbacks resolve a function once and guard real national rewards separately.
 
-One validator serves military destruction and scientific shutdown; joint containment adds proven multi-empire contributions. Scientific shutdown disables all remaining functions and actually deactivates/withdraws the command network. Missing targets trigger recovery, never credit. Cleanup stops spawns first and excludes its own deaths from success.
+One military destruction validator serves every outcome. Science can restrict sources and weaken surviving combatants only after secured-site research. Joint victory adds proven multi-empire combat contributions. No project can remove or withdraw the command ship. Missing targets trigger recovery, never credit. Cleanup stops spawns first and excludes its own deaths from success.
 
 ## 5. Shared features and active old campaigns — AP4, blocking
 

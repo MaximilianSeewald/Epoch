@@ -1,5 +1,8 @@
 # EPOCH – The Echo Beyond
 
+> **Current contract, 2026-11-09:** The post-playtest implementation request supersedes the opening-only scope and earlier pre-implementation approval gates. The connected five-chapter campaign is implemented for static review; new gameplay has **not** been run in Stellaris. The user's first test confirms only the previous opening at `b421408`. All resolution variants now require destruction of every registered fortified node, the unique command ship in actual combat, and surviving hostile formations. Science weakens logistics and combat; it never withdraws, deletes or automatically defeats the command formation. Cooperation uses this same military validator. See [current implementation](phases/stage-iii-full-implementation.md).
+
+
 **Status: Current narrative direction.** Campaign shape is the binding four-stage architecture. This bible describes narrative intent, not implemented or verified gameplay mechanics.
 
 ## Core premise

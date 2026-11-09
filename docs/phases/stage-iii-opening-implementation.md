@@ -1,9 +1,12 @@
 # Stage III: first-offensive implementation and player acceptance
 
+> **Current contract, 2026-11-09:** The post-playtest implementation request supersedes the opening-only scope and earlier pre-implementation approval gates. The connected five-chapter campaign is implemented for static review; new gameplay has **not** been run in Stellaris. The user's first test confirms only the previous opening at `b421408`. All resolution variants now require destruction of every registered fortified node, the unique command ship in actual combat, and surviving hostile formations. Science weakens logistics and combat; it never withdraws, deletes or automatically defeats the command formation. Cooperation uses this same military validator. See [current implementation](stage-iii-full-implementation.md).
+
+
 Date: 2026-11-08. Base: PR #14, `f3e985615b9ca137b2d99727f76633e21e3066ef`.
 Target inspected locally: Stellaris Cygnus 4.5.3 (4e91), Steam build 26325427.
 
-**Implemented for player acceptance; statically checked, not run in Stellaris.**
+**Historical opening record.** The user subsequently ran this opening in Stellaris and confirmed outbreak, situation, planetary exposure, mobile combat and anchor-linked reinforcements. Gameplay acceptance failed due to visibility, insufficient defenses and premature termination. The new implementation supersedes the numerical/terminal rules below.
 The implementation request authorizes this connected opening through the defeat
 of the first offensive, followed by static verification and a PR. It supersedes
 the documentation-only authorization boundary and the AP1–AP4/G1 requirement to
