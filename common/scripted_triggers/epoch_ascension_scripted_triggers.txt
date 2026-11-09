@@ -1,0 +1,62 @@
+# Country scope. Explicit continuations, never public crisis participation.
+epoch_iv_eligible = {
+ epoch_iii_preparation_eligible = yes
+ has_country_flag = epoch_core_phase_ii_ready
+ has_global_flag = epoch_iii_first_repulsed
+}
+epoch_iv_active = {
+ epoch_iv_eligible = yes has_country_flag = epoch_iv_started
+ NOT = { has_country_flag = epoch_iv_complete }
+}
+epoch_iv_future_research = {
+ epoch_iv_eligible = yes has_country_flag = epoch_iv_protocol_key
+ has_country_flag = epoch_iv_complete
+}
+# Root is always the personal country for selection effects.
+epoch_iv_research_system = {
+ has_access_fleet = root
+ OR = { NOT = { exists = owner } is_owned_by = root }
+ NOT = { has_star_flag = epoch_iv_arena }
+ NOT = { any_fleet_in_system = { owner = { is_hostile = root } } }
+ root = { any_owned_fleet = { can_access_system = prevprev } }
+}
+epoch_iv_empty_arena = {
+ epoch_iv_research_system = yes
+ NOT = { exists = owner } NOT = { exists = starbase }
+ NOT = { has_star_flag = epoch_iv_reserved }
+ NOT = { any_system_planet = { is_star = no } }
+ NOT = { any_fleet_in_system = { always = yes } }
+ NOT = { any_system_megastructure = { always = yes } }
+}
+epoch_iv_contamination = { OR = {
+ has_deposit = d_epoch_resonance_contamination_active
+ has_deposit = d_epoch_resonance_contamination_worsened
+ has_deposit = d_epoch_resonance_contamination_studied
+ has_deposit = d_epoch_resonance_contamination_contained
+ has_deposit = d_epoch_resonance_contamination_latent
+ has_deposit = d_epoch_resonance_contamination_resonant
+ has_deposit = d_epoch_resonance_contamination_unstable
+ has_deposit = d_epoch_resonance_contamination_controlled
+} }
+epoch_iv_scar = { OR = { has_deposit = d_epoch_resonance_scar has_deposit = d_epoch_resonance_scar_altered has_deposit = d_epoch_resonance_scar_healed } }
+epoch_iv_structure = { OR = { has_deposit = d_epoch_silent_structure_unsecured has_deposit = d_epoch_silent_structure_secured has_deposit = d_epoch_silent_structure_investigated } }
+# Bind paid diagnosis/stabilization to the actual family, including ownership.
+epoch_iv_diagnosis_matches = { OR = {
+ AND = { has_planet_flag = epoch_iv_diagnosed_contamination@owner epoch_iv_contamination = yes }
+ AND = { has_planet_flag = epoch_iv_diagnosed_scar@owner epoch_iv_scar = yes }
+ AND = { has_planet_flag = epoch_iv_diagnosed_structure@owner epoch_iv_structure = yes }
+} }
+# Planet/Colony scope. Do not touch a live older mission of ANY empire,
+# including an occupied/conquered original objective. Historical outcomes stay.
+epoch_iv_safe_world = {
+ is_colony = yes exists = owner owner = { epoch_iv_eligible = yes }
+ NOT = { has_planet_flag = epoch_iv_converted }
+ NOT = { any_country = {
+  OR = { has_country_flag = epoch_core_campaign_active has_country_flag = epoch_res_active has_country_flag = epoch_ii_active }
+  OR = {
+   AND = { exists = event_target:epoch_core_world@this event_target:epoch_core_world@this = { OR = { is_same_value = prevprev AND = { exists = planet planet = { is_same_value = prevprevprev.planet } } } } }
+   AND = { exists = event_target:epoch_ii_target_planet@this event_target:epoch_ii_target_planet@this = { OR = { is_same_value = prevprev AND = { exists = planet planet = { is_same_value = prevprevprev.planet } } } } }
+  }
+ } }
+ OR = { epoch_iv_contamination = yes epoch_iv_scar = yes epoch_iv_structure = yes }
+}

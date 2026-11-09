@@ -1,0 +1,168 @@
+namespace = epoch_iv
+
+event = { id = epoch_iv.1 hide_window = yes is_triggered_only = yes  immediate = { every_country = { limit = { epoch_iv_eligible = yes }
+ if = { limit = { NOT = { has_country_flag = epoch_iv_clock_scheduled } }
+  set_country_flag = epoch_iv_clock_scheduled
+  set_timed_country_flag = { flag = epoch_iv_minimum_delay days = 1800 }
+  country_event = { id = epoch_iv.2 days = 1800 random = 1800 }
+ }
+ if = { limit = { has_country_flag = epoch_iv_due NOT = { has_country_flag = epoch_iv_started } }
+  country_event = { id = epoch_iv.10 }
+ }
+ if = { limit = { epoch_iv_active = yes is_ai = yes } country_event = { id = epoch_iv.80 } }
+} } }
+
+country_event = { id = epoch_iv.2 hide_window = yes is_triggered_only = yes trigger = { epoch_iv_eligible = yes NOT = { has_country_flag = epoch_iv_minimum_delay } } immediate = { set_country_flag = epoch_iv_due country_event = { id = epoch_iv.10 } } }
+
+country_event = { id = epoch_iv.10 title = epoch_iv.10.name desc = { trigger = { is_machine_empire = yes } text = epoch_iv.10.desc.machine }
+ desc = { trigger = { is_hive_empire = yes } text = epoch_iv.10.desc.hive }
+ desc = { trigger = { always = yes } text = epoch_iv.10.desc } picture = GFX_evt_relic_world is_triggered_only = yes  trigger = { epoch_iv_eligible = yes has_country_flag = epoch_iv_due NOT = { has_country_flag = epoch_iv_started } OR = { any_owned_planet = { is_colony = yes } any_owned_fleet = { exists = solar_system } } } immediate = {
+ set_country_flag = epoch_iv_started set_variable = { which = epoch_iv_chapter value = 1 }
+ epoch_iv_find_anchor = yes
+ start_situation = { type = epoch_iv_ascension target = event_target:epoch_iv_anchor@root }
+ add_research_option = tech_epoch_iv_spectroscopy
+ epoch_iv_issue_signals = yes
+ } option = { name = epoch_iv.careful  add_modifier = { modifier = epoch_iv_careful days = -1 } set_country_flag = epoch_iv_careful ai_chance = { factor = 10 } }option = { name = epoch_iv.experimental  add_modifier = { modifier = epoch_iv_experimental days = -1 } set_country_flag = epoch_iv_experimental ai_chance = { factor = 10 } }option = { name = epoch_iv.guardian  add_modifier = { modifier = epoch_iv_guardian days = -1 } set_country_flag = epoch_iv_guardian ai_chance = { factor = 10 } } }
+
+ship_event = { id = epoch_iv.101 hide_window = yes is_triggered_only = yes trigger = { exists = owner exists = fromfrom owner = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 1 } NOT = { has_country_flag = epoch_iv_signal_a_done }  } fromfrom = { is_same_value = event_target:epoch_iv_signal_a@root.owner } solar_system = { is_same_value = fromfrom.solar_system } } immediate = { owner = { set_country_flag = epoch_iv_signal_a_done country_event = { id = epoch_iv.11 days = 1 } } } }
+
+ship_event = { id = epoch_iv.102 hide_window = yes is_triggered_only = yes trigger = { exists = owner exists = fromfrom owner = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 1 } NOT = { has_country_flag = epoch_iv_signal_b_done }  } fromfrom = { is_same_value = event_target:epoch_iv_signal_b@root.owner } solar_system = { is_same_value = fromfrom.solar_system } } immediate = { owner = { set_country_flag = epoch_iv_signal_b_done country_event = { id = epoch_iv.11 days = 1 } } } }
+
+ship_event = { id = epoch_iv.103 hide_window = yes is_triggered_only = yes trigger = { exists = owner exists = fromfrom owner = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 3 } NOT = { has_country_flag = epoch_iv_recovery_done } has_country_flag = epoch_iv_recovery_funded } fromfrom = { is_same_value = event_target:epoch_iv_work@root.owner } solar_system = { is_same_value = fromfrom.solar_system } } immediate = { owner = { set_country_flag = epoch_iv_recovery_done epoch_iv_healing_complete = yes } } }
+
+ship_event = { id = epoch_iv.104 hide_window = yes is_triggered_only = yes trigger = { exists = owner exists = fromfrom owner = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 4 } NOT = { has_country_flag = epoch_iv_prototype_done } has_country_flag = epoch_iv_prototype_funded } fromfrom = { is_same_value = event_target:epoch_iv_work@root.owner } solar_system = { is_same_value = fromfrom.solar_system } } immediate = { owner = { set_country_flag = epoch_iv_prototype_done country_event = { id = epoch_iv.44 days = 1 } } } }
+
+ship_event = { id = epoch_iv.105 hide_window = yes is_triggered_only = yes trigger = { exists = owner exists = fromfrom owner = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 5 } NOT = { has_country_flag = epoch_iv_counter_done } has_country_flag = epoch_iv_counter_funded } fromfrom = { is_same_value = event_target:epoch_iv_work@root.owner } solar_system = { is_same_value = fromfrom.solar_system } } immediate = { owner = { set_country_flag = epoch_iv_counter_done if = { limit = { exists = event_target:epoch_iv_fleet@this } event_target:epoch_iv_fleet@this = { add_modifier = { modifier = epoch_iv_countermeasure days = -1 } } if = { limit = { has_country_flag = epoch_iv_archive_secure } event_target:epoch_iv_fleet@this = { add_modifier = { modifier = epoch_iv_secure_countermeasure days = -1 } } } } } } }
+
+country_event = { id = epoch_iv.11 hide_window = yes is_triggered_only = yes trigger = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 1 } has_country_flag = epoch_iv_signal_a_done has_country_flag = epoch_iv_signal_b_done NOT = { has_country_flag = epoch_iv_signals_done } } immediate = { epoch_iv_after_signals = yes } }
+
+country_event = { id = epoch_iv.20 title = epoch_iv.20.name desc = epoch_iv.20.desc picture = GFX_evt_relic_world is_triggered_only = yes  trigger = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 2 } }  option = { name = epoch_iv.continue   ai_chance = { factor = 10 } } }
+
+fleet_event = { id = epoch_iv.21 title = epoch_iv.21.name desc = epoch_iv.21.desc picture = GFX_evt_relic_world is_triggered_only = yes archaeology = yes location = from show_sound = event_dig_site trigger = { owner = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 2 }  } from = { exists = planet is_same_value = event_target:epoch_iv_site@root.owner planet = { solar_system = { has_access_fleet = root.owner OR = { NOT = { exists = owner } is_owned_by = root.owner } } } } }  option = { name = epoch_iv.secure custom_tooltip = epoch_iv_secure_tt  owner = { if = { limit = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 2 } exists = event_target:epoch_iv_site@root.owner from = { is_same_value = event_target:epoch_iv_site@root.owner } NOT = { has_country_flag = epoch_iv_dig_1 } } set_country_flag = epoch_iv_dig_1 set_country_flag = epoch_iv_archive_secure add_resource = { physics_research = 800 } } } ai_chance = { factor = 10 } }
+option = { name = epoch_iv.extract  owner = { if = { limit = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 2 } exists = event_target:epoch_iv_site@root.owner from = { is_same_value = event_target:epoch_iv_site@root.owner } NOT = { has_country_flag = epoch_iv_dig_1 } } set_country_flag = epoch_iv_dig_1 set_country_flag = epoch_iv_archive_extract add_resource = { physics_research = 1800 } } } ai_chance = { factor = 10 } }
+option = { name = epoch_iv.isolate  owner = { if = { limit = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 2 } exists = event_target:epoch_iv_site@root.owner from = { is_same_value = event_target:epoch_iv_site@root.owner } NOT = { has_country_flag = epoch_iv_dig_1 } } set_country_flag = epoch_iv_dig_1 set_country_flag = epoch_iv_archive_isolate add_modifier = { modifier = epoch_iv_isolation days = -1 } } } ai_chance = { factor = 10 } } }
+
+fleet_event = { id = epoch_iv.22 title = epoch_iv.22.name desc = epoch_iv.22.desc picture = GFX_evt_relic_world is_triggered_only = yes archaeology = yes location = from show_sound = event_dig_site trigger = { owner = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 2 } has_country_flag = epoch_iv_dig_1 } from = { exists = planet is_same_value = event_target:epoch_iv_site@root.owner planet = { solar_system = { has_access_fleet = root.owner OR = { NOT = { exists = owner } is_owned_by = root.owner } } } } }  option = { name = epoch_iv.continue  owner = { if = { limit = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 2 } exists = event_target:epoch_iv_site@root.owner from = { is_same_value = event_target:epoch_iv_site@root.owner } NOT = { has_country_flag = epoch_iv_dig_2 } } set_country_flag = epoch_iv_dig_2 add_resource = { society_research = 1200 }
+
+ } } ai_chance = { factor = 10 } } }
+
+fleet_event = { id = epoch_iv.23 title = epoch_iv.23.name desc = epoch_iv.23.desc picture = GFX_evt_relic_world is_triggered_only = yes archaeology = yes location = from show_sound = event_dig_site trigger = { owner = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 2 } has_country_flag = epoch_iv_dig_2 } from = { exists = planet is_same_value = event_target:epoch_iv_site@root.owner planet = { solar_system = { has_access_fleet = root.owner OR = { NOT = { exists = owner } is_owned_by = root.owner } } } } }  option = { name = epoch_iv.continue  owner = { if = { limit = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 2 } exists = event_target:epoch_iv_site@root.owner from = { is_same_value = event_target:epoch_iv_site@root.owner } NOT = { has_country_flag = epoch_iv_dig_3 } } set_country_flag = epoch_iv_dig_3 add_resource = { engineering_research = 1200 }
+
+ } } ai_chance = { factor = 10 } } }
+
+fleet_event = { id = epoch_iv.24 title = epoch_iv.24.name desc = epoch_iv.24.desc picture = GFX_evt_relic_world is_triggered_only = yes archaeology = yes location = from show_sound = event_dig_site trigger = { owner = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 2 } has_country_flag = epoch_iv_dig_3 } from = { exists = planet is_same_value = event_target:epoch_iv_site@root.owner planet = { solar_system = { has_access_fleet = root.owner OR = { NOT = { exists = owner } is_owned_by = root.owner } } } } }  option = { name = epoch_iv.continue  owner = { if = { limit = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 2 } exists = event_target:epoch_iv_site@root.owner from = { is_same_value = event_target:epoch_iv_site@root.owner } NOT = { has_country_flag = epoch_iv_dig_4 } } set_country_flag = epoch_iv_dig_4 add_resource = { physics_research = 1200 }
+ set_country_flag = epoch_iv_archive_done epoch_iv_advance = yes add_research_option = tech_epoch_iv_diagnostics add_research_option = tech_epoch_iv_inversion country_event = { id = epoch_iv.30 }
+ } } ai_chance = { factor = 10 } } }
+
+country_event = { id = epoch_iv.30 title = epoch_iv.30.name desc = epoch_iv.30.desc picture = GFX_evt_relic_world is_triggered_only = yes  trigger = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 3 } }  option = { name = epoch_iv.continue   ai_chance = { factor = 10 } } }
+
+country_event = { id = epoch_iv.40 title = epoch_iv.40.name desc = epoch_iv.40.desc picture = GFX_evt_relic_world is_triggered_only = yes  trigger = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 4 } }  option = { name = epoch_iv.continue   ai_chance = { factor = 10 } } }
+
+country_event = { id = epoch_iv.44 hide_window = yes is_triggered_only = yes trigger = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 4 } has_country_flag = epoch_iv_prototype_done exists = event_target:epoch_iv_work@root } immediate = {
+ if = { limit = { NOT = { exists = event_target:epoch_iv_prototype@root } }
+  create_fleet = { name = NAME_EPOCH_IV_Prototype effect = {
+   set_owner = root save_global_event_target_as = epoch_iv_prototype@root
+   create_ship = { design = NAME_EPOCH_IV_Prototype graphical_culture = fallen_machine_empire_01 }
+   set_location = { target = event_target:epoch_iv_work@root distance = 35 angle = random }
+   set_fleet_stance = aggressive
+  } }
+ }
+ if = { limit = { exists = event_target:epoch_iv_prototype@root }
+  epoch_iv_advance = yes add_research_option = tech_epoch_iv_telemetry epoch_iv_spawn_judge = yes country_event = { id = epoch_iv.45 }
+ }
+ } }
+
+country_event = { id = epoch_iv.45 title = epoch_iv.45.name desc = epoch_iv.45.desc picture = GFX_evt_relic_world is_triggered_only = yes  trigger = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 5 } }  option = { name = epoch_iv.continue   ai_chance = { factor = 10 } } }
+
+country_event = { id = epoch_iv.50 hide_window = yes is_triggered_only = yes trigger = {
+ is_country_type = epoch_adjudicator has_country_flag = epoch_iv_judge_identity
+ exists = from exists = fromfrom exists = fromfromfrom
+ NOT = { from = { is_same_value = root } }
+ exists = event_target:epoch_iv_claimant@root
+ fromfrom = { has_ship_flag = epoch_iv_principal NOT = { has_ship_flag = epoch_iv_death_recorded }
+  is_same_value = event_target:epoch_iv_principal@root
+ }
+ event_target:epoch_iv_claimant@root = { epoch_iv_active = yes has_country_flag = epoch_iv_judge_created check_variable = { which = epoch_iv_chapter value = 5 } NOT = { has_country_flag = epoch_iv_protocol_key } }
+ } immediate = { fromfrom = { set_ship_flag = epoch_iv_death_recorded }
+ event_target:epoch_iv_claimant@root = {
+  set_country_flag = epoch_iv_combat_proven set_country_flag = epoch_iv_protocol_key
+  epoch_iv_advance = yes country_event = { id = epoch_iv.60 }
+ } } }
+
+country_event = { id = epoch_iv.51 hide_window = yes is_triggered_only = yes trigger = { is_country_type = epoch_adjudicator has_country_flag = epoch_iv_judge_identity fromfrom = { has_fleet_flag = epoch_iv_judge NOT = { has_fleet_flag = epoch_iv_polling } } } immediate = { fromfrom = { set_fleet_flag = epoch_iv_polling fleet_event = { id = epoch_iv.52 days = 1 } } } }
+
+country_event = { id = epoch_iv.55 hide_window = yes is_triggered_only = yes trigger = { exists = from from = { is_country_type = epoch_adjudicator has_country_flag = epoch_iv_judge_identity } fromfromfrom = { has_fleet_flag = epoch_iv_judge NOT = { has_fleet_flag = epoch_iv_polling } } } immediate = { fromfromfrom = { set_fleet_flag = epoch_iv_polling fleet_event = { id = epoch_iv.52 days = 1 } } } }
+
+fleet_event = { id = epoch_iv.52 hide_window = yes is_triggered_only = yes trigger = { has_fleet_flag = epoch_iv_judge } immediate = {
+ if = { limit = { is_in_combat = yes }
+  if = { limit = { any_owned_ship = { has_ship_flag = epoch_iv_principal has_hp < 70000 } NOT = { has_fleet_flag = epoch_iv_verdict } }
+   set_fleet_flag = epoch_iv_verdict remove_modifier = epoch_iv_judge_denial
+   add_modifier = { modifier = epoch_iv_judge_verdict days = -1 }
+   # One bounded escort wave, real ships; never a victory condition.
+   while = { count = 8 create_ship = { design = NAME_EPOCH_III_Enforcer graphical_culture = fallen_machine_empire_01 } }
+   owner = { event_target:epoch_iv_claimant@this = { country_event = { id = epoch_iv.53 } } }
+  }
+  if = { limit = { any_owned_ship = { has_ship_flag = epoch_iv_principal has_hp < 30000 } NOT = { has_fleet_flag = epoch_iv_broken } }
+   set_fleet_flag = epoch_iv_broken remove_modifier = epoch_iv_judge_verdict
+   add_modifier = { modifier = epoch_iv_judge_broken days = -1 }
+   owner = { event_target:epoch_iv_claimant@this = { country_event = { id = epoch_iv.54 } } }
+  }
+  fleet_event = { id = epoch_iv.52 days = 5 }
+ }
+ else = { remove_fleet_flag = epoch_iv_polling }
+ } }
+
+country_event = { id = epoch_iv.60 title = epoch_iv.60.name desc = epoch_iv.60.desc picture = GFX_evt_relic_world is_triggered_only = yes  trigger = { epoch_iv_eligible = yes has_country_flag = epoch_iv_protocol_key has_country_flag = epoch_iv_combat_proven NOT = { has_country_flag = epoch_iv_complete } }  option = { name = epoch_iv.final_guard  if = { limit = { NOT = { has_country_flag = epoch_iv_complete } }
+  set_country_flag = epoch_iv_philosophy_guard epoch_iv_finish = yes
+ } ai_chance = { factor = 10 } }
+option = { name = epoch_iv.final_free  if = { limit = { NOT = { has_country_flag = epoch_iv_complete } }
+  set_country_flag = epoch_iv_philosophy_free epoch_iv_finish = yes
+ } ai_chance = { factor = 10 } } }
+
+country_event = { id = epoch_iv.53 title = epoch_iv.53.name desc = epoch_iv.53.desc picture = GFX_evt_relic_world is_triggered_only = yes  trigger = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 5 } }  option = { name = epoch_iv.continue   ai_chance = { factor = 10 } } }
+
+country_event = { id = epoch_iv.54 title = epoch_iv.54.name desc = epoch_iv.54.desc picture = GFX_evt_relic_world is_triggered_only = yes  trigger = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 5 } }  option = { name = epoch_iv.continue   ai_chance = { factor = 10 } } }
+
+country_event = { id = epoch_iv.80 title = epoch_iv.80.name desc = epoch_iv.80.desc picture = GFX_evt_relic_world is_triggered_only = yes  trigger = { epoch_iv_active = yes NOT = { has_country_flag = epoch_iv_operations_open } } immediate = { set_country_flag = epoch_iv_operations_open } option = { name = epoch_iv.assemble trigger = { check_variable = { which = epoch_iv_chapter value = 4 } has_country_flag = epoch_iv_prototype_done } if = { limit = { check_variable = { which = epoch_iv_chapter value = 4 } has_country_flag = epoch_iv_prototype_done  }  country_event = { id = epoch_iv.44 }  } ai_chance = { factor = 10 } }
+option = { name = epoch_iv.reissue trigger = { check_variable = { which = epoch_iv_chapter value = 1 } resource_stockpile_compare = { resource = energy value >= 300 } } if = { limit = { check_variable = { which = epoch_iv_chapter value = 1 } resource_stockpile_compare = { resource = energy value >= 300 }  }  add_resource = { energy = -300 } epoch_iv_find_anchor = yes
+ abort_special_project = { type = EPOCH_IV_SIGNAL_A } abort_special_project = { type = EPOCH_IV_SIGNAL_B }
+ if = { limit = { exists = event_target:epoch_iv_signal_a@root event_target:epoch_iv_signal_a@root = { solar_system = { NOT = { epoch_iv_research_system = yes } } } } clear_global_event_target = epoch_iv_signal_a@root }
+ if = { limit = { exists = event_target:epoch_iv_signal_b@root event_target:epoch_iv_signal_b@root = { solar_system = { NOT = { epoch_iv_research_system = yes } } } } clear_global_event_target = epoch_iv_signal_b@root }
+ epoch_iv_issue_signals = yes  } ai_chance = { factor = 10 } }
+option = { name = epoch_iv.relocate trigger = { check_variable = { which = epoch_iv_chapter value = 2 } resource_stockpile_compare = { resource = energy value >= 1000 } resource_stockpile_compare = { resource = alloys value >= 300 } OR = { NOT = { exists = event_target:epoch_iv_site@root } NOT = { exists = event_target:epoch_iv_site_world@root } event_target:epoch_iv_site_world@root = { solar_system = { NOT = { epoch_iv_research_system = yes } } } } } if = { limit = { check_variable = { which = epoch_iv_chapter value = 2 } resource_stockpile_compare = { resource = energy value >= 1000 } resource_stockpile_compare = { resource = alloys value >= 300 } OR = { NOT = { exists = event_target:epoch_iv_site@root } NOT = { exists = event_target:epoch_iv_site_world@root } event_target:epoch_iv_site_world@root = { solar_system = { NOT = { epoch_iv_research_system = yes } } } }  }  add_resource = { energy = -1000 alloys = -300 }
+ if = { limit = { exists = event_target:epoch_iv_site@root } event_target:epoch_iv_site@root = { set_site_progress_locked = yes } }
+ clear_global_event_target = epoch_iv_site@root epoch_iv_create_site = yes  } ai_chance = { factor = 10 } }
+option = { name = epoch_iv.recover trigger = { check_variable = { which = epoch_iv_chapter value = 3 } has_technology = tech_epoch_iv_diagnostics has_technology = tech_epoch_iv_inversion
+ NOT = { any_owned_planet = { epoch_iv_safe_world = yes } } NOT = { has_special_project = EPOCH_IV_RECOVERY }
+ resource_stockpile_compare = { resource = energy value >= 6000 } resource_stockpile_compare = { resource = alloys value >= 2500 } } if = { limit = { check_variable = { which = epoch_iv_chapter value = 3 } has_technology = tech_epoch_iv_diagnostics has_technology = tech_epoch_iv_inversion
+ NOT = { any_owned_planet = { epoch_iv_safe_world = yes } } NOT = { has_special_project = EPOCH_IV_RECOVERY }
+ resource_stockpile_compare = { resource = energy value >= 6000 } resource_stockpile_compare = { resource = alloys value >= 2500 }  }  epoch_iv_select_work = yes
+ if = { limit = { exists = event_target:epoch_iv_work@root }
+  add_resource = { energy = -6000 alloys = -2500 } set_country_flag = epoch_iv_recovery_funded
+  event_target:epoch_iv_work@root = { enable_special_project = { name = EPOCH_IV_RECOVERY location = this owner = root } }
+ }  } ai_chance = { factor = 10 } }
+option = { name = epoch_iv.build trigger = { check_variable = { which = epoch_iv_chapter value = 4 } has_technology = tech_epoch_iv_materials
+ NOT = { has_special_project = EPOCH_IV_PROTOTYPE } NOT = { has_country_flag = epoch_iv_prototype_done }
+ resource_stockpile_compare = { resource = energy value >= 3000 } resource_stockpile_compare = { resource = alloys value >= 4000 } } if = { limit = { check_variable = { which = epoch_iv_chapter value = 4 } has_technology = tech_epoch_iv_materials
+ NOT = { has_special_project = EPOCH_IV_PROTOTYPE } NOT = { has_country_flag = epoch_iv_prototype_done }
+ resource_stockpile_compare = { resource = energy value >= 3000 } resource_stockpile_compare = { resource = alloys value >= 4000 }  }  epoch_iv_select_work = yes
+ if = { limit = { exists = event_target:epoch_iv_work@root }
+  add_resource = { energy = -3000 alloys = -4000 } set_country_flag = epoch_iv_prototype_funded
+  event_target:epoch_iv_work@root = { enable_special_project = { name = EPOCH_IV_PROTOTYPE location = this owner = root } }
+ }  } ai_chance = { factor = 10 } }
+option = { name = epoch_iv.summon trigger = { check_variable = { which = epoch_iv_chapter value = 5 } has_country_flag = epoch_iv_prototype_done NOT = { has_country_flag = epoch_iv_judge_created } } if = { limit = { check_variable = { which = epoch_iv_chapter value = 5 } has_country_flag = epoch_iv_prototype_done NOT = { has_country_flag = epoch_iv_judge_created }  }  epoch_iv_spawn_judge = yes  } ai_chance = { factor = 10 } }
+option = { name = epoch_iv.counter trigger = { check_variable = { which = epoch_iv_chapter value = 5 } has_technology = tech_epoch_iv_telemetry
+ has_country_flag = epoch_iv_judge_created NOT = { has_country_flag = epoch_iv_counter_done } NOT = { has_special_project = EPOCH_IV_COUNTER }
+ resource_stockpile_compare = { resource = energy value >= 2000 } resource_stockpile_compare = { resource = alloys value >= 800 } } if = { limit = { check_variable = { which = epoch_iv_chapter value = 5 } has_technology = tech_epoch_iv_telemetry
+ has_country_flag = epoch_iv_judge_created NOT = { has_country_flag = epoch_iv_counter_done } NOT = { has_special_project = EPOCH_IV_COUNTER }
+ resource_stockpile_compare = { resource = energy value >= 2000 } resource_stockpile_compare = { resource = alloys value >= 800 }  }  epoch_iv_select_work = yes
+ if = { limit = { exists = event_target:epoch_iv_work@root }
+  add_resource = { energy = -2000 alloys = -800 } set_country_flag = epoch_iv_counter_funded
+  event_target:epoch_iv_work@root = { enable_special_project = { name = EPOCH_IV_COUNTER location = this owner = root } }
+ }  } ai_chance = { factor = 10 } }
+option = { name = epoch_iv.retarget trigger = { resource_stockpile_compare = { resource = energy value >= 500 }
+ OR = { has_special_project = EPOCH_IV_RECOVERY has_special_project = EPOCH_IV_PROTOTYPE has_special_project = EPOCH_IV_COUNTER } } if = { limit = { resource_stockpile_compare = { resource = energy value >= 500 }
+ OR = { has_special_project = EPOCH_IV_RECOVERY has_special_project = EPOCH_IV_PROTOTYPE has_special_project = EPOCH_IV_COUNTER }  }  add_resource = { energy = -500 }
+ abort_special_project = { type = EPOCH_IV_RECOVERY } abort_special_project = { type = EPOCH_IV_PROTOTYPE } abort_special_project = { type = EPOCH_IV_COUNTER }
+ epoch_iv_select_work = yes  } ai_chance = { factor = 0 } }
+option = { name = epoch_iv.close   ai_chance = { factor = 10 } } after = { remove_country_flag = epoch_iv_operations_open } }

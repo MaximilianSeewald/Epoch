@@ -56,7 +56,10 @@ for(const lang of ['english','german']){
  check(!/\[event_target:|\[[^\]]*@/.test(s),`${lang}: native local name aliases only`);
  for(const [key,value]of locs[lang]){
   const prose=value.replace(/\[[^\]]*\]|\$[^$]+\$/g,'');
-  check(!/\b(?:EPOCH|Stage\s+[IVX]+|Chapter|Handoff|Callback|Debug|Gameplay|Mechanic|Freischaltung|Prototyp(?:e|projekt)?)\b/i.test(prose),`${lang}:${key}: no implementation terms`);
+  // The Stage-IV physical prototype is an in-universe funded construction,
+  // unlike the old developer-prototype vocabulary prohibited in earlier text.
+  const checkedProse = /^(?:epoch_iv|tech_epoch_iv|EPOCH_IV)/.test(key) ? prose.replace(/\bPrototyp(?:e|projekt)?\b/gi,'') : prose;
+  check(!/\b(?:EPOCH|Stage\s+[IVX]+|Chapter|Handoff|Callback|Debug|Gameplay|Mechanic|Freischaltung|Prototyp(?:e|projekt)?)\b/i.test(checkedProse),`${lang}:${key}: no implementation terms`);
   if(/epoch_(?:res|core)\.\d+\.desc/.test(key))check(!/(?:\b\d+\s*(?:Energy|Energie|Physics|Physik|days|Tage)\b|\d+\s*%)/i.test(prose),`${lang}:${key}: narrative contains no resource/duration table`);
  }
  check(locs[lang].get('epoch_res.hunter_location').includes('[epoch_res_battle_location.GetName]'),`${lang}: hunter alias`);

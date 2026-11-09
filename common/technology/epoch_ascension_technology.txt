@@ -1,0 +1,53 @@
+tech_epoch_iv_spectroscopy = {
+ icon = tech_physics_3
+ cost = 6000 area = physics tier = 1 category = { particles }
+
+ potential = { epoch_iv_eligible = yes has_country_flag = epoch_iv_started }
+ weight = 200 ai_weight = { weight = 10 }
+ modifier = { country_physics_research_produces_mult = 0.03 }
+}
+
+tech_epoch_iv_calibration = {
+ icon = tech_physics_3
+ cost = 8000 area = physics tier = 1 category = { computing }
+
+ potential = { epoch_iv_eligible = yes has_country_flag = epoch_iv_signals_done }
+ weight = 200 ai_weight = { weight = 10 }
+ modifier = { science_ship_survey_speed = 0.15 }
+}
+
+tech_epoch_iv_diagnostics = {
+ icon = tech_society_3
+ cost = 6000 area = society tier = 1 category = { biology }
+
+ potential = { epoch_iv_eligible = yes has_country_flag = epoch_iv_archive_done }
+ weight = 200 ai_weight = { weight = 10 }
+ modifier = { country_society_research_produces_mult = 0.03 }
+}
+
+tech_epoch_iv_inversion = {
+ icon = tech_society_3
+ cost = 10000 area = society tier = 1 category = { biology }
+ prerequisites = { "tech_epoch_iv_diagnostics" }
+ potential = { epoch_iv_eligible = yes has_country_flag = epoch_iv_archive_done }
+ weight = 200 ai_weight = { weight = 10 }
+ modifier = { planet_stability_add = 2 }
+}
+
+tech_epoch_iv_materials = {
+ icon = tech_engineering_3
+ cost = 6000 area = engineering tier = 1 category = { materials }
+
+ potential = { epoch_iv_eligible = yes has_country_flag = epoch_iv_signals_done }
+ weight = 200 ai_weight = { weight = 10 }
+ modifier = { country_engineering_research_produces_mult = 0.03 }
+}
+
+tech_epoch_iv_telemetry = {
+ icon = tech_engineering_3
+ cost = 10000 area = engineering tier = 1 category = { computing }
+
+ potential = { epoch_iv_eligible = yes has_country_flag = epoch_iv_prototype_done }
+ weight = 200 ai_weight = { weight = 10 }
+ modifier = { ship_tracking_add = 5 }
+}
