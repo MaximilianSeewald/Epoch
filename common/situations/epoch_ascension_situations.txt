@@ -1,25 +1,146 @@
 epoch_iv_ascension = {
- picture = GFX_evt_relic_world category = neutral situation_log_category = empire_concerns
- initial_progress = 0 progress_direction = monodirectional permanent = yes
- desc = { trigger = { owner = { check_variable = { which = epoch_iv_chapter value = 1 } } } text = epoch_iv_objectives_1 }
- desc = { trigger = { owner = { check_variable = { which = epoch_iv_chapter value = 2 } } } text = epoch_iv_objectives_2 }
- desc = { trigger = { owner = { check_variable = { which = epoch_iv_chapter value = 3 } } } text = epoch_iv_objectives_3 }
- desc = { trigger = { owner = { check_variable = { which = epoch_iv_chapter value = 4 } } } text = epoch_iv_objectives_4 }
- desc = { trigger = { owner = { check_variable = { which = epoch_iv_chapter value = 5 } } } text = epoch_iv_objectives_5 }
- desc = { trigger = { owner = { check_variable = { which = epoch_iv_chapter value = 6 } } } text = epoch_iv_objectives_6 }
+ picture = GFX_evt_relic_world
+ category = neutral
+ situation_log_category = empire_concerns
+ initial_progress = 0
+ progress_direction = monodirectional
+ permanent = yes
+ desc = {
+  trigger = {
+   owner = {
+    check_variable = {
+     which = epoch_iv_chapter
+     value = 1
+    }
+   }
+  }
+  text = epoch_iv_objectives_1
+ }
+ desc = {
+  trigger = {
+   owner = {
+    check_variable = {
+     which = epoch_iv_chapter
+     value = 2
+    }
+   }
+  }
+  text = epoch_iv_objectives_2
+ }
+ desc = {
+  trigger = {
+   owner = {
+    check_variable = {
+     which = epoch_iv_chapter
+     value = 3
+    }
+   }
+  }
+  text = epoch_iv_objectives_3
+ }
+ desc = {
+  trigger = {
+   owner = {
+    check_variable = {
+     which = epoch_iv_chapter
+     value = 4
+    }
+   }
+  }
+  text = epoch_iv_objectives_4
+ }
+ desc = {
+  trigger = {
+   owner = {
+    check_variable = {
+     which = epoch_iv_chapter
+     value = 5
+    }
+   }
+  }
+  text = epoch_iv_objectives_5
+ }
+ desc = {
+  trigger = {
+   owner = {
+    check_variable = {
+     which = epoch_iv_chapter
+     value = 6
+    }
+   }
+  }
+  text = epoch_iv_objectives_6
+ }
  stages = {
- epoch_iv_milestone_1 = { end = 16 icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue custom_tooltip = epoch_iv_goal_1 }
- epoch_iv_milestone_2 = { end = 32 icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_blue custom_tooltip = epoch_iv_goal_2 }
- epoch_iv_milestone_3 = { end = 48 icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue custom_tooltip = epoch_iv_goal_3 }
- epoch_iv_milestone_4 = { end = 64 icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue custom_tooltip = epoch_iv_goal_4 }
- epoch_iv_milestone_5 = { end = 80 icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue custom_tooltip = epoch_iv_goal_5 }
- epoch_iv_milestone_6 = { end = 100 icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue custom_tooltip = epoch_iv_goal_6 }
+  epoch_iv_milestone_1 = {
+   end = 16
+   icon = GFX_situation_stage_1
+   icon_background = GFX_situation_stage_frame_blue
+   custom_tooltip = epoch_iv_goal_1
+  }
+  epoch_iv_milestone_2 = {
+   end = 32
+   icon = GFX_situation_stage_2
+   icon_background = GFX_situation_stage_frame_blue
+   custom_tooltip = epoch_iv_goal_2
+  }
+  epoch_iv_milestone_3 = {
+   end = 48
+   icon = GFX_situation_stage_3
+   icon_background = GFX_situation_stage_frame_blue
+   custom_tooltip = epoch_iv_goal_3
+  }
+  epoch_iv_milestone_4 = {
+   end = 64
+   icon = GFX_situation_stage_4
+   icon_background = GFX_situation_stage_frame_blue
+   custom_tooltip = epoch_iv_goal_4
+  }
+  epoch_iv_milestone_5 = {
+   end = 80
+   icon = GFX_situation_stage_5
+   icon_background = GFX_situation_stage_frame_blue
+   custom_tooltip = epoch_iv_goal_5
+  }
+  epoch_iv_milestone_6 = {
+   end = 100
+   icon = GFX_situation_stage_6
+   icon_background = GFX_situation_stage_frame_blue
+   custom_tooltip = epoch_iv_goal_6
+  }
  }
- monthly_progress = { base = 0 }
- approach = { name = epoch_iv_observe default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 10 } }
- approach = { name = epoch_iv_operations icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green
-  on_select = { owner = { country_event = { id = epoch_iv.80 } } }
-  ai_weight = { base = 0 }
+ monthly_progress = {
+  base = 0
  }
- on_progress_complete = { }
+ approach = {
+  name = epoch_iv_observe
+  default = yes
+  icon = GFX_situation_approach_research
+  icon_background = GFX_situation_approach_bg_green
+  ai_weight = {
+   base = 10
+  }
+ }
+ approach = {
+  name = epoch_iv_operations
+  icon = GFX_situation_approach_research
+  icon_background = GFX_situation_approach_bg_green
+  on_select = {
+   owner = {
+    country_event = {
+     id = epoch_iv.80
+    }
+   }
+   situation_event = {
+    id = epoch_iv.81
+    days = 1
+   }
+  }
+  ai_weight = {
+   base = 0
+  }
+ }
+ on_progress_complete = {
+
+ }
 }

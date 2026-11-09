@@ -68,7 +68,7 @@ ship_design = {
 		}
 		component = {
 			slot = "AUX_UTILITY_1"
-			template = "SHIELD_CAPACITOR"
+			template = "SHIELD_BOOSTER"
 		}
 	}
 	required_component="HYPER_DRIVE_3"
