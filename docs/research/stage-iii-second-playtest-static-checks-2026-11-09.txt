@@ -1,0 +1,16 @@
+PASS: 5287 parsed campaign-state checks (all research/wait gates, approaches, offsets, save-state dispatch, alternatives). Static model only.
+PASS: 39 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 1176 Resonance contract/interpreted-script assertions. Engine, AI, balance, save/load and MP remain unverified.
+PASS: 39 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 33 installed Vanilla/script-documentation evidence checks. Native UI and callbacks require in-game acceptance.
+PASS: 39 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 2405 narrative/UI/baseline assertions; maximum scripted-effect depth 3 (epoch_iii_enroll). Display-only previews excluded from execution.
+PASS: 39 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: runtime log classifier self-test (root causes, EPOCH cascades, foreign diagnostics).
+PASS: 39 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 1390 Stage-III source/guard/isolation assertions. Static only; no engine, AI, save/load or MP validation.
+LOG REVIEW (pre-fix files): 34 EPOCH-related and 3163 unrelated/base-game/other-mod error lines in error.log.
+  Event-target/scope: 28 lines; sample: [15:44:03][trigger_impl.cpp:1218]: Script Error: Invalid context switch [solar_system] from Nullwarden Spearhead [fleet], file: events/epoch_convergence_events.txt line: 226, Scope: 
+  game.log: 0 EPOCH event-choice records in the existing run.
+  Other-mod/base-game log lines are classified separately and do not count as EPOCH failures.
+PASS: 708 static regression checks passed. This is not an in-game validation.

@@ -22,7 +22,7 @@ const resolution = effects.get('epoch_iii_check_resolution');
 const victoryGate = [...get(findIf(resolution,'epoch_iii_command_created'),'limit'), ...get(findIf(resolution,'epoch_iii_command_destroyed'),'limit')];
 const flags = (...f) => new Set(f);
 const make = (type='default') => ({type,flags:flags(),vars:{},fleets:[],planets:[],deposits:flags(),modifiers:flags(),neighbors:[],resources:{energy:1000,alloys:1000}});
-let globalFlags, targets, offset;
+let globalFlags, targets, offset, elapsedYears=75, gameDifficulty=2;
 const compare = (a,op,b) => ({eq:a===b,ge:a>=b,le:a<=b,gt:a>b,lt:a<b,ne:a!==b})[op];
 const split = k => { const [key,op='eq']=k.split('__'); return [key,op]; };
 function resolve(k,c) {
@@ -46,9 +46,13 @@ function test(b,c) {
   if(['has_country_flag','has_fleet_flag','has_planet_flag','has_ship_flag'].includes(k))return c.obj.flags.has(v);
   if(k==='is_country_type')return c.obj.type===v;
   if(k==='mid_game_years_passed')return compare(offset,op,+v);
+  if(k==='years_passed')return compare(elapsedYears,op,+v);
+  if(k==='is_difficulty')return gameDifficulty===+v;
   if(k==='has_deposit')return c.obj.deposits.has(v);
   if(k==='has_modifier')return c.obj.modifiers.has(v);
   if(k==='has_special_project')return c.obj.projects?.has(v)||false;
+  if(k==='has_event_chain')return c.obj.chains?.has(v)||false;
+  if(k==='has_point_of_interest')return c.obj.pois?.has(get(v,'poi'))||false;
   if(k==='is_same_value')return c.obj===resolve(v,c);
   if(k==='is_colony')return !!c.obj.colony===(v==='yes');
   if(k==='is_capital_system')return !!c.obj.capital===(v==='yes');
@@ -158,11 +162,11 @@ for(const fronts of [2,3,4])for(const scientific of [false,true]) {
   globalFlags.delete(flag);check(!test(victoryGate,ctx(enemy)),`Missing ${flag} cannot win`);globalFlags.add(flag);
  }
  for(const key of ['epoch_iii_raids_destroyed','epoch_iii_guards_destroyed']) {
-  enemy.vars[key]--;check(!test(victoryGate,ctx(enemy)),`Missing ${key} blocks scripted removal/retreat`);enemy.vars[key]++;
+  enemy.vars[key]--;check(test(victoryGate,ctx(enemy)),`Minor-fleet counter ${key} does not delay earned victory`);enemy.vars[key]++;
  }
  for(const role of ['epoch_iii_raid','epoch_iii_guard','epoch_iii_anchor']) {
   const fleet=make();fleet.flags.add(role);enemy.fleets=[fleet];
-  check(!test(victoryGate,ctx(enemy)),`Surviving ${role} blocks victory`);enemy.fleets=[];
+  check(test(victoryGate,ctx(enemy)),`Surviving ${role} reference does not override confirmed objective deaths`);enemy.fleets=[];
  }
 }
 const victim=raid(); enemy.fromfrom=victim;enemy.from=make();enemy.fromfromfrom=make();
@@ -254,7 +258,9 @@ const baseline='f3e9856';
 const oldFiles=cp.execFileSync('git',['ls-tree','-r','--name-only',baseline],{cwd:root,encoding:'utf8'}).trim().split(/\r?\n/);
 for(const p of oldFiles.filter(p=>/^(common|events|localisation)\//.test(p))) {
  const prior=cp.execFileSync('git',['show',`${baseline}:${p}`],{cwd:root,maxBuffer:4*1024*1024});
- check(prior.toString('utf8').replaceAll('\r\n','\n')===text(p).replaceAll('\r\n','\n'),`${p}: Stage I/II Git content unchanged`);
+ const compatible = s => s.replaceAll('\r\n','\n').replace(/[\u2018\u2019\u201a\u201b\u201c\u201d\u201e\u201f]/g,"'").replace(/[\u2013\u2014]/g,' - ').replace(/\u2026/g,'...').replace(/[\u00a0\u202f]/g,' ').replace(/[\u2010\u2011]/g,'-');
+ const normalize = p.startsWith('localisation/') ? compatible : s=>s.replaceAll('\r\n','\n');
+ check(normalize(prior.toString('utf8'))===normalize(text(p)),`${p}: Stage I/II unchanged apart from display punctuation`);
 }
 // Target-installed definitions, not web/guessed interfaces.
 const native=p=>fs.readFileSync(path.join(vanilla,p),'utf8');
@@ -333,7 +339,7 @@ function run(b,c) {
   if(k==='set_variable'){c.obj.vars[get(v,'which')]=+get(v,'value');continue;}
   if(k==='change_variable'){const n=get(v,'which');c.obj.vars[n]=(c.obj.vars[n]||0)+ +get(v,'value');continue;}
   if(k==='set_global_flag'){globalFlags.add(v);continue;}
-  if(k==='set_country_flag'||k==='set_fleet_flag'||k==='set_ship_flag'){c.obj.flags.add(v);continue;}
+  if(k==='set_country_flag'||k==='set_fleet_flag'||k==='set_ship_flag'||k==='set_planet_flag'){c.obj.flags.add(v);continue;}
   if(k==='remove_country_flag'||k==='remove_fleet_flag'){c.obj.flags.delete(v);continue;}
   if(k==='set_timed_fleet_flag'){c.obj.flags.add(get(v,'flag'));continue;}
   if(k==='clear_global_event_target'){delete targets[targetKey(v,c)];continue;}
@@ -353,6 +359,11 @@ function run(b,c) {
   if(k==='set_situation_progress'){c.obj.progress=+v;continue;}
   if(k==='start_situation'){(c.obj.situations??=[]).push({...make(get(v,'type')),progress:0,target:resolve(get(v,'target'),c)});continue;}
   if(k==='country_event'){notices.push([c.obj,get(v,'id')]);continue;}
+  if(k==='begin_event_chain'){(c.obj.chains??=new Set()).add(get(v,'event_chain'));continue;}
+  if(k==='end_event_chain'){c.obj.chains?.delete(v);c.obj.pois?.clear();continue;}
+  if(k==='create_point_of_interest'){(c.obj.pois??=new Map()).set(get(v,'id'),v);c.obj.poiCreates=(c.obj.poiCreates||0)+1;continue;}
+  if(k==='remove_point_of_interest'){c.obj.pois?.delete(v);continue;}
+  if(k==='set_visited'||k==='set_surveyed')continue; // no sensor simulation
   if(k==='set_aggro_range_measure_from'||k==='set_aggro_range'){c.obj[k]=v;continue;}
   if(k==='epoch_iii_spawn_command'){commands++;globalFlags.add('epoch_iii_command_created');continue;}
   if(k==='every_country'||k==='every_situation'||k==='every_owned_fleet'||k==='every_owned_planet'||k==='random_owned_fleet') {
@@ -453,7 +464,7 @@ const mobile={...make(),id:'mobile',owner:authority,solar_system:home,accessible
 globalFlags=flags('epoch_iii_active','epoch_iii_chapter_5');targets={epoch_iii_country:authority,epoch_iii_front_1:primary,epoch_iii_front_2:secondary};
 const rally=()=>run(effects.get('epoch_iii_rally_fleet'),ctx(mobile));rally();
 check(mobile.orders[0][1]===secondary,'Blocked primary falls back to reachable secondary front');
-check(countries.every(o=>o.situations.some(v=>v.type==='epoch_iii_front_marker')),'All empires receive stranded/current fleet map targets');
+check(countries.every(o=>!o.situations.some(v=>v.type==='epoch_iii_front_marker')),'Fleet movement creates no additional Situation Log entries');
 const clears=mobile.clears;const markerCounts=countries.map(o=>o.situations.length);rally();
 check(mobile.clears===clears&&countries.every((o,i)=>o.situations.length===markerCounts[i]),'Repeated rally pulse neither interrupts orders nor duplicates markers');
 mobile.flags.delete('epoch_iii_final_order_cooldown');mobile.accessible.add(primary);rally();check(mobile.orders[0][1]===secondary,'Active travel is not reset when a second route opens');
@@ -466,7 +477,7 @@ mobile.flags.delete('epoch_iii_final_order_cooldown');mobile.combat=true;const e
 check(mobile.clears===engagedClears,'Final orders do not interrupt combat');mobile.combat=false;mobile.disabled=true;rally();
 check(mobile.clears===engagedClears,'Disabled formation is located without invalid movement');
 const markerType=parsedByPath.get('common/situations/epoch_convergence_situations.txt').find(([k])=>k==='epoch_iii_front_marker')[1];
-const marker={...make(),target:home};check(!test(get(markerType,'abort_trigger'),ctx(marker)),'Actual surviving formation keeps final marker');
+const marker={...make(),target:home};check(test(get(markerType,'abort_trigger'),ctx(marker)),'Legacy fleet marker always closes');
 home.fleets=[];check(test(get(markerType,'abort_trigger'),ctx(marker)),'Empty final location removes obsolete marker');
 check(!globalFlags.has('epoch_iii_first_repulsed'),'Navigation and marker cleanup cannot award victory');
 
@@ -532,4 +543,87 @@ commander.flags.delete('epoch_iii_command_order_cooldown');commander.orders=[];a
 check(commander.orders[0][1]===battleSite,'After losing all nodes, commandant seeks an accessible opponent');
 check(triggerDoc.includes('has_fleet_order -')&&effectDoc.includes('closest_system -'),'Movement guards use documented native interfaces');
 
+// Post-playtest changes: exercise bounded state transitions, not an engine mock.
+for(const empireClass of ['organic','hive','machine']) {
+ const colony={...make(),owner:make()};colony.flags.add('epoch_iii_exposed_v1');
+ globalFlags=flags('epoch_iii_active');targets={};
+ const tick=()=>run(effects.get('epoch_iii_contamination_tick'),ctx(colony));
+ for(let m=0;m<11;m++)tick();
+ check(!colony.modifiers.has('epoch_iii_contamination_rising'),empireClass+': no premature annual escalation');tick();
+ check(colony.modifiers.has('epoch_iii_contamination_rising'),empireClass+': first annual step');
+ for(let m=0;m<12;m++)tick();
+ check(colony.modifiers.has('epoch_iii_contamination_severe')&&!colony.modifiers.has('epoch_iii_contamination_rising'),empireClass+': second step replaces first');
+ for(let m=0;m<120;m++)tick();check(colony.vars.epoch_iii_contamination_tier===2,empireClass+': decade cannot exceed two steps');
+ for(const blocker of ['epoch_iii_contained','epoch_iii_buffered','epoch_iii_treated']) {
+  colony.vars={};colony.flags.add(blocker);for(let m=0;m<24;m++)tick();
+  check(!colony.vars.epoch_iii_contamination_tier,blocker+' stops local worsening');colony.flags.delete(blocker);
+ }
+ colony.vars={};globalFlags.add('epoch_iii_scar_disabled');for(let m=0;m<24;m++)tick();
+ check(!colony.vars.epoch_iii_contamination_tier,empireClass+': source destruction stops escalation');
+ globalFlags=flags('epoch_iii_first_repulsed');for(let m=0;m<24;m++)tick();
+ check(!colony.vars.epoch_iii_contamination_tier&&colony.modifiers.has('epoch_iii_contamination_severe'),empireClass+': victory stops worsening without free healing');
+}
+const viewer=participant();countries=[viewer];targets={};
+for(let i=1;i<=4;i++)targets['epoch_iii_front_'+i]=make();
+globalFlags=flags('epoch_iii_active');
+const syncTargets=()=>run(effects.get('epoch_iii_sync_targets'),ctx(viewer));syncTargets();
+check(viewer.pois.size===4&&viewer.chains.size===1,'Four native POIs share one chain without a progress counter');
+check([...viewer.pois.values()].every(p=>get(p,'name')==='epoch_iii.poi.unknown'),'Functions remain unclassified before military knowledge');
+syncTargets();check(viewer.poiCreates===4,'Repeated pulse cannot duplicate unknown contacts');
+globalFlags.add('epoch_iii_battle_proven');syncTargets();
+check(viewer.poiCreates===8&&get(viewer.pois.get('epoch_iii_site_2'),'name')==='epoch_iii.poi.2','Battle knowledge replaces contacts with functional descriptions once');
+syncTargets();check(viewer.poiCreates===8,'Known contacts remain stable after reload-style repeat');
+globalFlags.add('epoch_iii_front_2_destroyed');syncTargets();check(!viewer.pois.has('epoch_iii_site_2'),'Destroyed source removes its POI');
+viewer.chains.clear();viewer.pois.clear();syncTargets();check(viewer.pois.size===3,'Lost chain reconstructs exactly the surviving contacts');
+globalFlags.add('epoch_iii_front_1_destroyed');globalFlags.add('epoch_iii_front_3_destroyed');globalFlags.add('epoch_iii_front_4_destroyed');syncTargets();
+check(viewer.chains.size===0,'All anchor losses remove the empty chain even with commandant alive');
+globalFlags.delete('epoch_iii_active');syncTargets();check(viewer.chains.size===0&&viewer.pois.size===0,'Resolution removes the chain and remaining POIs');
+check(!/start_situation\s*=\s*\{\s*type\s*=\s*epoch_iii_front_marker/.test(fleetSource),'No code creates legacy anchor/command/minor-fleet situations');
+const stageIcons=get(main,'stages').map(([,b])=>get(b,'icon'));
+check(new Set(stageIcons).size===5&&stageIcons.every(icon=>native('interface/situation_log.gfx').includes('"'+icon+'"')),'Five distinct installed chapter icons');
+for(const id of [70,71]) {
+ const survivor={...make(),owner:authority};survivor.flags.add('epoch_iii_cleanup');globalFlags=flags('epoch_iii_active');
+ check(!test(get(E(id),'trigger'),ctx(survivor)),'Retirement '+id+' impossible before victory');
+ globalFlags=flags('epoch_iii_first_repulsed');
+ if(id===70)survivor.flags.delete('epoch_iii_cleanup');
+ check(test(get(E(id),'trigger'),ctx(survivor)),'Retirement '+id+' allowed only after earned terminal milestone');
+}
+check(JSON.stringify(E(70)).includes('move_to')&&JSON.stringify(E(70)).includes('120'),'Native withdrawal has a bounded 120-day final dispersal');
+for(const id of [21,40,41])check(get(E(id),'trigger').some(([k,v])=>k==='has_global_flag'&&v==='epoch_iii_active'),'Queued callback '+id+' cannot award military buffs or death credit after resolution');
+for(const project of ['COUNTERHARMONICS','SITE_1','SITE_2','SITE_3','SITE_4'])check(JSON.stringify(effects.get('epoch_iii_cleanup_war')).includes('EPOCH_III_'+project),'Cleanup aborts '+project);
+check(get(E(51),'diplomatic')==='yes'&&JSON.stringify(E(51)).includes('epoch_iii_command_transmitted'),'Command escalation uses guarded native diplomatic presentation');
+check(get(get(E(10),'picture_event_data'),'portrait')===get(get(E(51),'picture_event_data'),'portrait'),'Both transmissions use the same reliable portrait');
+const decisions=new Map(normalized('common/decisions/epoch_convergence_decisions.txt'));
+for(const key of ['contain','investigate','treat'])check(+get(get(get(decisions.get('decision_epoch_iii_'+key),'resources'),'cost'),'energy')>0,key+' has real resource costs');
+check(!JSON.stringify(get(decisions.get('decision_epoch_iii_treat'),'potential')).includes('epoch_iii_active'),'Planetary treatment remains available after crisis');
+check(JSON.stringify(decisions.get('decision_epoch_iii_investigate')).includes('random_list'),'Uncontained investigation has an actual probabilistic accident');
+for(const year of [50,100,150])for(const difficulty of [0,2,4,5,6]) {
+ elapsedYears=year;gameDifficulty=difficulty;
+ const formation=make();formation.flags.add('epoch_iii_anchor');formation.modifiers.add('epoch_iii_disrupted_network');authority.fleets=[formation];
+ run(effects.get('epoch_iii_update_strength'),ctx(authority));
+ const tier=year>=100?(difficulty>=5?'hard':'late'):'base';
+ check(formation.modifiers.has('epoch_iii_force_'+tier),`Bounded force tier: year ${year}, difficulty ${difficulty}`);
+ const initial=[...formation.modifiers].sort().join();
+ for(let pulse=0;pulse<24;pulse++)run(effects.get('epoch_iii_update_strength'),ctx(authority));
+ check(initial===[...formation.modifiers].sort().join(),'Strength does not stack or erase science after repeated dispatch');
+ check(formation.modifiers.has('epoch_iii_bastion_hull'),'Anchors gain their independent fortification boost');
+}
+const supportCreates=effects.get('epoch_iii_create_support_stations').filter(([k])=>k==='create_fleet');
+check(supportCreates.length===2,'Two support stations are separate physical fleets');
+for(const [,station]of supportCreates){
+ const body=get(station,'effect');
+ check(body.filter(([k])=>k==='create_ship').length===1,'Each support fleet contains one station');
+ check(get(get(body,'set_location'),'target')==='event_target:epoch_iii_station_site.star','Support station uses a physical star location');
+ check(!JSON.stringify(body).includes('set_fleet_stance'),'Station creation avoids unsupported mobile stance');
+}
+check(native('gfx/models/ships/ai_01/_ai_01_ships_entities.asset').includes('ai_01_military_station_large_ai_entity'),'Large physical station has an installed graphical entity');
+check(native('gfx/models/ships/ai_01/_ai_01_ships_entities.asset').includes('ai_01_military_station_small_ai_entity'),'Small physical station has an installed graphical entity');
+for(const lang of ['english','german'])for(const file of fs.readdirSync(path.join(root,'localisation',lang)).filter(f=>f.endsWith('.yml'))) {
+ const p=path.join(root,'localisation',lang,file), bytes=fs.readFileSync(p),loc=bytes.toString('utf8');
+ check(new TextDecoder('utf-8',{fatal:true}).decode(bytes).length>0,file+': valid UTF-8');
+ check(bytes.subarray(0,3).equals(Buffer.from([239,187,191])),file+': all localization is UTF-8 BOM');
+ check(!/[\u2010\u2011\u2013-\u201f\u2026\u202f\ufffd]/.test(loc),file+': no known unsupported punctuation or replacement characters');
+ if(lang==='german')check(/[äöüß]/.test(loc),file+': German letters retained');
+ if(lang==='english')check(loc.includes("'"),file+': ordinary apostrophes retained');
+}
 console.log(`PASS: ${checks} Stage-III source/guard/isolation assertions. Static only; no engine, AI, save/load or MP validation.`);

@@ -1,5 +1,7 @@
 # Acceptance and Verification
 
+Stage III's next connected run follows the [second-playtest changes and focused acceptance sequence](phases/stage-iii-second-playtest.md). Earlier foundational matrices remain coverage references; they do not require repeated player signoffs for already confirmed opening mechanics.
+
 **Status: Binding test criteria.** Stage design is in the [stage specifications](phases/); engine evidence limits are in the [technical contract](technical-contract.md). This file is an acceptance plan, not a completed test report.
 
 ## Evidence discipline

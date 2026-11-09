@@ -24,10 +24,10 @@ epoch_iii_first_offensive = {
  desc = { trigger = { always = yes } text = epoch_iii_first_offensive_desc }
  stages = {
   stage_epoch_iii_answer = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 20 custom_tooltip = epoch_iii.answer_goal }
-  stage_epoch_iii_borders = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 40 custom_tooltip = epoch_iii.anchor_goal }
-  stage_epoch_iii_foci = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_blue end = 60 custom_tooltip = epoch_iii.fronts.tt }
-  stage_epoch_iii_convergence = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 80 custom_tooltip = epoch_iii.command.tt }
-  stage_epoch_iii_last = { icon = GFX_situation_stage_4 icon_background = GFX_situation_stage_frame_blue end = 100 custom_tooltip = epoch_iii.remaining_goal }
+  stage_epoch_iii_borders = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_blue end = 40 custom_tooltip = epoch_iii.anchor_goal }
+  stage_epoch_iii_foci = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 60 custom_tooltip = epoch_iii.fronts.tt }
+  stage_epoch_iii_convergence = { icon = GFX_situation_stage_4 icon_background = GFX_situation_stage_frame_blue end = 80 custom_tooltip = epoch_iii.command.tt }
+  stage_epoch_iii_last = { icon = GFX_situation_stage_5 icon_background = GFX_situation_stage_frame_blue end = 100 custom_tooltip = epoch_iii.remaining_goal }
  }
  monthly_progress = { base = 0 }
 
@@ -83,27 +83,13 @@ epoch_iii_first_offensive = {
  on_progress_complete = { }
 }
 
-# A native Situation Log target provides map navigation to each public front.
+# Compatibility shell: old saves close these entries; no code starts them.
 epoch_iii_front_marker = {
  picture = GFX_evt_black_hole
  category = negative
- situation_log_category = developments
- initial_progress = 0
- progress_direction = monodirectional
  permanent = yes
- desc = { trigger = { OR = { has_global_flag = epoch_iii_chapter_5 target = { any_fleet_in_system = { has_fleet_flag = epoch_iii_command } } } } text = epoch_iii.final_location }
- desc = { trigger = { NOT = { has_global_flag = epoch_iii_chapter_5 } target = { is_same_value = event_target:epoch_iii_front_1 } } text = epoch_iii.front.interdiction }
- desc = { trigger = { NOT = { has_global_flag = epoch_iii_chapter_5 } target = { is_same_value = event_target:epoch_iii_front_2 } } text = epoch_iii.front.scar }
- desc = { trigger = { NOT = { has_global_flag = epoch_iii_chapter_5 } exists = event_target:epoch_iii_front_3 target = { is_same_value = event_target:epoch_iii_front_3 } } text = epoch_iii.front.signal }
- desc = { trigger = { NOT = { has_global_flag = epoch_iii_chapter_5 } exists = event_target:epoch_iii_front_4 target = { is_same_value = event_target:epoch_iii_front_4 } } text = epoch_iii.front.reserve }
- abort_trigger = { OR = { NOT = { has_global_flag = epoch_iii_active }
-  AND = { has_global_flag = epoch_iii_chapter_5 target = { NOT = { any_fleet_in_system = { exists = owner owner = { is_country_type = epoch_convergence } OR = { has_fleet_flag = epoch_iii_raid has_fleet_flag = epoch_iii_guard } } } } }
-  AND = { NOT = { has_global_flag = epoch_iii_chapter_5 }
-   target = { NOT = { any_fleet_in_system = { OR = { has_fleet_flag = epoch_iii_anchor has_fleet_flag = epoch_iii_command } } } }
-  }
- } }
- stages = { stage_epoch_iii_front = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 100 } }
+ abort_trigger = { always = yes }
+ stages = { stage_epoch_iii_front = { icon = GFX_situation_stage_1 end = 100 } }
  monthly_progress = { base = 0 }
- approach = { name = epoch_iii_watch on_select = { custom_tooltip = epoch_iii.watch.tt } default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 10 } }
- on_progress_complete = { }
+ approach = { name = epoch_iii_watch default = yes on_select = { custom_tooltip = epoch_iii.watch.tt } icon = GFX_situation_approach_research ai_weight = { base = 1 } }
 }

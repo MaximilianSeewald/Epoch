@@ -1,6 +1,23 @@
 # Default includes subjects, genocidals, Hive/Machine and mobile player origins.
 epoch_iii_public_empire = { is_country_type = default }
 
+epoch_iii_affected_world = {
+ OR = { has_planet_flag = epoch_iii_exposed_v1 has_planet_flag = epoch_iii_scar_exposed }
+}
+
+epoch_iii_old_world_unclaimed = {
+ owner = {
+  NOR = {
+   has_country_flag = epoch_core_campaign_active
+   has_country_flag = epoch_res_active
+   has_country_flag = epoch_ii_active
+   exists = event_target:epoch_core_world@this
+   exists = event_target:epoch_core_structure_site@this
+   exists = event_target:epoch_ii_target_planet@this
+  }
+ }
+}
+
 epoch_iii_preparation_eligible = {
  epoch_iii_public_empire = yes
  has_country_flag = epoch_res_schema_v1

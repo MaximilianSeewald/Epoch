@@ -1,5 +1,7 @@
 # Stage III – connected campaign after the first playtest
 
+> Historical first-playtest implementation record. The [second-playtest changes](stage-iii-second-playtest.md) supersede its residual-fleet victory requirement, extra target situations, planetary treatment limits and original balance values. Use that report for the next connected acceptance run.
+
 Date: 2026-11-09. Tested opening baseline: `b4214087380d5548e7472e4ec197bb21b49b2144`. Branch: `feature/stage-iii-convergence`; existing PR #15 remains open and unmerged. Target: installed Cygnus 4.5.3 (4e91).
 
 The user confirmed the previous opening in-game, including real attacks and anchor-linked reinforcement stopping. They rejected its gameplay: a single weak offensive ended too quickly and its location was unclear. This expansion is implemented and statically checked. No new engine, balance, save/load or MP pass is claimed.

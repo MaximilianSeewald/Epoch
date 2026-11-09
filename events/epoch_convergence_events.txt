@@ -7,6 +7,17 @@ event = {
  hide_window = yes
  is_triggered_only = yes
  immediate = {
+  # Upgrade already resolved saves once, without reopening the crisis.
+  if = { limit = { has_global_flag = epoch_iii_first_repulsed }
+   every_country = { limit = { has_country_flag = epoch_iii_enrolled NOT = { has_country_flag = epoch_iii_cleanup_v3 } }
+    set_country_flag = epoch_iii_cleanup_v3
+    epoch_iii_cleanup_war = yes
+    every_situation = { limit = { OR = { is_situation_type = epoch_iii_first_offensive is_situation_type = epoch_iii_front_marker } } destroy_situation = this }
+   }
+   if = { limit = { exists = event_target:epoch_iii_country }
+    event_target:epoch_iii_country = { every_owned_fleet = { limit = { NOT = { has_fleet_flag = epoch_iii_cleanup } } fleet_event = { id = epoch_iii.70 } } }
+   }
+  }
   if = { limit = { NOT = { has_global_flag = epoch_iii_initialized } }
    set_global_flag = epoch_iii_initialized
    if = { limit = { mid_game_years_passed >= 0 }
@@ -93,12 +104,19 @@ country_event = {
     epoch_iii_enroll = yes
    }
    epoch_iii_update_chapter = yes
+   epoch_iii_check_resolution = yes
+  }
+  if = { limit = { has_global_flag = epoch_iii_active }
    epoch_iii_front_operations = yes
+   epoch_iii_update_strength = yes
    every_owned_fleet = { limit = { has_fleet_flag = epoch_iii_raid } fleet_event = { id = epoch_iii.30 } }
    every_country = { limit = { has_country_flag = epoch_iii_enrolled } epoch_iii_offer_sites = yes
     if = { limit = { any_situation = { is_situation_type = epoch_iii_first_offensive current_situation_approach = epoch_iii_shield } } set_country_flag = epoch_iii_shield_response }
     else = { remove_country_flag = epoch_iii_shield_response }
-    epoch_iii_update_defenses = yes }
+    epoch_iii_update_defenses = yes
+    every_owned_planet = { limit = { is_colony = yes exists = planet } colony = { epoch_iii_contamination_tick = yes } }
+    if = { limit = { has_global_flag = epoch_iii_command_created NOT = { has_country_flag = epoch_iii_command_transmitted } } country_event = { id = epoch_iii.51 } }
+   }
    epoch_iii_check_resolution = yes
   }
  }
@@ -140,12 +158,12 @@ country_event = {
  immediate = { event_target:epoch_iii_front = { save_event_target_as = epoch_iii_front_location } }
  option = { name = epoch_iii.10.decode
   custom_tooltip = epoch_iii.decode.tt
-  hidden_effect = { add_modifier = { modifier = epoch_iii_decoding days = 1800 } country_event = { id = epoch_iii.11 } }
+  hidden_effect = { if = { limit = { has_global_flag = epoch_iii_active } add_modifier = { modifier = epoch_iii_decoding days = 1800 } country_event = { id = epoch_iii.11 } } }
   ai_chance = { factor = 50 }
  }
  option = { name = epoch_iii.10.respond
   tooltip = { add_modifier = { modifier = epoch_iii_emergency days = 1800 } }
-  custom_tooltip = epoch_iii.first_objectives hidden_effect = { add_modifier = { modifier = epoch_iii_emergency days = 1800 } country_event = { id = epoch_iii.11 } } ai_chance = { factor = 50 } }
+  custom_tooltip = epoch_iii.first_objectives hidden_effect = { if = { limit = { has_global_flag = epoch_iii_active } add_modifier = { modifier = epoch_iii_emergency days = 1800 } country_event = { id = epoch_iii.11 } } } ai_chance = { factor = 50 } }
 }
 
 country_event = {
@@ -157,14 +175,14 @@ country_event = {
  desc = { trigger = { NOT = { is_gestalt = yes } has_country_flag = epoch_iii_cohort_uninitiated } text = epoch_iii.11.desc }
  picture = GFX_evt_black_hole
  is_triggered_only = yes
- trigger = { has_country_flag = epoch_iii_enrolled }
+ trigger = { has_global_flag = epoch_iii_active has_country_flag = epoch_iii_enrolled }
  immediate = { event_target:epoch_iii_front = { save_event_target_as = epoch_iii_front_location } }
  option = {
   name = epoch_iii.research
   trigger = { NOT = { has_country_flag = epoch_iii_counterharmonics } NOT = { has_special_project = EPOCH_III_COUNTERHARMONICS } }
   allow = { resource_stockpile_compare = { resource = energy value >= 300 } }
   tooltip = { add_resource = { energy = -300 } custom_tooltip = epoch_iii.research.tt }
-  hidden_effect = { if = { limit = { has_country_flag = epoch_iii_enrolled NOT = { has_country_flag = epoch_iii_counterharmonics } NOT = { has_special_project = EPOCH_III_COUNTERHARMONICS } resource_stockpile_compare = { resource = energy value >= 300 } }
+  hidden_effect = { if = { limit = { has_global_flag = epoch_iii_active has_country_flag = epoch_iii_enrolled NOT = { has_country_flag = epoch_iii_counterharmonics } NOT = { has_special_project = EPOCH_III_COUNTERHARMONICS } resource_stockpile_compare = { resource = energy value >= 300 } }
    add_resource = { energy = -300 }
    enable_special_project = { name = EPOCH_III_COUNTERHARMONICS location = this owner = root }
   } }
@@ -197,7 +215,7 @@ country_event = {
  id = epoch_iii.21
  hide_window = yes
  is_triggered_only = yes
- trigger = { epoch_iii_public_empire = yes has_country_flag = epoch_iii_enrolled NOT = { has_country_flag = epoch_iii_counterharmonics } }
+ trigger = { has_global_flag = epoch_iii_active epoch_iii_public_empire = yes has_country_flag = epoch_iii_enrolled NOT = { has_country_flag = epoch_iii_counterharmonics } }
  immediate = {
   set_country_flag = epoch_iii_counterharmonics
   add_modifier = { modifier = epoch_iii_counterharmonics days = 3600 }
@@ -213,7 +231,7 @@ fleet_event = {
  id = epoch_iii.30
  hide_window = yes
  is_triggered_only = yes
- trigger = { has_fleet_flag = epoch_iii_raid exists = owner owner = { is_country_type = epoch_convergence } NOT = { is_in_combat = yes } NOT = { is_disabled = yes } }
+ trigger = { has_global_flag = epoch_iii_active exists = solar_system has_fleet_flag = epoch_iii_raid exists = owner owner = { is_country_type = epoch_convergence } NOT = { is_in_combat = yes } NOT = { is_disabled = yes } }
  immediate = {
   if = { limit = { has_global_flag = epoch_iii_chapter_5 }
    epoch_iii_rally_fleet = yes
@@ -300,6 +318,7 @@ country_event = {
   if = { limit = { from = { epoch_iii_public_empire = yes } }
    from = { set_country_flag = epoch_iii_military_contribution }
   }
+  epoch_iii_check_resolution = yes
   country_event = { id = epoch_iii.2 days = 1 }
  }
 }
@@ -322,6 +341,7 @@ country_event = {
   every_owned_fleet = { remove_modifier = epoch_iii_command_pressure }
   epoch_iii_update_chapter = yes
   if = { limit = { from = { epoch_iii_public_empire = yes } } from = { set_country_flag = epoch_iii_military_contribution } }
+  epoch_iii_check_resolution = yes
   country_event = { id = epoch_iii.2 days = 1 }
  }
 }
@@ -428,16 +448,19 @@ country_event = {
  desc = epoch_iii.50.desc
  picture = GFX_evt_black_hole
  is_triggered_only = yes
- option = { name = epoch_iii.acknowledge }
+ option = { name = epoch_iii.acknowledge custom_tooltip = epoch_iii.fronts.tt }
 }
 
 country_event = {
  id = epoch_iii.51
  title = epoch_iii.51.name
  desc = epoch_iii.51.desc
- picture = GFX_evt_black_hole
+ diplomatic = yes
+ picture_event_data = { portrait = event_target:epoch_iii_species room = no_video_feed_room }
  is_triggered_only = yes
- option = { name = epoch_iii.acknowledge }
+ trigger = { has_global_flag = epoch_iii_active has_global_flag = epoch_iii_command_created NOT = { has_country_flag = epoch_iii_command_transmitted } }
+ immediate = { set_country_flag = epoch_iii_command_transmitted }
+ option = { name = epoch_iii.acknowledge custom_tooltip = epoch_iii.command.tt }
 }
 
 country_event = {
@@ -446,7 +469,7 @@ country_event = {
  desc = epoch_iii.52.desc
  picture = GFX_evt_black_hole
  is_triggered_only = yes
- option = { name = epoch_iii.acknowledge }
+ option = { name = epoch_iii.acknowledge custom_tooltip = epoch_iii.remaining_goal }
 }
 
 # Native fleet ROOT, FROM system: real border crossing, independent of observers.
@@ -496,4 +519,31 @@ country_event = {
   fromfromfrom = { has_fleet_flag = epoch_iii_command }
  }
  immediate = { from = { set_global_flag = epoch_iii_command_engaged epoch_iii_update_chapter = yes } }
+}
+
+# After earned victory only: visible native departure followed by bounded dispersal.
+fleet_event = {
+ id = epoch_iii.70
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { exists = owner owner = { is_country_type = epoch_convergence has_country_flag = epoch_iii_identity_v1 } has_global_flag = epoch_iii_first_repulsed NOT = { has_global_flag = epoch_iii_active } NOT = { has_fleet_flag = epoch_iii_cleanup } }
+ immediate = {
+  set_fleet_flag = epoch_iii_cleanup
+  clear_fleet_actions = this
+  set_aggro_range = 0
+  if = { limit = { NOT = { has_fleet_flag = epoch_iii_station } }
+   set_fleet_stance = evasive
+   if = { limit = { exists = solar_system exists = event_target:epoch_iii_front_1 can_access_system = event_target:epoch_iii_front_1 }
+    queue_actions = { move_to = event_target:epoch_iii_front_1 }
+   }
+  }
+  fleet_event = { id = epoch_iii.71 days = 120 }
+ }
+}
+fleet_event = {
+ id = epoch_iii.71
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { exists = owner owner = { is_country_type = epoch_convergence has_country_flag = epoch_iii_identity_v1 } has_global_flag = epoch_iii_first_repulsed NOT = { has_global_flag = epoch_iii_active } has_fleet_flag = epoch_iii_cleanup }
+ immediate = { delete_fleet = this }
 }
