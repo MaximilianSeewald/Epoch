@@ -4,13 +4,44 @@ Date: 2026-11-09. Tested opening baseline: `b4214087380d5548e7472e4ec197bb21b49b
 
 The user confirmed the previous opening in-game, including real attacks and anchor-linked reinforcement stopping. They rejected its gameplay: a single weak offensive ended too quickly and its location was unclear. This expansion is implemented and statically checked. No new engine, balance, save/load or MP pass is claimed.
 
-## Connected gameplay
+## Shared galactic chapters (gameplay review, 2026-11-09)
 
-1. **The Answering Signal:** the existing consent-gated private warning and paid research remain available only from configured M−20 to M. At M one shared country starts regardless of personal history. A native diplomatic transmission shows a base-game robot portrait. Recording it grants five years of +10% research speed; mobilizing grants five years of +20% shipyard build speed. Neither answer changes hostility.
-2. **The Silent Borders:** two mandatory safely selected systems, a third on medium or larger maps and a fourth on large/huge maps where safe candidates exist. No country assets are replaced. Each system has a native large AI station plus two immobile small stations in a defended node fleet, a fourteen-Enforcer garrison, and two outgoing Hunter/Enforcer fleets immediately. One node loss cannot stop other sources.
-3. **The Three Foci:** the first native formation loss exposes the three functions. Interdiction is the first fortified node. The second node causes additional planetary strikes against adjacent ordinary empires. The third node coordinates logistics; with only two sites this function is combined with the scar node. A fourth node is a reserve source. Every registered node remains a physical military objective. Destroyed nodes offer actual 180-day scientist-led science-ship projects at their stars. Failed or canceled projects become available again while the crisis is active. Global study flags suppress duplicate completion and abort obsolete copies.
-4. **Convergence:** the first node destroyed in battle triggers one unique native large AI command ship with twenty-four Enforcers. It uses the same bounded movement controller as attackers, with a separate ship-death hook for the actual commandant. One secured-site study limits each remaining source to four lifetime sorties; two studies reduce all surviving Nullwarden weapon damage and shields by 20%, including future formations. Study also unlocks the existing counterharmonics/planetary buffering response.
-5. **The Last Order:** every registered fortified node must be destroyed. The command ship, all surviving attackers and all garrisons require genuine combat defeat. No project, payment, elapsed time, situation progress, missing reference or scripted removal can end the crisis. Fleet and ship victim hooks require a foreign perpetrator plus an actual perpetrator fleet/ship. Surviving escorts remain obligations after command-ship death. The final report reflects military, science-supported or joint success. Native final-blow contributors receive a once-only ten-year +5% fire-rate modifier. Old scars and prior story choices survive.
+The canonical saved hostile country owns one authoritative variable, `epoch_iii_chapter`. Global chapter flags are compatibility/history facts; local display flags are no longer read or incremented. The existing no-scope coordinator dispatches this country regardless of Stage-I/II participation. Research callbacks and local approaches cannot write or dispatch chapter progression.
+
+| Chapter | Required global physical evidence | Identical displayed progress |
+|---|---|---|
+| I — The Answering Signal | Registered physical fronts and outbreak; native diplomatic transmission per empire | 0 |
+| II — The Silent Borders | A real raid crosses into an ordinary empire's system, or a verified hostile formation dies in combat | 21 |
+| III — The Three Foci | First verified native formation loss; reports expose the separate front functions | 41 |
+| IV — Convergence | A fortified node has genuinely fallen in combat; create the unique command formation exactly once | 61 |
+| V — The Last Order | Every registered fortified node has genuinely fallen | 81 |
+
+Every transition also requires expiration of a saved 90-day dwell guard on the canonical country. The reverse-ordered exclusive branches allow only one transition per dispatch. Earlier genuine evidence is retained, but cannot cascade several chapters in one battle tick. Time alone satisfies no military milestone. A final 90-day minimum display interval also precedes resolution; the unmodified combat obligations remain mandatory. This pacing is a tuning choice requiring acceptance, not measured balance.
+
+Each empire's native situation is an absolute projection using the documented `set_situation_progress` effect, never a local increment or local completion reward. A transition publishes to all enrolled empires in that same coordinator execution. Creation/type-change hooks enroll newly eligible empires and project the current saved chapter immediately; the monthly pass repairs missed enrollment or missing/stale main situations. No personal project or display stage entry grants military credit or rewards. Private M−20 preparation is still a separate situation.
+
+Active older saves adopt their highest existing global chapter/command fact once. The migration does not reset destruction proofs, spent reinforcement budgets or command creation. Old local display flags are ignored. A missing canonical reference still fails closed using existing identity recovery; it cannot create another crisis or infer victory. Engine serialization, event ordering and host/client UI refresh remain unverified.
+
+## Local responses and military choices
+
+Four native mutually exclusive approaches have continuous, automatically scoped modifiers and upkeep. They affect only their owner's response, including ordinary ships/research/economy, and disappear when the situation closes:
+
+| Response | Benefit | Cost / tradeoff |
+|---|---|---|
+| Mobilization (default) | +20% shipyard build speed | 10 energy + 3 alloys/month; +5% ship upkeep |
+| Analysis | +10% research speed; reopens paid personal counterharmonics proposal | 15 energy/month; −10% shipyard build speed |
+| Planetary shielding | +5 stability, +5% job output across owned worlds | 20 energy + 5 minerals/month; +10% ship upkeep |
+| Counteroffensive (from III) | +10% fire rate and ship speed | 15 energy + 5 alloys/month; +15% ship upkeep |
+
+Shielding supports world economies but does not clear old planetary features or permanently buffer worlds. The existing paid 90-day planetary buffering decision remains available. Counterharmonics, scientist-led secured-site studies, source budgets and the three military victory variants retain their existing requirements. Organic veterans refer only to their own saved network experience; Hive and Machine operational briefings use distinct perspectives. The first diplomatic transmission and Stage-IV information boundary remain intact. EN/DE keys cover all additions.
+
+The first interdiction node now supports **+20% shields throughout the hostile network** until destroyed. The scar node continues periodic planetary pressure; destroying it stops new strikes without healing old damage. The signal relay restricts other sources to three lifetime sorties, and the optional reserve remains an independent source. Thus attacking shields, planetary pressure or logistics first leaves the other functions dangerous. One secured-site study limits remaining sources to four sorties; two weaken hostile weapons/shields by 20%. These studies assist combat without changing any chapter.
+
+The command vessel gives existing and future raids +15% fire rate and speed, cancels old offensive replanning cooldowns, and makes nearby inhabited systems preferred targets. Its own formation receives the same pressure bonus. Surviving formations retain that last order after its destruction. In chapter V all mobile attackers, the command formation and surviving garrisons receive native movement orders toward the **first marked front**, which remains the main situation's map target. Ordinary roaming is bypassed. Out-of-combat, enabled fleets replan at most every 180 days; no teleport, scripted death, reference-loss credit or reinforcement-budget refund occurs. Native path failures, aggro interruptions and disconnected topology can still delay arrival and require runtime inspection; inaccessible fleets remain real military obligations.
+
+## Installed Vanilla comparison
+
+Targeted comparison uses the actual installed 4.5.3 source, with no Vanilla overrides: `events/marauder_events.txt` (`marauder.505`, `marauder.523`) ties the Khan's military turning points and renewed offensive to a canonical faction and verified losses; EPOCH similarly makes a unique command appearance change the offensive, without copying resurrection or submission. `events/gray_goo_events.txt` (`graygoo.3`) gates reinforcement on the live factory: EPOCH retains physical, independently destructible finite sources and adds a shield-support function. `common/situations/11_grand_archive_situations.txt` separates the Voidworm coordinator from local plague approaches: EPOCH adopts costed local responses while deliberately keeping all five military chapters globally synchronized. The Vanilla vaccine-driven individual progression is not copied.
 
 ## Parameters and dependencies
 
@@ -37,7 +68,7 @@ Previously enrollment only surveyed the primary system. Survey knowledge does no
 
 The diplomatic transmission is once per enrolled country. The hostile country appears in contacts; bespoke repeat conversations through its contact screen are not implemented. The Situation briefing remains available for operational research. A larger custom diplomatic interface is unnecessary.
 
-Preparation and offensive situation type/monthly-change keys exist in EN/DE. Passive approaches now have real on-select tooltips. Station fleets receive no unsupported fleet-stance command; only native mobile formations receive aggressive stance.
+Preparation and offensive situation type/monthly-change keys exist in EN/DE. The offensive now has four costed local responses; only preparation and map markers retain passive approaches. Station fleets receive no unsupported fleet-stance command; only native mobile formations receive aggressive stance.
 
 ## Persistence and conservative recovery
 
@@ -56,5 +87,9 @@ Other logs include Workshop portrait/flag assets and native caravan/subject diag
 ## Static evidence and remaining validation
 
 Run `powershell -ExecutionPolicy Bypass -File scripts/test_epoch_regressions.ps1`, including the full Clausewitz parser, unchanged old-stage flow/economy/narrative regressions, native component checks and expanded source-guard assertions. The dated static-output artifact records actual results. Source observations never certify native travel, UI, AI balance, research delivery, loss hooks, SP saves or host/client synchronization.
+
+The review regression run is recorded in [synchronization static output](../research/stage-iii-synchronization-static-checks-2026-11-09.txt). It includes interpreted coordinator transitions for two empires, personal research isolation, repeated dispatch, stale display repair, late chapter-IV enrollment, physical final gates and unchanged old-stage files. These are explicit static models, not actual saves or multiplayer sessions.
+
+Runtime acceptance must additionally check two human empires displaying the same chapter throughout; one personal research completion; an AI anchor kill with a single publication; a newly created chapter-IV empire; save/load during chapter III without report/reward duplication; outbreak without Stage-I/II participants; and a final combat finish in each of the three variants. Also inspect five-stage boundaries, approach upkeep/removal, new global shield support, command target pressure and reachable final rally orders. No new ingame run has been performed.
 
 One connected player acceptance session should start from a pre-M save with a qualified prepared empire and an uninitiated neighbor. Let the outbreak occur naturally, inspect the transmission/front markers, fight and lose an initial battle, rebuild, then destroy different nodes and inspect changes to propagation and reinforcement. Keep one checkpoint before the first node falls and branch it into direct military, two-site science-supported and two-empire combat finishes. In each branch verify the command vessel dies in actual combat, surviving escorts still block completion, no more reinforcements arrive from destroyed nodes, old world states survive, and reload before/after completion gives no repeat reward. Collect fresh error/game logs with the tested SHA. Separate targeted M/gestalt/MP fixtures remain part of the acceptance matrix, not implied by this one session.

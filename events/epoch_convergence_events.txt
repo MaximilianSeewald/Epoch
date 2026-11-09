@@ -92,6 +92,7 @@ country_event = {
     abort_special_project = { type = EPOCH_III_PREPARE }
     epoch_iii_enroll = yes
    }
+   epoch_iii_update_chapter = yes
    epoch_iii_front_operations = yes
    every_owned_fleet = { limit = { has_fleet_flag = epoch_iii_raid } fleet_event = { id = epoch_iii.30 } }
    every_country = { limit = { has_country_flag = epoch_iii_enrolled } epoch_iii_offer_sites = yes }
@@ -147,7 +148,10 @@ country_event = {
 country_event = {
  id = epoch_iii.11
  title = epoch_iii.10.name
- desc = epoch_iii.11.desc
+ desc = { trigger = { is_machine_empire = yes } text = epoch_iii.11.machine }
+ desc = { trigger = { is_hive_empire = yes } text = epoch_iii.11.hive }
+ desc = { trigger = { NOT = { is_gestalt = yes } OR = { has_country_flag = epoch_iii_cohort_prepared has_country_flag = epoch_iii_cohort_experienced } } text = epoch_iii.11.veteran }
+ desc = { trigger = { NOT = { is_gestalt = yes } has_country_flag = epoch_iii_cohort_uninitiated } text = epoch_iii.11.desc }
  picture = GFX_evt_black_hole
  is_triggered_only = yes
  trigger = { has_country_flag = epoch_iii_enrolled }
@@ -208,7 +212,10 @@ fleet_event = {
  is_triggered_only = yes
  trigger = { has_fleet_flag = epoch_iii_raid exists = owner owner = { is_country_type = epoch_convergence } NOT = { is_in_combat = yes } NOT = { is_disabled = yes } }
  immediate = {
-  if = { limit = { OR = {
+  if = { limit = { has_global_flag = epoch_iii_chapter_5 }
+   epoch_iii_rally_fleet = yes
+  }
+  else_if = { limit = { OR = {
    NOT = { has_fleet_flag = epoch_iii_order_cooldown }
    NOT = { exists = event_target:epoch_iii_goal@this }
    AND = { exists = event_target:epoch_iii_goal@this event_target:epoch_iii_goal@this = { NOT = { exists = owner } } }
@@ -216,9 +223,16 @@ fleet_event = {
   } }
    if = { limit = { exists = event_target:epoch_iii_goal@this } clear_global_event_target = epoch_iii_goal@this }
    solar_system = {
+    if = { limit = { has_global_flag = epoch_iii_command_created }
+     random_neighbor_system = { limit = { exists = owner owner = { epoch_iii_public_empire = yes } any_system_planet = { is_colony = yes } }
+      save_global_event_target_as = epoch_iii_goal@root
+     }
+    }
+    if = { limit = { NOT = { exists = event_target:epoch_iii_goal@root } }
     random_neighbor_system = {
      limit = { exists = owner owner = { epoch_iii_public_empire = yes } NOT = { is_capital_system = yes } }
      save_global_event_target_as = epoch_iii_goal@root
+    }
     }
     if = { limit = { NOT = { exists = event_target:epoch_iii_goal@root } }
      random_neighbor_system = { limit = { any_neighbor_system = { exists = owner owner = { epoch_iii_public_empire = yes } } }
@@ -277,10 +291,8 @@ country_event = {
   else_if = { limit = { fromfrom = { has_fleet_flag = epoch_iii_raid } }
    change_variable = { which = epoch_iii_raids_destroyed value = 1 }
   }
-  if = { limit = { NOT = { has_global_flag = epoch_iii_chapter_3 } }
-   set_global_flag = epoch_iii_chapter_3
-   every_country = { limit = { has_country_flag = epoch_iii_enrolled } country_event = { id = epoch_iii.50 } }
-  }
+  set_global_flag = epoch_iii_battle_proven
+  epoch_iii_update_chapter = yes
   if = { limit = { from = { epoch_iii_public_empire = yes } }
    from = { set_country_flag = epoch_iii_military_contribution }
   }
@@ -303,6 +315,7 @@ country_event = {
  immediate = {
   fromfrom = { set_ship_flag = epoch_iii_death_recorded }
   set_global_flag = epoch_iii_command_destroyed
+  epoch_iii_update_chapter = yes
   if = { limit = { from = { epoch_iii_public_empire = yes } } from = { set_country_flag = epoch_iii_military_contribution } }
   country_event = { id = epoch_iii.2 days = 1 }
  }
@@ -425,4 +438,25 @@ country_event = {
  picture = GFX_evt_black_hole
  is_triggered_only = yes
  option = { name = epoch_iii.acknowledge }
+}
+
+# Native fleet ROOT, FROM system: real border crossing, independent of observers.
+fleet_event = {
+ id = epoch_iii.31
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { has_global_flag = epoch_iii_active has_fleet_flag = epoch_iii_raid
+  exists = owner owner = { is_country_type = epoch_convergence }
+  solar_system = { exists = owner owner = { epoch_iii_public_empire = yes } }
+ }
+ immediate = { set_global_flag = epoch_iii_border_crossed owner = { epoch_iii_update_chapter = yes } }
+}
+country_event = {
+ id = epoch_iii.3
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { has_global_flag = epoch_iii_active epoch_iii_public_empire = yes
+  exists = event_target:epoch_iii_country NOT = { has_country_flag = epoch_iii_enrolled }
+ }
+ immediate = { epoch_iii_enroll = yes }
 }

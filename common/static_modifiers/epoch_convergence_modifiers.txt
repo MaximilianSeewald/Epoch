@@ -38,3 +38,7 @@ epoch_iii_scar_shielded = { planet_jobs_produces_mult = -0.03 planet_stability_a
 epoch_iii_veterans = { ship_fire_rate_mult = 0.05 }
 
 epoch_iii_decoding = { all_technology_research_speed = 0.10 }
+
+epoch_iii_command_pressure = { ship_fire_rate_mult = 0.15 ship_speed_mult = 0.15 }
+
+epoch_iii_interdiction_field = { ship_shield_mult = 0.20 }

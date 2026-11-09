@@ -82,3 +82,9 @@ epoch_iii_clean_carrier = {
   has_deposit = d_epoch_silent_structure_destroyed
  }
 }
+
+epoch_iii_all_nodes_destroyed = {
+ has_global_flag = epoch_iii_front_1_destroyed has_global_flag = epoch_iii_front_2_destroyed
+ OR = { NOT = { has_global_flag = epoch_iii_front_3_registered } has_global_flag = epoch_iii_front_3_destroyed }
+ OR = { NOT = { has_global_flag = epoch_iii_front_4_registered } has_global_flag = epoch_iii_front_4_destroyed }
+}

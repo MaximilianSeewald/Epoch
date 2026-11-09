@@ -55,6 +55,8 @@ function test(b,c) {
   if(k==='has_starbase_size')return c.obj.size===v;
   if(k==='fleet_power')return compare(c.obj.power||0,op,+v);
   if(k==='always')return v==='yes';
+  if(k==='any_situation')return (c.obj.situations||[]).some(o=>test(v,scope(o,c)));
+  if(k==='is_situation_type')return c.obj.type===v;
   if(k==='check_variable') {
    const [valueKey,value] = v.find(([key])=>key.startsWith('value'));
    return compare(c.obj.vars[get(v,'which')]||0,split(valueKey)[1],Number.isFinite(+value)?+value:c.obj.vars[value]||0);
@@ -135,8 +137,11 @@ for(const fronts of [2,3,4])for(const scientific of [false,true]) {
  globalFlags=flags(...won);
  if(scientific)globalFlags.add('epoch_iii_science_support');
  for(let i=3;i<=fronts;i++) {globalFlags.add(`epoch_iii_front_${i}_registered`);globalFlags.add(`epoch_iii_front_${i}_destroyed`);}
- enemy.vars={epoch_iii_spent:3,epoch_iii_raids_destroyed:3,epoch_iii_guards_created:fronts,epoch_iii_guards_destroyed:fronts};enemy.fleets=[];
+ enemy.vars={epoch_iii_chapter:5,epoch_iii_spent:3,epoch_iii_raids_destroyed:3,epoch_iii_guards_created:fronts,epoch_iii_guards_destroyed:fronts};enemy.fleets=[];
  check(test(victoryGate,ctx(enemy)),`${fronts} fronts: earned military victory, science=${scientific}`);
+ enemy.vars.epoch_iii_chapter=4;check(!test(victoryGate,ctx(enemy)),'Chapter IV cannot resolve');enemy.vars.epoch_iii_chapter=5;
+ for(const blocked of ['epoch_iii_chapter_dwell']){enemy.flags.add(blocked);check(!test(victoryGate,ctx(enemy)),'Final pacing guard blocks premature report');enemy.flags.delete(blocked);}
+ globalFlags.add('epoch_iii_first_repulsed');check(!test(victoryGate,ctx(enemy)),'Terminal crisis cannot award again');globalFlags.delete('epoch_iii_first_repulsed');
  for(const flag of ['epoch_iii_command_created','epoch_iii_command_destroyed',...Array.from({length:fronts},(_,i)=>`epoch_iii_front_${i+1}_destroyed`)]) {
   globalFlags.delete(flag);check(!test(victoryGate,ctx(enemy)),`Missing ${flag} cannot win`);globalFlags.add(flag);
  }
@@ -297,4 +302,96 @@ for(const i of [61,62,63,64]) {
 walk(normalized('common/scripted_effects/epoch_convergence_effects.txt'),(k,v)=>{
  if(k==='create_fleet'&&JSON.stringify(get(v,'effect')).includes('"set_fleet_flag","epoch_iii_anchor"'))check(!JSON.stringify(v).includes('set_fleet_stance'),'Anchor has no unsupported fleet stance');
 });
+
+// Execute the parsed coordinator and absolute projection against several empire
+// objects. This verifies script semantics within this explicit static subset,
+// not native hooks, native scheduling, save serialization or multiplayer.
+let countries=[], notices=[], commands=0;
+function run(b,c) {
+ let branch=false;
+ for(const [k,v]of b) {
+  if(k==='if'||k==='else_if') {
+   const yes=(k==='if'||!branch)&&test(get(v,'limit'),c);
+   if(k==='if')branch=false;
+   if(yes){run(v.filter(([x])=>x!=='limit'),c);branch=true;}
+   continue;
+  }
+  if(k==='else'){if(!branch)run(v,c);continue;}
+  if(k==='set_variable'){c.obj.vars[get(v,'which')]=+get(v,'value');continue;}
+  if(k==='change_variable'){const n=get(v,'which');c.obj.vars[n]=(c.obj.vars[n]||0)+ +get(v,'value');continue;}
+  if(k==='set_global_flag'){globalFlags.add(v);continue;}
+  if(k==='set_country_flag'){c.obj.flags.add(v);continue;}
+  if(k==='set_timed_country_flag'){c.obj.flags.add(get(v,'flag'));continue;}
+  if(k==='add_modifier'){c.obj.modifiers.add(get(v,'modifier'));continue;}
+  if(k==='remove_modifier'){c.obj.modifiers.delete(v);continue;}
+  if(k==='set_situation_progress'){c.obj.progress=+v;continue;}
+  if(k==='start_situation'){(c.obj.situations??=[]).push({...make(get(v,'type')),progress:0});continue;}
+  if(k==='country_event'){notices.push([c.obj,get(v,'id')]);continue;}
+  if(k==='set_aggro_range_measure_from'||k==='set_aggro_range'){c.obj[k]=v;continue;}
+  if(k==='epoch_iii_spawn_command'){commands++;globalFlags.add('epoch_iii_command_created');continue;}
+  if(k==='every_country'||k==='every_situation'||k==='every_owned_fleet') {
+   const list=k==='every_country'?countries:k==='every_situation'?c.obj.situations||[]:c.obj.fleets;
+   for(const o of list){const sub=scope(o,c);if(!get(v,'limit')||test(get(v,'limit'),sub))run(v.filter(([x])=>x!=='limit'),sub);}
+   continue;
+  }
+  if(effects.has(k)){run(effects.get(k),c);continue;}
+  const obj=resolve(k,c);assert.ok(obj,'Unimplemented execution scope '+k);run(v,scope(obj,c));
+ }
+}
+const authority=make('epoch_convergence');authority.flags.add('epoch_iii_identity_v1');
+const participant=()=>{const o=make();o.flags.add('epoch_iii_enrolled');return o;};
+countries=[participant(),participant()];targets={epoch_iii_country:authority};
+globalFlags=flags('epoch_iii_active','epoch_iii_chapters_v2');authority.vars.epoch_iii_chapter=1;
+const update=()=>run(effects.get('epoch_iii_update_chapter'),ctx(authority));
+const displayed=()=>countries.map(o=>o.situations[0].progress);
+update();check(JSON.stringify(displayed())==='[0,0]','Two empires start with identical chapter I');
+// Personal research changes no global chapter or either display.
+run(get(E(21),'immediate'),ctx(countries[0]));update();
+check(countries[0].flags.has('epoch_iii_counterharmonics')&&!countries[1].flags.has('epoch_iii_counterharmonics'),'Personal research stays personal');
+check(authority.vars.epoch_iii_chapter===1&&displayed().every(n=>n===0),'Personal research never advances chapter');
+globalFlags.add('epoch_iii_border_crossed');update();
+check(authority.vars.epoch_iii_chapter===2&&displayed().every(n=>n===21),'Physical border crossing publishes chapter II');
+globalFlags.add('epoch_iii_battle_proven');update();check(authority.vars.epoch_iii_chapter===2,'Dwell prevents immediate chapter cascade');
+authority.flags.delete('epoch_iii_chapter_dwell');update();
+check(displayed().every(n=>n===41),'AI or player military evidence publishes chapter III to all');
+const before=notices.length;update();check(notices.length===before,'Repeated dispatch cannot repeat transition reports');
+// Corrupt an old local display; absolute synchronization repairs it without
+// incrementing authority or reissuing chapter-entry narrative/rewards.
+countries[0].situations[0].progress=0;update();check(displayed().every(n=>n===41),'Reload-style stale display repaired from saved authority');
+check(notices.length===before,'Repair does not replay transition');
+globalFlags.add('epoch_iii_anchor_breached');authority.flags.delete('epoch_iii_chapter_dwell');update();
+check(displayed().every(n=>n===61)&&commands===1,'Breached anchor creates one command formation and chapter IV');
+const newcomer=participant();countries.push(newcomer);run(effects.get('epoch_iii_sync_display'),ctx(newcomer));
+check(newcomer.situations[0].progress===61,'New empire immediately inherits chapter IV');
+update();check(commands===1,'Repeated coordinator cannot duplicate commandant');
+authority.flags.delete('epoch_iii_chapter_dwell');update();check(authority.vars.epoch_iii_chapter===4,'Time alone cannot reach final chapter');
+globalFlags.add('epoch_iii_front_1_destroyed');update();check(authority.vars.epoch_iii_chapter===4,'One remaining node blocks final chapter');
+globalFlags.add('epoch_iii_front_2_destroyed');update();check(displayed().every(n=>n===81),'All physical node losses publish chapter V');
+check(!globalFlags.has('epoch_iii_first_repulsed'),'Chapter V publication never grants victory');
+// Saved canonical state reconstructs the same display without personal history.
+const durable=JSON.parse(JSON.stringify(authority.vars));authority.vars=durable;update();
+check(displayed().every(n=>n===81),'Saved chapter remains authoritative across reconstruction');
+
+// Upgrade an old active save from global evidence, ignoring obsolete local bits.
+globalFlags=flags('epoch_iii_active','epoch_iii_chapter_3');authority.vars={};authority.flags.delete('epoch_iii_chapter_dwell');
+countries[0].flags.add('epoch_iii_display_3');update();
+check(authority.vars.epoch_iii_chapter===3&&displayed().every(n=>n===41),'Legacy chapter III migrates once; obsolete local progress is ignored');
+const migrationNotices=notices.length;update();check(notices.length===migrationNotices,'Save adoption cannot replay chapter narrative');
+// Global progression has no private-history prerequisite.
+check(countries.every(o=>!o.flags.has('epoch_res_complete')),'Sync fixtures have no Stage-II completion');
+for(const id of [20,21,61,62,63,64])check(!/epoch_iii_(?:update_chapter|sync_display|chapter)|situation_progress/.test(JSON.stringify(E(id))), 'Research '+id+' cannot write or dispatch chapter progression');
+for(const [name,body]of effects)if(name!=='epoch_iii_update_chapter'&&name!=='epoch_iii_initialize_fronts') {
+ walk(body,(k,v)=>{if(k==='set_variable')check(get(v,'which')!=='epoch_iii_chapter',name+' cannot write authority');});
+}
+const main=parsedByPath.get('common/situations/epoch_convergence_situations.txt').find(([k])=>k==='epoch_iii_first_offensive')[1];
+check(get(main,'stages').length===5,'Main situation has five named phases');
+check(get(get(main,'monthly_progress'),'base')==='0','No monthly progression');
+for(const [,approach]of main.filter(([k])=>k==='approach')) {
+ check(!!get(approach,'modifier')&&!!get(get(approach,'resources'),'upkeep'),'Each main approach has ongoing benefits and costs');
+ check(!/set_situation_progress|add_situation_progress|epoch_iii_update_chapter/.test(JSON.stringify(approach)),'Local approach cannot change global progress');
+ for(const [key]of get(approach,'modifier'))check(modifierDoc.includes('- '+key+','),'Native approach modifier '+key);
+}
+check(effectDoc.includes('set_situation_progress -'),'Absolute situation setter supported by installed documentation');
+check(native('common/on_actions/00_on_actions.txt').includes('on_entering_system_fleet ='),'Physical border hook exists in installed Vanilla');
+
 console.log(`PASS: ${checks} Stage-III source/guard/isolation assertions. Static only; no engine, AI, save/load or MP validation.`);

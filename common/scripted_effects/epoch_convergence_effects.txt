@@ -40,6 +40,7 @@ epoch_iii_enroll = {
  set_country_flag = epoch_iii_full_front_intel
  epoch_iii_reveal_fronts = yes
  start_situation = { type = epoch_iii_first_offensive target = event_target:epoch_iii_front }
+ epoch_iii_sync_display = yes
  country_event = { id = epoch_iii.10 }
 }
 
@@ -209,7 +210,9 @@ epoch_iii_initialize_fronts = {
    } }
   }
   set_global_flag = epoch_iii_active
-  set_global_flag = epoch_iii_chapter_2
+  set_variable = { which = epoch_iii_chapter value = 1 }
+  set_global_flag = epoch_iii_chapters_v2
+  set_timed_country_flag = { flag = epoch_iii_chapter_dwell days = 90 }
   # Initial attacks follow enrollment so prepared worlds retain protection.
  }
 }
@@ -218,6 +221,14 @@ epoch_iii_initialize_fronts = {
 # Signal loss halves the remaining allowance of OTHER sources, not merely its
 # own. At most twelve mobile formations exist; commandant is separate.
 epoch_iii_front_operations = {
+ # Interdiction sustains all fleet shields; its destruction exposes other fronts.
+ every_owned_fleet = {
+  if = { limit = { has_global_flag = epoch_iii_front_1_destroyed has_modifier = epoch_iii_interdiction_field } remove_modifier = epoch_iii_interdiction_field }
+  else_if = { limit = { NOT = { has_global_flag = epoch_iii_front_1_destroyed } NOT = { has_modifier = epoch_iii_interdiction_field } }
+   add_modifier = { modifier = epoch_iii_interdiction_field days = -1 }
+  }
+ }
+
  every_country = { limit = { has_country_flag = epoch_iii_enrolled NOT = { has_country_flag = epoch_iii_full_front_intel } }
   set_country_flag = epoch_iii_full_front_intel
   every_situation = { limit = { is_situation_type = epoch_iii_front_marker } destroy_situation = this }
@@ -334,9 +345,7 @@ epoch_iii_front_operations = {
   set_timed_country_flag = { flag = epoch_iii_hazard_cooldown days = 720 }
   epoch_iii_scar_pressure = yes
  }
- if = { limit = { has_global_flag = epoch_iii_chapter_3 has_global_flag = epoch_iii_anchor_breached NOT = { has_global_flag = epoch_iii_command_created } }
-  epoch_iii_spawn_command = yes
- }
+
 }
 
 epoch_iii_spawn_raid = {
@@ -358,6 +367,7 @@ epoch_iii_spawn_raid = {
    set_location = { target = event_target:epoch_iii_spawn_site distance = 90 angle = random }
    set_fleet_stance = aggressive
    set_aggro_range_measure_from = self set_aggro_range = 250
+   if = { limit = { has_global_flag = epoch_iii_command_created } add_modifier = { modifier = epoch_iii_command_pressure days = -1 } }
    if = { limit = { has_global_flag = epoch_iii_science_support } add_modifier = { modifier = epoch_iii_disrupted_network days = -1 } }
    fleet_event = { id = epoch_iii.30 days = 1 }
   } }
@@ -406,15 +416,16 @@ epoch_iii_record_anchor_loss = {
    AND = { NOT = { has_global_flag = epoch_iii_front_3_registered } has_global_flag = epoch_iii_front_2_destroyed }
   }
  } set_global_flag = epoch_iii_signal_disabled }
- if = { limit = { NOT = { has_global_flag = epoch_iii_chapter_3 } }
-  set_global_flag = epoch_iii_chapter_3
-  every_country = { limit = { has_country_flag = epoch_iii_enrolled } country_event = { id = epoch_iii.50 } }
- }
+
 }
 
 epoch_iii_spawn_command = {
  set_global_flag = epoch_iii_command_created
- set_global_flag = epoch_iii_chapter_4
+ every_owned_fleet = { limit = { has_fleet_flag = epoch_iii_raid }
+  add_modifier = { modifier = epoch_iii_command_pressure days = -1 }
+  remove_fleet_flag = epoch_iii_order_cooldown
+ }
+ # Chapter publication belongs exclusively to the coordinator.
  # Use an extant source where possible; the last destroyed site remains a
  # physical navigable system if all anchors fell in the same battle tick.
  event_target:epoch_iii_front_1 = { save_event_target_as = epoch_iii_command_site }
@@ -427,6 +438,7 @@ epoch_iii_spawn_command = {
   every_owned_ship = { set_ship_flag = epoch_iii_commandant save_global_event_target_as = epoch_iii_command_ship }
   while = { count = 24 create_ship = { design = NAME_EPOCH_III_Enforcer graphical_culture = fallen_machine_empire_01 } }
   set_location = { target = event_target:epoch_iii_command_site distance = 100 angle = random }
+  add_modifier = { modifier = epoch_iii_command_pressure days = -1 }
   set_fleet_stance = aggressive
   set_aggro_range_measure_from = self set_aggro_range = 300
   if = { limit = { has_global_flag = epoch_iii_science_support } add_modifier = { modifier = epoch_iii_disrupted_network days = -1 } }
@@ -464,28 +476,15 @@ epoch_iii_scar_pressure = {
 # One validator for all three ways of fighting the crisis. No timer,
 # research callback, resource payment or missing object can satisfy it.
 epoch_iii_check_resolution = {
- every_country = { limit = { has_country_flag = epoch_iii_enrolled has_global_flag = epoch_iii_chapter_3 NOT = { has_country_flag = epoch_iii_display_1 } }
-  set_country_flag = epoch_iii_display_1
-  every_situation = { limit = { is_situation_type = epoch_iii_first_offensive } add_situation_progress = 25 }
- }
- every_country = { limit = { has_country_flag = epoch_iii_enrolled has_global_flag = epoch_iii_chapter_4 NOT = { has_country_flag = epoch_iii_display_2 } }
-  set_country_flag = epoch_iii_display_2
-  every_situation = { limit = { is_situation_type = epoch_iii_first_offensive } add_situation_progress = 25 }
- }
- every_country = { limit = { has_country_flag = epoch_iii_enrolled has_global_flag = epoch_iii_chapter_5 NOT = { has_country_flag = epoch_iii_display_3 } }
-  set_country_flag = epoch_iii_display_3
-  every_situation = { limit = { is_situation_type = epoch_iii_first_offensive } add_situation_progress = 25 }
- }
  if = { limit = { has_global_flag = epoch_iii_command_created
   has_global_flag = epoch_iii_front_1_destroyed has_global_flag = epoch_iii_front_2_destroyed
   OR = { NOT = { has_global_flag = epoch_iii_front_3_registered } has_global_flag = epoch_iii_front_3_destroyed }
   OR = { NOT = { has_global_flag = epoch_iii_front_4_registered } has_global_flag = epoch_iii_front_4_destroyed }
  }
-  if = { limit = { NOT = { has_global_flag = epoch_iii_chapter_5 } }
-   set_global_flag = epoch_iii_chapter_5
-   every_country = { limit = { has_country_flag = epoch_iii_enrolled } country_event = { id = epoch_iii.52 } }
-  }
   if = { limit = { has_global_flag = epoch_iii_command_destroyed
+   check_variable = { which = epoch_iii_chapter value = 5 }
+   NOT = { has_country_flag = epoch_iii_chapter_dwell }
+   NOT = { has_global_flag = epoch_iii_first_repulsed }
    NOT = { any_owned_fleet = { OR = { has_fleet_flag = epoch_iii_raid has_fleet_flag = epoch_iii_guard has_fleet_flag = epoch_iii_anchor } } }
    check_variable = { which = epoch_iii_raids_destroyed value >= epoch_iii_spent }
    check_variable = { which = epoch_iii_guards_destroyed value >= epoch_iii_guards_created }
@@ -528,5 +527,81 @@ epoch_iii_offer_sites = {
   exists = event_target:epoch_iii_front_4
  }
   event_target:epoch_iii_front_4 = { star = { enable_special_project = { name = EPOCH_III_SITE_4 location = this owner = prevprev } } }
+ }
+}
+
+# Only the canonical hostile country writes this saved chapter variable.
+# Global flags below are compatibility facts, never per-country progression.
+epoch_iii_update_chapter = {
+ if = { limit = { is_country_type = epoch_convergence has_country_flag = epoch_iii_identity_v1 has_global_flag = epoch_iii_active }
+  if = { limit = { NOT = { has_global_flag = epoch_iii_chapters_v2 } }
+   set_global_flag = epoch_iii_chapters_v2
+   set_variable = { which = epoch_iii_chapter value = 1 }
+   if = { limit = { has_global_flag = epoch_iii_chapter_5 } set_variable = { which = epoch_iii_chapter value = 5 } }
+   else_if = { limit = { has_global_flag = epoch_iii_command_created } set_variable = { which = epoch_iii_chapter value = 4 } }
+   else_if = { limit = { has_global_flag = epoch_iii_chapter_3 } set_variable = { which = epoch_iii_chapter value = 3 } }
+   else_if = { limit = { has_global_flag = epoch_iii_chapter_2 } set_variable = { which = epoch_iii_chapter value = 2 } }
+  }
+  # Reverse order plus dwell: at most one transition, even with banked kills.
+  if = { limit = { NOT = { has_country_flag = epoch_iii_chapter_dwell } }
+   if = { limit = { check_variable = { which = epoch_iii_chapter value = 4 } epoch_iii_all_nodes_destroyed = yes }
+    set_variable = { which = epoch_iii_chapter value = 5 }
+    set_global_flag = epoch_iii_chapter_5
+    set_timed_country_flag = { flag = epoch_iii_chapter_dwell days = 90 }
+    every_country = { limit = { has_country_flag = epoch_iii_enrolled } country_event = { id = epoch_iii.52 } }
+   }
+   else_if = { limit = { check_variable = { which = epoch_iii_chapter value = 3 } has_global_flag = epoch_iii_anchor_breached }
+    set_variable = { which = epoch_iii_chapter value = 4 }
+    set_global_flag = epoch_iii_chapter_4
+    set_timed_country_flag = { flag = epoch_iii_chapter_dwell days = 90 }
+    if = { limit = { NOT = { has_global_flag = epoch_iii_command_created } } epoch_iii_spawn_command = yes }
+   }
+   else_if = { limit = { check_variable = { which = epoch_iii_chapter value = 2 } has_global_flag = epoch_iii_battle_proven }
+    set_variable = { which = epoch_iii_chapter value = 3 }
+    set_global_flag = epoch_iii_chapter_3
+    set_timed_country_flag = { flag = epoch_iii_chapter_dwell days = 90 }
+    every_country = { limit = { has_country_flag = epoch_iii_enrolled } country_event = { id = epoch_iii.50 } }
+   }
+   else_if = { limit = { check_variable = { which = epoch_iii_chapter value = 1 } OR = { has_global_flag = epoch_iii_border_crossed has_global_flag = epoch_iii_battle_proven } }
+    set_variable = { which = epoch_iii_chapter value = 2 }
+    set_global_flag = epoch_iii_chapter_2
+    set_timed_country_flag = { flag = epoch_iii_chapter_dwell days = 90 }
+   }
+  }
+  every_country = { limit = { has_country_flag = epoch_iii_enrolled epoch_iii_public_empire = yes } epoch_iii_sync_display = yes }
+  if = { limit = { has_global_flag = epoch_iii_chapter_5 }
+   every_owned_fleet = { limit = { OR = { has_fleet_flag = epoch_iii_raid has_fleet_flag = epoch_iii_guard } NOT = { is_in_combat = yes } NOT = { is_disabled = yes } }
+    epoch_iii_rally_fleet = yes
+   }
+  }
+ }
+}
+
+# Absolute projection repairs stale/missing displays and never advances authority.
+epoch_iii_sync_display = {
+ if = { limit = { NOT = { any_situation = { is_situation_type = epoch_iii_first_offensive } } }
+  start_situation = { type = epoch_iii_first_offensive target = event_target:epoch_iii_front }
+ }
+ every_situation = { limit = { is_situation_type = epoch_iii_first_offensive }
+  if = { limit = { event_target:epoch_iii_country = { check_variable = { which = epoch_iii_chapter value = 5 } } } set_situation_progress = 81 }
+  else_if = { limit = { event_target:epoch_iii_country = { check_variable = { which = epoch_iii_chapter value = 4 } } } set_situation_progress = 61 }
+  else_if = { limit = { event_target:epoch_iii_country = { check_variable = { which = epoch_iii_chapter value = 3 } } } set_situation_progress = 41 }
+  else_if = { limit = { event_target:epoch_iii_country = { check_variable = { which = epoch_iii_chapter value = 2 } } } set_situation_progress = 21 }
+  else = { set_situation_progress = 0 }
+ }
+}
+
+# Native movement only. No teleport, cleanup, death credit or budget refund.
+epoch_iii_rally_fleet = {
+ set_aggro_range_measure_from = self
+ set_aggro_range = 250
+ if = { limit = { exists = event_target:epoch_iii_front_1 can_access_system = event_target:epoch_iii_front_1
+  NOT = { is_in_combat = yes } NOT = { is_disabled = yes }
+  NOT = { solar_system = { is_same_value = event_target:epoch_iii_front_1 } }
+  NOT = { has_fleet_flag = epoch_iii_rally_cooldown }
+ }
+  set_timed_fleet_flag = { flag = epoch_iii_rally_cooldown days = 180 }
+  clear_fleet_actions = this
+  queue_actions = { move_to = event_target:epoch_iii_front_1 }
  }
 }

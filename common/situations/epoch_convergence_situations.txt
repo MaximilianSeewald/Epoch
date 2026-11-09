@@ -23,14 +23,39 @@ epoch_iii_first_offensive = {
  permanent = yes
  desc = { trigger = { always = yes } text = epoch_iii_first_offensive_desc }
  stages = {
-  stage_epoch_iii_borders = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 25 custom_tooltip = epoch_iii.anchor_goal }
-  stage_epoch_iii_foci = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_blue end = 50 custom_tooltip = epoch_iii.fronts.tt }
-  stage_epoch_iii_convergence = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 75 custom_tooltip = epoch_iii.command.tt }
+  stage_epoch_iii_answer = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 20 custom_tooltip = epoch_iii.answer_goal }
+  stage_epoch_iii_borders = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 40 custom_tooltip = epoch_iii.anchor_goal }
+  stage_epoch_iii_foci = { icon = GFX_situation_stage_2 icon_background = GFX_situation_stage_frame_blue end = 60 custom_tooltip = epoch_iii.fronts.tt }
+  stage_epoch_iii_convergence = { icon = GFX_situation_stage_3 icon_background = GFX_situation_stage_frame_blue end = 80 custom_tooltip = epoch_iii.command.tt }
   stage_epoch_iii_last = { icon = GFX_situation_stage_4 icon_background = GFX_situation_stage_frame_blue end = 100 custom_tooltip = epoch_iii.remaining_goal }
  }
  monthly_progress = { base = 0 }
- approach = { name = epoch_iii_watch on_select = { custom_tooltip = epoch_iii.watch.tt } default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green ai_weight = { base = 10 } }
- approach = { name = epoch_iii_briefing icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green on_select = { owner = { country_event = { id = epoch_iii.11 } } } ai_weight = { base = 20 modifier = { factor = 0 owner = { OR = { has_country_flag = epoch_iii_counterharmonics has_special_project = EPOCH_III_COUNTERHARMONICS } } } } }
+
+ approach = { name = epoch_iii_mobilize default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green
+  on_select = { custom_tooltip = epoch_iii.local_response }
+  modifier = { starbase_shipyard_build_speed_mult = 0.20 ships_upkeep_mult = 0.05 }
+  resources = { category = situations upkeep = { energy = 10 alloys = 3 } }
+  ai_weight = { base = 20 }
+ }
+ approach = { name = epoch_iii_analyze icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green
+  on_select = { owner = { country_event = { id = epoch_iii.11 } } }
+  modifier = { all_technology_research_speed = 0.10 starbase_shipyard_build_speed_mult = -0.10 }
+  resources = { category = situations upkeep = { energy = 15 } }
+  ai_weight = { base = 10 modifier = { factor = 3 owner = { has_special_project = EPOCH_III_COUNTERHARMONICS } } }
+ }
+ approach = { name = epoch_iii_shield icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green
+  on_select = { custom_tooltip = epoch_iii.local_response }
+  modifier = { planet_stability_add = 5 planet_jobs_produces_mult = 0.05 ships_upkeep_mult = 0.10 }
+  resources = { category = situations upkeep = { energy = 20 minerals = 5 } }
+  ai_weight = { base = 10 }
+ }
+ approach = { name = epoch_iii_counterattack icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green
+  potential = { has_global_flag = epoch_iii_chapter_3 }
+  on_select = { custom_tooltip = epoch_iii.local_response }
+  modifier = { ship_fire_rate_mult = 0.10 ship_speed_mult = 0.10 ships_upkeep_mult = 0.15 }
+  resources = { category = situations upkeep = { energy = 15 alloys = 5 } }
+  ai_weight = { base = 15 modifier = { factor = 2 has_global_flag = epoch_iii_chapter_4 } }
+ }
  on_progress_complete = { }
 }
 

@@ -5,3 +5,7 @@ on_mid_game_pulse = { events = { epoch_iii.1 } }
 on_fleet_destroyed_victim = { events = { epoch_iii.40 } }
 
 on_ship_destroyed_victim = { events = { epoch_iii.41 } }
+
+on_entering_system_fleet = { events = { epoch_iii.31 } }
+on_country_created = { events = { epoch_iii.3 } }
+on_country_type_changed = { events = { epoch_iii.3 } }
