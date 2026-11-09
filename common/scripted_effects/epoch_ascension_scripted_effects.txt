@@ -328,6 +328,7 @@ epoch_iv_convert_world = {
     }
     remove_modifier = epoch_iii_scar_pressure
     remove_modifier = epoch_iii_scar_shielded
+    remove_modifier = epoch_iii_pressure_buffered
    }
    if = {
     limit = {
@@ -362,10 +363,13 @@ epoch_iv_convert_world = {
    remove_modifier = epoch_iii_scar_shielded
    if = {
     limit = {
+     has_planet_flag = epoch_iii_scar_exposed
+     NOT = { has_planet_flag = epoch_iii_exposed_v1 }
      NOT = {
       epoch_iv_contamination = yes
      }
     }
+    remove_modifier = epoch_iii_pressure_buffered
     remove_modifier = epoch_iii_contamination_rising
     remove_modifier = epoch_iii_contamination_severe
     remove_modifier = epoch_iii_containment

@@ -213,6 +213,12 @@ for(const family of ['contamination','scar']) {
  check(sums.planet_stability_add===2,'net stability is +2 including independent emergency damage');
  check(family==='scar'?sums.planet_jobs_physics_research_produces_mult+sums.planet_jobs_produces_mult>0:sums.planet_jobs_produces_mult>0,'net production/research is positive');
 }
+for(const family of ['contamination','scar'])for(const matches of [true,false]) {
+ const {a}=setup(),w=make('buffered');w.owner=a;w.colony=true;w.flags.add('epoch_iv_stabilized@A');w.flags.add('epoch_iv_diagnosed_'+family+'@A');
+ w.deposits.add(family==='scar'?'d_epoch_resonance_scar':'d_epoch_resonance_contamination_active');w.modifiers.add('epoch_iii_pressure_buffered');
+ if(matches){w.flags.add('epoch_iii_scar_exposed');if(family==='contamination')w.flags.add('epoch_iii_feature_added');}
+ run(effects.get('epoch_iv_convert_world'),context(w));check(w.modifiers.has('epoch_iii_pressure_buffered')===!matches,'buffered overlay provenance: '+family+' '+matches);
+}
 for(const scenario of ['missing','target-only-lost','enemy-reference','victory-record','key','cap','foreign-principal','transferred-principal']) {
  const {a,b,enemy,ship,shipB}=setup();
  delete targets['epoch_iv_ship@A'];

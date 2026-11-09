@@ -79,8 +79,11 @@ no actual scar family remains. Associated rising/severe/containment overlays are
 removed only with matching provenance or after the remaining relevant family ends.
 
 Scar clears its three deposits, legacy class scar modifiers and the scar's
-exacerbated burden, plus scar-pressure/shielded overlays. It clears shared worsening
-only when no contamination remains. Structure clears only its four old structure
+exacerbated burden, plus scar-pressure/shielded overlays. Buffered imported
+contamination clears its buffered overlay under the same provenance guard.
+Scar clears buffered/shared worsening only with scar-exposure provenance, no
+initial-exposure provenance and no remaining contamination. An independent
+initial Stage-III overlay on a legacy scar therefore remains. Structure clears only its four old structure
 states/modifiers. Other families and every live older mission remain protected.
 
 The independent emergency choice epoch_res_permanent_damage (-5% jobs/-3 stability),
@@ -108,7 +111,7 @@ actual damage/balance, scientist assignment/excavation/outpost AI behavior,
 save serialization and MP/OOS are **unverified**. The AI attack command is source-
 checked; this is not evidence that an AI has completed its campaign.
 
-Final correction run: all **709** runner checks passed, including **309** targeted
+Final correction run: all **709** runner checks passed, including **313** targeted
 Stage-IV assertions, 5,287 Stage-I, 1,216 Resonance, 33 installed-source,
 2,776 narrative/UI and 2,027 Stage-III assertions. All 54 Clausewitz files parse;
 maximum scripted-effect depth is three. Whitespace checks pass. Historical logs
