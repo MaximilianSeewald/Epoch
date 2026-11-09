@@ -95,7 +95,10 @@ country_event = {
    epoch_iii_update_chapter = yes
    epoch_iii_front_operations = yes
    every_owned_fleet = { limit = { has_fleet_flag = epoch_iii_raid } fleet_event = { id = epoch_iii.30 } }
-   every_country = { limit = { has_country_flag = epoch_iii_enrolled } epoch_iii_offer_sites = yes }
+   every_country = { limit = { has_country_flag = epoch_iii_enrolled } epoch_iii_offer_sites = yes
+    if = { limit = { any_situation = { is_situation_type = epoch_iii_first_offensive current_situation_approach = epoch_iii_shield } } set_country_flag = epoch_iii_shield_response }
+    else = { remove_country_flag = epoch_iii_shield_response }
+    epoch_iii_update_defenses = yes }
    epoch_iii_check_resolution = yes
   }
  }
@@ -215,6 +218,7 @@ fleet_event = {
   if = { limit = { has_global_flag = epoch_iii_chapter_5 }
    epoch_iii_rally_fleet = yes
   }
+  else_if = { limit = { has_fleet_flag = epoch_iii_command } epoch_iii_command_move = yes }
   else_if = { limit = { OR = {
    NOT = { has_fleet_flag = epoch_iii_order_cooldown }
    NOT = { exists = event_target:epoch_iii_goal@this }
@@ -315,6 +319,7 @@ country_event = {
  immediate = {
   fromfrom = { set_ship_flag = epoch_iii_death_recorded }
   set_global_flag = epoch_iii_command_destroyed
+  every_owned_fleet = { remove_modifier = epoch_iii_command_pressure }
   epoch_iii_update_chapter = yes
   if = { limit = { from = { epoch_iii_public_empire = yes } } from = { set_country_flag = epoch_iii_military_contribution } }
   country_event = { id = epoch_iii.2 days = 1 }
@@ -340,6 +345,7 @@ ship_event = {
     set_global_flag = epoch_iii_science_support
     every_owned_fleet = { add_modifier = { modifier = epoch_iii_disrupted_network days = -1 } }
    }
+   epoch_iii_apply_study = yes
   }
  }
 }
@@ -363,6 +369,7 @@ ship_event = {
     set_global_flag = epoch_iii_science_support
     every_owned_fleet = { add_modifier = { modifier = epoch_iii_disrupted_network days = -1 } }
    }
+   epoch_iii_apply_study = yes
   }
  }
 }
@@ -386,6 +393,7 @@ ship_event = {
     set_global_flag = epoch_iii_science_support
     every_owned_fleet = { add_modifier = { modifier = epoch_iii_disrupted_network days = -1 } }
    }
+   epoch_iii_apply_study = yes
   }
  }
 }
@@ -409,6 +417,7 @@ ship_event = {
     set_global_flag = epoch_iii_science_support
     every_owned_fleet = { add_modifier = { modifier = epoch_iii_disrupted_network days = -1 } }
    }
+   epoch_iii_apply_study = yes
   }
  }
 }
@@ -459,4 +468,32 @@ country_event = {
   exists = event_target:epoch_iii_country NOT = { has_country_flag = epoch_iii_enrolled }
  }
  immediate = { epoch_iii_enroll = yes }
+}
+
+# Combat entry is a chapter milestone only, never destruction/victory evidence.
+# ROOT owner, FROM opponent, FROMFROM own fleet, FROMFROMFROM opponent fleet.
+country_event = {
+ id = epoch_iii.32
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { is_country_type = epoch_convergence has_global_flag = epoch_iii_active
+  exists = from exists = fromfrom exists = fromfromfrom
+  NOT = { from = { is_same_value = root } }
+  fromfrom = { has_fleet_flag = epoch_iii_command }
+ }
+ immediate = { set_global_flag = epoch_iii_command_engaged epoch_iii_update_chapter = yes }
+}
+
+# The battle hook can present the commandant as either combatant. Both paths
+# publish the same idempotent milestone and neither grants destruction credit.
+country_event = {
+ id = epoch_iii.33
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { has_global_flag = epoch_iii_active
+  exists = from exists = fromfrom exists = fromfromfrom
+  from = { is_country_type = epoch_convergence NOT = { is_same_value = root } }
+  fromfromfrom = { has_fleet_flag = epoch_iii_command }
+ }
+ immediate = { from = { set_global_flag = epoch_iii_command_engaged epoch_iii_update_chapter = yes } }
 }

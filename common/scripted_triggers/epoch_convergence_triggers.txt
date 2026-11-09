@@ -88,3 +88,22 @@ epoch_iii_all_nodes_destroyed = {
  OR = { NOT = { has_global_flag = epoch_iii_front_3_registered } has_global_flag = epoch_iii_front_3_destroyed }
  OR = { NOT = { has_global_flag = epoch_iii_front_4_registered } has_global_flag = epoch_iii_front_4_destroyed }
 }
+
+# Spread fronts across one navigable hyperlane region; retain safe-asset rules.
+epoch_iii_spaced_front = {
+ NOT = { has_star_flag = epoch_iii_front_site }
+ OR = { epoch_iii_safe_front = yes epoch_iii_frontier_outpost = yes }
+ distance = { source = event_target:epoch_iii_front_1 type = hyperlane min_jumps = 4 max_jumps = 80 }
+ OR = { NOT = { exists = event_target:epoch_iii_front_2 } distance = { source = event_target:epoch_iii_front_2 type = hyperlane min_jumps = 3 max_jumps = 80 } }
+ OR = { NOT = { exists = event_target:epoch_iii_front_3 } distance = { source = event_target:epoch_iii_front_3 type = hyperlane min_jumps = 3 max_jumps = 80 } }
+}
+
+epoch_iii_scar_capacity = {
+ OR = {
+  check_variable = { which = epoch_iii_scar_worlds value < 1 }
+  AND = { num_owned_planets >= 8 check_variable = { which = epoch_iii_scar_worlds value < 2 } }
+  AND = { num_owned_planets >= 12 check_variable = { which = epoch_iii_scar_worlds value < 3 } }
+  AND = { num_owned_planets >= 20 check_variable = { which = epoch_iii_scar_worlds value < 5 } }
+  AND = { num_owned_planets >= 40 check_variable = { which = epoch_iii_scar_worlds value < 10 } }
+ }
+}

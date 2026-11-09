@@ -10,23 +10,10 @@ epoch_iii_enroll = {
  }
  else = { set_country_flag = epoch_iii_cohort_uninitiated }
  # One physical world, once. Conquest never reapplies damage to that world.
- random_owned_planet = {
-  limit = { is_colony = yes exists = planet NOT = { has_planet_flag = epoch_iii_exposed_v1 } }
-  colony = {
-   set_planet_flag = epoch_iii_exposed_v1
-   if = { limit = { owner = { has_country_flag = epoch_iii_cohort_prepared } }
-    add_modifier = { modifier = epoch_iii_pressure_prepared days = -1 }
-   }
-   else_if = { limit = { owner = { has_country_flag = epoch_iii_cohort_experienced } }
-    add_modifier = { modifier = epoch_iii_pressure_experienced days = -1 }
-   }
-   else = { add_modifier = { modifier = epoch_iii_pressure_unprepared days = -1 } }
-   if = { limit = { epoch_iii_clean_carrier = yes owner = { has_country_flag = epoch_iii_cohort_uninitiated } }
-    add_deposit = d_epoch_resonance_contamination_active
-    set_planet_flag = epoch_iii_feature_added
-   }
-  }
- }
+ epoch_iii_expose_world = yes
+ if = { limit = { num_owned_planets >= 12 } epoch_iii_expose_world = yes }
+ if = { limit = { num_owned_planets >= 24 } epoch_iii_expose_world = yes }
+ if = { limit = { num_owned_planets >= 40 } epoch_iii_expose_world = yes }
  # Mobile/colonyless empires have a genuine fleet-economic penalty as well.
  if = { limit = { NOT = { any_owned_planet = { is_colony = yes } } }
   if = { limit = { has_country_flag = epoch_iii_cohort_prepared }
@@ -47,6 +34,7 @@ epoch_iii_enroll = {
 # Colony scope: paid buffering never clears the shared families, private flags,
 # archaeology, devastation or another empire's projects. Scars remain physical.
 epoch_iii_buffer_world = {
+ epoch_iii_remove_defenses = yes
  remove_modifier = epoch_iii_scar_pressure
  remove_modifier = epoch_iii_scar_shielded
  remove_modifier = epoch_iii_pressure_prepared
@@ -94,18 +82,24 @@ epoch_iii_reveal_fronts = {
 epoch_iii_initialize_fronts = {
  if = { limit = { NOT = { has_global_flag = epoch_iii_fronts_registered } }
   event_target:epoch_iii_front = { save_global_event_target_as = epoch_iii_front_1 set_star_flag = epoch_iii_front_site }
-  random_system = { limit = { NOT = { has_star_flag = epoch_iii_front_site } OR = { epoch_iii_safe_front = yes epoch_iii_frontier_outpost = yes } }
+  random_system = { limit = { epoch_iii_spaced_front = yes }
    save_global_event_target_as = epoch_iii_front_2 set_star_flag = epoch_iii_front_site
+  }
+  if = { limit = { NOT = { exists = event_target:epoch_iii_front_2 } }
+   random_system = { limit = { NOT = { has_star_flag = epoch_iii_front_site }
+    OR = { epoch_iii_safe_front = yes epoch_iii_frontier_outpost = yes }
+    distance = { source = event_target:epoch_iii_front_1 type = hyperlane min_jumps = 1 max_jumps = 80 }
+   } save_global_event_target_as = epoch_iii_front_2 set_star_flag = epoch_iii_front_site }
   }
   if = { limit = { exists = event_target:epoch_iii_front_2 }
    set_global_flag = epoch_iii_fronts_registered
    if = { limit = { NOR = { galaxy_size = tiny galaxy_size = small } }
-    random_system = { limit = { NOT = { has_star_flag = epoch_iii_front_site } OR = { epoch_iii_safe_front = yes epoch_iii_frontier_outpost = yes } }
+    random_system = { limit = { epoch_iii_spaced_front = yes }
      save_global_event_target_as = epoch_iii_front_3 set_star_flag = epoch_iii_front_site
     }
    }
    if = { limit = { OR = { galaxy_size = large galaxy_size = huge } exists = event_target:epoch_iii_front_3 }
-    random_system = { limit = { NOT = { has_star_flag = epoch_iii_front_site } OR = { epoch_iii_safe_front = yes epoch_iii_frontier_outpost = yes } }
+    random_system = { limit = { epoch_iii_spaced_front = yes }
      save_global_event_target_as = epoch_iii_front_4 set_star_flag = epoch_iii_front_site
     }
    }
@@ -212,7 +206,6 @@ epoch_iii_initialize_fronts = {
   set_global_flag = epoch_iii_active
   set_variable = { which = epoch_iii_chapter value = 1 }
   set_global_flag = epoch_iii_chapters_v2
-  set_timed_country_flag = { flag = epoch_iii_chapter_dwell days = 90 }
   # Initial attacks follow enrollment so prepared worlds retain protection.
  }
 }
@@ -221,8 +214,10 @@ epoch_iii_initialize_fronts = {
 # Signal loss halves the remaining allowance of OTHER sources, not merely its
 # own. At most twelve mobile formations exist; commandant is separate.
 epoch_iii_front_operations = {
+ epoch_iii_apply_study = yes
  # Interdiction sustains all fleet shields; its destruction exposes other fronts.
  every_owned_fleet = {
+  if = { limit = { has_global_flag = epoch_iii_command_destroyed has_modifier = epoch_iii_command_pressure } remove_modifier = epoch_iii_command_pressure }
   if = { limit = { has_global_flag = epoch_iii_front_1_destroyed has_modifier = epoch_iii_interdiction_field } remove_modifier = epoch_iii_interdiction_field }
   else_if = { limit = { NOT = { has_global_flag = epoch_iii_front_1_destroyed } NOT = { has_modifier = epoch_iii_interdiction_field } }
    add_modifier = { modifier = epoch_iii_interdiction_field days = -1 }
@@ -367,8 +362,9 @@ epoch_iii_spawn_raid = {
    set_location = { target = event_target:epoch_iii_spawn_site distance = 90 angle = random }
    set_fleet_stance = aggressive
    set_aggro_range_measure_from = self set_aggro_range = 250
-   if = { limit = { has_global_flag = epoch_iii_command_created } add_modifier = { modifier = epoch_iii_command_pressure days = -1 } }
+   if = { limit = { has_global_flag = epoch_iii_command_created NOT = { has_global_flag = epoch_iii_command_destroyed } } add_modifier = { modifier = epoch_iii_command_pressure days = -1 } }
    if = { limit = { has_global_flag = epoch_iii_science_support } add_modifier = { modifier = epoch_iii_disrupted_network days = -1 } }
+  else_if = { limit = { has_global_flag = epoch_iii_logistics_disrupted } add_modifier = { modifier = epoch_iii_studied_network days = -1 } }
    fleet_event = { id = epoch_iii.30 days = 1 }
   } }
  }
@@ -442,33 +438,38 @@ epoch_iii_spawn_command = {
   set_fleet_stance = aggressive
   set_aggro_range_measure_from = self set_aggro_range = 300
   if = { limit = { has_global_flag = epoch_iii_science_support } add_modifier = { modifier = epoch_iii_disrupted_network days = -1 } }
+  else_if = { limit = { has_global_flag = epoch_iii_logistics_disrupted } add_modifier = { modifier = epoch_iii_studied_network days = -1 } }
  } }
  change_variable = { which = epoch_iii_spent value = 1 }
  every_country = { limit = { has_country_flag = epoch_iii_enrolled } country_event = { id = epoch_iii.51 } }
 }
 
 epoch_iii_scar_pressure = {
- # Once per world and at most three additional worlds per affected empire.
- # Only empires adjacent to the living scar node can be targeted. Selecting
- # their worlds also gives a frontier with no local colony a real hazard role.
+ # Adjacent empires get one strike, plus one each at 12 and 24 colonies.
+ # Each distinct world once, excluding initial exposure and buffered worlds.
  event_target:epoch_iii_front_2 = {
-  every_neighbor_system = { limit = { exists = owner owner = { epoch_iii_public_empire = yes } }
+  every_neighbor_system = { limit = { exists = owner owner = { epoch_iii_public_empire = yes NOT = { has_country_flag = epoch_iii_strike_cooldown } } }
    owner = {
-    random_owned_planet = { limit = { is_colony = yes exists = planet
-     NOR = { has_planet_flag = epoch_iii_scar_exposed has_planet_flag = epoch_iii_buffered }
-     owner = { check_variable = { which = epoch_iii_scar_worlds value < 3 } }
-    }
-     colony = {
-      set_planet_flag = epoch_iii_scar_exposed
-      owner = { change_variable = { which = epoch_iii_scar_worlds value = 1 } }
-      if = { limit = { owner = { has_country_flag = epoch_iii_cohort_prepared } }
-       add_modifier = { modifier = epoch_iii_scar_shielded days = -1 }
-      }
-      else = { add_modifier = { modifier = epoch_iii_scar_pressure days = -1 } }
-      if = { limit = { epoch_iii_clean_carrier = yes } add_deposit = d_epoch_resonance_scar }
-     }
-    }
+    set_timed_country_flag = { flag = epoch_iii_strike_cooldown days = 30 }
+    epoch_iii_scar_strike = yes
+    if = { limit = { num_owned_planets >= 12 } epoch_iii_scar_strike = yes }
+    if = { limit = { num_owned_planets >= 24 } epoch_iii_scar_strike = yes }
    }
+  }
+ }
+}
+
+epoch_iii_scar_strike = {
+ random_owned_planet = { limit = { is_colony = yes exists = planet
+  NOR = { has_planet_flag = epoch_iii_exposed_v1 has_planet_flag = epoch_iii_scar_exposed has_planet_flag = epoch_iii_buffered }
+  owner = { epoch_iii_scar_capacity = yes }
+ }
+  colony = {
+   set_planet_flag = epoch_iii_scar_exposed
+   owner = { change_variable = { which = epoch_iii_scar_worlds value = 1 } }
+   if = { limit = { owner = { has_country_flag = epoch_iii_cohort_prepared } } add_modifier = { modifier = epoch_iii_scar_shielded days = -1 } }
+   else = { add_modifier = { modifier = epoch_iii_scar_pressure days = -1 } }
+   if = { limit = { epoch_iii_clean_carrier = yes } add_deposit = d_epoch_resonance_scar }
   }
  }
 }
@@ -483,7 +484,6 @@ epoch_iii_check_resolution = {
  }
   if = { limit = { has_global_flag = epoch_iii_command_destroyed
    check_variable = { which = epoch_iii_chapter value = 5 }
-   NOT = { has_country_flag = epoch_iii_chapter_dwell }
    NOT = { has_global_flag = epoch_iii_first_repulsed }
    NOT = { any_owned_fleet = { OR = { has_fleet_flag = epoch_iii_raid has_fleet_flag = epoch_iii_guard has_fleet_flag = epoch_iii_anchor } } }
    check_variable = { which = epoch_iii_raids_destroyed value >= epoch_iii_spent }
@@ -494,6 +494,8 @@ epoch_iii_check_resolution = {
    if = { limit = { count_country = { count >= 2 limit = { has_country_flag = epoch_iii_military_contribution } } } set_global_flag = epoch_iii_joint_victory }
    every_country = { limit = { has_country_flag = epoch_iii_enrolled NOT = { has_country_flag = epoch_iii_first_report_closed } }
     set_country_flag = epoch_iii_first_report_closed
+    remove_country_flag = epoch_iii_shield_response
+    epoch_iii_update_defenses = yes
     every_situation = { limit = { OR = { is_situation_type = epoch_iii_first_offensive is_situation_type = epoch_iii_front_marker } } destroy_situation = this }
     remove_modifier = epoch_iii_mobile_disruption remove_modifier = epoch_iii_mobile_disruption_experienced remove_modifier = epoch_iii_mobile_disruption_prepared
     if = { limit = { has_country_flag = epoch_iii_military_contribution } add_modifier = { modifier = epoch_iii_veterans days = 3600 } }
@@ -542,35 +544,32 @@ epoch_iii_update_chapter = {
    else_if = { limit = { has_global_flag = epoch_iii_chapter_3 } set_variable = { which = epoch_iii_chapter value = 3 } }
    else_if = { limit = { has_global_flag = epoch_iii_chapter_2 } set_variable = { which = epoch_iii_chapter value = 2 } }
   }
-  # Reverse order plus dwell: at most one transition, even with banked kills.
-  if = { limit = { NOT = { has_country_flag = epoch_iii_chapter_dwell } }
-   if = { limit = { check_variable = { which = epoch_iii_chapter value = 4 } epoch_iii_all_nodes_destroyed = yes }
-    set_variable = { which = epoch_iii_chapter value = 5 }
-    set_global_flag = epoch_iii_chapter_5
-    set_timed_country_flag = { flag = epoch_iii_chapter_dwell days = 90 }
-    every_country = { limit = { has_country_flag = epoch_iii_enrolled } country_event = { id = epoch_iii.52 } }
-   }
-   else_if = { limit = { check_variable = { which = epoch_iii_chapter value = 3 } has_global_flag = epoch_iii_anchor_breached }
-    set_variable = { which = epoch_iii_chapter value = 4 }
-    set_global_flag = epoch_iii_chapter_4
-    set_timed_country_flag = { flag = epoch_iii_chapter_dwell days = 90 }
-    if = { limit = { NOT = { has_global_flag = epoch_iii_command_created } } epoch_iii_spawn_command = yes }
-   }
-   else_if = { limit = { check_variable = { which = epoch_iii_chapter value = 2 } has_global_flag = epoch_iii_battle_proven }
-    set_variable = { which = epoch_iii_chapter value = 3 }
-    set_global_flag = epoch_iii_chapter_3
-    set_timed_country_flag = { flag = epoch_iii_chapter_dwell days = 90 }
-    every_country = { limit = { has_country_flag = epoch_iii_enrolled } country_event = { id = epoch_iii.50 } }
-   }
-   else_if = { limit = { check_variable = { which = epoch_iii_chapter value = 1 } OR = { has_global_flag = epoch_iii_border_crossed has_global_flag = epoch_iii_battle_proven } }
-    set_variable = { which = epoch_iii_chapter value = 2 }
-    set_global_flag = epoch_iii_chapter_2
-    set_timed_country_flag = { flag = epoch_iii_chapter_dwell days = 90 }
-   }
+  # Consume earned evidence in story order. No clock and no monthly catch-up.
+  remove_country_flag = epoch_iii_chapter_dwell
+  if = { limit = { check_variable = { which = epoch_iii_chapter value = 1 } OR = { has_global_flag = epoch_iii_border_crossed has_global_flag = epoch_iii_battle_proven } }
+   set_variable = { which = epoch_iii_chapter value = 2 }
+   set_global_flag = epoch_iii_chapter_2
+  }
+  if = { limit = { check_variable = { which = epoch_iii_chapter value = 2 } has_global_flag = epoch_iii_battle_proven }
+   set_variable = { which = epoch_iii_chapter value = 3 }
+   set_global_flag = epoch_iii_chapter_3
+   every_country = { limit = { has_country_flag = epoch_iii_enrolled } country_event = { id = epoch_iii.50 } }
+  }
+  if = { limit = { check_variable = { which = epoch_iii_chapter value = 3 } has_global_flag = epoch_iii_anchor_breached }
+   set_variable = { which = epoch_iii_chapter value = 4 }
+   set_global_flag = epoch_iii_chapter_4
+   if = { limit = { NOT = { has_global_flag = epoch_iii_command_created } } epoch_iii_spawn_command = yes }
+  }
+  if = { limit = { check_variable = { which = epoch_iii_chapter value = 4 } epoch_iii_all_nodes_destroyed = yes
+   OR = { has_global_flag = epoch_iii_command_engaged has_global_flag = epoch_iii_command_destroyed }
+  }
+   set_variable = { which = epoch_iii_chapter value = 5 }
+   set_global_flag = epoch_iii_chapter_5
+   every_country = { limit = { has_country_flag = epoch_iii_enrolled } country_event = { id = epoch_iii.52 } }
   }
   every_country = { limit = { has_country_flag = epoch_iii_enrolled epoch_iii_public_empire = yes } epoch_iii_sync_display = yes }
   if = { limit = { has_global_flag = epoch_iii_chapter_5 }
-   every_owned_fleet = { limit = { OR = { has_fleet_flag = epoch_iii_raid has_fleet_flag = epoch_iii_guard } NOT = { is_in_combat = yes } NOT = { is_disabled = yes } }
+   every_owned_fleet = { limit = { OR = { has_fleet_flag = epoch_iii_raid has_fleet_flag = epoch_iii_guard } }
     epoch_iii_rally_fleet = yes
    }
   }
@@ -593,15 +592,141 @@ epoch_iii_sync_display = {
 
 # Native movement only. No teleport, cleanup, death credit or budget refund.
 epoch_iii_rally_fleet = {
- set_aggro_range_measure_from = self
- set_aggro_range = 250
- if = { limit = { exists = event_target:epoch_iii_front_1 can_access_system = event_target:epoch_iii_front_1
-  NOT = { is_in_combat = yes } NOT = { is_disabled = yes }
-  NOT = { solar_system = { is_same_value = event_target:epoch_iii_front_1 } }
-  NOT = { has_fleet_flag = epoch_iii_rally_cooldown }
- }
-  set_timed_fleet_flag = { flag = epoch_iii_rally_cooldown days = 180 }
+ epoch_iii_publish_fleet_location = yes
+ if = { limit = { NOT = { is_in_combat = yes } NOT = { is_disabled = yes } NOT = { has_fleet_flag = epoch_iii_final_order_cooldown } }
+  set_timed_fleet_flag = { flag = epoch_iii_final_order_cooldown days = 45 }
+  set_aggro_range_measure_from = self
+  set_aggro_range = 250
+  if = { limit = { OR = {
+   NOT = { has_fleet_order = move_to_system_point_order }
+   AND = { exists = event_target:epoch_iii_final_goal@this NOT = { can_access_system = event_target:epoch_iii_final_goal@this } }
+  } }
+  clear_global_event_target = epoch_iii_final_goal@this
+  if = { limit = { exists = event_target:epoch_iii_front_1 can_access_system = event_target:epoch_iii_front_1 }
+   event_target:epoch_iii_front_1 = { save_global_event_target_as = epoch_iii_final_goal@prev }
+  }
+  if = { limit = { NOT = { exists = event_target:epoch_iii_final_goal@this } exists = event_target:epoch_iii_front_2 can_access_system = event_target:epoch_iii_front_2 }
+   event_target:epoch_iii_front_2 = { save_global_event_target_as = epoch_iii_final_goal@prev }
+  }
+  if = { limit = { NOT = { exists = event_target:epoch_iii_final_goal@this } exists = event_target:epoch_iii_front_3 can_access_system = event_target:epoch_iii_front_3 }
+   event_target:epoch_iii_front_3 = { save_global_event_target_as = epoch_iii_final_goal@prev }
+  }
+  if = { limit = { NOT = { exists = event_target:epoch_iii_final_goal@this } exists = event_target:epoch_iii_front_4 can_access_system = event_target:epoch_iii_front_4 }
+   event_target:epoch_iii_front_4 = { save_global_event_target_as = epoch_iii_final_goal@prev }
+  }
+  if = { limit = { NOT = { exists = event_target:epoch_iii_final_goal@this } }
+   closest_system = { min_steps = 0 max_steps = 80 use_bypasses = yes
+    limit = { any_fleet_in_system = { exists = owner owner = { epoch_iii_public_empire = yes } fleet_power > 500 } prev = { can_access_system = prev } }
+    save_global_event_target_as = epoch_iii_final_goal@prev
+   }
+  }
+  # A disconnected group holds locally and remains a public map target.
+  if = { limit = { NOT = { exists = event_target:epoch_iii_final_goal@this } }
+   solar_system = { save_global_event_target_as = epoch_iii_final_goal@prev }
+  }
   clear_fleet_actions = this
-  queue_actions = { move_to = event_target:epoch_iii_front_1 }
+  if = { limit = { NOT = { solar_system = { is_same_value = event_target:epoch_iii_final_goal@prev } } }
+   queue_actions = { move_to = event_target:epoch_iii_final_goal@this }
+  }
+  }
+ }
+}
+
+# Publish exact current systems, even for fleets unable to reach the main rally.
+# Markers expire when formations leave; no absent object supplies combat credit.
+epoch_iii_publish_fleet_location = {
+ solar_system = { save_event_target_as = epoch_iii_final_location }
+ every_country = { limit = { epoch_iii_public_empire = yes has_country_flag = epoch_iii_enrolled
+  NOT = { any_situation = { is_situation_type = epoch_iii_front_marker target = { is_same_value = event_target:epoch_iii_final_location } } }
+ }
+  start_situation = { type = epoch_iii_front_marker target = event_target:epoch_iii_final_location }
+ }
+}
+
+# Command fleet defends a threatened live source; after all sources fall it
+# actively seeks the nearest accessible opponent instead of wandering randomly.
+epoch_iii_command_move = {
+ epoch_iii_publish_fleet_location = yes
+ if = { limit = { NOT = { has_fleet_flag = epoch_iii_command_order_cooldown } }
+  set_timed_fleet_flag = { flag = epoch_iii_command_order_cooldown days = 45 }
+  clear_global_event_target = epoch_iii_goal@this
+  owner = {
+   random_owned_fleet = { limit = { has_fleet_flag = epoch_iii_anchor
+    solar_system = { root = { can_access_system = prev } any_fleet_in_system = { exists = owner owner = { epoch_iii_public_empire = yes } fleet_power > 500 } }
+   } solar_system = { save_global_event_target_as = epoch_iii_goal@root } }
+   if = { limit = { NOT = { exists = event_target:epoch_iii_goal@root } }
+    random_owned_fleet = { limit = { has_fleet_flag = epoch_iii_anchor solar_system = { root = { can_access_system = prev } } } solar_system = { save_global_event_target_as = epoch_iii_goal@root } }
+   }
+  }
+  if = { limit = { NOT = { exists = event_target:epoch_iii_goal@this } }
+   closest_system = { min_steps = 0 max_steps = 80 use_bypasses = yes
+    limit = { prev = { can_access_system = prev }
+     OR = { any_fleet_in_system = { exists = owner owner = { epoch_iii_public_empire = yes } fleet_power > 500 }
+      AND = { exists = owner owner = { epoch_iii_public_empire = yes } any_system_planet = { is_colony = yes } }
+     }
+    }
+    save_global_event_target_as = epoch_iii_goal@prev
+   }
+  }
+  if = { limit = { exists = event_target:epoch_iii_goal@this can_access_system = event_target:epoch_iii_goal@this NOT = { has_fleet_order = move_to_system_point_order } }
+   clear_fleet_actions = this
+   queue_actions = { move_to = event_target:epoch_iii_goal@this }
+  }
+ }
+}
+
+# Country scope; initial exposure scales in bounded steps.
+epoch_iii_expose_world = {
+ random_owned_planet = {
+  limit = { is_colony = yes exists = planet NOT = { has_planet_flag = epoch_iii_exposed_v1 } }
+  colony = {
+   set_planet_flag = epoch_iii_exposed_v1
+   if = { limit = { owner = { has_country_flag = epoch_iii_cohort_prepared } }
+    add_modifier = { modifier = epoch_iii_pressure_prepared days = -1 }
+   }
+   else_if = { limit = { owner = { has_country_flag = epoch_iii_cohort_experienced } }
+    add_modifier = { modifier = epoch_iii_pressure_experienced days = -1 }
+   }
+   else = { add_modifier = { modifier = epoch_iii_pressure_unprepared days = -1 } }
+   if = { limit = { epoch_iii_clean_carrier = yes owner = { has_country_flag = epoch_iii_cohort_uninitiated } }
+    add_deposit = d_epoch_resonance_contamination_active
+    set_planet_flag = epoch_iii_feature_added
+   }
+  }
+ }
+}
+
+# Temporary planetary relief exists only on still-disrupted crisis worlds.
+# Switching, buffering or resolving removes it without changing base damage.
+epoch_iii_remove_defenses = {
+ remove_modifier = epoch_iii_defense_light
+ remove_modifier = epoch_iii_defense_medium
+ remove_modifier = epoch_iii_defense_heavy
+}
+epoch_iii_update_defenses = {
+ every_owned_planet = { limit = { is_colony = yes exists = planet }
+  colony = {
+   epoch_iii_remove_defenses = yes
+   if = { limit = { has_global_flag = epoch_iii_active owner = { has_country_flag = epoch_iii_shield_response } NOT = { has_planet_flag = epoch_iii_buffered } }
+    if = { limit = { OR = { has_modifier = epoch_iii_pressure_unprepared has_modifier = epoch_iii_scar_pressure } }
+     add_modifier = { modifier = epoch_iii_defense_heavy days = -1 }
+    }
+    else_if = { limit = { has_modifier = epoch_iii_pressure_experienced } add_modifier = { modifier = epoch_iii_defense_medium days = -1 } }
+    else_if = { limit = { OR = { has_modifier = epoch_iii_pressure_prepared has_modifier = epoch_iii_scar_shielded } } add_modifier = { modifier = epoch_iii_defense_light days = -1 } }
+   }
+  }
+ }
+}
+
+# The first study has a combat payoff; the second replaces rather than stacks it.
+epoch_iii_apply_study = {
+ if = { limit = { has_global_flag = epoch_iii_logistics_disrupted }
+  every_owned_fleet = {
+   if = { limit = { has_global_flag = epoch_iii_science_support }
+    remove_modifier = epoch_iii_studied_network
+    if = { limit = { NOT = { has_modifier = epoch_iii_disrupted_network } } add_modifier = { modifier = epoch_iii_disrupted_network days = -1 } }
+   }
+   else_if = { limit = { NOT = { has_modifier = epoch_iii_studied_network } } add_modifier = { modifier = epoch_iii_studied_network days = -1 } }
+  }
  }
 }

@@ -29,7 +29,7 @@ special_project = {
 
 special_project = {
  key = EPOCH_III_SITE_1
- days_to_research = 180
+ days_to_research = 90
  tech_department = physics_technology
  picture = GFX_evt_space_debris
  event_scope = ship_event
@@ -44,7 +44,7 @@ special_project = {
 
 special_project = {
  key = EPOCH_III_SITE_2
- days_to_research = 180
+ days_to_research = 90
  tech_department = physics_technology
  picture = GFX_evt_space_debris
  event_scope = ship_event
@@ -59,7 +59,7 @@ special_project = {
 
 special_project = {
  key = EPOCH_III_SITE_3
- days_to_research = 180
+ days_to_research = 90
  tech_department = physics_technology
  picture = GFX_evt_space_debris
  event_scope = ship_event
@@ -74,7 +74,7 @@ special_project = {
 
 special_project = {
  key = EPOCH_III_SITE_4
- days_to_research = 180
+ days_to_research = 90
  tech_department = physics_technology
  picture = GFX_evt_space_debris
  event_scope = ship_event

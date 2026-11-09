@@ -57,6 +57,18 @@ function test(b,c) {
   if(k==='always')return v==='yes';
   if(k==='any_situation')return (c.obj.situations||[]).some(o=>test(v,scope(o,c)));
   if(k==='is_situation_type')return c.obj.type===v;
+  if(k==='current_situation_approach')return c.obj.approach===v;
+  if(k==='num_owned_planets')return compare(c.obj.numColonies??c.obj.planets.length,op,+v);
+  if(k==='has_star_flag')return c.obj.flags.has(v);
+  if(k==='has_fleet_order')return v==='move_to_system_point_order'&&(c.obj.orders||[]).some(([key])=>key==='move_to');
+  if(k==='is_in_combat')return !!c.obj.combat===(v==='yes');
+  if(k==='is_disabled')return !!c.obj.disabled===(v==='yes');
+  if(k==='can_access_system')return c.obj.accessible?.has(resolve(v,c));
+  if(k==='distance') {
+   const steps=c.obj.distances?.[resolve(get(v,'source'),c)?.id]??Infinity;
+   return steps>=+get(v,'min_jumps')&&steps<=+get(v,'max_jumps');
+  }
+
   if(k==='check_variable') {
    const [valueKey,value] = v.find(([key])=>key.startsWith('value'));
    return compare(c.obj.vars[get(v,'which')]||0,split(valueKey)[1],Number.isFinite(+value)?+value:c.obj.vars[value]||0);
@@ -140,7 +152,7 @@ for(const fronts of [2,3,4])for(const scientific of [false,true]) {
  enemy.vars={epoch_iii_chapter:5,epoch_iii_spent:3,epoch_iii_raids_destroyed:3,epoch_iii_guards_created:fronts,epoch_iii_guards_destroyed:fronts};enemy.fleets=[];
  check(test(victoryGate,ctx(enemy)),`${fronts} fronts: earned military victory, science=${scientific}`);
  enemy.vars.epoch_iii_chapter=4;check(!test(victoryGate,ctx(enemy)),'Chapter IV cannot resolve');enemy.vars.epoch_iii_chapter=5;
- for(const blocked of ['epoch_iii_chapter_dwell']){enemy.flags.add(blocked);check(!test(victoryGate,ctx(enemy)),'Final pacing guard blocks premature report');enemy.flags.delete(blocked);}
+ for(const blocked of ['epoch_iii_chapter_dwell']){enemy.flags.add(blocked);check(test(victoryGate,ctx(enemy)),'Obsolete timing guard cannot delay earned victory');enemy.flags.delete(blocked);}
  globalFlags.add('epoch_iii_first_repulsed');check(!test(victoryGate,ctx(enemy)),'Terminal crisis cannot award again');globalFlags.delete('epoch_iii_first_repulsed');
  for(const flag of ['epoch_iii_command_created','epoch_iii_command_destroyed',...Array.from({length:fronts},(_,i)=>`epoch_iii_front_${i+1}_destroyed`)]) {
   globalFlags.delete(flag);check(!test(victoryGate,ctx(enemy)),`Missing ${flag} cannot win`);globalFlags.add(flag);
@@ -269,7 +281,7 @@ for(const lang of ['english','german']) {
  const localized=key=>check(entries.has(key),`${lang}: localization ${key}`);
  for(const [p,defs]of allConvergence) {
   walk(defs,(k,v)=>{
-   if(['title','text','custom_tooltip','name','desc'].includes(k)&&typeof v==='string'&&/^(?:epoch_iii\.|NAME_EPOCH_III_)/.test(v))localized(v);
+   if(['title','text','custom_tooltip','custom_tooltip_with_modifiers','name','desc'].includes(k)&&typeof v==='string'&&/^(?:epoch_iii\.|NAME_EPOCH_III_)/.test(v))localized(v);
   });
   if(p.includes('/static_modifiers/'))for(const [key]of defs){localized(key);localized(key+'_desc');}
   if(p.includes('/special_projects/'))for(const [,def]of defs){const key=get(def,'key');localized(key);localized(key+'_DESC');}
@@ -307,6 +319,7 @@ walk(normalized('common/scripted_effects/epoch_convergence_effects.txt'),(k,v)=>
 // objects. This verifies script semantics within this explicit static subset,
 // not native hooks, native scheduling, save serialization or multiplayer.
 let countries=[], notices=[], commands=0;
+function targetKey(v,c){const [name,key]=v.split('@');return name+(key?'@'+resolve(key,c)?.id:'');}
 function run(b,c) {
  let branch=false;
  for(const [k,v]of b) {
@@ -320,18 +333,31 @@ function run(b,c) {
   if(k==='set_variable'){c.obj.vars[get(v,'which')]=+get(v,'value');continue;}
   if(k==='change_variable'){const n=get(v,'which');c.obj.vars[n]=(c.obj.vars[n]||0)+ +get(v,'value');continue;}
   if(k==='set_global_flag'){globalFlags.add(v);continue;}
-  if(k==='set_country_flag'){c.obj.flags.add(v);continue;}
+  if(k==='set_country_flag'||k==='set_fleet_flag'||k==='set_ship_flag'){c.obj.flags.add(v);continue;}
+  if(k==='remove_country_flag'||k==='remove_fleet_flag'){c.obj.flags.delete(v);continue;}
+  if(k==='set_timed_fleet_flag'){c.obj.flags.add(get(v,'flag'));continue;}
+  if(k==='clear_global_event_target'){delete targets[targetKey(v,c)];continue;}
+  if(k==='save_global_event_target_as'){targets[targetKey(v,c)]=c.obj;continue;}
+  if(k==='save_event_target_as'){targets[v]=c.obj;continue;}
+  if(k==='clear_fleet_actions'){c.obj.clears=(c.obj.clears||0)+1;c.obj.orders=[];continue;}
+  if(k==='queue_actions'){c.obj.orders=v.map(([key,val])=>[key,resolve(val,c)]);continue;}
+  if(k==='closest_system') {
+   const next=(c.obj.systems||[]).find(o=>test(get(v,'limit'),scope(o,c)));
+   if(next)run(v.filter(([key])=>!['limit','min_steps','max_steps','use_bypasses'].includes(key)),scope(next,c));
+   continue;
+  }
+
   if(k==='set_timed_country_flag'){c.obj.flags.add(get(v,'flag'));continue;}
   if(k==='add_modifier'){c.obj.modifiers.add(get(v,'modifier'));continue;}
   if(k==='remove_modifier'){c.obj.modifiers.delete(v);continue;}
   if(k==='set_situation_progress'){c.obj.progress=+v;continue;}
-  if(k==='start_situation'){(c.obj.situations??=[]).push({...make(get(v,'type')),progress:0});continue;}
+  if(k==='start_situation'){(c.obj.situations??=[]).push({...make(get(v,'type')),progress:0,target:resolve(get(v,'target'),c)});continue;}
   if(k==='country_event'){notices.push([c.obj,get(v,'id')]);continue;}
   if(k==='set_aggro_range_measure_from'||k==='set_aggro_range'){c.obj[k]=v;continue;}
   if(k==='epoch_iii_spawn_command'){commands++;globalFlags.add('epoch_iii_command_created');continue;}
-  if(k==='every_country'||k==='every_situation'||k==='every_owned_fleet') {
-   const list=k==='every_country'?countries:k==='every_situation'?c.obj.situations||[]:c.obj.fleets;
-   for(const o of list){const sub=scope(o,c);if(!get(v,'limit')||test(get(v,'limit'),sub))run(v.filter(([x])=>x!=='limit'),sub);}
+  if(k==='every_country'||k==='every_situation'||k==='every_owned_fleet'||k==='every_owned_planet'||k==='random_owned_fleet') {
+   const list=k==='every_country'?countries:k==='every_situation'?c.obj.situations||[]:k==='every_owned_planet'?c.obj.planets:c.obj.fleets;
+   for(const o of list){const sub=scope(o,c);if(!get(v,'limit')||test(get(v,'limit'),sub)){run(v.filter(([x])=>x!=='limit'),sub);if(k==='random_owned_fleet')break;}}
    continue;
   }
   if(effects.has(k)){run(effects.get(k),c);continue;}
@@ -351,7 +377,7 @@ check(countries[0].flags.has('epoch_iii_counterharmonics')&&!countries[1].flags.
 check(authority.vars.epoch_iii_chapter===1&&displayed().every(n=>n===0),'Personal research never advances chapter');
 globalFlags.add('epoch_iii_border_crossed');update();
 check(authority.vars.epoch_iii_chapter===2&&displayed().every(n=>n===21),'Physical border crossing publishes chapter II');
-globalFlags.add('epoch_iii_battle_proven');update();check(authority.vars.epoch_iii_chapter===2,'Dwell prevents immediate chapter cascade');
+globalFlags.add('epoch_iii_battle_proven');update();check(authority.vars.epoch_iii_chapter===3,'Confirmed battle immediately publishes earned discovery');
 authority.flags.delete('epoch_iii_chapter_dwell');update();
 check(displayed().every(n=>n===41),'AI or player military evidence publishes chapter III to all');
 const before=notices.length;update();check(notices.length===before,'Repeated dispatch cannot repeat transition reports');
@@ -366,7 +392,8 @@ check(newcomer.situations[0].progress===61,'New empire immediately inherits chap
 update();check(commands===1,'Repeated coordinator cannot duplicate commandant');
 authority.flags.delete('epoch_iii_chapter_dwell');update();check(authority.vars.epoch_iii_chapter===4,'Time alone cannot reach final chapter');
 globalFlags.add('epoch_iii_front_1_destroyed');update();check(authority.vars.epoch_iii_chapter===4,'One remaining node blocks final chapter');
-globalFlags.add('epoch_iii_front_2_destroyed');update();check(displayed().every(n=>n===81),'All physical node losses publish chapter V');
+globalFlags.add('epoch_iii_front_2_destroyed');update();check(displayed().every(n=>n===61),'All nodes lost still lets commandant conduct its first real operation');
+globalFlags.add('epoch_iii_command_engaged');update();check(displayed().every(n=>n===81),'All physical node losses and command combat publish chapter V');
 check(!globalFlags.has('epoch_iii_first_repulsed'),'Chapter V publication never grants victory');
 // Saved canonical state reconstructs the same display without personal history.
 const durable=JSON.parse(JSON.stringify(authority.vars));authority.vars=durable;update();
@@ -393,5 +420,116 @@ for(const [,approach]of main.filter(([k])=>k==='approach')) {
 }
 check(effectDoc.includes('set_situation_progress -'),'Absolute situation setter supported by installed documentation');
 check(native('common/on_actions/00_on_actions.txt').includes('on_entering_system_fleet ='),'Physical border hook exists in installed Vanilla');
+
+
+// Fast combat must consume all earned milestones without missing the commandant.
+authority.vars={epoch_iii_chapter:1};authority.fleets=[];notices=[];commands=0;
+globalFlags=flags('epoch_iii_active','epoch_iii_chapters_v2','epoch_iii_battle_proven','epoch_iii_anchor_breached','epoch_iii_front_1_destroyed','epoch_iii_front_2_destroyed');
+targets={epoch_iii_country:authority};update();
+check(authority.vars.epoch_iii_chapter===4&&commands===1,'Rapid anchor victory immediately reaches IV and spawns commandant once');
+check(countries.every(o=>o.situations[0].progress===61),'Fast milestones remain globally synchronized');
+const rapidNotices=notices.length;update();check(commands===1&&notices.length===rapidNotices,'Repeated fast dispatch cannot repeat commandant or reports');
+const commandFleet={...make(),owner:authority};commandFleet.flags.add('epoch_iii_command');
+authority.from=make();authority.fromfrom=commandFleet;authority.fromfromfrom=make();
+check(test(get(E(32),'trigger'),ctx(authority)),'Real command-fleet battle entry is a valid final chapter milestone');
+run(get(E(32),'immediate'),ctx(authority));
+check(authority.vars.epoch_iii_chapter===5&&displayed().every(n=>n===81),'Command combat releases earned chapter V immediately');
+check(!globalFlags.has('epoch_iii_command_destroyed')&&!globalFlags.has('epoch_iii_first_repulsed'),'Entering combat grants neither death credit nor victory');
+check(!/set_timed_country_flag.*epoch_iii_chapter_dwell/.test(fleetSource),'No replacement chapter delay exists');
+
+// Front placement prefers separated, connected, safe sites.
+const primary={...make(),id:'front1'},secondary={...make(),id:'front2'};
+targets={epoch_iii_front_1:primary,epoch_iii_front_2:secondary};
+const spaced={...make(),id:'spaced',neighbors:[{...make(),owner:make()}],distances:{front1:4,front2:3}};
+check(test(triggers.get('epoch_iii_spaced_front'),ctx(spaced)),'Safely spaced connected front accepted');
+spaced.distances.front1=3;check(!test(triggers.get('epoch_iii_spaced_front'),ctx(spaced)),'Fronts do not cluster around the primary');spaced.distances.front1=4;
+spaced.distances.front2=2;check(!test(triggers.get('epoch_iii_spaced_front'),ctx(spaced)),'Secondary spacing also enforced');spaced.distances.front2=3;
+spaced.distances.front1=Infinity;check(!test(triggers.get('epoch_iii_spaced_front'),ctx(spaced)),'Disconnected front candidate rejected');
+
+// Final orders use actual reachable fronts, recover after path changes, and
+// expose stranded locations without inventing a military result.
+const home={...make(),id:'home'},battleSite={...make(),id:'battleSite',fleets:[{...make(),owner:make(),power:1000}]};
+const mobile={...make(),id:'mobile',owner:authority,solar_system:home,accessible:new Set([secondary]),systems:[]};mobile.flags.add('epoch_iii_raid');home.fleets=[mobile];
+globalFlags=flags('epoch_iii_active','epoch_iii_chapter_5');targets={epoch_iii_country:authority,epoch_iii_front_1:primary,epoch_iii_front_2:secondary};
+const rally=()=>run(effects.get('epoch_iii_rally_fleet'),ctx(mobile));rally();
+check(mobile.orders[0][1]===secondary,'Blocked primary falls back to reachable secondary front');
+check(countries.every(o=>o.situations.some(v=>v.type==='epoch_iii_front_marker')),'All empires receive stranded/current fleet map targets');
+const clears=mobile.clears;const markerCounts=countries.map(o=>o.situations.length);rally();
+check(mobile.clears===clears&&countries.every((o,i)=>o.situations.length===markerCounts[i]),'Repeated rally pulse neither interrupts orders nor duplicates markers');
+mobile.flags.delete('epoch_iii_final_order_cooldown');mobile.accessible.add(primary);rally();check(mobile.orders[0][1]===secondary,'Active travel is not reset when a second route opens');
+mobile.flags.delete('epoch_iii_final_order_cooldown');mobile.orders=[];rally();check(mobile.orders[0][1]===primary,'Reopened primary path is used on replan');
+mobile.flags.delete('epoch_iii_final_order_cooldown');mobile.accessible.clear();rally();
+check(mobile.orders.length===0&&targets['epoch_iii_final_goal@mobile']===home,'No route: group holds locally and stays marked');
+mobile.flags.delete('epoch_iii_final_order_cooldown');mobile.accessible.add(battleSite);mobile.systems=[battleSite];rally();
+check(mobile.orders[0][1]===battleSite,'No reachable old front: seek a reachable opponent');
+mobile.flags.delete('epoch_iii_final_order_cooldown');mobile.combat=true;const engagedClears=mobile.clears;rally();
+check(mobile.clears===engagedClears,'Final orders do not interrupt combat');mobile.combat=false;mobile.disabled=true;rally();
+check(mobile.clears===engagedClears,'Disabled formation is located without invalid movement');
+const markerType=parsedByPath.get('common/situations/epoch_convergence_situations.txt').find(([k])=>k==='epoch_iii_front_marker')[1];
+const marker={...make(),target:home};check(!test(get(markerType,'abort_trigger'),ctx(marker)),'Actual surviving formation keeps final marker');
+home.fleets=[];check(test(get(markerType,'abort_trigger'),ctx(marker)),'Empty final location removes obsolete marker');
+check(!globalFlags.has('epoch_iii_first_repulsed'),'Navigation and marker cleanup cannot award victory');
+
+// Costs scale with colonies, while military upkeep/build-cost percentages also
+// scale with actual fleets and construction. No positive global science/jobs buff.
+const tunedMain=new Map(normalized('common/situations/epoch_convergence_situations.txt')).get('epoch_iii_first_offensive');
+for(const [,approach]of tunedMain.filter(([k])=>k==='approach')) {
+ const total=n=>{const o={...make(),numColonies:n};const sit={...make(),owner:o};let energy=0;for(const [k,v]of get(approach,'resources'))if(k==='upkeep'&&(!get(v,'trigger')||test(get(v,'trigger'),ctx(sit))))energy+=+get(v,'energy');return energy;};
+ const base=total(1);for(const [n,factor]of [[7,1],[8,2],[19,2],[20,4],[39,4],[40,8],[100,8]])check(total(n)===base*factor,get(approach,'name')+' scales colony costs at '+n);
+ const modifier=get(approach,'modifier');
+ check(+(get(modifier,'all_technology_research_speed')||0)<=0&&+(get(modifier,'planet_jobs_produces_mult')||0)<=0,'No approach grants free empire-wide science or job output');
+}
+check(modifierDoc.includes('- damage_vs_country_type_epoch_convergence_mult,'),'Crisis-specific damage modifier exists in installed generated definitions');
+for(const n of [1,2,7,8,11,12,19,20,39,40,100]) {
+ const c={...make(),numColonies:n};const cap=n>=40?10:n>=20?5:n>=12?3:n>=8?2:1;
+ c.vars.epoch_iii_scar_worlds=cap-1;check(test(triggers.get('epoch_iii_scar_capacity'),ctx(c)),'Scaled scar allowance available at '+n);
+ c.vars.epoch_iii_scar_worlds=cap;check(!test(triggers.get('epoch_iii_scar_capacity'),ctx(c)),'Scaled scar hard bound at '+n);
+}
+for(const [,project]of parsedByPath.get('common/special_projects/epoch_convergence_projects.txt'))if(/^EPOCH_III_SITE_/.test(get(project,'key')))check(get(project,'days_to_research')==='90','Wreck study fits the active military window');
+
+// Local shielding never benefits intact/buffered worlds, never deletes damage,
+// and is withdrawn on switching or resolution.
+const defender=make();defender.flags.add('epoch_iii_shield_response');
+const damaged=(mod,buffered=false)=>{const w={...make(),owner:defender};if(mod)w.modifiers.add(mod);if(buffered)w.flags.add('epoch_iii_buffered');defender.planets.push({...make(),owner:defender,planet:w,colony:w});return w;};
+const heavy=damaged('epoch_iii_pressure_unprepared'),medium=damaged('epoch_iii_pressure_experienced'),light=damaged('epoch_iii_pressure_prepared'),intact=damaged(),buffered=damaged('epoch_iii_pressure_buffered',true);
+globalFlags=flags('epoch_iii_active');run(effects.get('epoch_iii_update_defenses'),ctx(defender));
+check(heavy.modifiers.has('epoch_iii_defense_heavy')&&medium.modifiers.has('epoch_iii_defense_medium')&&light.modifiers.has('epoch_iii_defense_light'),'Relief matches actual crisis damage');
+check(![...intact.modifiers,...buffered.modifiers].some(k=>k.startsWith('epoch_iii_defense_')),'Intact and buffered planets receive no production subsidy');
+defender.flags.delete('epoch_iii_shield_response');run(effects.get('epoch_iii_update_defenses'),ctx(defender));
+check([heavy,medium,light].every(w=>![...w.modifiers].some(k=>k.startsWith('epoch_iii_defense_'))),'Switching removes every temporary defense modifier');
+check(heavy.modifiers.has('epoch_iii_pressure_unprepared'),'Switching preserves original damage');
+defender.flags.add('epoch_iii_shield_response');globalFlags.clear();run(effects.get('epoch_iii_update_defenses'),ctx(defender));
+check(!heavy.modifiers.has('epoch_iii_defense_heavy'),'Crisis resolution disables temporary relief');
+
+// First study is useful immediately, second replaces it rather than stacking.
+const studiedFleet=make();authority.fleets=[studiedFleet];globalFlags=flags('epoch_iii_logistics_disrupted');run(effects.get('epoch_iii_apply_study'),ctx(authority));
+check(studiedFleet.modifiers.has('epoch_iii_studied_network'),'First secured site immediately weakens hostile weapons');
+globalFlags.add('epoch_iii_science_support');run(effects.get('epoch_iii_apply_study'),ctx(authority));
+check(!studiedFleet.modifiers.has('epoch_iii_studied_network')&&studiedFleet.modifiers.has('epoch_iii_disrupted_network'),'Second study replaces first-stage combat penalty');
+for(const id of [61,62,63,64])check(JSON.stringify(E(id)).includes('epoch_iii_apply_study'),'Every wreck callback updates combat effects immediately');
+for(const key of ['closest_system','save_event_target_as'])check(effectDoc.includes(key+' -'),'Documented navigation effect '+key);
+
+
+// Battle milestones work with either side of the documented hook and cannot
+// grant native-death accounting or replay final chapter events.
+const otherCombatant={...make(),from:authority,fromfrom:make(),fromfromfrom:commandFleet};
+globalFlags=flags('epoch_iii_active','epoch_iii_chapters_v2','epoch_iii_front_1_destroyed','epoch_iii_front_2_destroyed');authority.vars.epoch_iii_chapter=4;authority.fleets=[];targets={epoch_iii_country:authority};
+check(test(get(E(33),'trigger'),ctx(otherCombatant)),'Commandant recognized as the other battle combatant');
+run(get(E(33),'immediate'),ctx(otherCombatant));const mirroredNotices=notices.length;run(get(E(33),'immediate'),ctx(otherCombatant));
+check(authority.vars.epoch_iii_chapter===5&&notices.length===mirroredNotices,'Mirrored battle notifications cannot duplicate final chapter');
+check(!globalFlags.has('epoch_iii_command_destroyed'),'Mirrored battle start cannot replace destruction proof');
+
+// Commandant makes an actual rescue move toward a threatened living node.
+const secureSystem={...make(),id:'secure',fleets:[]},threatenedSystem={...make(),id:'threatened',fleets:[{...make(),owner:make(),power:2000}]};
+const secureAnchor={...make(),solar_system:secureSystem},threatenedAnchor={...make(),solar_system:threatenedSystem};
+for(const f of [secureAnchor,threatenedAnchor])f.flags.add('epoch_iii_anchor');
+const commander={...make(),id:'commander',owner:authority,solar_system:home,accessible:new Set([secureSystem,threatenedSystem]),systems:[]};commander.flags.add('epoch_iii_command');home.fleets=[commander];
+authority.fleets=[secureAnchor,threatenedAnchor];globalFlags=flags('epoch_iii_active');targets={epoch_iii_country:authority};run(effects.get('epoch_iii_command_move'),ctx(commander));
+check(commander.orders[0][1]===threatenedSystem,'Commandant reinforces the threatened node ahead of an unthreatened one');
+commander.flags.delete('epoch_iii_command_order_cooldown');const commandClears=commander.clears;run(effects.get('epoch_iii_command_move'),ctx(commander));
+check(commander.clears===commandClears,'Command travel is not canceled on each planning pulse');
+commander.flags.delete('epoch_iii_command_order_cooldown');commander.orders=[];authority.fleets=[];commander.systems=[battleSite];commander.accessible=new Set([battleSite]);run(effects.get('epoch_iii_command_move'),ctx(commander));
+check(commander.orders[0][1]===battleSite,'After losing all nodes, commandant seeks an accessible opponent');
+check(triggerDoc.includes('has_fleet_order -')&&effectDoc.includes('closest_system -'),'Movement guards use documented native interfaces');
 
 console.log(`PASS: ${checks} Stage-III source/guard/isolation assertions. Static only; no engine, AI, save/load or MP validation.`);

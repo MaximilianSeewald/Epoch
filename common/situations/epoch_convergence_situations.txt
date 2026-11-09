@@ -32,29 +32,53 @@ epoch_iii_first_offensive = {
  monthly_progress = { base = 0 }
 
  approach = { name = epoch_iii_mobilize default = yes icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green
-  on_select = { custom_tooltip = epoch_iii.local_response }
-  modifier = { starbase_shipyard_build_speed_mult = 0.20 ships_upkeep_mult = 0.05 }
-  resources = { category = situations upkeep = { energy = 10 alloys = 3 } }
+  on_select = { custom_tooltip = epoch_iii.local_response owner = { remove_country_flag = epoch_iii_shield_response epoch_iii_update_defenses = yes } }
+  modifier = { starbase_shipyard_build_speed_mult = 0.10 starbase_shipyard_build_cost_mult = 0.10 ships_upkeep_mult = 0.05 }
+  resources = { category = situations
+   upkeep = { energy = 4 alloys = 1  }
+   upkeep = { trigger = { owner = { num_owned_planets >= 8 } } energy = 4 alloys = 1  }
+   upkeep = { trigger = { owner = { num_owned_planets >= 20 } } energy = 8 alloys = 2  }
+   upkeep = { trigger = { owner = { num_owned_planets >= 40 } } energy = 16 alloys = 4  }
+  }
   ai_weight = { base = 20 }
  }
  approach = { name = epoch_iii_analyze icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green
-  on_select = { owner = { country_event = { id = epoch_iii.11 } } }
-  modifier = { all_technology_research_speed = 0.10 starbase_shipyard_build_speed_mult = -0.10 }
-  resources = { category = situations upkeep = { energy = 15 } }
-  ai_weight = { base = 10 modifier = { factor = 3 owner = { has_special_project = EPOCH_III_COUNTERHARMONICS } } }
+  on_select = { custom_tooltip = epoch_iii.local_response owner = { remove_country_flag = epoch_iii_shield_response epoch_iii_update_defenses = yes country_event = { id = epoch_iii.11 } } }
+  allow = { owner = { NOT = { has_deficit = energy } } }
+  modifier = { damage_vs_country_type_epoch_convergence_mult = 0.10 all_technology_research_speed = -0.05 starbase_shipyard_build_speed_mult = -0.10 }
+  resources = { category = situations
+   upkeep = { energy = 6   }
+   upkeep = { trigger = { owner = { num_owned_planets >= 8 } } energy = 6   }
+   upkeep = { trigger = { owner = { num_owned_planets >= 20 } } energy = 12   }
+   upkeep = { trigger = { owner = { num_owned_planets >= 40 } } energy = 24   }
+  }
+  ai_weight = { base = 15 modifier = { factor = 2 owner = { has_special_project = EPOCH_III_COUNTERHARMONICS } } }
  }
  approach = { name = epoch_iii_shield icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green
-  on_select = { custom_tooltip = epoch_iii.local_response }
-  modifier = { planet_stability_add = 5 planet_jobs_produces_mult = 0.05 ships_upkeep_mult = 0.10 }
-  resources = { category = situations upkeep = { energy = 20 minerals = 5 } }
-  ai_weight = { base = 10 }
+  on_select = { custom_tooltip = epoch_iii.local_response owner = { set_country_flag = epoch_iii_shield_response epoch_iii_update_defenses = yes } }
+  allow = { owner = { NOT = { has_deficit = energy } } }
+  custom_tooltip_with_modifiers = epoch_iii.shield_effects
+  modifier = { planet_jobs_produces_mult = -0.02 }
+  resources = { category = situations
+   upkeep = { energy = 5  minerals = 2 }
+   upkeep = { trigger = { owner = { num_owned_planets >= 8 } } energy = 5  minerals = 2 }
+   upkeep = { trigger = { owner = { num_owned_planets >= 20 } } energy = 10  minerals = 4 }
+   upkeep = { trigger = { owner = { num_owned_planets >= 40 } } energy = 20  minerals = 8 }
+  }
+  ai_weight = { base = 5 modifier = { factor = 8 owner = { any_owned_planet = { OR = { has_modifier = epoch_iii_pressure_unprepared has_modifier = epoch_iii_scar_pressure } } } } }
  }
  approach = { name = epoch_iii_counterattack icon = GFX_situation_approach_research icon_background = GFX_situation_approach_bg_green
   potential = { has_global_flag = epoch_iii_chapter_3 }
-  on_select = { custom_tooltip = epoch_iii.local_response }
-  modifier = { ship_fire_rate_mult = 0.10 ship_speed_mult = 0.10 ships_upkeep_mult = 0.15 }
-  resources = { category = situations upkeep = { energy = 15 alloys = 5 } }
-  ai_weight = { base = 15 modifier = { factor = 2 has_global_flag = epoch_iii_chapter_4 } }
+  on_select = { custom_tooltip = epoch_iii.local_response owner = { remove_country_flag = epoch_iii_shield_response epoch_iii_update_defenses = yes } }
+  allow = { owner = { NOR = { has_deficit = energy has_deficit = alloys } } }
+  modifier = { damage_vs_country_type_epoch_convergence_mult = 0.20 ships_upkeep_mult = 0.15 all_technology_research_speed = -0.10 }
+  resources = { category = situations
+   upkeep = { energy = 5 alloys = 2  }
+   upkeep = { trigger = { owner = { num_owned_planets >= 8 } } energy = 5 alloys = 2  }
+   upkeep = { trigger = { owner = { num_owned_planets >= 20 } } energy = 10 alloys = 4  }
+   upkeep = { trigger = { owner = { num_owned_planets >= 40 } } energy = 20 alloys = 8  }
+  }
+  ai_weight = { base = 10 modifier = { factor = 3 has_global_flag = epoch_iii_chapter_4 } }
  }
  on_progress_complete = { }
 }
@@ -67,18 +91,15 @@ epoch_iii_front_marker = {
  initial_progress = 0
  progress_direction = monodirectional
  permanent = yes
- desc = { trigger = { target = { is_same_value = event_target:epoch_iii_front_1 } } text = epoch_iii.front.interdiction }
- desc = { trigger = { target = { is_same_value = event_target:epoch_iii_front_2 } } text = epoch_iii.front.scar }
- desc = { trigger = { exists = event_target:epoch_iii_front_3 target = { is_same_value = event_target:epoch_iii_front_3 } } text = epoch_iii.front.signal }
- desc = { trigger = { exists = event_target:epoch_iii_front_4 target = { is_same_value = event_target:epoch_iii_front_4 } } text = epoch_iii.front.reserve }
+ desc = { trigger = { OR = { has_global_flag = epoch_iii_chapter_5 target = { any_fleet_in_system = { has_fleet_flag = epoch_iii_command } } } } text = epoch_iii.final_location }
+ desc = { trigger = { NOT = { has_global_flag = epoch_iii_chapter_5 } target = { is_same_value = event_target:epoch_iii_front_1 } } text = epoch_iii.front.interdiction }
+ desc = { trigger = { NOT = { has_global_flag = epoch_iii_chapter_5 } target = { is_same_value = event_target:epoch_iii_front_2 } } text = epoch_iii.front.scar }
+ desc = { trigger = { NOT = { has_global_flag = epoch_iii_chapter_5 } exists = event_target:epoch_iii_front_3 target = { is_same_value = event_target:epoch_iii_front_3 } } text = epoch_iii.front.signal }
+ desc = { trigger = { NOT = { has_global_flag = epoch_iii_chapter_5 } exists = event_target:epoch_iii_front_4 target = { is_same_value = event_target:epoch_iii_front_4 } } text = epoch_iii.front.reserve }
  abort_trigger = { OR = { NOT = { has_global_flag = epoch_iii_active }
-  target = {
-   OR = {
-    AND = { has_global_flag = epoch_iii_front_1_destroyed exists = event_target:epoch_iii_front_1 is_same_value = event_target:epoch_iii_front_1 }
-    AND = { has_global_flag = epoch_iii_front_2_destroyed exists = event_target:epoch_iii_front_2 is_same_value = event_target:epoch_iii_front_2 }
-    AND = { has_global_flag = epoch_iii_front_3_destroyed exists = event_target:epoch_iii_front_3 is_same_value = event_target:epoch_iii_front_3 }
-    AND = { has_global_flag = epoch_iii_front_4_destroyed exists = event_target:epoch_iii_front_4 is_same_value = event_target:epoch_iii_front_4 }
-   }
+  AND = { has_global_flag = epoch_iii_chapter_5 target = { NOT = { any_fleet_in_system = { exists = owner owner = { is_country_type = epoch_convergence } OR = { has_fleet_flag = epoch_iii_raid has_fleet_flag = epoch_iii_guard } } } } }
+  AND = { NOT = { has_global_flag = epoch_iii_chapter_5 }
+   target = { NOT = { any_fleet_in_system = { OR = { has_fleet_flag = epoch_iii_anchor has_fleet_flag = epoch_iii_command } } } }
   }
  } }
  stages = { stage_epoch_iii_front = { icon = GFX_situation_stage_1 icon_background = GFX_situation_stage_frame_blue end = 100 } }

@@ -28,7 +28,7 @@ epoch_iii_mobile_disruption_prepared = {
  ships_upkeep_mult = 0.03
 }
 epoch_iii_counterharmonics = {
- ship_weapon_damage = 0.10
+ damage_vs_country_type_epoch_convergence_mult = 0.10
 }
 
 epoch_iii_emergency = { starbase_shipyard_build_speed_mult = 0.20 }
@@ -42,3 +42,8 @@ epoch_iii_decoding = { all_technology_research_speed = 0.10 }
 epoch_iii_command_pressure = { ship_fire_rate_mult = 0.15 ship_speed_mult = 0.15 }
 
 epoch_iii_interdiction_field = { ship_shield_mult = 0.20 }
+
+epoch_iii_defense_light = { planet_jobs_produces_mult = 0.02 planet_stability_add = 1 }
+epoch_iii_defense_medium = { planet_jobs_produces_mult = 0.03 planet_stability_add = 2 }
+epoch_iii_defense_heavy = { planet_jobs_produces_mult = 0.05 planet_stability_add = 3 }
+epoch_iii_studied_network = { ship_weapon_damage = -0.10 }
