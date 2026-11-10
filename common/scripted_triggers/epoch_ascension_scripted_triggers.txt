@@ -377,12 +377,14 @@ epoch_iv_ai_action_available = {
  }
 }
 
-# Country scope: the actual native ship-destruction callback, never a timer.
+# Country scope: personal principal death completes the trial, regardless of
+# attacker, damage source or diplomacy. FROMFROM is the native destroyed ship.
 epoch_iv_valid_military_death = {
+ is_country_type = epoch_adjudicator
+ has_country_flag = epoch_iv_judge_identity
  NOT = { has_country_flag = epoch_iv_retired }
  NOT = { has_country_flag = epoch_iv_victory_recorded }
- exists = from exists = fromfrom exists = fromfromfrom
- NOT = { from = { is_same_value = root } }
+ exists = fromfrom
  exists = event_target:epoch_iv_claimant@root
  fromfrom = {
   has_ship_flag = epoch_iv_principal
@@ -394,6 +396,4 @@ epoch_iv_valid_military_death = {
   NOT = { has_country_flag = epoch_iv_protocol_key }
   fromfrom = { has_ship_flag = epoch_iv_principal_for@prev }
  }
- from = { epoch_iv_authorized_combatant = yes }
- fromfromfrom = { exists = owner owner = { is_same_value = from } }
 }

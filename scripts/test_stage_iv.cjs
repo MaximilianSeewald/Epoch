@@ -66,7 +66,8 @@ function test(b,c) {
 function run(b,c) {
   let branch=false;
   for(const [k,v]of b) {
-    if(k==='tooltip'||k==='custom_tooltip'||k==='log')continue;
+    if(k==='tooltip'||k==='custom_tooltip')continue;
+    if(k==='log'){(c.obj.logs??=[]).push(v);continue;}
     if(k==='hidden_effect'){run(v,c);continue;}
     if(k==='if'||k==='else_if') { const take=(k==='if'||!branch)&&test(get(v,'limit'),c); if(k==='if')branch=false; if(take){run(v.filter(([n])=>n!=='limit'),c);branch=true;} continue; }
     if(k==='else'){if(!branch)run(v,c);continue;}
@@ -120,36 +121,69 @@ for(const refused of ['epoch_core_campaign_opted_out','epoch_res_final_choice_pe
   const {a}=setup();a.flags.add(refused);check(!test(triggers.get('epoch_iv_eligible'),context(a)),refused+' fails closed');
 }
 {const {a}=setup();globalFlags.clear();check(!test(triggers.get('epoch_iv_eligible'),context(a)),'no global victory');}
-for(const scenario of ['valid','self','federation','subject','overlord','foreign-kill','missing-attacker','missing-attacker-no-combat','no-battle-certificate','mismatched-attacker','missing-ship','missing-claimant','wrong-principal','cleanup','duplicate','owner-optout','other-boss','lost-principal-target','battle-ended','missing-victim','missing-country','victory-duplicate','retired','lost-personal-target','wrong-personal-tag']) {
+// Death attribution deliberately ignores all attacker scopes and relationships.
+for(const scenario of ['ally','player','federation','subject','overlord','third-party','missing-attacker','missing-all-attackers','mismatched-attacker','victim-country-source','no-battle-certificate','battle-ended','missing-ship','missing-claimant','wrong-principal','escort','duplicate','owner-optout','completed','wrong-chapter','existing-key','victory-duplicate','retired','wrong-country-type','missing-country-identity','wrong-personal-tag','lost-principal-target','lost-personal-target']) {
   const {a,b,enemy,ship,shipB,ally,attacker}=setup();
   if(scenario==='lost-principal-target')delete targets['epoch_iv_principal@EA'];
-  if(scenario==='battle-ended'){ship.fleet.combat=false;enemy.flags.delete('epoch_iv_authorized_battle');}
-  if(scenario==='missing-victim')delete enemy.fromfrom;
-  if(scenario==='missing-country')delete enemy.from;
-  if(scenario==='retired')enemy.flags.add('epoch_iv_retired');
   if(scenario==='lost-personal-target')delete targets['epoch_iv_ship@A'];
-  if(scenario==='wrong-personal-tag'){ship.flags.delete('epoch_iv_principal_for@A');ship.flags.add('epoch_iv_principal_for@B');}
-  if(scenario==='victory-duplicate')enemy.flags.add('epoch_iv_victory_recorded');
-  if(scenario==='foreign-kill')ally.pacts.clear();
-  if(scenario==='self'){enemy.from=a;attacker.owner=a;}
+  if(scenario==='battle-ended')ship.fleet.combat=false;
+  if(scenario==='no-battle-certificate')enemy.flags.delete('epoch_iv_authorized_battle');
+  if(scenario==='third-party')ally.pacts.clear();
+  if(scenario==='player'){enemy.from=a;attacker.owner=a;}
   if(scenario==='federation'){ally.pacts.clear();ally.federation.add(a);}
   if(scenario==='subject'){ally.pacts.clear();ally.overlord=a;}
   if(scenario==='overlord'){ally.pacts.clear();a.overlord=ally;}
-  if(scenario.startsWith('missing-attacker'))delete enemy.fromfromfrom;
-  if(scenario==='missing-attacker-no-combat')ship.fleet.combat=false;
-  if(scenario==='no-battle-certificate')enemy.flags.delete('epoch_iv_authorized_battle');
+  if(scenario==='missing-attacker')delete enemy.fromfromfrom;
+  if(scenario==='missing-all-attackers'){delete enemy.from;delete enemy.fromfromfrom;ship.fleet.combat=false;enemy.flags.delete('epoch_iv_authorized_battle');}
   if(scenario==='mismatched-attacker')attacker.owner=b;
+  if(scenario==='victim-country-source')enemy.from=enemy;
   if(scenario==='missing-ship')delete enemy.fromfrom;
   if(scenario==='missing-claimant')delete targets['epoch_iv_claimant@EA'];
-  if(scenario==='wrong-principal'||scenario==='other-boss')enemy.fromfrom=shipB;
-  if(scenario==='cleanup')enemy.from=enemy;
+  if(scenario==='wrong-principal')enemy.fromfrom=shipB;
+  if(scenario==='escort')enemy.fromfrom=make('escort');
   if(scenario==='duplicate')ship.flags.add('epoch_iv_death_recorded');
   if(scenario==='owner-optout')a.flags.add('epoch_core_campaign_opted_out');
-  const valid=test(get(E(50),'trigger'),context(enemy));
-  const rewards=['valid','self','federation','subject','overlord','no-battle-certificate','lost-principal-target','battle-ended','lost-personal-target'].includes(scenario);
-  if(valid){run(get(E(50),'immediate'),context(enemy));check(a.flags.has('epoch_iv_protocol_key')===rewards,'combat participation: '+scenario);check(!b.flags.has('epoch_iv_protocol_key'),'only claimant rewarded');check(a.vars.epoch_iv_chapter===(rewards?6:5),'milestone follows participation');const chapter=a.vars.epoch_iv_chapter;run(get(E(50),'immediate'),context(enemy));check(a.vars.epoch_iv_chapter===chapter,'death idempotent');check(a.calls.filter(id=>id==='epoch_iv.60').length===(rewards?1:0),'finale scheduled exactly once');}
-  else check(!rewards,'valid victory is not rejected: '+scenario);
-  check(!b.flags.has('epoch_iv_protocol_key'),'foreign key untouched: '+scenario);
+  if(scenario==='completed')a.flags.add('epoch_iv_complete');
+  if(scenario==='wrong-chapter')a.vars.epoch_iv_chapter=4;
+  if(scenario==='existing-key')a.flags.add('epoch_iv_protocol_key');
+  if(scenario==='victory-duplicate')enemy.flags.add('epoch_iv_victory_recorded');
+  if(scenario==='retired')enemy.flags.add('epoch_iv_retired');
+  if(scenario==='wrong-country-type')enemy.type='default';
+  if(scenario==='missing-country-identity')enemy.flags.delete('epoch_iv_judge_identity');
+  if(scenario==='wrong-personal-tag'){ship.flags.delete('epoch_iv_principal_for@A');ship.flags.add('epoch_iv_principal_for@B');}
+  const rewards=['ally','player','federation','subject','overlord','third-party','missing-attacker','missing-all-attackers','mismatched-attacker','victim-country-source','no-battle-certificate','battle-ended','lost-principal-target','lost-personal-target'].includes(scenario);
+  const initialChapter=a.vars.epoch_iv_chapter,initialKey=a.flags.has('epoch_iv_protocol_key');
+  check(test(get(E(50),'trigger'),context(enemy))===rewards,'principal death eligibility: '+scenario);
+  if(test(get(E(50),'trigger'),context(enemy)))run(get(E(50),'immediate'),context(enemy));
+  check(a.flags.has('epoch_iv_protocol_key')===(initialKey||rewards),'personal key: '+scenario);
+  check(a.flags.has('epoch_iv_combat_proven')===rewards,'personal trial proof: '+scenario);
+  check(a.vars.epoch_iv_chapter===initialChapter+(rewards?1:0),'only valid principal death advances: '+scenario);
+  check(a.calls.filter(id=>id==='epoch_iv.60').length===(rewards?1:0),'Chapter VI immediately scheduled exactly once: '+scenario);
+  check((enemy.logs||[]).length===(rewards?1:0),'no escort/rejection log spam: '+scenario);
+  // A repeated native dispatch is filtered; even stale direct execution is safe.
+  check(!test(get(E(50),'trigger'),context(enemy)),'duplicate native callback filtered: '+scenario);
+  run(get(E(50),'immediate'),context(enemy));
+  check(a.vars.epoch_iv_chapter===initialChapter+(rewards?1:0)&&a.calls.filter(id=>id==='epoch_iv.60').length===(rewards?1:0),'stale duplicate cannot advance or reopen finale: '+scenario);
+  check((enemy.logs||[]).length===(rewards?1:0),'stale duplicate stays quiet: '+scenario);
+  check(!b.flags.has('epoch_iv_protocol_key')&&b.vars.epoch_iv_chapter===5&&b.calls.length===0,'other claimant untouched: '+scenario);
+  if(rewards){
+   delete targets['epoch_iv_ship@A'];delete targets['epoch_iv_principal@EA'];
+   check(!test(triggers.get('epoch_iv_judge_missing'),context(a))&&!test(get(E(46),'trigger'),context(a)),'awarded key prevents recovery even after targets disappear: '+scenario);
+  }
+}
+// Two personal trials can resolve in either order without cross-awards.
+for(const order of ['AB','BA']){
+ const {a,b,enemy,shipB}=setup(),enemyB=countries[3];
+ enemyB.fromfrom=shipB;
+ for(const [i,key]of [...order].entries()){
+  const c=key==='A'?a:b,e=key==='A'?enemy:enemyB;
+  check(test(get(E(50),'trigger'),context(e)),'independent principal recognized: '+order+'/'+key);
+  run(get(E(50),'immediate'),context(e));
+  check(c.flags.has('epoch_iv_protocol_key')&&c.vars.epoch_iv_chapter===6&&c.calls.filter(id=>id==='epoch_iv.60').length===1,'each claimant gets own single finale: '+order+'/'+key);
+  if(i===0){const other=key==='A'?b:a;check(!other.flags.has('epoch_iv_protocol_key')&&other.vars.epoch_iv_chapter===5,'second trial still pending: '+order);}
+ }
+ for(const e of [enemy,enemyB])run(get(E(50),'immediate'),context(e));
+ check([a,b].every(c=>c.vars.epoch_iv_chapter===6&&c.calls.filter(id=>id==='epoch_iv.60').length===1),'repeated deaths preserve both completions: '+order);
 }
 // Positive conversion: each pre-existing state is an input, not a fresh feature.
 const families=[
@@ -323,7 +357,7 @@ for(const id of [101,102]) {
   check(immediate.includes('epoch_iv.11')&&!immediate.includes('epoch_iv_after_signals'),'project '+id+' exits ship root before owner-keyed placement');
 }
 const combined=allNew.map(([p])=>read(p)).join('\n');
-check(!/destroy_ship|set_global_flag|save_global_event_target_as\s*=\s*epoch_iv_\w+(?![\w@])\s*(?:\n|})/.test(combined),'no scripted kill victory or unkeyed persistent target');
+check(!/destroy_ship|set_global_flag|save_global_event_target_as\s*=\s*epoch_iv_\w+(?![\w@])\s*(?:\n|})/.test(combined),'no scripted destruction or unkeyed persistent target');
 check((combined.match(/set_country_flag\s*=\s*epoch_iv_protocol_key/g)||[]).length===1,'one key writer');
 const situation=new Map(parsedByPath.get(file('situations'))).get('epoch_iv_ascension');
 check(get(situation,'stages').length===6&&get(get(situation,'monthly_progress'),'base')==='0','six action milestones, zero timer progress');
@@ -381,6 +415,9 @@ check(JSON.stringify(E(1)).includes('epoch_iv.42')&&JSON.stringify(E(42)).includ
 check(JSON.stringify(E(1)).includes('epoch_iv.46')&&JSON.stringify(E(46)).includes('epoch_iv_recovery_presented'),'missing old judge automatically offers paid recovery');
 check(!JSON.stringify(triggers.get('epoch_iv_valid_military_death')).includes('is_in_combat')&&!JSON.stringify(triggers.get('epoch_iv_valid_military_death')).includes('epoch_iv_authorized_battle'),'victory independent of battle-exit/poll ordering');
 check(!JSON.stringify(triggers.get('epoch_iv_valid_military_death')).includes('epoch_iv_principal@'),'victory independent of expiring ship target');
+const deathPath=JSON.stringify([triggers.get('epoch_iv_valid_military_death'),E(50)]);
+check(!/\bfrom\b|fromfromfrom|authorized_combatant|authorized_battle|attacker|is_in_combat|is_in_federation_with|has_defensive_pact|overlord/.test(deathPath),'death decision and diagnostics contain no attacker/diplomacy/combat dependency');
+check(!JSON.stringify(E(50)).includes('death callback received')&&!JSON.stringify(E(50)).includes('rejection:'),'no per-escort callback or attacker-rejection diagnostics');
 check(JSON.stringify(E(50)).includes('log')&&!JSON.stringify(E(50)).includes('custom_tooltip'),'failure diagnostics only in development logs');
 const spawn=JSON.stringify(effects.get('epoch_iv_spawn_judge'));
 check(spawn.includes('settings')&&spawn.includes('is_boss')&&spawn.includes('spawn_debris'),'native fleet settings select Guardian display');

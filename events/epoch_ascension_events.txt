@@ -984,23 +984,19 @@ country_event = {
   }
  }
 }
-# Native ship-destruction callback: ROOT victim owner, FROM attacker owner,
-# FROMFROM destroyed ship, FROMFROMFROM attacking ship (invalid on script kills).
-# Match Stage III's military validator. Do not query a dying fleet's combat state
-# or require a global ship target to outlive its object. The ship's claimant flag
-# and the native attacker are authoritative; battle-entry polling is diagnostic.
+# The personal principal's death alone resolves its claimant's trial.
+# Filter escorts, retired instances and repeated callbacks before logging.
 country_event = {
  id = epoch_iv.50
  hide_window = yes
  is_triggered_only = yes
- trigger = { is_country_type = epoch_adjudicator has_country_flag = epoch_iv_judge_identity }
+ trigger = { epoch_iv_valid_military_death = yes }
  immediate = {
-  log = "EPOCH IV death callback received"
   if = {
    limit = { epoch_iv_valid_military_death = yes }
    fromfrom = { set_ship_flag = epoch_iv_death_recorded }
    set_country_flag = epoch_iv_victory_recorded
-   log = "EPOCH IV death accepted: personal military victory"
+   log = "EPOCH IV death accepted: personal principal destroyed"
    event_target:epoch_iv_claimant@root = {
     set_country_flag = epoch_iv_combat_proven
     set_country_flag = epoch_iv_protocol_key
@@ -1011,26 +1007,6 @@ country_event = {
     limit = { has_fleet_flag = epoch_iv_escorts }
     fleet_event = { id = epoch_iv.57 }
    }
-  }
-  else = {
-   log = "EPOCH IV death rejected: no reward; missing principal may be restored"
-   if = {
-    limit = { exists = event_target:epoch_iv_claimant@root exists = fromfrom }
-    event_target:epoch_iv_claimant@root = {
-     if = { limit = { NOT = { fromfrom = { has_ship_flag = epoch_iv_principal_for@prev } } } log = "EPOCH IV rejection: destroyed ship not assigned to this claimant" }
-     if = { limit = { NOT = { epoch_iv_active = yes } } log = "EPOCH IV rejection: claimant no longer active" }
-     if = { limit = { NOT = { check_variable = { which = epoch_iv_chapter value = 5 } } } log = "EPOCH IV rejection: claimant not in Chapter V" }
-    }
-   }
-   if = { limit = { exists = fromfromfrom fromfromfrom = { exists = owner NOT = { owner = { is_same_value = from } } } } log = "EPOCH IV rejection: attacker ship/country mismatch" }
-   if = { limit = { NOT = { exists = fromfrom } } log = "EPOCH IV rejection: destroyed ship scope missing" }
-   if = { limit = { NOT = { exists = fromfromfrom } } log = "EPOCH IV rejection: native military attacker missing (script/console kill is not proof)" }
-   if = { limit = { NOT = { exists = from } } log = "EPOCH IV rejection: attacker country missing" }
-   if = { limit = { NOT = { exists = event_target:epoch_iv_claimant@root } } log = "EPOCH IV rejection: claimant reference missing" }
-   if = { limit = { exists = fromfrom NOT = { fromfrom = { has_ship_flag = epoch_iv_principal } } } log = "EPOCH IV rejection: escort or unrelated ship" }
-   if = { limit = { exists = from NOT = { from = { epoch_iv_authorized_combatant = yes } } } log = "EPOCH IV rejection: unauthorized attacker" }
-   if = { limit = { has_country_flag = epoch_iv_retired } log = "EPOCH IV rejection: retired authority" }
-   if = { limit = { has_country_flag = epoch_iv_victory_recorded } log = "EPOCH IV rejection: duplicate victory" }
   }
  }
 }
