@@ -10,7 +10,18 @@ const docs=fs.readFileSync(path.join(process.env.USERPROFILE,'Documents/Paradox 
 const scopes=new Map([...docs.matchAll(/^(\w+) - [\s\S]*?Supported Scopes: ([^\r\n]+)/gm)].map(m=>[m[1],m[2].split(' ')]));
 const nativePredicates=['is_wilderness_empire','is_robot_empire','is_hive_empire','is_gestalt'];
 const nativeTriggerSources=fs.readdirSync(path.join(vanilla,'common/scripted_triggers')).filter(x=>x.endsWith('.txt')).map(x=>native('common/scripted_triggers/'+x)).join('\n');
-function validate(b,scope,stack=[]){for(const [key,v]of b||[]){
+function validate(b,scope,stack=[]){let branchTaken=false;for(const [key,v]of b||[]){
+ if(['if','else_if','else'].includes(key)){
+  if(key==='if')branchTaken=false;
+  const limit=get(v,'limit');
+  if(key!=='else'){
+   assert.ok(limit?.length===1&&get(limit,'is_scope_type'),'model only explicit scope dispatch, never assume arbitrary conditions');
+   validate(limit,scope,stack);
+  }
+  const selected=!branchTaken&&(key==='else'||get(limit,'is_scope_type')===scope);
+  if(selected){validate(v.filter(([k])=>k!=='limit'),scope,stack);branchTaken=true;}
+  continue;
+ }
  if(['NOT','NOR','AND','OR','hidden_trigger'].includes(key)){validate(v,scope,stack);continue;}
  if(key==='owner'){assert.ok(['planet','megastructure','pop','pop_group'].includes(scope),'owner switch is invalid from '+scope);validate(v,'country',stack);continue;}
  if(key==='owner?'){
@@ -57,7 +68,7 @@ let resourceEvidence=0,modifierEvidence=0;
 for(const m of observed.matchAll(/epoch_c_megastructures\.txt line: (\d+)\r?\nCurrent Scope: (\w+)/g)){
  const line=priorLines[Number(m[1])-1].trim();
  if(line.startsWith('produces =')){check(m[2]==='megastructure','engine observed recurring resource mega context');resourceEvidence++;}
- else if(line.startsWith('triggered_country_modifier =')){check(m[2]==='country','historical auxiliary country query; superseded for live modifier potential by final run');modifierEvidence++;}
+ else if(line.startsWith('triggered_country_modifier =')){check(m[2]==='country','historical country modifier query remains a required context');modifierEvidence++;}
  else throw Error('Unmapped real scope diagnostic: '+line);
 }
 check(resourceEvidence>=10&&modifierEvidence>=10,'both recurring contexts have direct third-run engine evidence');
@@ -70,7 +81,7 @@ for(const [id,b]of priorMega){
  for(const [,t]of get(b,'resources').filter(([k])=>k==='produces')){checks++;assert.throws(()=>validate(get(t,'trigger'),'megastructure'),undefined,'reject actual previous broken resource condition '+id);}
  for(const potential of deep(b,'triggered_country_modifier').map(t=>get(t,'potential'))){checks++;assert.throws(()=>validate(potential,'country'),undefined,'reject actual previous broken modifier condition '+id);}
 }
-// Actual final-run diagnostics on bec484a: all eleven modifier potentials run on the instance.
+// The bec484a run observed all eleven potentials on instances; that does not exclude country calls.
 const finalBaseline=cp.execFileSync('git',['show','bec484a85f4dec226905a7d746bc1fcb83fcd981:common/megastructures/epoch_c_megastructures.txt'],{encoding:'utf8'});
 const finalMega=new Map(parse(finalBaseline,'successful gameplay baseline'));
 const reportedSites=[38,67,96,233,234,264,265,295,296,326,327];
@@ -88,7 +99,23 @@ for(const line of reportedSites){
 // Verify the installed native definition, rather than treating a validator assumption as evidence.
 const nativeModifiers=deep(parse(native('common/megastructures/22_shroud_seal.txt'),'native shroud seal'),'triggered_country_modifier');
 check(nativeModifiers.some(m=>get(get(m,'potential'),'owner?')?.some(([k])=>k==='has_technology')),'native modifier potential switches to owner? for country technology');
-for(const m of nativeModifiers){validate(get(m,'potential'),'megastructure');checks++;}
+for(const m of nativeModifiers)for(const scope of ['megastructure','country']){validate(get(m,'potential'),scope);checks++;}
+// Installed 4.5.3 source evidence for conditional scope dispatch and finished-stage modifiers:
+// 07_scripted_triggers_ships.txt:1007 titan_possible_construction uses if/limit/is_scope_type.
+// 03_think_tank.txt:231 and 09_interstellar_assembly.txt:217 attach country_modifier to built stages.
+// Engine call sites (tooltip vs live application) are not exposed by these script sources.
+const dispatch=new Map(parse(native('common/scripted_triggers/07_scripted_triggers_ships.txt'),'native ship triggers')).get('titan_possible_construction');
+check(get(get(get(dispatch,'if'),'limit'),'is_scope_type')==='megastructure','native conditional dispatch before mega-only type tests');
+for(const [file,id]of [['03_think_tank.txt','think_tank_1'],['09_interstellar_assembly.txt','interstellar_assembly_1']]){
+ check(!!get(new Map(parse(native('common/megastructures/'+file),'native built stage')).get(id),'country_modifier'),'native bonuses carried by finished stage '+id);
+}
+// Current error.log (19:27:31) on 20f04b7 reports exactly these three direct EPOCH failures:
+// has_megastructure_flag; Current Scope: country; Supported Scopes: megastructure.
+const currentBaseline=cp.execFileSync('git',['show','20f04b78b7d19690a3e44ff2138241e46f4a33f5:common/megastructures/epoch_c_megastructures.txt'],{encoding:'utf8'});
+for(const line of [96,264,265]){
+ const fixture=parse('t = { '+currentBaseline.split(/\r?\n/)[line-1]+' }','current reported line '+line)[0][1];
+ checks++;assert.throws(()=>validate(get(get(fixture,'triggered_country_modifier'),'potential'),'country'),/has_megastructure_flag cannot run in country/,'reject actual current failure '+line);
+}
 for(const [id,b]of mega){
  const family=id.match(/^epoch_(\w+)_/)[1];
  for(const [kind,t]of get(b,'resources').filter(([k])=>['cost','upkeep','produces'].includes(k))){
@@ -102,11 +129,15 @@ for(const [id,b]of mega){
   }
  }
  for(const potential of deep(b,'triggered_country_modifier').map(t=>get(t,'potential'))){
-  validate(potential,'megastructure');checks++;
+  for(const scope of ['megastructure','country']){validate(potential,scope);checks++;}
   // Mutations must fail scope validation even when the desired keys still exist.
-  const owner=get(potential,'owner?');check(!!owner,'current-owner country gate');
-  checks++;assert.throws(()=>validate([...potential.filter(([k])=>k!=='owner?'),...owner],'megastructure'),undefined,'reject unwrapped country conditions '+id);
-  checks++;assert.throws(()=>validate(potential.map(([k,v])=>[k,k==='owner?'?[...v,['has_megastructure_flag','epoch_c_operational']]:v]),'megastructure'),undefined,'reject instance flag moved into owner '+id);
+  const instance=get(potential,'if'),country=get(potential,'else_if'),owner=get(instance,'owner?');check(!!owner,'current-owner country gate');
+  const replace=(key,body)=>potential.map(([k,v])=>[k,k===key?body:v]);
+  checks++;assert.throws(()=>validate(replace('if',[...instance.filter(([k])=>k!=='owner?'),...owner]),'megastructure'),undefined,'reject unwrapped country conditions '+id);
+  checks++;assert.throws(()=>validate(replace('if',instance.map(([k,v])=>[k,k==='owner?'?[...v,['has_megastructure_flag','epoch_c_operational']]:v])),'megastructure'),undefined,'reject instance flag moved into owner '+id);
+  checks++;assert.throws(()=>validate(replace('else_if',[...country,['has_megastructure_flag','epoch_c_operational']]),'country'),undefined,'reject direct country-context instance flag '+id);
+  checks++;assert.throws(()=>validate([...potential,['has_megastructure_flag','epoch_c_operational']],'country'),undefined,'reject unguarded shared instance flag '+id);
+  checks++;assert.throws(()=>validate([...potential,['has_technology','tech_epoch_iv_mandate']],'megastructure'),undefined,'reject unguarded shared country trigger '+id);
  }
  assert.deepEqual(b.filter(([k])=>k!=='triggered_country_modifier'),finalMega.get(id).filter(([k])=>k!=='triggered_country_modifier'),'all non-modifier fields including complete resources.produces unchanged '+id);checks++;
  const bonusValues=x=>deep(x,'triggered_country_modifier').map(m=>m.filter(([k])=>k!=='potential'));

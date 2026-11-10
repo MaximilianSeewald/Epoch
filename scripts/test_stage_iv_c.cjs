@@ -11,7 +11,14 @@ const manifest=JSON.parse(read('docs/research/stage-iv-c-content.json'));
 let checks=0;function check(v,m){checks++;assert.ok(v,m);}
 const values=(b,key)=>b.filter(([k])=>k===key).map(([,v])=>v);
 const deep=(b,key)=>b.flatMap(([k,v])=>[...(k===key?[v]:[]),...(Array.isArray(v)?deep(v,key):[])]);
-function gate(b,e){return b.every(([k,v])=>{
+function gate(b,e){let branchTaken=false;return b.every(([k,v])=>{
+ if(['if','else_if','else'].includes(k)){
+  if(k==='if')branchTaken=false;
+  const selected=!branchTaken&&(k==='else'||gate(get(v,'limit'),e));
+  if(!selected)return true;
+  branchTaken=true;return gate(v.filter(([key])=>key!=='limit'),e);
+ }
+ if(k==='is_scope_type')return e.scope===v;
  if(triggers.has(k))return gate(triggers.get(k),e)===(v==='yes');
  if(k==='epoch_iv_eligible')return e.eligible;
  if(k==='always')return v==='yes';
@@ -229,18 +236,27 @@ for(const [id,b]of megas)for(const philosophy of ['guard','free']){
  const activeFor=i=>values(b,'triggered_country_modifier').filter(m=>gate(get(m,'potential'),i));
  const activeMods=activeFor(instance);
  check(activeMods.length===(family==='forge'?0:1),'one real country modifier branch for valid owner '+id+'/'+philosophy);
+ assert.deepEqual(activeFor(owner),activeMods,'country and instance calls select the same bonus '+id+'/'+philosophy);checks++;
  if(family!=='forge'){
   for(const [reason,changed]of Object.entries({unfinished:{...instance,operational:false},ownerless:{...instance,owner:null},foreign:{...instance,owner:{...owner,flags:new Set()}},duplicate:{...instance,owner:{...owner,megas:[id,id]}},ineligible:{...instance,owner:{...owner,eligible:false}},...(family==='uap'?{technology:{...instance,owner:{...owner,techs:new Set()}}}:{})})){
    check(activeFor(changed).length===0,'modifier fails closed for '+reason+'/'+id);
+   if(reason!=='ownerless'){
+    const country=reason==='unfinished'?{...changed.owner,megas:[{type:id,operational:false}]}:changed.owner;
+    check(activeFor(country).length===0,'country-context modifier fails closed for '+reason+'/'+id);
+   }
   }
+  for(const megas of [[],['epoch_'+family+'_'+(n===1?2:1)]])check(activeFor({...owner,megas}).length===0,'country query cannot borrow a different or missing stage '+id);
+  for(const scope of ['planet','fleet'])check(activeFor({scope,owner}).length===0,'unsupported modifier context fails closed '+id+'/'+scope);
   // Capture evaluates the new owner's own philosophy, never the former owner's flags.
   const successor={...empire(profiles.organic,philosophy==='guard'?'free':'guard'),megas:[id]};
   const transferred=activeFor({...instance,owner:successor});
   check(transferred.length===1,'qualified successor gets exactly one own bonus '+id);
+  assert.deepEqual(activeFor(successor),transferred,'capture resolves same successor bonus in both contexts '+id);checks++;
   if(family==='uap'){
    check(!!get(transferred[0],'all_technology_research_speed')===(philosophy==='guard'),'capture switches UAP bonus to new owner philosophy '+id);
    const conflict={...owner,flags:new Set([...owner.flags,'epoch_iv_philosophy_guard','epoch_iv_philosophy_free'])};
    check(activeFor({...instance,owner:conflict}).length===0,'conflicting philosophy cannot stack '+id);
+   check(activeFor(conflict).length===0,'conflicting philosophy cannot stack in country query '+id);
   }
  }
  if(family==='nexus'){
