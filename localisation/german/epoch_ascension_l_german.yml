@@ -3,25 +3,25 @@
  epoch_iv_observe:0 "Untersuchung fortsetzen"
  epoch_iv_operations:0 "Expeditionsleitung öffnen"
  epoch_iv_operations_desc:0 "Öffnet verfügbare Aufträge und Wiederherstellungen. Die Schaltfläche kann nach kurzer Zeit erneut benutzt werden."
- epoch_iv_observe_desc:0 "Fortschritt entsteht durch abgeschlossene Einsätze. Die Zeit allein löst kein Untersuchungsziel."
+ epoch_iv_observe_desc:0 "Folgt dem aktuellen Ziel. Besondere Operationen und Wiederherstellungen bietet die planetare Entscheidung der Expeditionsleitung auf der Hauptstadt."
  epoch_iv_milestone_1:0 "Zwei Nachhallquellen"
  epoch_iv_goal_1:0 "Zwei bemannte Wissenschaftsschiffprojekte in unterschiedlichen Systemen abschließen."
- epoch_iv_objectives_1:0 "Zwei bemannte Wissenschaftsschiffprojekte in unterschiedlichen Systemen abschließen."
+ epoch_iv_objectives_1:0 "Zwei Signale wiederholen das Muster aus dem besiegten Kommandonetz. Ihre Unterschiede könnten zeigen, ob die Botschaft beschädigt oder absichtlich geteilt wurde.\n\nZiel: Untersucht beide Signale in getrennten Systemen mit bemannten Wissenschaftsschiffen."
  epoch_iv_milestone_2:0 "Ein versiegelter Fund"
  epoch_iv_goal_2:0 "Ein versiegeltes Archiv Schicht für Schicht erschließen."
- epoch_iv_objectives_2:0 "Vier Archivschichten mit einem Wissenschaftler ausgraben. Falls nötig zuerst einen Außenposten im Archivsystem bauen."
+ epoch_iv_objectives_2:0 "Die Signale führen zu einem Archiv unter mehreren Schichten von Schutzvorrichtungen. Seine Aufzeichnungen müssen der Reihe nach geborgen werden, um ihren Zweck zu verstehen.\n\nZiel: Errichtet bei Bedarf einen Außenposten und schließt alle vier Ausgrabungsabschnitte mit einem Wissenschaftler ab."
  epoch_iv_milestone_3:0 "Eine umkehrbare Wunde"
  epoch_iv_goal_3:0 "Die erhaltenen Spuren unter kontrollierten Bedingungen prüfen."
- epoch_iv_objectives_3:0 "Diagnostik und Inversion erforschen. Auf einer eigenen betroffenen Kolonie Diagnose, Stabilisierung und Umkehrung beschließen. Ohne geeigneten Ort: Bergungsexpedition finanzieren."
+ epoch_iv_objectives_3:0 "Das Archiv beschreibt einen Weg, die Schäden der Resonanz umzukehren. Bevor wir einer größeren Verbindung vertrauen, müssen wir ihre Schutzvorkehrungen auf einer betroffenen Welt prüfen.\n\nZiel: Erforscht Diagnose und Inversion. Diagnostiziert, stabilisiert und invertiert anschließend eine betroffene Kolonie. Ohne geeignete Kolonie beauftragt die Expeditionsleitung eine Bergung."
  epoch_iv_milestone_4:0 "Eine rekonstruierbare Anordnung"
  epoch_iv_goal_4:0 "Die rekonstruierten Daten in einen physischen Versuch überführen."
- epoch_iv_objectives_4:0 "Materialanalyse erforschen, Demonstrator finanzieren und das bemannte Montageprojekt abschließen."
+ epoch_iv_objectives_4:0 "Die erste Heilung beweist, dass das Protokoll seinen Wirt erhalten kann. Ein physischer Demonstrator muss nun zeigen, dass unterschiedliche Bewusstseine verbunden werden können, ohne ihre Grenzen aufzulösen.\n\nZiel: Erforscht die Materialanalyse, beauftragt die Montage für 3.000 Energie und 4.000 Legierungen und schließt das Wissenschaftsschiffprojekt ab. Der Bauvorschlag erscheint automatisch; die Expeditionsleitung auf der Hauptstadt kann ihn erneut öffnen."
  epoch_iv_milestone_5:0 "Die letzte Prüfung"
  epoch_iv_goal_5:0 "Die letzte Prüfung unter eigenen Bedingungen bestehen."
- epoch_iv_objectives_5:0 "Den persönlichen Richter im Raumkampf bezwingen. Eigene Flotten, Föderationspartner, Verteidigungspartner sowie direkte Untertanen/Lehnsherren sind berechtigt. Telemetrie ermöglicht Vorbereitung; eine verlorene Instanz kann begrenzt gegen Kosten ersetzt werden."
+ epoch_iv_objectives_5:0 "Der Demonstrator hat einen Richter geweckt, der unseren Anspruch prüfen soll. Seine Schutzschale, sein bewaffnetes Urteil und die abschließende Überlastung verlangen eine vorbereitete Flotte.\n\nZiel: Besiegt unseren Richter im Kampf. Telemetrie ermöglicht optionale Gegenmaßnahmen bei der Expeditionsleitung. Eigene Streitkräfte, Föderations- oder Verteidigungspartner sowie direkte Untertanen oder Lehnsherren können den Sieg erringen."
  epoch_iv_milestone_6:0 "Eine eigene Antwort"
  epoch_iv_goal_6:0 "Aus den gewonnenen Erkenntnissen eine eigene Antwort entwickeln."
- epoch_iv_objectives_6:0 "Nach dem Sieg die künftige Verantwortung für das Protokoll wählen."
+ epoch_iv_objectives_6:0 "Mit dem Sieg über den Richter wurde unser Protokollschlüssel freigegeben. Nun entscheiden wir, wie wir jene Grenzen schützen, die die Architekten nicht bewahren konnten.\n\nZiel: Wählt in der abschließenden Audienz unsere Verantwortung für das Protokoll."
  epoch_iv.10.name:0 "Das Schweigen nach dem Sturm"
  epoch_iv.10.desc:0 "Jahre nach dem letzten Gefecht widersprechen sich zwei Aufzeichnungen unserer eigenen Expeditionen. Ein Eintrag verändert sich nur, wenn niemand ihn liest. Ein anderer bewahrt die Stimme eines längst verstummten Senders. Beide tragen dieselbe Lücke im Zeitstempel. Zwei unabhängige Messungen müssen zeigen, ob der Krieg etwas beendet oder lediglich unterbrochen hat."
  epoch_iv.10.desc.hive:0 "Der Schwarm erinnert sich an den Krieg. Doch zwei Erinnerungsknoten geben auf dieselbe Frage verschiedene Antworten. In beiden fehlt derselbe Augenblick. Keine Drohne hat ihn vergessen; er wurde nie empfangen. Wir entsenden zwei unabhängige wissenschaftliche Verbände, bevor sich die falsche Erinnerung im Bewusstsein verfestigt."
@@ -64,7 +64,7 @@
  epoch_iv.reissue:0 "Offene Nachhallmessungen neu verankern (300 Energie)."
  epoch_iv.relocate:0 "Verlorenen Archivzugang ersetzen (1.000 Energie, 300 Legierungen)."
  epoch_iv.recover:0 "Bergungsexpedition finanzieren (6.000 Energie, 2.500 Legierungen)."
- epoch_iv.build:0 "Physischen Prototyp finanzieren (3.000 Energie, 4.000 Legierungen)."
+ epoch_iv.build:0 "Physischen Demonstrator beauftragen"
  epoch_iv.summon:0 "Die isolierte Instanz lokalisieren."
  epoch_iv.assemble:0 "Den geprüften Demonstrator aufstellen."
  epoch_iv.counter:0 "Gegenmaßnahme finanzieren (2.000 Energie, 800 Legierungen)."
@@ -89,7 +89,7 @@
  decision_epoch_iv_operations:0 "Expeditionsleitung kontaktieren"
  decision_epoch_iv_operations_desc:0 "Öffnet die aktuellen persönlichen Aufträge und Wiederherstellungswege."
  d_epoch_iv_matrix:0 "Symbiotische Resonanzmatrix"
- d_epoch_iv_matrix_desc:0 "Die unvollständige Anpassung trägt nun ihren Wirt. Die alte Kontamination ist in dauerhafte Symbiose übergegangen."
+ d_epoch_iv_matrix_desc:0 "Geheilte Kontamination gewährt +10% Ressourcen durch Arbeitsplätze, +5 Stabilität und +5% Bewohnbarkeit. Unabhängige Notfallschäden bleiben bestehen."
  d_epoch_iv_fold:0 "Harmonisierte Raumfalte"
  d_epoch_iv_fold_desc:0 "Die ehemalige Narbe bildet einen stabilen Forschungsraum."
  d_epoch_iv_archive:0 "Erwachtes Resonanzarchiv"
@@ -137,3 +137,38 @@
  epoch_iv_archive_range:0 "Gerichtete Sensorfenster"
  epoch_iv_archive_lens_counter:0 "Kalibrierte Feldlinse"
  NAME_EPOCH_IV_Escorts:0 "Versiegelte Begleiter"
+
+ epoch_iv_ascension_type:0 "Das Protokoll der Architekten"
+
+ epoch_iv_ascension_monthly_change_tooltip:0 "Der Abschluss des aktuellen Auftrags führt weiter. Warten allein bringt die Untersuchung nicht voran."
+
+ epoch_iv.42.name:0 "Materialfreigabe für den Bau"
+
+ epoch_iv.42.desc:0 "Die Materialanalyse hat eine Struktur ermittelt, die eine Verbindung tragen kann, ohne ihren Wirt zu verbrauchen. Wir können nun den physischen Demonstrator beauftragen. Die Finanzierung erfordert 3.000 Energie und 4.000 Legierungen; anschließend muss ein Wissenschaftsschiff die Montage abschließen."
+
+ epoch_iv.46.name:0 "Ein unbeantwortetes Urteil"
+
+ epoch_iv.46.desc:0 "Der Richter ist verschwunden, doch ein belegbarer Sieg wurde nicht geborgen. Wir können seinen Protokollschlüssel nicht beanspruchen. Die Expeditionsleitung kann die Prüfung für 2.000 Energie und 4.000 Legierungen höchstens zweimal rekonstruieren. Der Ersatz muss im Kampf besiegt werden."
+
+ epoch_iv.diagnose.tt:0 "Erfasst das betroffene Merkmal und ermöglicht seine Stabilisierung. Belastungen bleiben zunächst bestehen. Dauer: 90 Tage; Kosten: 600 Energie."
+
+ epoch_iv.stabilize.tt:0 "Sichert das diagnostizierte Merkmal für die Inversion. Die Vorbereitung allein gewährt keinen Produktionsbonus. Dauer: 180 Tage; Kosten: 1.800 Energie und 600 Legierungen."
+
+ epoch_iv.invert.tt:0 "Ersetzt das diagnostizierte, stabilisierte Merkmal durch seine geheilte Form und entfernt zugehörige Belastungen. Unabhängige Notfallschäden bleiben bestehen. Dauer: 360 Tage; Kosten: 3.500 Energie und 1.500 Legierungen."
+
+ epoch_iv.family.contamination:0 "Behandlung: $d_epoch_resonance_contamination_active$ -> $d_epoch_iv_matrix$."
+
+ epoch_iv.family.scar:0 "Behandlung: $d_epoch_resonance_scar$ -> $d_epoch_iv_fold$."
+
+ epoch_iv.family.structure:0 "Behandlung: $d_epoch_silent_structure_unsecured$ -> $d_epoch_iv_archive$."
+
+ epoch_iv.operations.tt:0 "Öffnet die Expeditionsleitung für Wiederherstellungen, besondere Operationen und optionale Vorbereitungen."
+
+ NAME_EPOCH_IV_Escort:0 "Urteilswächter"
+
+ epoch_iv_escort_body:0 "Urteilswächter"
+
+ epoch_iv_escort_body_desc:0 "Ein begrenztes Verteidigungskontingent des Richters."
+ epoch_iv.positive.matrix:0 "Geheiltes Merkmal: +10% Ressourcen durch Arbeitsplätze, +5 Stabilität und +5% Bewohnbarkeit."
+ epoch_iv.positive.fold:0 "Geheiltes Merkmal: +15% Physik-, Gesellschafts- und Ingenieursforschung durch Arbeitsplätze sowie +5 Stabilität."
+ epoch_iv.positive.archive:0 "Geheiltes Merkmal: +15% Physik-, Gesellschafts- und Ingenieursforschung durch Arbeitsplätze sowie +10% Einigkeit durch Arbeitsplätze."

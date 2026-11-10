@@ -114,30 +114,12 @@ epoch_iv_ascension = {
  }
  approach = {
   name = epoch_iv_observe
+  on_select = { custom_tooltip = epoch_iv_observe_desc }
   default = yes
   icon = GFX_situation_approach_research
   icon_background = GFX_situation_approach_bg_green
   ai_weight = {
    base = 10
-  }
- }
- approach = {
-  name = epoch_iv_operations
-  icon = GFX_situation_approach_research
-  icon_background = GFX_situation_approach_bg_green
-  on_select = {
-   owner = {
-    country_event = {
-     id = epoch_iv.80
-    }
-   }
-   situation_event = {
-    id = epoch_iv.81
-    days = 1
-   }
-  }
-  ai_weight = {
-   base = 0
   }
  }
  on_progress_complete = {

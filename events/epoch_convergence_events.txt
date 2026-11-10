@@ -209,7 +209,11 @@ country_event = {
  hide_window = yes
  is_triggered_only = yes
  trigger = { epoch_iii_preparation_eligible = yes mid_game_years_passed >= -20 mid_game_years_passed < 0 NOT = { has_country_flag = epoch_iii_prepared } }
- immediate = { set_country_flag = epoch_iii_prepared }
+ immediate = {
+  set_country_flag = epoch_iii_prepared
+  every_situation = { limit = { is_situation_type = epoch_iii_preparations } destroy_situation = this }
+  country_event = { id = epoch_iii.22 }
+ }
 }
 
 country_event = {
@@ -550,4 +554,13 @@ fleet_event = {
  is_triggered_only = yes
  trigger = { exists = owner owner = { is_country_type = epoch_convergence has_country_flag = epoch_iii_identity_v1 } has_global_flag = epoch_iii_first_repulsed NOT = { has_global_flag = epoch_iii_active } has_fleet_flag = epoch_iii_cleanup }
  immediate = { delete_fleet = this }
+}
+
+country_event = {
+ id = epoch_iii.22
+ title = epoch_iii.22.name
+ desc = epoch_iii.22.desc
+ picture = GFX_evt_black_hole
+ is_triggered_only = yes
+ option = { name = epoch_iii.acknowledge }
 }

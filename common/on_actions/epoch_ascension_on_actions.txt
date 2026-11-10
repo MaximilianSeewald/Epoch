@@ -1,3 +1,6 @@
+# Native 4.5.3 death: ROOT victim owner, FROM attacker owner, FROMFROM victim ship,
+# FROMFROMFROM attacker ship (may be invalid on non-military/script damage).
+# Battle entry: ROOT/FROM countries, FROMFROM/FROMFROMFROM their fleets.
 on_monthly_pulse = { events = { epoch_iv.1 } }
 on_ship_destroyed_victim = { events = { epoch_iv.50 } }
 on_entering_battle = { events = { epoch_iv.51 epoch_iv.55 } }

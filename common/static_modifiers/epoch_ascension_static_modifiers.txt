@@ -1,10 +1,11 @@
+# 240k hull; finite defenses, no combat regeneration. Phase thresholds: 70/30%.
 epoch_iv_judge_body = {
- ship_hull_mult = 29
- ship_armor_mult = 3
- ship_shield_mult = 3
- ship_weapon_damage = 7
+ ship_hull_mult = 119
+ ship_armor_mult = 15
+ ship_shield_mult = 15
+ ship_weapon_damage = 11
  ship_weapon_range_mult = 0.30
- ship_fire_rate_mult = 0.25
+ ship_fire_rate_mult = 0.50
 }
 epoch_iv_judge_denial = {
  ship_shield_hardening_add = 0.50
@@ -16,12 +17,13 @@ epoch_iv_judge_verdict = {
 }
 epoch_iv_judge_broken = {
  ship_weapon_damage = 2.5
+ ship_fire_rate_mult = 0.60
  ship_shield_mult = -1
  ship_armor_mult = -0.75
 }
 epoch_iv_countermeasure = {
- ship_weapon_damage = -2.4
- ship_fire_rate_mult = -0.20
+ ship_weapon_damage = -4.5
+ ship_fire_rate_mult = -0.30
 }
 epoch_iv_secure_countermeasure = {
  ship_weapon_damage = -0.6
@@ -52,3 +54,6 @@ epoch_iv_archive_range = {
 epoch_iv_archive_lens_counter = {
  ship_shield_mult = -0.75
 }
+
+# One finite wave: twelve upgraded destroyers; no respawn or regeneration.
+epoch_iv_escort_body = { ship_hull_mult = 3 ship_armor_mult = 2 ship_shield_mult = 2 ship_weapon_damage = 1 ship_fire_rate_mult = 0.30 }

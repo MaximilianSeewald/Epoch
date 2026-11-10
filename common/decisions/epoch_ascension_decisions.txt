@@ -3,7 +3,23 @@ decision_epoch_iv_diagnose = {
  resources = { category = decisions cost = { energy = 600 } }
  potential = { epoch_iv_safe_world = yes owner = { OR = { has_country_flag = epoch_iv_archive_done has_country_flag = epoch_iv_protocol_key } } }
  allow = { NOT = { epoch_iv_diagnosis_matches = yes } owner = { has_technology = tech_epoch_iv_diagnostics } }
- effect = { if = { limit = { epoch_iv_safe_world = yes NOT = { epoch_iv_diagnosis_matches = yes } owner = { has_technology = tech_epoch_iv_diagnostics } }
+ effect = {
+  tooltip = {
+  custom_tooltip = epoch_iv.diagnose.tt
+  if = {
+   limit = { epoch_iv_contamination = yes }
+   custom_tooltip = epoch_iv.family.contamination
+  }
+  else_if = {
+   limit = { epoch_iv_scar = yes }
+   custom_tooltip = epoch_iv.family.scar
+  }
+  else_if = {
+   limit = { epoch_iv_structure = yes }
+   custom_tooltip = epoch_iv.family.structure
+  }
+  }
+  hidden_effect = { if = { limit = { epoch_iv_safe_world = yes NOT = { epoch_iv_diagnosis_matches = yes } owner = { has_technology = tech_epoch_iv_diagnostics } }
   remove_planet_flag = epoch_iv_stabilized@owner
   remove_planet_flag = epoch_iv_diagnosed_contamination@owner
   remove_planet_flag = epoch_iv_diagnosed_scar@owner
@@ -13,6 +29,7 @@ decision_epoch_iv_diagnose = {
   else_if = { limit = { epoch_iv_scar = yes } set_planet_flag = epoch_iv_diagnosed_scar@owner }
   else_if = { limit = { epoch_iv_structure = yes } set_planet_flag = epoch_iv_diagnosed_structure@owner }
  } }
+ }
  ai_weight = { weight = 100 }
 }
 decision_epoch_iv_stabilize = {
@@ -20,7 +37,24 @@ decision_epoch_iv_stabilize = {
  resources = { category = decisions cost = { energy = 1800 alloys = 600 } }
  potential = { epoch_iv_safe_world = yes owner = { OR = { has_country_flag = epoch_iv_archive_done has_country_flag = epoch_iv_protocol_key } } }
  allow = { epoch_iv_diagnosis_matches = yes NOT = { has_planet_flag = epoch_iv_stabilized@owner } }
- effect = { if = { limit = { epoch_iv_safe_world = yes epoch_iv_diagnosis_matches = yes NOT = { has_planet_flag = epoch_iv_stabilized@owner } } set_planet_flag = epoch_iv_stabilized@owner } }
+ effect = {
+  tooltip = {
+  custom_tooltip = epoch_iv.stabilize.tt
+  if = {
+   limit = { epoch_iv_contamination = yes }
+   custom_tooltip = epoch_iv.family.contamination
+  }
+  else_if = {
+   limit = { epoch_iv_scar = yes }
+   custom_tooltip = epoch_iv.family.scar
+  }
+  else_if = {
+   limit = { epoch_iv_structure = yes }
+   custom_tooltip = epoch_iv.family.structure
+  }
+  }
+  hidden_effect = { if = { limit = { epoch_iv_safe_world = yes epoch_iv_diagnosis_matches = yes NOT = { has_planet_flag = epoch_iv_stabilized@owner } } set_planet_flag = epoch_iv_stabilized@owner } }
+ }
  ai_weight = { weight = 100 }
 }
 decision_epoch_iv_invert = {
@@ -28,12 +62,49 @@ decision_epoch_iv_invert = {
  resources = { category = decisions cost = { energy = 3500 alloys = 1500 } }
  potential = { epoch_iv_safe_world = yes owner = { OR = { has_country_flag = epoch_iv_archive_done has_country_flag = epoch_iv_protocol_key } } }
  allow = { epoch_iv_diagnosis_matches = yes has_planet_flag = epoch_iv_stabilized@owner owner = { has_technology = tech_epoch_iv_inversion } }
- effect = { if = { limit = { epoch_iv_safe_world = yes epoch_iv_diagnosis_matches = yes has_planet_flag = epoch_iv_stabilized@owner owner = { has_technology = tech_epoch_iv_inversion } } epoch_iv_convert_world = yes } }
+ effect = {
+  tooltip = {
+  custom_tooltip = epoch_iv.invert.tt
+  if = {
+   limit = { epoch_iv_contamination = yes }
+   custom_tooltip = epoch_iv.family.contamination
+   if = { limit = { has_deposit = d_epoch_resonance_contamination_active } remove_deposit = d_epoch_resonance_contamination_active }
+   if = { limit = { has_deposit = d_epoch_resonance_contamination_worsened } remove_deposit = d_epoch_resonance_contamination_worsened }
+   if = { limit = { has_deposit = d_epoch_resonance_contamination_studied } remove_deposit = d_epoch_resonance_contamination_studied }
+   if = { limit = { has_deposit = d_epoch_resonance_contamination_contained } remove_deposit = d_epoch_resonance_contamination_contained }
+   if = { limit = { has_deposit = d_epoch_resonance_contamination_latent } remove_deposit = d_epoch_resonance_contamination_latent }
+   if = { limit = { has_deposit = d_epoch_resonance_contamination_resonant } remove_deposit = d_epoch_resonance_contamination_resonant }
+   if = { limit = { has_deposit = d_epoch_resonance_contamination_unstable } remove_deposit = d_epoch_resonance_contamination_unstable }
+   if = { limit = { has_deposit = d_epoch_resonance_contamination_controlled } remove_deposit = d_epoch_resonance_contamination_controlled }
+   add_deposit = d_epoch_iv_matrix
+   custom_tooltip = epoch_iv.positive.matrix
+  }
+  else_if = {
+   limit = { epoch_iv_scar = yes }
+   custom_tooltip = epoch_iv.family.scar
+   if = { limit = { has_deposit = d_epoch_resonance_scar } remove_deposit = d_epoch_resonance_scar }
+   if = { limit = { has_deposit = d_epoch_resonance_scar_altered } remove_deposit = d_epoch_resonance_scar_altered }
+   if = { limit = { has_deposit = d_epoch_resonance_scar_healed } remove_deposit = d_epoch_resonance_scar_healed }
+   add_deposit = d_epoch_iv_fold
+   custom_tooltip = epoch_iv.positive.fold
+  }
+  else_if = {
+   limit = { epoch_iv_structure = yes }
+   custom_tooltip = epoch_iv.family.structure
+   if = { limit = { has_deposit = d_epoch_silent_structure_unsecured } remove_deposit = d_epoch_silent_structure_unsecured }
+   if = { limit = { has_deposit = d_epoch_silent_structure_secured } remove_deposit = d_epoch_silent_structure_secured }
+   if = { limit = { has_deposit = d_epoch_silent_structure_investigated } remove_deposit = d_epoch_silent_structure_investigated }
+   add_deposit = d_epoch_iv_archive
+   custom_tooltip = epoch_iv.positive.archive
+  }
+  }
+  hidden_effect = { if = { limit = { epoch_iv_safe_world = yes epoch_iv_diagnosis_matches = yes has_planet_flag = epoch_iv_stabilized@owner owner = { has_technology = tech_epoch_iv_inversion } } epoch_iv_convert_world = yes } }
+ }
  ai_weight = { weight = 100 }
 }
 decision_epoch_iv_operations = {
  icon = decision_resources owned_planets_only = yes enactment_time = 1
  potential = { is_capital = yes owner = { epoch_iv_active = yes } }
- allow = { always = yes } effect = { owner = { country_event = { id = epoch_iv.80 } } }
+ allow = { always = yes } effect = { custom_tooltip = epoch_iv.operations.tt owner = { country_event = { id = epoch_iv.80 } } }
  ai_weight = { weight = 0 }
 }

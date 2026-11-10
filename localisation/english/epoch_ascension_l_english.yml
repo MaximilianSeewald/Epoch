@@ -3,25 +3,25 @@
  epoch_iv_observe:0 "Continue investigation"
  epoch_iv_operations:0 "Open expedition operations"
  epoch_iv_operations_desc:0 "Opens available assignments and recovery operations. The button becomes usable again after a short moment."
- epoch_iv_observe_desc:0 "Progress requires completed assignments. Time alone resolves no objective."
+ epoch_iv_observe_desc:0 "Follow the current objective. Special operations and recovery are available through the capital's Expedition Directorate decision."
  epoch_iv_milestone_1:0 "Two echo sources"
  epoch_iv_goal_1:0 "Complete two staffed science ship projects in different systems."
- epoch_iv_objectives_1:0 "Complete two staffed science ship projects in different systems."
+ epoch_iv_objectives_1:0 "Two signals repeat the pattern recovered from the defeated command network. Their differences may reveal whether the message is damaged or deliberately divided.\n\nObjective: investigate both signals with staffed science ships in separate systems."
  epoch_iv_milestone_2:0 "A sealed discovery"
  epoch_iv_goal_2:0 "Uncover a sealed archive layer by layer."
- epoch_iv_objectives_2:0 "Excavate four archive layers with a scientist. Build an outpost in the archive system first if necessary."
+ epoch_iv_objectives_2:0 "The signals lead to an archive buried beneath successive layers of safeguards. Its records must be recovered in order before their purpose can be understood.\n\nObjective: establish an outpost if needed, then complete all four excavation sections with a scientist."
  epoch_iv_milestone_3:0 "A reversible wound"
  epoch_iv_goal_3:0 "Test the surviving traces under controlled conditions."
- epoch_iv_objectives_3:0 "Research Diagnostics and Inversion. Order diagnosis, stabilization and inversion on an affected owned colony. Without a suitable site, fund a salvage expedition."
+ epoch_iv_objectives_3:0 "The archive describes a way to reverse the damage left by the resonance. We must test its safeguards on an affected world before trusting a larger connection.\n\nObjective: research Diagnostics and Inversion, then diagnose, stabilize and invert an affected colony. Without a suitable colony, commission a recovery expedition through the directorate."
  epoch_iv_milestone_4:0 "A reconstructable arrangement"
  epoch_iv_goal_4:0 "Turn the reconstructed data into a physical experiment."
- epoch_iv_objectives_4:0 "Research Material Analysis, fund the demonstrator and complete the staffed assembly project."
+ epoch_iv_objectives_4:0 "The first restoration proves that the protocol can sustain its host. A physical demonstrator must now show that distinct minds can connect while preserving their boundaries.\n\nObjective: research Material Analysis, commission assembly for 3,000 energy and 4,000 alloys, then complete the science ship project. The funding proposal is presented automatically; the capital's directorate can reopen it."
  epoch_iv_milestone_5:0 "The final trial"
  epoch_iv_goal_5:0 "Face the final trial on our own terms."
- epoch_iv_objectives_5:0 "Defeat the personal Adjudicator in space combat. Your fleets, federation and defense partners, and direct subjects/overlords qualify. Telemetry enables preparation; a missing instance can be replaced a limited number of times at a cost."
+ epoch_iv_objectives_5:0 "The demonstrator has awakened an Adjudicator charged with testing our claim. Its defensive shell, armed verdict and final overload demand a prepared fleet.\n\nObjective: defeat our Adjudicator in battle. Telemetry unlocks optional countermeasures through the directorate. Our forces, federation or defense partners, and direct subjects or overlord can earn the victory."
  epoch_iv_milestone_6:0 "An answer of our own"
  epoch_iv_goal_6:0 "Form our own answer from the discoveries."
- epoch_iv_objectives_6:0 "Choose our future responsibility for the protocol after victory."
+ epoch_iv_objectives_6:0 "The Adjudicator's defeat has released our protocol key. We can now decide how to uphold the boundaries the Architects failed to protect.\n\nObjective: choose our responsibility for the protocol in the final audience."
  epoch_iv.10.name:0 "Silence after the Storm"
  epoch_iv.10.desc:0 "Years after the last battle, two records from our own expeditions contradict each other. One entry changes only while nobody reads it. Another preserves the voice of a transmitter that fell silent long ago. Both carry the same gap in their timestamps. Two independent measurements must establish whether the war ended something or merely interrupted it."
  epoch_iv.10.desc.hive:0 "The hive remembers the war. Yet two memory nodes give different answers to the same question. Both lack the same instant. No drone forgot it; it was never received. We dispatch two independent scientific detachments before the false memory takes root in the consciousness."
@@ -64,7 +64,7 @@
  epoch_iv.reissue:0 "Reanchor outstanding echo measurements (300 energy)."
  epoch_iv.relocate:0 "Replace lost archive access (1,000 energy, 300 alloys)."
  epoch_iv.recover:0 "Fund salvage expedition (6,000 energy, 2,500 alloys)."
- epoch_iv.build:0 "Fund physical prototype (3,000 energy, 4,000 alloys)."
+ epoch_iv.build:0 "Commission the physical demonstrator"
  epoch_iv.summon:0 "Locate the isolated instance."
  epoch_iv.assemble:0 "Deploy the tested demonstrator."
  epoch_iv.counter:0 "Fund countermeasure (2,000 energy, 800 alloys)."
@@ -89,7 +89,7 @@
  decision_epoch_iv_operations:0 "Contact Expedition Operations"
  decision_epoch_iv_operations_desc:0 "Opens current personal assignments and recovery options."
  d_epoch_iv_matrix:0 "Symbiotic Resonance Matrix"
- d_epoch_iv_matrix_desc:0 "The unfinished adaptation now sustains its host. The former contamination has become lasting symbiosis."
+ d_epoch_iv_matrix_desc:0 "Restored contamination yields +10% resources from jobs, +5 stability and +5% habitability. Independent emergency damage remains."
  d_epoch_iv_fold:0 "Harmonized Spatial Fold"
  d_epoch_iv_fold_desc:0 "The former scar forms a stable environment for research."
  d_epoch_iv_archive:0 "Awakened Resonance Archive"
@@ -137,3 +137,38 @@
  epoch_iv_archive_range:0 "Directional Sensor Windows"
  epoch_iv_archive_lens_counter:0 "Calibrated Field Lens"
  NAME_EPOCH_IV_Escorts:0 "Sealed Escorts"
+
+ epoch_iv_ascension_type:0 "The Architects' Protocol"
+
+ epoch_iv_ascension_monthly_change_tooltip:0 "Complete the current objective to advance. Waiting alone does not advance the investigation."
+
+ epoch_iv.42.name:0 "Materials cleared for assembly"
+
+ epoch_iv.42.desc:0 "Material Analysis has identified a structure capable of holding the connection without consuming its host. We can now commission a physical demonstrator. Funding requires 3,000 energy and 4,000 alloys; a science ship must then complete assembly."
+
+ epoch_iv.46.name:0 "An unanswered verdict"
+
+ epoch_iv.46.desc:0 "The Adjudicator has vanished, but no verifiable victory was recovered. We cannot claim its protocol key. The expedition directorate can reconstruct the trial for 2,000 energy and 4,000 alloys, at most twice. The replacement must be defeated in battle."
+
+ epoch_iv.diagnose.tt:0 "Map the affected feature and unlock its stabilization. No burden is removed yet. Takes 90 days; costs 600 energy."
+
+ epoch_iv.stabilize.tt:0 "Secure the diagnosed feature for inversion. This preparation grants no production bonus by itself. Takes 180 days; costs 1,800 energy and 600 alloys."
+
+ epoch_iv.invert.tt:0 "Replace the diagnosed, stabilized feature with its restored form and remove its associated burdens. Independent emergency damage remains. Takes 360 days; costs 3,500 energy and 1,500 alloys."
+
+ epoch_iv.family.contamination:0 "Treatment: $d_epoch_resonance_contamination_active$ -> $d_epoch_iv_matrix$."
+
+ epoch_iv.family.scar:0 "Treatment: $d_epoch_resonance_scar$ -> $d_epoch_iv_fold$."
+
+ epoch_iv.family.structure:0 "Treatment: $d_epoch_silent_structure_unsecured$ -> $d_epoch_iv_archive$."
+
+ epoch_iv.operations.tt:0 "Open the Expedition Directorate for recovery, special operations and optional preparations."
+
+ NAME_EPOCH_IV_Escort:0 "Verdict Sentinel"
+
+ epoch_iv_escort_body:0 "Verdict Sentinel"
+
+ epoch_iv_escort_body_desc:0 "A finite defensive detachment of the Adjudicator."
+ epoch_iv.positive.matrix:0 "Restored feature: +10% resources from jobs, +5 stability and +5% habitability."
+ epoch_iv.positive.fold:0 "Restored feature: +15% Physics, Society and Engineering research from jobs, and +5 stability."
+ epoch_iv.positive.archive:0 "Restored feature: +15% Physics, Society and Engineering research from jobs, and +10% unity from jobs."

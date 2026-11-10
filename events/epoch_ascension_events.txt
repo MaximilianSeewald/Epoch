@@ -9,6 +9,33 @@ event = {
     epoch_iv_eligible = yes
    }
    if = {
+    limit = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 4 } NOT = { has_country_flag = epoch_iv_chapter_iv_presented } }
+    country_event = { id = epoch_iv.40 }
+   }
+   if = {
+    limit = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 4 } has_technology = tech_epoch_iv_materials NOT = { has_country_flag = epoch_iv_materials_presented } NOT = { has_country_flag = epoch_iv_prototype_done } NOT = { has_special_project = EPOCH_IV_PROTOTYPE } }
+    country_event = { id = epoch_iv.42 }
+   }
+   if = {
+    limit = { epoch_iv_active = yes exists = event_target:epoch_iv_fleet@this }
+    event_target:epoch_iv_fleet@this = {
+     if = {
+      limit = { NOT = { has_fleet_flag = epoch_iv_boss_display_v2 } }
+      set_fleet_settings = { is_boss = yes spawn_debris = no }
+      set_fleet_flag = epoch_iv_boss_display_v2
+     }
+    }
+   }
+   if = {
+    limit = { epoch_iv_judge_missing = yes NOT = { has_country_flag = epoch_iv_recovery_presented } }
+    country_event = { id = epoch_iv.46 }
+   }
+   if = {
+    limit = { epoch_iv_active = yes NOT = { any_owned_planet = { is_capital = yes } } NOT = { has_country_flag = epoch_iv_fallback_cooldown } }
+    set_timed_country_flag = { flag = epoch_iv_fallback_cooldown days = 180 }
+    country_event = { id = epoch_iv.80 }
+   }
+   if = {
     limit = {
      NOT = {
       has_country_flag = epoch_iv_clock_scheduled
@@ -867,10 +894,16 @@ country_event = {
  is_triggered_only = yes
  trigger = {
   epoch_iv_active = yes
+  NOT = { has_country_flag = epoch_iv_chapter_iv_presented }
   check_variable = {
    which = epoch_iv_chapter
    value = 4
   }
+ }
+ immediate = {
+  set_country_flag = epoch_iv_chapter_iv_presented
+  if = { limit = { has_technology = tech_epoch_iv_materials } set_country_flag = epoch_iv_materials_presented }
+  country_event = { id = epoch_iv.80 days = 1 }
  }
  option = {
   name = epoch_iv.continue
@@ -951,85 +984,53 @@ country_event = {
   }
  }
 }
+# Native ship-destruction callback: ROOT victim owner, FROM attacker owner,
+# FROMFROM destroyed ship, FROMFROMFROM attacking ship (invalid on script kills).
+# Match Stage III's military validator. Do not query a dying fleet's combat state
+# or require a global ship target to outlive its object. The ship's claimant flag
+# and the native attacker are authoritative; battle-entry polling is diagnostic.
 country_event = {
  id = epoch_iv.50
  hide_window = yes
  is_triggered_only = yes
- trigger = {
-  is_country_type = epoch_adjudicator
-  has_country_flag = epoch_iv_judge_identity
-  NOT = {
-   has_country_flag = epoch_iv_retired
-  }
-  exists = from
-  exists = fromfrom
-  NOT = {
-   from = {
-    is_same_value = root
-   }
-  }
-  exists = event_target:epoch_iv_claimant@root
-  fromfrom = {
-   has_ship_flag = epoch_iv_principal
-   NOT = {
-    has_ship_flag = epoch_iv_death_recorded
-   }
-   is_same_value = event_target:epoch_iv_principal@root
-  }
-  event_target:epoch_iv_claimant@root = {
-   epoch_iv_active = yes
-   has_country_flag = epoch_iv_judge_created
-   check_variable = {
-    which = epoch_iv_chapter
-    value = 5
-   }
-   NOT = {
-    has_country_flag = epoch_iv_protocol_key
-   }
-  }
- }
+ trigger = { is_country_type = epoch_adjudicator has_country_flag = epoch_iv_judge_identity }
  immediate = {
-  fromfrom = {
-   set_ship_flag = epoch_iv_death_recorded
-  }
+  log = "EPOCH IV death callback received"
   if = {
-   limit = {
-    has_country_flag = epoch_iv_authorized_battle
-    from = {
-     epoch_iv_authorized_combatant = yes
-    }
-    OR = {
-     AND = {
-      NOT = { exists = fromfromfrom }
-      fromfrom = { exists = fleet fleet = { is_in_combat = yes } }
-     }
-     fromfromfrom = {
-      owner = {
-       is_same_value = from
-      }
-     }
-    }
-   }
+   limit = { epoch_iv_valid_military_death = yes }
+   fromfrom = { set_ship_flag = epoch_iv_death_recorded }
    set_country_flag = epoch_iv_victory_recorded
+   log = "EPOCH IV death accepted: personal military victory"
    event_target:epoch_iv_claimant@root = {
     set_country_flag = epoch_iv_combat_proven
     set_country_flag = epoch_iv_protocol_key
     epoch_iv_advance = yes
-    country_event = {
-     id = epoch_iv.60
-    }
+    country_event = { id = epoch_iv.60 }
+   }
+   every_owned_fleet = {
+    limit = { has_fleet_flag = epoch_iv_escorts }
+    fleet_event = { id = epoch_iv.57 }
    }
   }
   else = {
-   set_country_flag = epoch_iv_unclaimed_death
-  }
-  every_owned_fleet = {
-   limit = {
-    has_fleet_flag = epoch_iv_escorts
+   log = "EPOCH IV death rejected: no reward; missing principal may be restored"
+   if = {
+    limit = { exists = event_target:epoch_iv_claimant@root exists = fromfrom }
+    event_target:epoch_iv_claimant@root = {
+     if = { limit = { NOT = { fromfrom = { has_ship_flag = epoch_iv_principal_for@prev } } } log = "EPOCH IV rejection: destroyed ship not assigned to this claimant" }
+     if = { limit = { NOT = { epoch_iv_active = yes } } log = "EPOCH IV rejection: claimant no longer active" }
+     if = { limit = { NOT = { check_variable = { which = epoch_iv_chapter value = 5 } } } log = "EPOCH IV rejection: claimant not in Chapter V" }
+    }
    }
-   fleet_event = {
-    id = epoch_iv.57
-   }
+   if = { limit = { exists = fromfromfrom fromfromfrom = { exists = owner NOT = { owner = { is_same_value = from } } } } log = "EPOCH IV rejection: attacker ship/country mismatch" }
+   if = { limit = { NOT = { exists = fromfrom } } log = "EPOCH IV rejection: destroyed ship scope missing" }
+   if = { limit = { NOT = { exists = fromfromfrom } } log = "EPOCH IV rejection: native military attacker missing (script/console kill is not proof)" }
+   if = { limit = { NOT = { exists = from } } log = "EPOCH IV rejection: attacker country missing" }
+   if = { limit = { NOT = { exists = event_target:epoch_iv_claimant@root } } log = "EPOCH IV rejection: claimant reference missing" }
+   if = { limit = { exists = fromfrom NOT = { fromfrom = { has_ship_flag = epoch_iv_principal } } } log = "EPOCH IV rejection: escort or unrelated ship" }
+   if = { limit = { exists = from NOT = { from = { epoch_iv_authorized_combatant = yes } } } log = "EPOCH IV rejection: unauthorized attacker" }
+   if = { limit = { has_country_flag = epoch_iv_retired } log = "EPOCH IV rejection: retired authority" }
+   if = { limit = { has_country_flag = epoch_iv_victory_recorded } log = "EPOCH IV rejection: duplicate victory" }
   }
  }
 }
@@ -1112,8 +1113,8 @@ fleet_event = {
    NOT = {
     has_country_flag = epoch_iv_retired
    }
-   exists = event_target:epoch_iv_principal@this
   }
+  any_owned_ship = { has_ship_flag = epoch_iv_principal }
  }
  immediate = {
   if = {
@@ -1124,7 +1125,7 @@ fleet_event = {
     limit = {
      any_owned_ship = {
       has_ship_flag = epoch_iv_principal
-      has_hp < 42000
+      has_hp_percentage < 0.70
      }
      NOT = {
       has_fleet_flag = epoch_iv_verdict
@@ -1139,6 +1140,7 @@ fleet_event = {
     create_fleet = {
      name = NAME_EPOCH_IV_Escorts
      effect = {
+      add_modifier = { modifier = epoch_iv_escort_body days = -1 }
       set_owner = root.owner
       set_fleet_flag = epoch_iv_escorts
       set_location = {
@@ -1147,9 +1149,9 @@ fleet_event = {
        angle = random
       }
       while = {
-       count = 8
+       count = 12
        create_ship = {
-        design = NAME_EPOCH_III_Enforcer
+        design = NAME_EPOCH_IV_Escort
         graphical_culture = fallen_machine_empire_01
        }
       }
@@ -1163,7 +1165,7 @@ fleet_event = {
       NOT = {
        any_owned_ship = {
         has_ship_flag = epoch_iv_principal
-        has_hp < 18000
+        has_hp_percentage < 0.30
        }
       }
      }
@@ -1180,7 +1182,7 @@ fleet_event = {
     limit = {
      any_owned_ship = {
       has_ship_flag = epoch_iv_principal
-      has_hp < 18000
+      has_hp_percentage < 0.30
      }
      NOT = {
       has_fleet_flag = epoch_iv_broken
@@ -1575,6 +1577,11 @@ country_event = {
  option = {
   name = epoch_iv.build
   trigger = {
+   check_variable = { which = epoch_iv_chapter value = 4 }
+   NOT = { has_special_project = EPOCH_IV_PROTOTYPE }
+   NOT = { has_country_flag = epoch_iv_prototype_done }
+  }
+  allow = {
    check_variable = {
     which = epoch_iv_chapter
     value = 4
@@ -1869,17 +1876,6 @@ fleet_event = {
   delete_fleet = this
  }
 }
-situation_event = {
- id = epoch_iv.81
- is_triggered_only = yes
- hide_window = yes
- trigger = {
-  is_situation_type = epoch_iv_ascension
- }
- immediate = {
-  set_situation_approach = epoch_iv_observe
- }
-}
 country_event = {
  id = epoch_iv.82
  is_triggered_only = yes
@@ -1911,4 +1907,29 @@ country_event = {
    }
   }
  }
+}
+
+country_event = {
+ id = epoch_iv.42
+ title = epoch_iv.42.name
+ desc = epoch_iv.42.desc
+ picture = GFX_evt_relic_world
+ is_triggered_only = yes
+ trigger = {
+  epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 4 }
+  has_technology = tech_epoch_iv_materials
+  NOT = { has_country_flag = epoch_iv_materials_presented }
+ }
+ immediate = { set_country_flag = epoch_iv_materials_presented }
+ option = { name = epoch_iv.continue country_event = { id = epoch_iv.80 } }
+}
+country_event = {
+ id = epoch_iv.46
+ title = epoch_iv.46.name
+ desc = epoch_iv.46.desc
+ picture = GFX_evt_relic_world
+ is_triggered_only = yes
+ trigger = { epoch_iv_judge_missing = yes NOT = { has_country_flag = epoch_iv_recovery_presented } }
+ immediate = { set_country_flag = epoch_iv_recovery_presented }
+ option = { name = epoch_iv.continue country_event = { id = epoch_iv.80 } }
 }

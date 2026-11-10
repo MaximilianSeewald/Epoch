@@ -1,5 +1,5 @@
 epoch_iv_find_anchor = {
- clear_global_event_target = epoch_iv_anchor@root
+ if = { limit = { exists = event_target:epoch_iv_anchor@root } clear_global_event_target = epoch_iv_anchor@root }
  random_owned_planet = {
   limit = {
    is_colony = yes
@@ -73,9 +73,9 @@ epoch_iv_issue_signals = {
      max_jumps = 0
      initializer = epoch_iv_signal_init
     }
-    add_hyperlane = {
-     from = this
-     to = last_created_system
+    if = {
+     limit = { last_created_system = { NOT = { has_hyperlane_to = prev } } }
+     add_hyperlane = { from = this to = last_created_system }
     }
     last_created_system = {
      set_star_flag = epoch_iv_signal_a@root
@@ -139,9 +139,9 @@ epoch_iv_issue_signals = {
      max_jumps = 0
      initializer = epoch_iv_signal_init
     }
-    add_hyperlane = {
-     from = this
-     to = last_created_system
+    if = {
+     limit = { last_created_system = { NOT = { has_hyperlane_to = prev } } }
+     add_hyperlane = { from = this to = last_created_system }
     }
     last_created_system = {
      star = {
@@ -173,7 +173,7 @@ epoch_iv_create_site = {
   limit = {
    exists = event_target:epoch_iv_anchor@root
   }
-  clear_global_event_target = epoch_iv_site_world@root
+  if = { limit = { exists = event_target:epoch_iv_site_world@root } clear_global_event_target = epoch_iv_site_world@root }
   random_system = {
    limit = {
     epoch_iv_research_system = yes
@@ -213,9 +213,9 @@ epoch_iv_create_site = {
     last_created_system = {
      save_global_event_target_as = epoch_iv_archive_system@root
     }
-    add_hyperlane = {
-     from = this
-     to = last_created_system
+    if = {
+     limit = { last_created_system = { NOT = { has_hyperlane_to = prev } } }
+     add_hyperlane = { from = this to = last_created_system }
     }
     last_created_system = {
      random_system_planet = {
@@ -438,9 +438,9 @@ epoch_iv_spawn_judge = {
     last_created_system = {
      save_global_event_target_as = epoch_iv_arena@root
     }
-    add_hyperlane = {
-     from = this
-     to = last_created_system
+    if = {
+     limit = { last_created_system = { NOT = { has_hyperlane_to = prev } } }
+     add_hyperlane = { from = this to = last_created_system }
     }
    }
   }
@@ -511,6 +511,7 @@ epoch_iv_spawn_judge = {
    set_country_flag = epoch_iv_judge_created
    create_fleet = {
     name = NAME_EPOCH_IV_Judge
+    settings = { is_boss = yes spawn_debris = no }
     effect = {
      set_owner = event_target:epoch_iv_enemy@root
      set_fleet_flag = epoch_iv_judge
@@ -677,16 +678,17 @@ epoch_iv_restore_judge = {
      id = epoch_iv.57
     }
    }
-   clear_global_event_target = epoch_iv_principal@this
+   if = { limit = { exists = event_target:epoch_iv_principal@this } clear_global_event_target = epoch_iv_principal@this }
   }
-  clear_global_event_target = epoch_iv_ship@root
-  clear_global_event_target = epoch_iv_fleet@root
-  clear_global_event_target = epoch_iv_enemy@root
-  clear_global_event_target = epoch_iv_arena@root
-  clear_global_event_target = epoch_iv_arena_star@root
+  if = { limit = { exists = event_target:epoch_iv_ship@root } clear_global_event_target = epoch_iv_ship@root }
+  if = { limit = { exists = event_target:epoch_iv_fleet@root } clear_global_event_target = epoch_iv_fleet@root }
+  if = { limit = { exists = event_target:epoch_iv_enemy@root } clear_global_event_target = epoch_iv_enemy@root }
+  if = { limit = { exists = event_target:epoch_iv_arena@root } clear_global_event_target = epoch_iv_arena@root }
+  if = { limit = { exists = event_target:epoch_iv_arena_star@root } clear_global_event_target = epoch_iv_arena_star@root }
+  remove_country_flag = epoch_iv_recovery_presented
   remove_country_flag = epoch_iv_judge_created
   remove_country_flag = epoch_iv_ai_attack_ordered
-  clear_global_event_target = epoch_iv_ai_fleet@root
+  if = { limit = { exists = event_target:epoch_iv_ai_fleet@root } clear_global_event_target = epoch_iv_ai_fleet@root }
   if = {
    limit = {
     has_event_chain = epoch_iv_judge_chain

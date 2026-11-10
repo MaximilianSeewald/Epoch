@@ -39,7 +39,11 @@ for(const [k,b]of current.get(dp)){
  if(!k.endsWith('resume'))check(get(get(b,'effect'),'tooltip')?.length>0,`${k}: nonempty native preview`);
 }
 for(const p of ['common/special_projects/epoch_phase_ii_projects.txt','common/special_projects/epoch_core_projects.txt','common/deposits/epoch_phase_ii_features.txt','common/static_modifiers/epoch_core_modifiers.txt','common/technology/epoch_phase_ii_technologies.txt','common/buildings/epoch_phase_ii_buildings.txt','common/global_ship_designs/epoch_nullwarden_designs.txt','common/situations/epoch_core_situations.txt','common/situations/epoch_phase_ii_situations.txt']){
- assert.deepEqual(current.get(p),old(p),`${p}: gameplay definitions unchanged`);checks++;
+ const before=old(p);
+ if(p==='common/deposits/epoch_phase_ii_features.txt'){
+  function guarded(b){return b.flatMap(([k,v])=>[...(k==='owner'?[['exists','owner']]:[]),[k,Array.isArray(v)?guarded(v):v]]);}
+  assert.deepEqual(current.get(p),guarded(before),p+': only add native owner-existence guards; every modifier unchanged');
+ }else assert.deepEqual(current.get(p),before,p+': gameplay definitions unchanged');checks++;
 }
 const defs=current.get('events/epoch_resonance_events.txt');
 const scar=defs.find(([,b])=>Array.isArray(b)&&get(b,'id')==='epoch_res.101')[1];
