@@ -1,6 +1,6 @@
 # Package B: staffed balance ledger — 2026-11-10
 
-Installed Cygnus 4.5.3 sources, hashed in the JSON. 100 workforce = one economic job unit. Full staffing; no species traits, designations, empire bonuses, deposits or civics except the explicitly labelled catalytic/machine variants. Organic net includes building upkeep and job inputs. Population living standards, housing, opportunity cost and unrelated colony output are excluded, not silently zeroed. Native gameplay remains unverified.
+Installed Cygnus 4.5.3 sources, hashed in the JSON. 100 workforce = one economic job unit. Full staffing; no species traits, designations, empire bonuses, deposits or civics except the explicitly labelled catalytic/machine variants. Organic net includes building upkeep and job inputs. Own direct unity/technician modifiers are included; stability/happiness feedback, population living standards, housing, opportunity cost and unrelated colony output are excluded, not silently zeroed. Native gameplay remains unverified.
 
 | Family | Installed native comparison | Metric / scenario | Vanilla | EPOCH top | Ratio |
 |---|---|---|---:|---:|---:|
@@ -13,7 +13,7 @@ Installed Cygnus 4.5.3 sources, hashed in the JSON. 100 workforce = one economic
 | academy | building_fortress | naval cap, four units; Vanilla includes Ground Defense Planning | 20 | 40 | 2 |
 | factory | building_crystal_plant_2 / strategic refinery | distinct strategic outputs, no interchangeable unit value | not comparable | 72 | N/A |
 
-The archive comparison is a fixed 20-bureaucrat colony, not a claim that the administrative building has 20 intrinsic jobs. The EPOCH institute also supplies society research, unity and local stability; it does not reproduce native doctor growth. The collector includes 32/64 direct energy before building upkeep, on top of the local technician bonus. The phase comparison is damage endurance, not an added 100% bombardment reduction. Factories create an EPOCH-only resource: no honest numeric Vanilla exchange-rate comparison exists. Fallen-Empire sources were inspected; their restricted automated resource buildings are not normal staffed comparators.
+The archive comparison is a fixed 20-bureaucrat colony, not a claim that the administrative building has 20 intrinsic jobs. The EPOCH institute also supplies society research, unity and local stability; it does not reproduce native doctor growth. The collector includes 35/72 direct energy before building upkeep, on top of the local technician bonus. The phase comparison is damage endurance, not an added 100% bombardment reduction. Factories create an EPOCH-only resource: no honest numeric Vanilla exchange-rate comparison exists. Fallen-Empire sources were inspected; their restricted automated resource buildings are not normal staffed comparators.
 
 | Organic building | Workforce units | Gross output | Monthly net, including inputs/building upkeep |
 |---|---:|---|---|
@@ -23,12 +23,12 @@ The archive comparison is a fixed 20-bureaucrat colony, not a claim that the adm
 | building_epoch_forge_1 | 2 | alloys +12 | alloys +12; epoch_protocol_cores -0.2; energy -4 |
 | building_epoch_forge_2 | 4 | alloys +24 | alloys +24; epoch_protocol_cores -0.4; energy -8 |
 | building_epoch_forge_3 | 6 | alloys +36 | alloys +36; epoch_protocol_cores -0.6; energy -12 |
-| building_epoch_collector_1 | 2 | energy +32 | energy +28; minerals -4; epoch_protocol_cores -0.2 |
+| building_epoch_collector_1 | 2 | energy +35 | energy +31; minerals -4; epoch_protocol_cores -0.2 |
 | building_epoch_collector_2 | 4 | energy +64 | energy +56; minerals -8; epoch_protocol_cores -0.4 |
 | building_epoch_institute_1 | 1 | society_research +4; unity +3 | society_research +4; unity +3; epoch_protocol_cores -0.15; consumer_goods -1.5; energy -4 |
 | building_epoch_institute_2 | 2 | society_research +8; unity +6 | society_research +8; unity +6; epoch_protocol_cores -0.3; consumer_goods -3; energy -8 |
-| building_epoch_archive_1 | 2 | unity +16; physics_research +2 | unity +16; physics_research +2; epoch_protocol_cores -0.2; consumer_goods -3; energy -4 |
-| building_epoch_archive_2 | 4 | unity +32; physics_research +4 | unity +32; physics_research +4; epoch_protocol_cores -0.4; consumer_goods -6; energy -8 |
+| building_epoch_archive_1 | 2 | unity +17.6; physics_research +2 | unity +17.6; physics_research +2; epoch_protocol_cores -0.2; consumer_goods -3; energy -4 |
+| building_epoch_archive_2 | 4 | unity +36.8; physics_research +4 | unity +36.8; physics_research +4; epoch_protocol_cores -0.4; consumer_goods -6; energy -8 |
 | building_epoch_phase_1 | 1 |  | energy -6; epoch_protocol_cores -0.15 |
 | building_epoch_phase_2 | 2 |  | energy -12; epoch_protocol_cores -0.3 |
 | building_epoch_factory_1 | 3 | epoch_protocol_cores +36 | epoch_protocol_cores +36; minerals -54; alloys -9; energy -28 |
