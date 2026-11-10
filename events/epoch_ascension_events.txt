@@ -12,10 +12,8 @@ event = {
     limit = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 4 } NOT = { has_country_flag = epoch_iv_chapter_iv_presented } }
     country_event = { id = epoch_iv.40 }
    }
-   if = {
-    limit = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 4 } has_technology = tech_epoch_iv_materials NOT = { has_country_flag = epoch_iv_materials_presented } NOT = { has_country_flag = epoch_iv_prototype_done } NOT = { has_special_project = EPOCH_IV_PROTOTYPE } }
-    country_event = { id = epoch_iv.42 }
-   }
+   epoch_iv_issue_demonstrator_project = yes
+
    if = {
     limit = { epoch_iv_active = yes exists = event_target:epoch_iv_fleet@this }
     event_target:epoch_iv_fleet@this = {
@@ -302,41 +300,13 @@ ship_event = {
   }
  }
 }
+# Compatibility receiver for an already dispatched legacy ship callback.
 ship_event = {
  id = epoch_iv.104
  hide_window = yes
  is_triggered_only = yes
- trigger = {
-  exists = owner
-  exists = fromfrom
-  owner = {
-   epoch_iv_active = yes
-   check_variable = {
-    which = epoch_iv_chapter
-    value = 4
-   }
-   NOT = {
-    has_country_flag = epoch_iv_prototype_done
-   }
-   has_country_flag = epoch_iv_prototype_funded
-  }
-  fromfrom = {
-   is_same_value = event_target:epoch_iv_work@root.owner
-  }
-  solar_system = {
-   is_same_value = fromfrom.solar_system
-  }
- }
- immediate = {
-  owner = {
-   set_country_flag = epoch_iv_prototype_done
-   country_event = {
-    id = epoch_iv.44
-    days = 1
-   }
-  }
- }
 }
+
 ship_event = {
  id = epoch_iv.105
  hide_window = yes
@@ -902,8 +872,7 @@ country_event = {
  }
  immediate = {
   set_country_flag = epoch_iv_chapter_iv_presented
-  if = { limit = { has_technology = tech_epoch_iv_materials } set_country_flag = epoch_iv_materials_presented }
-  country_event = { id = epoch_iv.80 days = 1 }
+  epoch_iv_issue_demonstrator_project = yes
  }
  option = {
   name = epoch_iv.continue
@@ -923,11 +892,12 @@ country_event = {
    value = 4
   }
   has_country_flag = epoch_iv_prototype_done
-  exists = event_target:epoch_iv_work@root
  }
  immediate = {
+  if = { limit = { NOT = { exists = event_target:epoch_iv_work@root } } epoch_iv_select_work = yes }
   if = {
    limit = {
+    exists = event_target:epoch_iv_work@root
     NOT = {
      exists = event_target:epoch_iv_prototype@root
     }
@@ -1306,31 +1276,7 @@ country_event = {
  immediate = {
   set_country_flag = epoch_iv_operations_open
  }
- option = {
-  name = epoch_iv.assemble
-  trigger = {
-   check_variable = {
-    which = epoch_iv_chapter
-    value = 4
-   }
-   has_country_flag = epoch_iv_prototype_done
-  }
-  if = {
-   limit = {
-    check_variable = {
-     which = epoch_iv_chapter
-     value = 4
-    }
-    has_country_flag = epoch_iv_prototype_done
-   }
-   country_event = {
-    id = epoch_iv.44
-   }
-  }
-  ai_chance = {
-   factor = 10
-  }
- }
+
  option = {
   name = epoch_iv.reissue
   trigger = {
@@ -1550,79 +1496,7 @@ country_event = {
    factor = 10
   }
  }
- option = {
-  name = epoch_iv.build
-  trigger = {
-   check_variable = { which = epoch_iv_chapter value = 4 }
-   NOT = { has_special_project = EPOCH_IV_PROTOTYPE }
-   NOT = { has_country_flag = epoch_iv_prototype_done }
-  }
-  allow = {
-   check_variable = {
-    which = epoch_iv_chapter
-    value = 4
-   }
-   has_technology = tech_epoch_iv_materials
-   NOT = {
-    has_special_project = EPOCH_IV_PROTOTYPE
-   }
-   NOT = {
-    has_country_flag = epoch_iv_prototype_done
-   }
-   resource_stockpile_compare = {
-    resource = energy
-    value >= 3000
-   }
-   resource_stockpile_compare = {
-    resource = alloys
-    value >= 4000
-   }
-  }
-  if = {
-   limit = {
-    check_variable = {
-     which = epoch_iv_chapter
-     value = 4
-    }
-    has_technology = tech_epoch_iv_materials
-    NOT = {
-     has_special_project = EPOCH_IV_PROTOTYPE
-    }
-    NOT = {
-     has_country_flag = epoch_iv_prototype_done
-    }
-    resource_stockpile_compare = {
-     resource = energy
-     value >= 3000
-    }
-    resource_stockpile_compare = {
-     resource = alloys
-     value >= 4000
-    }
-   }
-   epoch_iv_select_work = yes
-   if = {
-    limit = {
-     exists = event_target:epoch_iv_work@root
-    }
-    add_resource = {
-     energy = -3000
-     alloys = -4000
-    }
-    set_country_flag = epoch_iv_prototype_funded
-    event_target:epoch_iv_work@root = {
-     enable_special_project = {
-      name = EPOCH_IV_PROTOTYPE
-      location = this
-      owner = root
-     }
-    }
-   }
-  }
-  ai_chance = {
-   factor = 10
-  }
- }
+
  option = {
   name = epoch_iv.summon
   trigger = {
@@ -1731,7 +1605,6 @@ country_event = {
    }
    OR = {
     has_special_project = EPOCH_IV_RECOVERY
-    has_special_project = EPOCH_IV_PROTOTYPE
     has_special_project = EPOCH_IV_COUNTER
    }
   }
@@ -1743,7 +1616,6 @@ country_event = {
     }
     OR = {
      has_special_project = EPOCH_IV_RECOVERY
-     has_special_project = EPOCH_IV_PROTOTYPE
      has_special_project = EPOCH_IV_COUNTER
     }
    }
@@ -1752,9 +1624,6 @@ country_event = {
    }
    abort_special_project = {
     type = EPOCH_IV_RECOVERY
-   }
-   abort_special_project = {
-    type = EPOCH_IV_PROTOTYPE
    }
    abort_special_project = {
     type = EPOCH_IV_COUNTER
@@ -1885,20 +1754,7 @@ country_event = {
  }
 }
 
-country_event = {
- id = epoch_iv.42
- title = epoch_iv.42.name
- desc = epoch_iv.42.desc
- picture = GFX_evt_relic_world
- is_triggered_only = yes
- trigger = {
-  epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 4 }
-  has_technology = tech_epoch_iv_materials
-  NOT = { has_country_flag = epoch_iv_materials_presented }
- }
- immediate = { set_country_flag = epoch_iv_materials_presented }
- option = { name = epoch_iv.continue country_event = { id = epoch_iv.80 } }
-}
+
 country_event = {
  id = epoch_iv.46
  title = epoch_iv.46.name
@@ -1908,4 +1764,20 @@ country_event = {
  trigger = { epoch_iv_judge_missing = yes NOT = { has_country_flag = epoch_iv_recovery_presented } }
  immediate = { set_country_flag = epoch_iv_recovery_presented }
  option = { name = epoch_iv.continue country_event = { id = epoch_iv.80 } }
+}
+
+country_event = {
+ id = epoch_iv.43
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = {
+  epoch_iv_active = yes
+  check_variable = { which = epoch_iv_chapter value = 4 }
+  has_country_flag = epoch_iv_demonstrator_issued
+  NOT = { has_country_flag = epoch_iv_prototype_done }
+ }
+ immediate = {
+  set_country_flag = epoch_iv_prototype_done
+  country_event = { id = epoch_iv.44 }
+ }
 }

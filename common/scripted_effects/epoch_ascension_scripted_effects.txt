@@ -279,6 +279,7 @@ epoch_iv_healing_complete = {
   }
   set_country_flag = epoch_iv_healing_done
   epoch_iv_advance = yes
+  epoch_iv_issue_demonstrator_project = yes
   country_event = {
    id = epoch_iv.40
    days = 1
@@ -696,5 +697,26 @@ epoch_iv_restore_judge = {
    end_event_chain = epoch_iv_judge_chain
   }
   epoch_iv_spawn_judge = yes
+ }
+}
+
+# Country scope; called on chapter entry and monthly for old saves/cancellation.
+# Separate key avoids interpreting saved ship assignments as country callbacks.
+epoch_iv_issue_demonstrator_project = {
+ if = {
+  limit = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 4 } }
+  if = {
+   limit = { has_special_project = EPOCH_IV_PROTOTYPE }
+   abort_special_project = { type = EPOCH_IV_PROTOTYPE }
+  }
+  if = {
+   limit = { has_country_flag = epoch_iv_prototype_done }
+   country_event = { id = epoch_iv.44 }
+  }
+  else_if = {
+   limit = { NOT = { has_special_project = EPOCH_IV_DEMONSTRATOR } }
+   set_country_flag = epoch_iv_demonstrator_issued
+   enable_special_project = { name = EPOCH_IV_DEMONSTRATOR location = this owner = this }
+  }
  }
 }

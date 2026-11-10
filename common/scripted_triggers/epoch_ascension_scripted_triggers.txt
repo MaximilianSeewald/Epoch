@@ -234,13 +234,7 @@ epoch_iv_judge_missing = {
 }
 epoch_iv_ai_action_available = {
  OR = {
-  AND = {
-   check_variable = {
-    which = epoch_iv_chapter
-    value = 4
-   }
-   has_country_flag = epoch_iv_prototype_done
-  }
+
   AND = {
    check_variable = {
     which = epoch_iv_chapter
@@ -294,27 +288,7 @@ epoch_iv_ai_action_available = {
     value >= 2500
    }
   }
-  AND = {
-   check_variable = {
-    which = epoch_iv_chapter
-    value = 4
-   }
-   has_technology = tech_epoch_iv_materials
-   NOT = {
-    has_special_project = EPOCH_IV_PROTOTYPE
-   }
-   NOT = {
-    has_country_flag = epoch_iv_prototype_done
-   }
-   resource_stockpile_compare = {
-    resource = energy
-    value >= 3000
-   }
-   resource_stockpile_compare = {
-    resource = alloys
-    value >= 4000
-   }
-  }
+
   AND = {
    check_variable = {
     which = epoch_iv_chapter

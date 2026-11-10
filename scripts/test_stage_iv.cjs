@@ -14,7 +14,7 @@ const E = id => events.get('epoch_iv.'+id);
 let checks = 0;
 const check = (v,m) => { checks++; assert.ok(v,m); };
 const make = id => ({ id, type:'default', flags:new Set(), vars:{}, deposits:new Set(), modifiers:new Set(), situations:[], calls:[], projects:new Set(), planets:[], ships:[],fleets:[],resources:{energy:10000,alloys:10000},techs:new Set(),federation:new Set(),pacts:new Set() });
-let countries, targets, globalFlags, nativeSpawn, nativeWork, fleetCreations=0;
+let countries, targets, globalFlags, nativeSpawn, nativeWork, nativeFleet, fleetCreations=0;
 const scope = (obj,c) => ({obj,prev:c,root:c.root});
 const context = obj => ({obj,root:obj});
 function resolve(name,c) {
@@ -72,14 +72,16 @@ function run(b,c) {
     if(k==='if'||k==='else_if') { const take=(k==='if'||!branch)&&test(get(v,'limit'),c); if(k==='if')branch=false; if(take){run(v.filter(([n])=>n!=='limit'),c);branch=true;} continue; }
     if(k==='else'){if(!branch)run(v,c);continue;}
     if(k==='epoch_iv_select_work'&&nativeWork){nativeWork(c);continue;}
-    if(k==='enable_special_project'){const owner=resolve(get(v,'owner'),c);owner.projects.add(get(v,'name'));owner.projectResources={...owner.resources};continue;}
+    if(k==='enable_special_project'){const owner=resolve(get(v,'owner'),c);owner.projects.add(get(v,'name'));owner.projectEnables=(owner.projectEnables||0)+1;owner.projectResources={...owner.resources};continue;}
+    if(k==='abort_special_project'){c.obj.projects.delete(get(v,'type'));continue;}
+    if(k==='add_research_option'){c.obj.techOptions??=new Set();c.obj.techOptions.add(v);continue;}
     if(k==='epoch_iv_spawn_judge'&&nativeSpawn){nativeSpawn(c);continue;}
     if(effects.has(k)){run(effects.get(k),c);continue;}
     if(/^set_(country|planet|ship|fleet)_flag$/.test(k)){c.obj.flags.add(flagKey(v,c));continue;}
     if(/^remove_(country|planet|ship|fleet)_flag$/.test(k)){c.obj.flags.delete(flagKey(v,c));continue;}
     if(k==='clear_global_event_target'){delete targets[flagKey(v,c)];continue;}
     if(k==='add_resource'){for(const [r,n]of v)c.obj.resources[r]=(c.obj.resources[r]||0)+Number(n);continue;}
-    if(k==='create_fleet'){fleetCreations++;continue;} // native boundary: count requests, never simulate combat
+    if(k==='create_fleet'){fleetCreations++;if(nativeFleet)nativeFleet(c,v);continue;} // native boundary: count requests, never simulate combat
     if(k==='set_variable'){c.obj.vars[get(v,'which')]=+get(v,'value');continue;}
     if(k==='change_variable'){const variable=get(v,'which');assert.ok(Object.hasOwn(c.obj.vars,variable),'initialize before change_variable: '+variable);c.obj.vars[variable]+=Number(get(v,'value'));continue;}
     if(k==='add_deposit'){c.obj.deposits.add(v);continue;}
@@ -211,7 +213,7 @@ for(const protectedScope of ['colony','physical']){
   check(!test(triggers.get('epoch_iv_safe_world'),context(world)),'foreign live '+protectedScope+' mission protected');
 }
 {const {a}=setup();const w=make('ruins');w.owner=a;w.colony=true;w.deposits.add('d_epoch_silent_structure_destroyed');check(!test(triggers.get('epoch_iv_safe_world'),context(w)),'destroyed structure never resurrected');}
-for(const [id,key,flag,ch]of [[101,'signal_a','signal_a_done',1],[102,'signal_b','signal_b_done',1],[103,'work','recovery_done',3],[104,'work','prototype_done',4],[105,'work','counter_done',5]])for(const bad of ['none','stale','foreign','wrong-system','duplicate']){
+for(const [id,key,flag,ch]of [[101,'signal_a','signal_a_done',1],[102,'signal_b','signal_b_done',1],[103,'work','recovery_done',3],[105,'work','counter_done',5]])for(const bad of ['none','stale','foreign','wrong-system','duplicate']){
   const {a,b}=setup(),ship=make('science'),target=make('target'),other=make('other'),system=make('system');
   ship.owner=a;ship.solar_system=target.solar_system=system;ship.fromfrom=target;a.vars.epoch_iv_chapter=ch;
   for(const f of ['recovery','prototype','counter'])a.flags.add('epoch_iv_'+f+'_funded');targets['epoch_iv_'+key+'@A']=target;
@@ -221,28 +223,77 @@ for(const [id,key,flag,ch]of [[101,'signal_a','signal_a_done',1],[102,'signal_b'
   if(bad==='duplicate')a.flags.add('epoch_iv_'+flag);
   check(test(get(E(id),'trigger'),context(ship))===(bad==='none'),'project '+id+' rejects '+bad);
 }
-// Native placement is an explicit boundary; payment/project ordering is executed.
-const buildOption=E(80).find(([k,v])=>k==='option'&&get(v,'name')==='epoch_iv.build')[1];
-for(const scenario of ['no-resources','no-tech','paid','no-location','stale','existing','done']){
+// Native country research owns its callback; fleet placement stays an explicit
+// native boundary. Execute actual issuance, completion guards and chapter changes.
+const projectDefs=new Map(parseFile(file('special_projects')).map(([,v])=>[get(v,'key').replaceAll('"',''),v]));
+const reconstruction=projectDefs.get('EPOCH_IV_DEMONSTRATOR');
+check(get(reconstruction,'cost')==='18000'&&get(reconstruction,'tech_department')==='engineering_technology','real 18000-point Engineering project');
+check(get(get(reconstruction,'AI_wait_days'),'weight')==='5','native AI starts empire research without operations menu');
+check(get(reconstruction,'location')==='no'&&get(reconstruction,'event_scope')==='country_event','empire-wide country callback, no map assignment');
+check(!get(reconstruction,'requirements').length&&!get(reconstruction,'triggered_requirement')&&!get(reconstruction,'days_to_research'),'no ship, leader, fleet or timed-work substitute');
+check(get(get(get(reconstruction,'on_success'),'country_event'),'id')==='epoch_iv.43','native success delivers owning country event');
+for(const withMaterials of [false,true]){
+ const {a,b}=setup();a.vars.epoch_iv_chapter=4;a.resources={energy:0,alloys:0};
+ if(withMaterials)a.techs.add('tech_epoch_iv_materials');
+ run(effects.get('epoch_iv_issue_demonstrator_project'),context(a));
+ check(a.projects.has('EPOCH_IV_DEMONSTRATOR')&&a.projectEnables===1,'automatically issued without assets/resources; materials='+withMaterials);
+ check(!b.projects.has('EPOCH_IV_DEMONSTRATOR'),'project belongs only to current country');
+ run(effects.get('epoch_iv_issue_demonstrator_project'),context(a));
+ check(a.projectEnables===1,'save/load-style repeated pulse preserves active research');
+ a.projects.delete('EPOCH_IV_DEMONSTRATOR');run(effects.get('epoch_iv_issue_demonstrator_project'),context(a));
+ check(a.projects.has('EPOCH_IV_DEMONSTRATOR')&&a.projectEnables===2,'cancelled research is automatically offered again');
+ check(a.resources.energy===0&&a.resources.alloys===0,'no hidden funding deduction');
+}
+for(const state of ['legacy-active','legacy-funded','legacy-done','cancelled','completed','optout','wrong-chapter']){
  const {a}=setup();a.vars.epoch_iv_chapter=4;
- a.techs.add('tech_epoch_iv_materials');
- if(scenario==='no-resources')a.resources={energy:0,alloys:0};
- if(scenario==='no-tech')a.techs.clear();
- if(scenario==='existing')a.projects.add('EPOCH_IV_PROTOTYPE');
- if(scenario==='done')a.flags.add('epoch_iv_prototype_done');
- const visible=test(get(buildOption,'trigger'),context(a));
- check(visible===!['existing','done'].includes(scenario),'construction visibility: '+scenario);
- check(test(get(buildOption,'allow'),context(a))===['paid','no-location','stale'].includes(scenario),'construction requirements: '+scenario);
- const before={...a.resources};let selections=0;
- nativeWork=c=>{selections++;if(scenario!=='no-location')targets['epoch_iv_work@A']=make('construction-site');};
- if(scenario==='stale')a.resources.alloys=0;
- const atClick={...a.resources};run(buildOption.filter(([k])=>k==='if'),context(a));nativeWork=null;
- check(a.flags.has('epoch_iv_prototype_funded')===(scenario==='paid'),'funded only after successful payment: '+scenario);
- check((a.resources.energy===atClick.energy-3000&&a.resources.alloys===atClick.alloys-4000)===(scenario==='paid'),'costs once and only with location: '+scenario);
- if(scenario==='paid'){
-  check(a.projects.has('EPOCH_IV_PROTOTYPE')&&a.projectResources.energy===7000&&a.projectResources.alloys===6000,'project starts after both resources deducted');
-  run(buildOption.filter(([k])=>k==='if'),context(a));check(a.resources.energy===7000&&a.resources.alloys===6000,'stale duplicate cannot pay twice');
+ if(state==='legacy-active')a.projects.add('EPOCH_IV_PROTOTYPE');
+ if(state==='legacy-funded')a.flags.add('epoch_iv_prototype_funded');
+ if(state==='legacy-done')a.flags.add('epoch_iv_prototype_done');
+ if(state==='completed')a.flags.add('epoch_iv_complete');
+ if(state==='optout')a.flags.add('epoch_core_campaign_opted_out');
+ if(state==='wrong-chapter')a.vars.epoch_iv_chapter=5;
+ run(effects.get('epoch_iv_issue_demonstrator_project'),context(a));
+ check(!a.projects.has('EPOCH_IV_PROTOTYPE'),'legacy project retired: '+state);
+ check(a.projects.has('EPOCH_IV_DEMONSTRATOR')===['legacy-active','legacy-funded','cancelled'].includes(state),'migration/reissue preserves chapter eligibility: '+state);
+ check(a.calls.includes('epoch_iv.44')===(state==='legacy-done'),'completed legacy work automatically deploys without repeat research: '+state);
+}
+for(const order of ['AB','BA']){
+ const {a,b}=setup();a.vars.epoch_iv_chapter=b.vars.epoch_iv_chapter=4;
+ for(const c of [a,b])run(effects.get('epoch_iv_issue_demonstrator_project'),context(c));
+ let constructed=0,summons=0;
+ nativeFleet=(ctx,body)=>{
+  check(get(body,'name')==='NAME_EPOCH_IV_Prototype','completion builds physical demonstrator');
+  check(get(get(body,'effect'),'set_owner')==='root','native owner is completing country');
+  targets['epoch_iv_prototype@'+ctx.obj.id]={...make('demonstrator'+ctx.obj.id),owner:ctx.obj};constructed++;
+ };
+ nativeWork=ctx=>{targets['epoch_iv_work@'+ctx.obj.id]=make('site'+ctx.obj.id);};
+ nativeSpawn=()=>{summons++;};
+ for(const [i,key]of [...order].entries()){
+  const c=key==='A'?a:b;
+  check(test(get(E(43),'trigger'),context(c)),'own research completion accepted: '+key);
+  run(get(E(43),'immediate'),context(c));
+  check(c.flags.has('epoch_iv_prototype_done')&&c.calls.includes('epoch_iv.44'),'native completion requests deployment');
+  check(test(get(E(44),'trigger'),context(c)),'deployment can select a missing site after research');
+  run(get(E(44),'immediate'),context(c));
+  check(c.vars.epoch_iv_chapter===5&&c.calls.filter(x=>x==='epoch_iv.45').length===1,'Chapter V automatic exactly once');
+  check(!test(get(E(43),'trigger'),context(c))&&!test(get(E(44),'trigger'),context(c)),'repeated completion and deployment blocked');
+  run(effects.get('epoch_iv_issue_demonstrator_project'),context(c));
+  check(c.projectEnables===1,'finished country never starts reconstruction again');
+  if(i===0){const other=key==='A'?b:a;check(other.vars.epoch_iv_chapter===4&&!other.flags.has('epoch_iv_prototype_done'),'other empire research remains independent');}
  }
+ check(constructed===2&&summons===2,'one demonstrator and one Chapter-V launch per empire');
+ nativeFleet=nativeWork=nativeSpawn=null;
+}
+{const {a}=setup();a.vars.epoch_iv_chapter=4;a.flags.add('epoch_iv_demonstrator_issued');
+ run(get(E(43),'immediate'),context(a));nativeWork=()=>{};fleetCreations=0;
+ run(get(E(44),'immediate'),context(a));nativeWork=null;
+ check(a.vars.epoch_iv_chapter===4&&fleetCreations===0,'missing placement never fakes demonstrator or advances');
+ run(effects.get('epoch_iv_issue_demonstrator_project'),context(a));
+ check(a.calls.filter(id=>id==='epoch_iv.44').length===2&&!a.projects.has('EPOCH_IV_DEMONSTRATOR'),'completed research retries placement automatically without repeating project');
+}
+{const {a}=setup();a.vars.epoch_iv_chapter=4;
+ check(!test(get(E(43),'trigger'),context(a)),'unissued project cannot complete');
+ check(!get(E(104),'immediate'),'legacy ship callback cannot grant research completion');
 }
 const allNew=[...parsedByPath].filter(([p])=>p.includes('ascension'));
 // Two/three coexisting families really pay all three native decision costs.
@@ -344,7 +395,7 @@ for(const initial of [undefined,0,1,2]){
  check(fleetCreations===1&&f.modifiers.has('epoch_iv_judge_broken'),'ordinary transitions retain mechanics and one escort wave');
 }
 {const {a}=setup();check(!test(triggers.get('epoch_iv_ai_action_available'),context(a)),'AI does not open idle menu');
- a.vars.epoch_iv_chapter=4;a.techs.add('tech_epoch_iv_materials');check(test(triggers.get('epoch_iv_ai_action_available'),context(a)),'AI funded construction is actionable');
+ a.vars.epoch_iv_chapter=4;a.techs.add('tech_epoch_iv_materials');check(!test(triggers.get('epoch_iv_ai_action_available'),context(a)),'AI reconstruction needs no operations menu');
  a.projects.add('EPOCH_IV_PROTOTYPE');check(!test(triggers.get('epoch_iv_ai_action_available'),context(a)),'AI waits for active project');}
 for(const [,option]of E(80).filter(([k])=>k==='option')) {
   if(get(option,'trigger'))check(JSON.stringify(get(get(option,'if'),'limit'))===JSON.stringify(get(option,'allow')||get(option,'trigger')),'operations action rechecks stale-window requirements');
@@ -410,8 +461,9 @@ for(const [family,old,result]of families)check(preview.includes(result)&&old.eve
 check(JSON.stringify(get(get(situation,'approach'),'on_select')).includes('custom_tooltip'),'observation has a real on_select tooltip, as required by engine warning');
 check(JSON.stringify(get(decs.get('decision_epoch_iv_operations'),'potential')).includes('is_capital'),'manual operations remains capital decision');
 check(JSON.stringify(E(1)).includes('epoch_iv_fallback_cooldown')&&JSON.stringify(E(1)).includes('is_capital'),'automatic fallback only for empires without capital');
-check(JSON.stringify(E(40)).includes('epoch_iv.80')&&!JSON.stringify(get(E(40),'trigger')).includes('resource_stockpile_compare'),'chapter IV always opens and introduces funding');
-check(JSON.stringify(E(1)).includes('epoch_iv.42')&&JSON.stringify(E(42)).includes('epoch_iv_materials_presented'),'research completion introduces assembly exactly once');
+check(JSON.stringify(E(40)).includes('epoch_iv_issue_demonstrator_project')&&!JSON.stringify(E(40)).includes('epoch_iv.80'),'chapter IV introduces research instead of funding menu');
+check(!E(42)&&!JSON.stringify(E(80)).includes('epoch_iv.build')&&!JSON.stringify(E(80)).includes('epoch_iv.assemble'),'obsolete funding, research reminder and manual deployment removed');
+check(!JSON.stringify(E(80)).includes('EPOCH_IV_PROTOTYPE')&&!JSON.stringify(E(80)).includes('EPOCH_IV_DEMONSTRATOR'),'empire project cannot be retargeted or aborted by other operations');
 check(JSON.stringify(E(1)).includes('epoch_iv.46')&&JSON.stringify(E(46)).includes('epoch_iv_recovery_presented'),'missing old judge automatically offers paid recovery');
 check(!JSON.stringify(triggers.get('epoch_iv_valid_military_death')).includes('is_in_combat')&&!JSON.stringify(triggers.get('epoch_iv_valid_military_death')).includes('epoch_iv_authorized_battle'),'victory independent of battle-exit/poll ordering');
 check(!JSON.stringify(triggers.get('epoch_iv_valid_military_death')).includes('epoch_iv_principal@'),'victory independent of expiring ship target');
@@ -439,7 +491,7 @@ checkClears(parseFile(file('scripted_effects')));check(clear.length>=8,'initial 
 for(const lang of ['english','german']){
  const source=read('localisation/'+lang+'/epoch_ascension_l_'+lang+'.yml');
  const loc=new Map([...source.matchAll(/^\s*([\w.]+):0 "(.*)"/gm)].map(m=>[m[1],m[2]]));
- for(const k of ['epoch_iv_ascension_type','epoch_iv_ascension_monthly_change_tooltip','epoch_iv.diagnose.tt','epoch_iv.stabilize.tt','epoch_iv.invert.tt','epoch_iv.42.name','epoch_iv.46.name'])check(!!loc.get(k),'new native UI localization: '+lang+'/'+k);
+ for(const k of ['epoch_iv_ascension_type','epoch_iv_ascension_monthly_change_tooltip','epoch_iv.diagnose.tt','epoch_iv.stabilize.tt','epoch_iv.invert.tt','EPOCH_IV_DEMONSTRATOR_DESC','epoch_iv.46.name'])check(!!loc.get(k),'new native UI localization: '+lang+'/'+k);
  for(let n=1;n<=6;n++)check((loc.get('epoch_iv_objectives_'+n)||'').includes('\\n\\n'),'narrative and concrete chapter objective: '+lang+'/'+n);
 }
 for(const [name,b]of mods)for(const [key]of b)check(doc('modifiers').includes('- '+key+','),'native combat/economic modifier: '+name+'/'+key);
@@ -449,4 +501,13 @@ check(JSON.stringify(effects.get('epoch_iv_spawn_judge')).includes('epoch_iv_jud
 {const {a}=setup();a.vars.epoch_iv_chapter=4;a.resources={energy:0,alloys:0};
  check(test(get(E(40),'trigger'),context(a)),'chapter IV entry independent of resources');
  a.flags.add('epoch_iv_chapter_iv_presented');check(!test(get(E(40),'trigger'),context(a)),'monthly migration and pending callback cannot introduce chapter IV twice');}
+const nativeColossus=parse(native('common/special_projects/00_projects_apocalypse.txt'),'Vanilla country Engineering project').find(([,v])=>get(v,'key')==='"COLOSSUS_PROJECT"')[1];
+for(const k of ['tech_department','event_scope','location'])check(get(reconstruction,k)===get(nativeColossus,k),'Vanilla Colossus native field: '+k);
+const projectDoc=native('common/special_projects/documentation.txt');
+check(projectDoc.includes('research cost')&&projectDoc.includes('#\tenergy = 100')&&!projectDoc.includes('alloys ='),'native docs distinguish research/energy and do not define alloy costs');
+const cp=require('node:child_process'),baseline='54eabd399472ee053b408c7e47e3c7326332b7cf';
+const oldTriggers=new Map(parse(cp.execFileSync('git',['show',baseline+':'+file('scripted_triggers')],{encoding:'utf8'}),'Final Trial baseline'));
+const oldDeath=parse(cp.execFileSync('git',['show',baseline+':events/epoch_ascension_events.txt'],{encoding:'utf8'}),'Final Trial event baseline').find(([,v])=>Array.isArray(v)&&get(v,'id')==='epoch_iv.50')[1];
+assert.deepEqual(new Map(parseFile(file('scripted_triggers'))).get('epoch_iv_valid_military_death'),oldTriggers.get('epoch_iv_valid_military_death'),'Final-Trial validator unchanged');checks++;
+assert.deepEqual(E(50),oldDeath,'Final-Trial callback unchanged');checks++;
 console.log(`PASS: ${checks} Stage-IV parsed eligibility, callback, kill attribution, conversion and native-source assertions. Static only.`);
