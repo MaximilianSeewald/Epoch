@@ -1,0 +1,331 @@
+epoch_nexus_1 = {
+ build_menu_potential = { from = { NOT = { any_owned_megastructure = { OR = { is_megastructure_type = epoch_nexus_1 is_megastructure_type = epoch_nexus_2 is_megastructure_type = epoch_nexus_3 } } } } }
+ entity = "thinktank_phase_01_entity"
+ construction_entity = "thinktank_phase_01_entity"
+ portrait = "GFX_megastructure_think_tank_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -25 y = -25 }
+ build_time = 1800
+ resources = { category = megastructures
+ cost = { unity = 2000 alloys = 6000 epoch_protocol_cores = 200 }
+ upkeep = { energy = 40 epoch_protocol_cores = 2 }
+ produces = { trigger = { owner? = { epoch_iv_future_research = yes epoch_c_single_nexus = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 200 society_research = 200 engineering_research = 200 epoch_protocol_cores = 4 }
+ }
+ prerequisites = { "tech_mega_engineering" "tech_epoch_iv_nexus" "tech_epoch_iv_coupling" }
+ potential = { epoch_iv_future_research = yes }
+ possible = {
+ exists = starbase
+ is_inside_border = from
+ has_no_non_gate_megastructure = yes
+ NOT = { any_system_planet = { is_planet_class = pc_cosmogenesis_world } }
+ NOT = { any_system_planet = { is_surveyed = { who = prev.from status = no } } }
+ from = { NOT = { any_owned_megastructure = { has_megastructure_flag = epoch_c_operational OR = { is_megastructure_type = epoch_nexus_1 is_megastructure_type = epoch_nexus_2 is_megastructure_type = epoch_nexus_3 } } } }
+ }
+ placement_rules = { planet_possible = {
+ is_surveyed = { who = prev.from status = yes }
+ colonizable_planet = no
+ NOR = { has_anomaly = yes is_asteroid = yes is_moon = yes is_star = yes is_astral_scar = yes is_ringworld = yes has_planet_flag = megastructure has_planet_flag = has_megastructure }
+ } }
+ # No country reservation flag: it would invalidate the same project on recheck.
+ on_build_start = {}
+ on_build_cancel = { from = { remove_country_flag = epoch_c_nexus_building } }
+ on_build_complete = { fromfrom = { set_megastructure_flag = epoch_c_operational } fromfrom.planet = { set_planet_flag = has_megastructure set_planet_flag = epoch_c_nexus_anchor } from = { remove_country_flag = epoch_c_nexus_building } }
+ dismantle_potential = { always = yes }
+ dismantle_possible = { from = { is_same_value = root.owner } }
+ dismantle_time = 360
+ dismantle_cost = { category = megastructures cost = { energy = 1000 } }
+ on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_nexus_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_nexus_anchor remove_planet_flag = has_megastructure } }
+ triggered_country_modifier = { potential = { if = { limit = { is_scope_type = megastructure } has_megastructure_flag = epoch_c_operational exists = owner owner? = { epoch_iv_future_research = yes epoch_c_single_nexus = yes } } else_if = { limit = { is_scope_type = country } epoch_iv_future_research = yes epoch_c_single_nexus = yes any_owned_megastructure = { is_megastructure_type = epoch_nexus_1 has_megastructure_flag = epoch_c_operational } } else = { always = no } } planet_stability_add = 1 terraforming_cost_mult = -0.05 }
+ ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 2 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 40 } } } }
+}
+
+epoch_nexus_2 = {
+ entity = "thinktank_phase_02_entity"
+ construction_entity = "thinktank_phase_02_entity"
+ portrait = "GFX_megastructure_think_tank_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -25 y = -25 }
+ build_time = 3600
+ resources = { category = megastructures
+ cost = { unity = 4000 alloys = 12000 epoch_protocol_cores = 400 }
+ upkeep = { energy = 80 epoch_protocol_cores = 4 }
+ produces = { trigger = { owner? = { epoch_iv_future_research = yes epoch_c_single_nexus = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 400 society_research = 400 engineering_research = 400 epoch_protocol_cores = 8 }
+ }
+ prerequisites = { "tech_mega_engineering" "tech_epoch_iv_nexus" "tech_epoch_iv_coupling" }
+ potential = { epoch_iv_future_research = yes }
+ upgrade_from = { epoch_nexus_1 }
+ possible = {
+ exists = starbase
+ is_inside_border = from
+ }
+ on_build_complete = { fromfrom = { set_megastructure_flag = epoch_c_operational } fromfrom.planet = { set_planet_flag = has_megastructure set_planet_flag = epoch_c_nexus_anchor } from = { remove_country_flag = epoch_c_nexus_building } }
+ dismantle_potential = { always = yes }
+ dismantle_possible = { from = { is_same_value = root.owner } }
+ dismantle_time = 360
+ dismantle_cost = { category = megastructures cost = { energy = 1000 } }
+ on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_nexus_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_nexus_anchor remove_planet_flag = has_megastructure } }
+ triggered_country_modifier = { potential = { if = { limit = { is_scope_type = megastructure } has_megastructure_flag = epoch_c_operational exists = owner owner? = { epoch_iv_future_research = yes epoch_c_single_nexus = yes } } else_if = { limit = { is_scope_type = country } epoch_iv_future_research = yes epoch_c_single_nexus = yes any_owned_megastructure = { is_megastructure_type = epoch_nexus_2 has_megastructure_flag = epoch_c_operational } } else = { always = no } } planet_stability_add = 2 terraforming_cost_mult = -0.10 }
+ ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 4 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 80 } } } }
+}
+
+epoch_nexus_3 = {
+ entity = "thinktank_phase_03_entity"
+ construction_entity = "thinktank_phase_03_entity"
+ portrait = "GFX_megastructure_think_tank_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -25 y = -25 }
+ build_time = 3600
+ resources = { category = megastructures
+ cost = { unity = 6000 alloys = 18000 epoch_protocol_cores = 600 }
+ upkeep = { energy = 120 epoch_protocol_cores = 6 }
+ produces = { trigger = { owner? = { epoch_iv_future_research = yes epoch_c_single_nexus = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 600 society_research = 600 engineering_research = 600 epoch_protocol_cores = 12 }
+ }
+ prerequisites = { "tech_mega_engineering" "tech_epoch_iv_nexus" "tech_epoch_iv_coupling" }
+ potential = { epoch_iv_future_research = yes }
+ upgrade_from = { epoch_nexus_2 }
+ possible = {
+ exists = starbase
+ is_inside_border = from
+ }
+ on_build_complete = { fromfrom = { set_megastructure_flag = epoch_c_operational } fromfrom.planet = { set_planet_flag = has_megastructure set_planet_flag = epoch_c_nexus_anchor } from = { remove_country_flag = epoch_c_nexus_building set_country_flag = has_built_or_repaired_megastructure } }
+ dismantle_potential = { always = yes }
+ dismantle_possible = { from = { is_same_value = root.owner } }
+ dismantle_time = 360
+ dismantle_cost = { category = megastructures cost = { energy = 1000 } }
+ on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_nexus_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_nexus_anchor remove_planet_flag = has_megastructure } }
+ triggered_country_modifier = { potential = { if = { limit = { is_scope_type = megastructure } has_megastructure_flag = epoch_c_operational exists = owner owner? = { epoch_iv_future_research = yes epoch_c_single_nexus = yes } } else_if = { limit = { is_scope_type = country } epoch_iv_future_research = yes epoch_c_single_nexus = yes any_owned_megastructure = { is_megastructure_type = epoch_nexus_3 has_megastructure_flag = epoch_c_operational } } else = { always = no } } planet_stability_add = 3 terraforming_cost_mult = -0.15 }
+ ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 6 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 120 } } } }
+}
+
+epoch_forge_1 = {
+ entity = "matter_decompressor_stage_1_entity"
+ construction_entity = "matter_decompressor_stage_1_construction_entity"
+ portrait = "GFX_megastructure_matter_decompressor_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -25 y = -25 }
+ build_time = 1800
+ resources = { category = megastructures
+ cost = { unity = 2000 alloys = 6000 epoch_protocol_cores = 200 }
+ upkeep = { energy = 60 minerals = 400 }
+ produces = { trigger = { owner? = { epoch_iv_future_research = yes NOT = { has_deficit = energy } NOT = { has_deficit = minerals } } } alloys = 100 epoch_protocol_cores = 20 }
+ }
+ prerequisites = { "tech_mega_engineering" "tech_epoch_iv_fabrication" }
+ potential = { epoch_iv_future_research = yes }
+ possible = {
+ exists = starbase
+ is_inside_border = from
+ has_no_non_gate_megastructure = yes
+ NOT = { any_system_planet = { is_planet_class = pc_cosmogenesis_world } }
+ NOT = { any_system_planet = { is_surveyed = { who = prev.from status = no } } }
+
+ }
+ placement_rules = { planet_possible = {
+ is_surveyed = { who = prev.from status = yes }
+ colonizable_planet = no
+ NOR = { has_anomaly = yes is_asteroid = yes is_moon = yes is_star = yes is_astral_scar = yes is_ringworld = yes has_planet_flag = megastructure has_planet_flag = has_megastructure }
+ } }
+ # No country reservation flag: it would invalidate the same project on recheck.
+ on_build_start = {}
+ on_build_cancel = { from = { remove_country_flag = epoch_c_forge_building } }
+ on_build_complete = { fromfrom = { set_megastructure_flag = epoch_c_operational } fromfrom.planet = { set_planet_flag = has_megastructure set_planet_flag = epoch_c_forge_anchor } from = { remove_country_flag = epoch_c_forge_building } }
+ dismantle_potential = { always = yes }
+ dismantle_possible = { from = { is_same_value = root.owner } }
+ dismantle_time = 360
+ dismantle_cost = { category = megastructures cost = { energy = 1000 } }
+ on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_forge_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_forge_anchor remove_planet_flag = has_megastructure } }
+ ai_weight = { factor = 25 modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 60 } } } modifier = { factor = 0 from = { has_monthly_income = { resource = minerals value < 400 } } } }
+}
+
+epoch_forge_2 = {
+ entity = "matter_decompressor_stage_2_entity"
+ construction_entity = "matter_decompressor_stage_2_construction_entity"
+ portrait = "GFX_megastructure_matter_decompressor_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -25 y = -25 }
+ build_time = 3600
+ resources = { category = megastructures
+ cost = { unity = 4000 alloys = 12000 epoch_protocol_cores = 400 }
+ upkeep = { energy = 120 minerals = 800 }
+ produces = { trigger = { owner? = { epoch_iv_future_research = yes NOT = { has_deficit = energy } NOT = { has_deficit = minerals } } } alloys = 200 epoch_protocol_cores = 40 }
+ }
+ prerequisites = { "tech_mega_engineering" "tech_epoch_iv_fabrication" }
+ potential = { epoch_iv_future_research = yes }
+ upgrade_from = { epoch_forge_1 }
+ possible = {
+ exists = starbase
+ is_inside_border = from
+ }
+ on_build_complete = { fromfrom = { set_megastructure_flag = epoch_c_operational } fromfrom.planet = { set_planet_flag = has_megastructure set_planet_flag = epoch_c_forge_anchor } from = { remove_country_flag = epoch_c_forge_building } }
+ dismantle_potential = { always = yes }
+ dismantle_possible = { from = { is_same_value = root.owner } }
+ dismantle_time = 360
+ dismantle_cost = { category = megastructures cost = { energy = 1000 } }
+ on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_forge_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_forge_anchor remove_planet_flag = has_megastructure } }
+ ai_weight = { factor = 25 modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 120 } } } modifier = { factor = 0 from = { has_monthly_income = { resource = minerals value < 800 } } } }
+}
+
+epoch_forge_3 = {
+ entity = "matter_decompressor_stage_3_entity"
+ construction_entity = "matter_decompressor_stage_3_construction_entity"
+ portrait = "GFX_megastructure_matter_decompressor_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -25 y = -25 }
+ build_time = 3600
+ resources = { category = megastructures
+ cost = { unity = 6000 alloys = 18000 epoch_protocol_cores = 600 }
+ upkeep = { energy = 180 minerals = 1200 }
+ produces = { trigger = { owner? = { epoch_iv_future_research = yes NOT = { has_deficit = energy } NOT = { has_deficit = minerals } } } alloys = 300 epoch_protocol_cores = 60 }
+ }
+ prerequisites = { "tech_mega_engineering" "tech_epoch_iv_fabrication" }
+ potential = { epoch_iv_future_research = yes }
+ upgrade_from = { epoch_forge_2 }
+ possible = {
+ exists = starbase
+ is_inside_border = from
+ }
+ on_build_complete = { fromfrom = { set_megastructure_flag = epoch_c_operational } fromfrom.planet = { set_planet_flag = has_megastructure set_planet_flag = epoch_c_forge_anchor } from = { remove_country_flag = epoch_c_forge_building set_country_flag = has_built_or_repaired_megastructure } }
+ dismantle_potential = { always = yes }
+ dismantle_possible = { from = { is_same_value = root.owner } }
+ dismantle_time = 360
+ dismantle_cost = { category = megastructures cost = { energy = 1000 } }
+ on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_forge_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_forge_anchor remove_planet_flag = has_megastructure } }
+ ai_weight = { factor = 25 modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 180 } } } modifier = { factor = 0 from = { has_monthly_income = { resource = minerals value < 1200 } } } }
+}
+
+epoch_uap_1 = {
+ build_menu_potential = { from = { NOT = { any_owned_megastructure = { OR = { is_megastructure_type = epoch_uap_1 is_megastructure_type = epoch_uap_2 is_megastructure_type = epoch_uap_3 is_megastructure_type = epoch_uap_4 } } } } }
+ entity = "strategic_coordination_center_stage_1_entity"
+ construction_entity = "strategic_coordination_center_stage_1_entity"
+ portrait = "GFX_megastructure_strategic_coordination_center_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -25 y = -25 }
+ build_time = 1800
+ resources = { category = megastructures
+ cost = { unity = 2000 alloys = 10000 epoch_protocol_cores = 600 }
+ upkeep = { energy = 100 epoch_protocol_cores = 10 }
+ produces = { trigger = { owner? = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } alloys = 30 }
+ produces = { trigger = { owner? = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 150 society_research = 150 engineering_research = 150 unity = 20 }
+ }
+ prerequisites = { "tech_mega_engineering" "tech_epoch_iv_uap_core" "tech_epoch_iv_coupling" }
+ potential = { epoch_iv_future_research = yes OR = { AND = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate } AND = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty } } }
+ possible = {
+ exists = starbase
+ is_inside_border = from
+ has_no_non_gate_megastructure = yes
+ NOT = { any_system_planet = { is_planet_class = pc_cosmogenesis_world } }
+ NOT = { any_system_planet = { is_surveyed = { who = prev.from status = no } } }
+ from = { NOT = { any_owned_megastructure = { has_megastructure_flag = epoch_c_operational OR = { is_megastructure_type = epoch_uap_1 is_megastructure_type = epoch_uap_2 is_megastructure_type = epoch_uap_3 is_megastructure_type = epoch_uap_4 } } } }
+ }
+ placement_rules = { planet_possible = {
+ is_surveyed = { who = prev.from status = yes }
+ colonizable_planet = no
+ NOR = { has_anomaly = yes is_asteroid = yes is_moon = yes is_star = yes is_astral_scar = yes is_ringworld = yes has_planet_flag = megastructure has_planet_flag = has_megastructure }
+ } }
+ # No country reservation flag: it would invalidate the same project on recheck.
+ on_build_start = {}
+ on_build_cancel = { from = { remove_country_flag = epoch_c_uap_building } }
+ on_build_complete = { fromfrom = { set_megastructure_flag = epoch_c_operational } fromfrom.planet = { set_planet_flag = has_megastructure set_planet_flag = epoch_c_uap_anchor } from = { remove_country_flag = epoch_c_uap_building } }
+ dismantle_potential = { always = yes }
+ dismantle_possible = { from = { is_same_value = root.owner } }
+ dismantle_time = 360
+ dismantle_cost = { category = megastructures cost = { energy = 1000 } }
+ on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_uap_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_uap_anchor remove_planet_flag = has_megastructure } }
+ triggered_country_modifier = { potential = { if = { limit = { is_scope_type = megastructure } has_megastructure_flag = epoch_c_operational exists = owner owner? = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes } } else_if = { limit = { is_scope_type = country } epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes any_owned_megastructure = { is_megastructure_type = epoch_uap_1 has_megastructure_flag = epoch_c_operational } } else = { always = no } } country_naval_cap_add = 60 ship_home_territory_fire_rate_mult = 0.05 }
+ triggered_country_modifier = { potential = { if = { limit = { is_scope_type = megastructure } has_megastructure_flag = epoch_c_operational exists = owner owner? = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes } } else_if = { limit = { is_scope_type = country } epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes any_owned_megastructure = { is_megastructure_type = epoch_uap_1 has_megastructure_flag = epoch_c_operational } } else = { always = no } } all_technology_research_speed = 0.025 terraforming_cost_mult = -0.05 }
+ ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 10 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 100 } } } }
+}
+
+epoch_uap_2 = {
+ entity = "strategic_coordination_center_stage_2_entity"
+ construction_entity = "strategic_coordination_center_stage_2_entity"
+ portrait = "GFX_megastructure_strategic_coordination_center_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -25 y = -25 }
+ build_time = 3600
+ resources = { category = megastructures
+ cost = { unity = 4000 alloys = 20000 epoch_protocol_cores = 1200 }
+ upkeep = { energy = 200 epoch_protocol_cores = 20 }
+ produces = { trigger = { owner? = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } alloys = 60 }
+ produces = { trigger = { owner? = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 300 society_research = 300 engineering_research = 300 unity = 40 }
+ }
+ prerequisites = { "tech_mega_engineering" "tech_epoch_iv_uap_core" "tech_epoch_iv_coupling" }
+ potential = { epoch_iv_future_research = yes OR = { AND = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate } AND = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty } } }
+ upgrade_from = { epoch_uap_1 }
+ possible = {
+ exists = starbase
+ is_inside_border = from
+ }
+ on_build_complete = { fromfrom = { set_megastructure_flag = epoch_c_operational } fromfrom.planet = { set_planet_flag = has_megastructure set_planet_flag = epoch_c_uap_anchor } from = { remove_country_flag = epoch_c_uap_building } }
+ dismantle_potential = { always = yes }
+ dismantle_possible = { from = { is_same_value = root.owner } }
+ dismantle_time = 360
+ dismantle_cost = { category = megastructures cost = { energy = 1000 } }
+ on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_uap_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_uap_anchor remove_planet_flag = has_megastructure } }
+ triggered_country_modifier = { potential = { if = { limit = { is_scope_type = megastructure } has_megastructure_flag = epoch_c_operational exists = owner owner? = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes } } else_if = { limit = { is_scope_type = country } epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes any_owned_megastructure = { is_megastructure_type = epoch_uap_2 has_megastructure_flag = epoch_c_operational } } else = { always = no } } country_naval_cap_add = 120 ship_home_territory_fire_rate_mult = 0.10 }
+ triggered_country_modifier = { potential = { if = { limit = { is_scope_type = megastructure } has_megastructure_flag = epoch_c_operational exists = owner owner? = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes } } else_if = { limit = { is_scope_type = country } epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes any_owned_megastructure = { is_megastructure_type = epoch_uap_2 has_megastructure_flag = epoch_c_operational } } else = { always = no } } all_technology_research_speed = 0.050 terraforming_cost_mult = -0.10 }
+ ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 20 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 200 } } } }
+}
+
+epoch_uap_3 = {
+ entity = "strategic_coordination_center_stage_3_entity"
+ construction_entity = "strategic_coordination_center_stage_3_entity"
+ portrait = "GFX_megastructure_strategic_coordination_center_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -25 y = -25 }
+ build_time = 3600
+ resources = { category = megastructures
+ cost = { unity = 6000 alloys = 30000 epoch_protocol_cores = 1800 }
+ upkeep = { energy = 300 epoch_protocol_cores = 30 }
+ produces = { trigger = { owner? = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } alloys = 90 }
+ produces = { trigger = { owner? = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 450 society_research = 450 engineering_research = 450 unity = 60 }
+ }
+ prerequisites = { "tech_mega_engineering" "tech_epoch_iv_uap_core" "tech_epoch_iv_coupling" }
+ potential = { epoch_iv_future_research = yes OR = { AND = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate } AND = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty } } }
+ upgrade_from = { epoch_uap_2 }
+ possible = {
+ exists = starbase
+ is_inside_border = from
+ }
+ on_build_complete = { fromfrom = { set_megastructure_flag = epoch_c_operational } fromfrom.planet = { set_planet_flag = has_megastructure set_planet_flag = epoch_c_uap_anchor } from = { remove_country_flag = epoch_c_uap_building } }
+ dismantle_potential = { always = yes }
+ dismantle_possible = { from = { is_same_value = root.owner } }
+ dismantle_time = 360
+ dismantle_cost = { category = megastructures cost = { energy = 1000 } }
+ on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_uap_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_uap_anchor remove_planet_flag = has_megastructure } }
+ triggered_country_modifier = { potential = { if = { limit = { is_scope_type = megastructure } has_megastructure_flag = epoch_c_operational exists = owner owner? = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes } } else_if = { limit = { is_scope_type = country } epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes any_owned_megastructure = { is_megastructure_type = epoch_uap_3 has_megastructure_flag = epoch_c_operational } } else = { always = no } } country_naval_cap_add = 180 ship_home_territory_fire_rate_mult = 0.15 }
+ triggered_country_modifier = { potential = { if = { limit = { is_scope_type = megastructure } has_megastructure_flag = epoch_c_operational exists = owner owner? = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes } } else_if = { limit = { is_scope_type = country } epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes any_owned_megastructure = { is_megastructure_type = epoch_uap_3 has_megastructure_flag = epoch_c_operational } } else = { always = no } } all_technology_research_speed = 0.075 terraforming_cost_mult = -0.15 }
+ ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 30 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 300 } } } }
+}
+
+epoch_uap_4 = {
+ entity = "strategic_coordination_center_stage_3_entity"
+ construction_entity = "strategic_coordination_center_stage_3_entity"
+ portrait = "GFX_megastructure_strategic_coordination_center_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -25 y = -25 }
+ build_time = 3600
+ resources = { category = megastructures
+ cost = { unity = 8000 alloys = 40000 epoch_protocol_cores = 2400 }
+ upkeep = { energy = 400 epoch_protocol_cores = 40 }
+ produces = { trigger = { owner? = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } alloys = 120 }
+ produces = { trigger = { owner? = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 600 society_research = 600 engineering_research = 600 unity = 80 }
+ }
+ prerequisites = { "tech_mega_engineering" "tech_epoch_iv_uap_core" "tech_epoch_iv_coupling" }
+ potential = { epoch_iv_future_research = yes OR = { AND = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate } AND = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty } } }
+ upgrade_from = { epoch_uap_3 }
+ possible = {
+ exists = starbase
+ is_inside_border = from
+ }
+ on_build_complete = { fromfrom = { set_megastructure_flag = epoch_c_operational } fromfrom.planet = { set_planet_flag = has_megastructure set_planet_flag = epoch_c_uap_anchor } from = { remove_country_flag = epoch_c_uap_building set_country_flag = has_built_or_repaired_megastructure } }
+ dismantle_potential = { always = yes }
+ dismantle_possible = { from = { is_same_value = root.owner } }
+ dismantle_time = 360
+ dismantle_cost = { category = megastructures cost = { energy = 1000 } }
+ on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_uap_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_uap_anchor remove_planet_flag = has_megastructure } }
+ triggered_country_modifier = { potential = { if = { limit = { is_scope_type = megastructure } has_megastructure_flag = epoch_c_operational exists = owner owner? = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes } } else_if = { limit = { is_scope_type = country } epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes any_owned_megastructure = { is_megastructure_type = epoch_uap_4 has_megastructure_flag = epoch_c_operational } } else = { always = no } } country_naval_cap_add = 240 ship_home_territory_fire_rate_mult = 0.20 }
+ triggered_country_modifier = { potential = { if = { limit = { is_scope_type = megastructure } has_megastructure_flag = epoch_c_operational exists = owner owner? = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes } } else_if = { limit = { is_scope_type = country } epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes any_owned_megastructure = { is_megastructure_type = epoch_uap_4 has_megastructure_flag = epoch_c_operational } } else = { always = no } } all_technology_research_speed = 0.100 terraforming_cost_mult = -0.20 }
+ ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 40 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 400 } } } }
+}
+
+

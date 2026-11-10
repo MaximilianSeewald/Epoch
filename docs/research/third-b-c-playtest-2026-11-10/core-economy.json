@@ -329,5 +329,33 @@
         "energy": 672
       }
     }
+  ],
+  "infrastructure": [
+    {
+      "name": "entry",
+      "ids": [
+        "epoch_nexus_1",
+        "epoch_forge_1",
+        "epoch_uap_1"
+      ],
+      "production": 24,
+      "use": 12,
+      "net": 12,
+      "energyUpkeep": 200,
+      "mineralUpkeep": 400
+    },
+    {
+      "name": "ultimate",
+      "ids": [
+        "epoch_nexus_3",
+        "epoch_forge_3",
+        "epoch_uap_4"
+      ],
+      "production": 72,
+      "use": 46,
+      "net": 26,
+      "energyUpkeep": 700,
+      "mineralUpkeep": 1200
+    }
   ]
 }

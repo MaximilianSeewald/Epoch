@@ -1,0 +1,38 @@
+ap_epoch_living = {
+ potential = { epoch_iv_future_research = yes epoch_c_organic = yes NOR = { has_ascension_perk = ap_epoch_hive has_ascension_perk = ap_epoch_machine } }
+ possible = { epoch_iv_future_research = yes epoch_c_organic = yes NOR = { has_ascension_perk = ap_epoch_hive has_ascension_perk = ap_epoch_machine } has_tradition = tr_epoch_symbiosis_finish has_technology = tech_epoch_iv_symbiosis has_technology = tech_epoch_iv_identity has_technology = tech_gene_tailoring }
+ modifier = { pop_bonus_workforce_mult = 0.10 BIOLOGICAL_species_trait_points_add = 2 BIOLOGICAL_species_trait_picks_add = 2 LITHOID_species_trait_points_add = 2 LITHOID_species_trait_picks_add = 2 }
+ ai_weight = { factor = 40 }
+}
+
+ap_epoch_hive = {
+ potential = { epoch_iv_future_research = yes epoch_c_hive = yes NOR = { has_ascension_perk = ap_epoch_living has_ascension_perk = ap_epoch_machine } }
+ possible = { epoch_iv_future_research = yes epoch_c_hive = yes NOR = { has_ascension_perk = ap_epoch_living has_ascension_perk = ap_epoch_machine } has_tradition = tr_epoch_convergence_finish has_technology = tech_epoch_iv_synaptic_nodes has_technology = tech_epoch_iv_identity has_technology = tech_gene_tailoring }
+ triggered_modifier = { potential = { is_wilderness_empire = no } planet_jobs_produces_mult = 0.10 }
+ triggered_modifier = { potential = { is_wilderness_empire = yes } megastructure_build_speed_mult = 0.25 }
+ modifier = { country_naval_cap_add = 60 BIOLOGICAL_species_trait_points_add = 2 BIOLOGICAL_species_trait_picks_add = 2 LITHOID_species_trait_points_add = 2 LITHOID_species_trait_picks_add = 2 }
+ ai_weight = { factor = 40 }
+}
+
+ap_epoch_machine = {
+ potential = { epoch_iv_future_research = yes epoch_c_machine = yes NOR = { has_ascension_perk = ap_epoch_living has_ascension_perk = ap_epoch_hive } }
+ possible = { epoch_iv_future_research = yes epoch_c_machine = yes NOR = { has_ascension_perk = ap_epoch_living has_ascension_perk = ap_epoch_hive } has_tradition = tr_epoch_network_finish has_technology = tech_epoch_iv_self_model has_technology = tech_epoch_iv_identity OR = { has_technology = tech_robomodding has_technology = tech_robomodding_m } }
+ modifier = { planet_pop_assembly_mult = 0.15 ship_fire_rate_mult = 0.05 ROBOT_species_trait_points_add = 2 ROBOT_species_trait_picks_add = 2 MACHINE_species_trait_points_add = 2 MACHINE_species_trait_picks_add = 2 }
+ ai_weight = { factor = 40 }
+}
+
+ap_epoch_guard = {
+ potential = { epoch_iv_future_research = yes epoch_c_guard = yes NOT = { has_ascension_perk = ap_epoch_free } }
+ possible = { epoch_iv_future_research = yes epoch_c_guard = yes NOT = { has_ascension_perk = ap_epoch_free } has_tradition = tr_epoch_legacy_finish has_technology = tech_epoch_iv_mandate has_technology = tech_epoch_iv_artillery }
+ triggered_modifier = { potential = { epoch_c_guard = yes NOT = { has_ascension_perk = ap_epoch_free } } modifier = { country_naval_cap_add = 200 ship_home_territory_fire_rate_mult = 0.20 ships_upkeep_mult = 0.10 BIOLOGICAL_species_trait_points_add = 1 BIOLOGICAL_species_trait_picks_add = 1 LITHOID_species_trait_points_add = 1 LITHOID_species_trait_picks_add = 1 ROBOT_species_trait_points_add = 1 ROBOT_species_trait_picks_add = 1 MACHINE_species_trait_points_add = 1 MACHINE_species_trait_picks_add = 1 } }
+ ai_weight = { factor = 40 }
+}
+
+ap_epoch_free = {
+ potential = { epoch_iv_future_research = yes epoch_c_free = yes NOT = { has_ascension_perk = ap_epoch_guard } }
+ possible = { epoch_iv_future_research = yes epoch_c_free = yes NOT = { has_ascension_perk = ap_epoch_guard } has_tradition = tr_epoch_legacy_finish has_technology = tech_epoch_iv_universal_sovereignty has_technology = tech_epoch_iv_coupling }
+ triggered_modifier = { potential = { epoch_c_free = yes NOT = { has_ascension_perk = ap_epoch_guard } } modifier = { all_technology_research_speed = 0.10 terraforming_cost_mult = -0.25 planet_jobs_upkeep_mult = -0.05 BIOLOGICAL_species_trait_points_add = 1 BIOLOGICAL_species_trait_picks_add = 1 LITHOID_species_trait_points_add = 1 LITHOID_species_trait_picks_add = 1 ROBOT_species_trait_points_add = 1 ROBOT_species_trait_picks_add = 1 MACHINE_species_trait_points_add = 1 MACHINE_species_trait_picks_add = 1 } }
+ ai_weight = { factor = 40 }
+}
+
+

@@ -1,0 +1,520 @@
+{
+  "date": "2026-11-10",
+  "version": "Cygnus v4.5.3 (4e91)",
+  "localSourceRoot": "G:/Steam/steamapps/common/Stellaris",
+  "baseCommit": "a330bfedcb362c90b5551b283935753ca99cbce7",
+  "evidence": "Read-only installed source checks; no game launch or new probe mod. Generated docs pre-existed. Resource-scope discrepancy is explicitly retained as a runtime acceptance item.",
+  "files": [
+    {
+      "path": "launcher-settings.json",
+      "sha256": "65f9b547c0d5194f885ec015ff46edba941d45e78706b5a92efb03d079fa07e9",
+      "anchors": [
+        {
+          "text": "Cygnus v4.5.3",
+          "line": 3
+        }
+      ]
+    },
+    {
+      "path": "common/defines/00_defines.txt",
+      "sha256": "0fbf8c1507e8fa34eb056dabce1966af767bdafaebf1eb435eb7b1fdd28daf70",
+      "anchors": [
+        {
+          "text": "ASCENSION_PERKS_SLOTS",
+          "line": 1226
+        },
+        {
+          "text": "TRADITION_CATEGORIES_MAX",
+          "line": 1432
+        }
+      ]
+    },
+    {
+      "path": "interface/topbar_traditions_view.gui",
+      "sha256": "d21c1bfb6f759d37245f88cf1eea7c2b45072d739a35fa1570d8d6ba8a7629a1",
+      "anchors": [
+        {
+          "text": "name = \"tree_11_12\"",
+          "line": 846
+        },
+        {
+          "text": "ascension_perks",
+          "line": 244
+        }
+      ]
+    },
+    {
+      "path": "common/tradition_categories/00_adaptability.txt",
+      "sha256": "2c5f68e0d39074f72fad532817495edc0ca65f4941727877ea3a4fe094c0539d",
+      "anchors": [
+        {
+          "text": "tree_template",
+          "line": 2
+        },
+        {
+          "text": "finish_bonus",
+          "line": 4
+        },
+        {
+          "text": "potential",
+          "line": 13
+        }
+      ]
+    },
+    {
+      "path": "common/traditions/00_adaptability.txt",
+      "sha256": "d361822afc97161f59de10fdd44d96d73064d8629e33b5cdf70882e413b77a67",
+      "anchors": [
+        {
+          "text": "ascension_perks_add",
+          "line": 22
+        },
+        {
+          "text": "tradition_swap",
+          "line": 52
+        },
+        {
+          "text": "is_wilderness_empire",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "path": "common/ascension_perks/00_ascension_perks.txt",
+      "sha256": "6f527fa7e9b0168b022b23e67b905f1dc60992657e3fe233665efb2cb2f97bdf",
+      "anchors": [
+        {
+          "text": "triggered_modifier",
+          "line": 675
+        },
+        {
+          "text": "has_tradition = tr_discovery_finish",
+          "line": 397
+        }
+      ]
+    },
+    {
+      "path": "common/traits/000_documentation_species_traits.txt",
+      "sha256": "8e234b159d4234f0e043a48ffae6e8dc9d00c30e4fe579bca88816b76f1973f7",
+      "anchors": [
+        {
+          "text": "species_potential_add",
+          "line": 70
+        },
+        {
+          "text": "species_possible_merge_add",
+          "line": 80
+        },
+        {
+          "text": "triggered_species_modifier",
+          "line": 100
+        },
+        {
+          "text": "allowed_archetypes",
+          "line": 32
+        },
+        {
+          "text": "normal(default)",
+          "line": 23
+        },
+        {
+          "text": "allowed_archetypes = {}",
+          "line": 32
+        },
+        {
+          "text": "species_possible_add = {}",
+          "line": 75
+        }
+      ]
+    },
+    {
+      "path": "common/traits/04_species_traits.txt",
+      "sha256": "98f0ef33bdc676c9a77b0b246c4df69bc0e63022ef929d29582b1b3f931779b9",
+      "anchors": [
+        {
+          "text": "trait_intelligent =",
+          "line": 153
+        },
+        {
+          "text": "researcher_jobs_bonus_workforce_mult",
+          "line": 175
+        }
+      ]
+    },
+    {
+      "path": "common/traits/05_species_traits_robotic.txt",
+      "sha256": "8e3c0d646dc851e2b95102dc1f21fdad1ddc834d8cb62dff876ddfb13e6f9fae",
+      "anchors": [
+        {
+          "text": "trait_robot_efficient_processors",
+          "line": 126
+        },
+        {
+          "text": "triggered_species_modifier",
+          "line": 1191
+        }
+      ]
+    },
+    {
+      "path": "common/traits/15_biogenesis_species_traits.txt",
+      "sha256": "36a62718aca273a1402a6bb961dc082c013653af5134acae2073e5834655d286",
+      "anchors": [
+        {
+          "text": "trait_wilderness =",
+          "line": 1745
+        }
+      ]
+    },
+    {
+      "path": "common/technology/00_synthetic_dawn_tech.txt",
+      "sha256": "243c386a45e00f5d30ea5b23ba55d1905d0a828854f2c0dfc68b5f0bd2e5f446",
+      "anchors": [
+        {
+          "text": "tech_robomodding_m =",
+          "line": 1
+        },
+        {
+          "text": "is_individual_machine = yes",
+          "line": 21
+        },
+        {
+          "text": "modify_robots",
+          "line": 10
+        }
+      ]
+    },
+    {
+      "path": "common/technology/00_soc_tech.txt",
+      "sha256": "4bfb400930c457280157b5a2900c74f0d43d44f4dabe18825208a63552bbb21c",
+      "anchors": [
+        {
+          "text": "tech_gene_tailoring =",
+          "line": 2732
+        },
+        {
+          "text": "modify_traits",
+          "line": 2751
+        },
+        {
+          "text": "tech_genome_mapping =",
+          "line": 2241
+        },
+        {
+          "text": "is_natural_design_empire = no",
+          "line": 2495
+        }
+      ]
+    },
+    {
+      "path": "common/static_modifiers/24_static_modifiers_jobs.txt",
+      "sha256": "1172f60e2fcb442e0baee2eb15bef58e4abb0bf93f24247b38ee2252c55c321b",
+      "anchors": [
+        {
+          "text": "researcher_jobs_bonus_workforce_mult =",
+          "line": 28
+        }
+      ]
+    },
+    {
+      "path": "common/scripted_triggers/00_scripted_triggers.txt",
+      "sha256": "ce79a2855dd8bfa1d3ba4bdb661a6ad20612571c9b3b13784d3b472daa337ec5",
+      "anchors": [
+        {
+          "text": "is_robot_empire =",
+          "line": 1381
+        },
+        {
+          "text": "is_hive_empire =",
+          "line": 268
+        },
+        {
+          "text": "has_no_non_gate_megastructure =",
+          "line": 2166
+        }
+      ]
+    },
+    {
+      "path": "common/scripted_triggers/05_scripted_triggers_traits.txt",
+      "sha256": "2e569aebda04b38611f44c07d8caccc4fa06dd753627a965e54580cf3f6dc1a5",
+      "anchors": [
+        {
+          "text": "can_add_genetic_traits =",
+          "line": 302
+        }
+      ]
+    },
+    {
+      "path": "common/megastructures/99_README_MEGASTRUCTURES.txt",
+      "sha256": "852b68dd5873ea5e19bb08192ab1b323f274bfdad0c1cfe30d39706d19d2fe85",
+      "anchors": [
+        {
+          "text": "upgrade_from",
+          "line": 12
+        },
+        {
+          "text": "potential",
+          "line": 6
+        },
+        {
+          "text": "possible",
+          "line": 17
+        },
+        {
+          "text": "resources",
+          "line": 34
+        },
+        {
+          "text": "triggered_country_modifier",
+          "line": 44
+        },
+        {
+          "text": "on_build_complete",
+          "line": 64
+        },
+        {
+          "text": "dismantle_possible",
+          "line": 22
+        }
+      ]
+    },
+    {
+      "path": "common/megastructures/03_think_tank.txt",
+      "sha256": "f43ea4dcace513ad449b957f2df73b218b06936c9887a843d7fd60399478e023",
+      "anchors": [
+        {
+          "text": "think_tank_0 =",
+          "line": 9
+        },
+        {
+          "text": "placement_rules",
+          "line": 94
+        },
+        {
+          "text": "upgrade_from",
+          "line": 225
+        },
+        {
+          "text": "country_modifier",
+          "line": 231
+        }
+      ]
+    },
+    {
+      "path": "common/megastructures/06_matter_decompressor.txt",
+      "sha256": "69311a955d699ba7f36c8e3908ce6aac9261d84cb5ea79dd0bb79bf6557ceda4",
+      "anchors": [
+        {
+          "text": "matter_decompressor_stage_1_entity",
+          "line": 167
+        }
+      ]
+    },
+    {
+      "path": "common/megastructures/07_strategic_coordination_center.txt",
+      "sha256": "97e6b9f9a5c44f3f3d12bbc172e0e4b4fd33261d15a6bfdd32fc78855aba9618",
+      "anchors": [
+        {
+          "text": "strategic_coordination_center_stage_1_entity",
+          "line": 167
+        }
+      ]
+    },
+    {
+      "path": "common/megastructures/17_orbital_arc_furnace.txt",
+      "sha256": "ff50005498466ea598a39a7cb2db24f143a6acc7540d282c8d6b6068bbc6afd2",
+      "anchors": [
+        {
+          "text": "dismantle_cost",
+          "line": 73
+        },
+        {
+          "text": "on_dismantle_complete",
+          "line": 92
+        }
+      ]
+    },
+    {
+      "path": "common/megastructures/22_shroud_seal.txt",
+      "sha256": "08d1112ae898d68d33ce5a509f657e886cfb7085dae199e81cde80cd52983a5b",
+      "anchors": [
+        {
+          "text": "owner?",
+          "line": 28
+        },
+        {
+          "text": "triggered_country_modifier",
+          "line": 36
+        }
+      ]
+    },
+    {
+      "path": "common/megastructures/12_crisis_sphere.txt",
+      "sha256": "960cbb6959bb30c45f8916610beb0b814807d63e9303cc695b4c686ffbc43819",
+      "anchors": [
+        {
+          "text": "set_megastructure_flag",
+          "line": 55
+        }
+      ]
+    },
+    {
+      "path": "common/ship_sizes/00_ship_sizes.txt",
+      "sha256": "5d8fb948b2197e8a39e021a8501574e043d3c1fd3db7e0c8b9b0b1142da65c2f",
+      "anchors": [
+        {
+          "text": "construction_capabilities",
+          "line": 83
+        }
+      ]
+    },
+    {
+      "path": "interface/traditions.gfx",
+      "sha256": "157cf37e0bd0360a867dee1cf6a30a6b87d33280b525753b4b1a9db2741cbd15",
+      "anchors": [
+        {
+          "text": "GFX_tradition_category_icon_tradition_discovery",
+          "line": 669
+        }
+      ]
+    },
+    {
+      "path": "interface/ascension_perks.gfx",
+      "sha256": "610db96d754c94cf724010c4878ca3cc4b17ff01e200439e7cf665f6783e57b8",
+      "anchors": [
+        {
+          "text": "GFX_ap_engineered_evolution",
+          "line": 48
+        }
+      ]
+    },
+    {
+      "path": "interface/megastructure_view.gfx",
+      "sha256": "6a781e056587fd265f7e0d77025242cbdfa58cf7134c5cfae0889f63acae845c",
+      "anchors": [
+        {
+          "text": "GFX_megastructure_think_tank_background",
+          "line": 31
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\Maxim/Documents/Paradox Interactive/Stellaris/logs/script_documentation/modifiers.log",
+      "sha256": "14235a2ca7565d8a665348f21fd00ea4defa06bcba2907c8aca65dcbf9a02ffc",
+      "existingGeneratedDocumentation": true
+    },
+    {
+      "path": "C:\\Users\\Maxim/Documents/Paradox Interactive/Stellaris/logs/script_documentation/triggers.log",
+      "sha256": "a7fbea41502a025f670197c61d2dd90c1fd08c2eac18b05d99ab67f8aace996c",
+      "existingGeneratedDocumentation": true
+    },
+    {
+      "path": "C:\\Users\\Maxim/Documents/Paradox Interactive/Stellaris/logs/script_documentation/effects.log",
+      "sha256": "24227be4a422ddc58bfb5ca6e59349341903ca90e385da6ecd2b54e3de4553c3",
+      "existingGeneratedDocumentation": true
+    },
+    {
+      "path": "common/traditions/00_versatility.txt",
+      "sha256": "b2f0602bf6b0b1c1873aa21f8329686c5abf448987cfcbb039f3bf1e9e2b5eea",
+      "anchors": [
+        {
+          "text": "tr_versatility_finish =",
+          "line": 8
+        },
+        {
+          "text": "inherit_name = no",
+          "line": 17
+        },
+        {
+          "text": "inherit_icon = yes",
+          "line": 18
+        },
+        {
+          "text": "inherit_effects = no",
+          "line": 19
+        }
+      ]
+    },
+    {
+      "path": "common/traits/18_nomads_species_traits.txt",
+      "sha256": "ed2e77951290083e49c8682e1088595111749a73f02480291aa336bf31a1bd18",
+      "anchors": [
+        {
+          "text": "trait_structural_awareness =",
+          "line": 150
+        },
+        {
+          "text": "trait_interconnected =",
+          "line": 199
+        },
+        {
+          "text": "species_possible_add =",
+          "line": 10
+        },
+        {
+          "text": "allowed_archetypes = { MACHINE ROBOT }",
+          "line": 67
+        }
+      ]
+    },
+    {
+      "path": "common/species_archetypes/00_species_archetypes.txt",
+      "sha256": "0f754e5de7327af7d65c0459e2dbd145a311ea0d2319efc40a1019cb3ff29386",
+      "anchors": [
+        {
+          "text": "ROBOT =",
+          "line": 45
+        },
+        {
+          "text": "MACHINE =",
+          "line": 56
+        },
+        {
+          "text": "robotic = yes",
+          "line": 12
+        }
+      ]
+    },
+    {
+      "path": "common/game_rules/00_rules.txt",
+      "sha256": "95711247e018e7cde46b586a828e9f001bd1b65f73f83e6cd4c988eebd2523bf",
+      "anchors": [
+        {
+          "text": "can_modify_species =",
+          "line": 570
+        },
+        {
+          "text": "NEEDS_GENE_TAILORING_OR_INTERGRATED_ANATOMY",
+          "line": 601
+        },
+        {
+          "text": "NEEDS_ROBOT_MODDING",
+          "line": 659
+        },
+        {
+          "text": "CANNOT_MODIFY_SELF_MODIFIED_SPECIES",
+          "line": 672
+        },
+        {
+          "text": "CANNOT_MODIFY_MALLEABLE_GENES_SPECIES",
+          "line": 682
+        }
+      ]
+    },
+    {
+      "path": "common/scripted_triggers/02_scripted_triggers_machine_age.txt",
+      "sha256": "b2b7e19153dc8186741cbb487239d6e307c1b05df2bbc99b27b171be1221ad58",
+      "anchors": [
+        {
+          "text": "is_natural_design_empire =",
+          "line": 49
+        },
+        {
+          "text": "civic_hive_natural_design",
+          "line": 52
+        }
+      ]
+    }
+  ],
+  "reviewBaseCommit": "021cbb14ced853280cf6d3881787c9b9a02e52af",
+  "reviewEvidence": "Explicit Wilderness swap inheritance follows native Versatility. Default-normal paid mechanical traits have native species_possible_add examples. Native Genome Mapping/Gene Tailoring and can_modify_species admit ordinary Wilderness while retaining Natural Design and other native restrictions. Static source evidence only; no game launch."
+}

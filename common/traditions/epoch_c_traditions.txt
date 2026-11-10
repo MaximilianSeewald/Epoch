@@ -1,0 +1,163 @@
+tr_epoch_legacy_adopt = {
+ modifier = { all_technology_research_speed = 0.1 }
+}
+
+tr_epoch_legacy_finish = {
+ modifier = { megastructure_build_speed_mult = 0.25 ascension_perks_add = 1 }
+}
+
+tr_epoch_legacy_chronicles = {
+ modifier = { country_unity_produces_mult = 0.15 }
+ ai_weight = { factor = 100 }
+}
+
+tr_epoch_legacy_reconstruction = {
+ possible = { has_tradition = tr_epoch_legacy_chronicles }
+ modifier = { planet_buildings_cost_mult = -0.15 }
+ ai_weight = { factor = 90 }
+}
+
+tr_epoch_legacy_discipline = {
+ modifier = { num_tech_alternatives_add = 2 }
+ ai_weight = { factor = 80 }
+}
+
+tr_epoch_legacy_harmonization = {
+ possible = { has_tradition = tr_epoch_legacy_discipline }
+ modifier = { planet_stability_add = 5 }
+ ai_weight = { factor = 70 }
+}
+
+tr_epoch_legacy_wardens = {
+ possible = { has_tradition = tr_epoch_legacy_discipline }
+ modifier = { country_naval_cap_add = 50 }
+ ai_weight = { factor = 60 }
+}
+
+tr_epoch_symbiosis_adopt = {
+ modifier = { pop_environment_tolerance = 0.1 }
+}
+
+tr_epoch_symbiosis_finish = {
+ modifier = { BIOLOGICAL_species_trait_points_add = 2 LITHOID_species_trait_points_add = 2 ascension_perks_add = 1 }
+}
+
+tr_epoch_symbiosis_adaptation = {
+ modifier = { pop_environment_tolerance = 0.15 }
+ ai_weight = { factor = 100 }
+}
+
+tr_epoch_symbiosis_architecture = {
+ possible = { has_tradition = tr_epoch_symbiosis_adaptation }
+ modifier = { building_time_mult = -0.25 }
+ ai_weight = { factor = 90 }
+}
+
+tr_epoch_symbiosis_regeneration = {
+ modifier = { army_damage_taken_mult = -0.25 }
+ ai_weight = { factor = 80 }
+}
+
+tr_epoch_symbiosis_evolution = {
+ possible = { has_tradition = tr_epoch_symbiosis_regeneration }
+ modifier = { logistic_growth_mult = 0.15 }
+ ai_weight = { factor = 70 }
+}
+
+tr_epoch_symbiosis_sovereignty = {
+ possible = { has_tradition = tr_epoch_symbiosis_regeneration }
+ modifier = { pop_happiness = 0.1 }
+ ai_weight = { factor = 60 }
+}
+
+tr_epoch_convergence_adopt = {
+ modifier = { country_unity_produces_mult = 0.1 }
+}
+
+tr_epoch_convergence_finish = {
+ modifier = { BIOLOGICAL_species_trait_points_add = 2 LITHOID_species_trait_points_add = 2 ascension_perks_add = 1 }
+}
+
+tr_epoch_convergence_expansion = {
+ modifier = { country_resource_max_add = 20000 }
+ ai_weight = { factor = 100 }
+}
+
+tr_epoch_convergence_drones = {
+ possible = { has_tradition = tr_epoch_convergence_expansion }
+ modifier = { planet_jobs_produces_mult = 0.1 }
+ tradition_swap = {
+  name = tr_epoch_convergence_drones_wilderness
+  inherit_effects = no
+  inherit_name = no
+  inherit_icon = yes
+  trigger = { is_wilderness_empire = yes }
+  modifier = { megastructure_build_speed_mult = 0.2 }
+  weight = { factor = 1 }
+ }
+ ai_weight = { factor = 90 }
+}
+
+tr_epoch_convergence_nodes = {
+ modifier = { planet_stability_add = 5 }
+ tradition_swap = {
+  name = tr_epoch_convergence_nodes_wilderness
+  inherit_effects = no
+  inherit_name = no
+  inherit_icon = yes
+  trigger = { is_wilderness_empire = yes }
+  modifier = { building_time_mult = -0.25 }
+  weight = { factor = 1 }
+ }
+ ai_weight = { factor = 80 }
+}
+
+tr_epoch_convergence_adaptation = {
+ possible = { has_tradition = tr_epoch_convergence_nodes }
+ modifier = { pop_environment_tolerance = 0.1 terraforming_cost_mult = -0.2 }
+ ai_weight = { factor = 70 }
+}
+
+tr_epoch_convergence_consciousness = {
+ possible = { has_tradition = tr_epoch_convergence_nodes }
+ modifier = { ship_fire_rate_mult = 0.05 }
+ ai_weight = { factor = 60 }
+}
+
+tr_epoch_network_adopt = {
+ modifier = { planet_pop_assembly_mult = 0.1 }
+}
+
+tr_epoch_network_finish = {
+ modifier = { ROBOT_species_trait_points_add = 2 MACHINE_species_trait_points_add = 2 ascension_perks_add = 1 }
+}
+
+tr_epoch_network_correction = {
+ modifier = { planet_jobs_upkeep_mult = -0.1 }
+ ai_weight = { factor = 100 }
+}
+
+tr_epoch_network_intelligence = {
+ possible = { has_tradition = tr_epoch_network_correction }
+ modifier = { all_technology_research_speed = 0.1 }
+ ai_weight = { factor = 90 }
+}
+
+tr_epoch_network_architecture = {
+ modifier = { building_time_mult = -0.25 }
+ ai_weight = { factor = 80 }
+}
+
+tr_epoch_network_independence = {
+ possible = { has_tradition = tr_epoch_network_architecture }
+ modifier = { planet_stability_add = 5 }
+ ai_weight = { factor = 70 }
+}
+
+tr_epoch_network_sovereignty = {
+ possible = { has_tradition = tr_epoch_network_architecture }
+ modifier = { ships_upkeep_mult = -0.1 }
+ ai_weight = { factor = 60 }
+}
+
+

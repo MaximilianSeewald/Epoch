@@ -15,16 +15,18 @@ The [preserved EPOCH diagnostics](../research/third-b-c-playtest-2026-11-10/scop
 | Mega `build_menu_potential` | Fleet; `from` = country | Native contract; preserved. |
 | Mega `possible` | System; `from` = country | Native contract and successful player construction; preserved. |
 | Mega resource `cost` | Construction country; no scoped predicate here | Native contract, paid construction already succeeds. |
-| Mega `resources.produces` | Megastructure; `owner` = country | Third-run errors explicitly report `epoch_iv_future_research` → `is_country_type` executing in megastructure scope at lines 12/52/81/110/149/177 and UAP philosophy branches. Country predicates must be inside `owner`. |
+| Mega `resources.produces` | Megastructure; `owner` = country | Third-run errors explicitly report `epoch_iv_future_research` → `is_country_type` executing in megastructure scope at lines 12/52/81/110/149/177 and UAP philosophy branches. Country predicates must be inside the native optional `owner?` link. |
 | Mega `resources.upkeep` | Native recurring resource table, unconditional | No owner/flag condition is needed. No claim of an independently logged conditional-upkeep scope; resource amounts remain native. |
 | Mega `triggered_country_modifier.potential` | Country | Third-run errors explicitly report root `has_megastructure_flag` executing in country scope at lines 38/67/96 and UAP modifier lines. Country conditions are direct; instance flags must be inside `any_owned_megastructure`. |
 | `on_build_complete` | System; `from` = country; `fromfrom` = instance | Native callback contract; the successful build path is preserved. |
 
-The previous validator assigned the two recurring contexts backwards and therefore certified a broken implementation. The native megastructure README also describes produces as country scope, contradicting this actual engine run. Runtime diagnostics take precedence; that comment is no longer accepted as the oracle. Native Shroud Seal's owner-qualified recurring output is consistent with the observed megastructure context.
+The previous validator assigned the two recurring contexts backwards and therefore certified a broken implementation. The native megastructure README also describes produces as country scope, contradicting this actual engine run. Runtime diagnostics take precedence; that comment is no longer accepted as the oracle. Native Shroud Seal's optional-owner recurring output is consistent with the observed megastructure context. The first archived run also records country-context queries at actual produces lines 11/146/174. Whether those were previews is an inference, not directly logged. Therefore production uses the exact native optional owner? pattern and no root instance-flag condition: missing owner links skip the child predicates safely. Native completed-stage economics controls when resource output starts.
 
 For factories, the suspicious implementation placed **all** core production behind an added three-input `has_deficit` guard. The third log contains no factory scope error. Native job sources use owner-qualified conditional bonuses, so it would be incorrect to claim that `owner` is categorically invalid in job economics. The exact reason this guard suppressed production in the player's save is not isolated. The correction removes that entire conditional base-output dependency for both organic and Hive/Machine jobs, keeping the native unconditional 12 cores per 100 workforce and unconditional paid input table. Full Factory I/II therefore project 36/72 cores. Only a real treasury delta can confirm the factory diagnosis.
 
 Deficits now follow native resource deficit situations/bankruptcy and inherited job modifiers. There is **no promised immediate zero-stockpile hard stop**. Inputs remain 18 minerals +3 alloys +8 energy per 100 workforce, plus the factory building's 4/8 energy. No script adds free cores or refunds inputs.
+
+C changes: every produces block now qualifies country conditions through native owner? and contains no root megastructure flag; every triggered country modifier uses direct country predicates and a scoped any_owned_megastructure completion check. All ten stages retain identical resource amounts, costs, upkeep, build/menu/placement conditions, upgrade links and completion/cancel/dismantle callbacks compared with the third-test commit. The regression compares those executable blocks directly.
 
 ## Upkeep and icon correction
 
@@ -40,6 +42,12 @@ Job core upkeep remains additional. All seven staffed consumer families together
 [Small/medium/large monthly core ledger, including fleets, edicts, Wilderness and C infrastructure](../research/third-b-c-playtest-2026-11-10/core-economy.md), [full JSON](../research/third-b-c-playtest-2026-11-10/core-economy.json).
 
 The icon keeps its 32/64px DDS canvases and cyan/amber identity. Geometry shrinks to 48% about the center. Alpha area falls from 569.835 to 131.686 physical pixels; visible bounds fall from 30×28 to 14×14. Installed Dark Matter / Crystals / Gases measure 152.816 /120.475 /95.690 alpha pixels and visible bounds 17×14 /15×14 /11×15. SVG/PNG/DDS and all eight generated resource-modifier textures share the updated geometry. [Equal-pixel-scale visual comparison](../research/third-b-c-playtest-2026-11-10/core-icon-comparison.png): Dark Matter, Crystals, Gases, old EPOCH, new EPOCH.
+
+## Static validation
+
+B: 713 overall checks, 4,380 content assertions, 630 preserved-runtime contracts and 54 new factory/upkeep/net-flow assertions pass. The icon comparison checks physical native alpha coverage, inset, unchanged canvases and synchronized modifier variants. C: 715 overall checks, 2,595 content assertions and 473 focused scope/lifecycle contracts pass. The scope oracle is bound to recorded third-run contexts; every old resource and modifier condition is rejected. All ten stage resource amounts and successful construction/callback fields match the player-tested C baseline.
+
+No tooltip value is counted as actual production. Both signed ledgers and the engine/treasury smoke test remain explicitly separate. Current runtime status is **not validated**. Detailed outputs: [B](../research/third-b-c-playtest-2026-11-10/b-static-checks.txt), [C](../research/third-b-c-playtest-2026-11-10/c-static-checks.txt).
 
 ## Minimal smoke test: actual resource deltas
 

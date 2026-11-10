@@ -42,3 +42,14 @@ Wilderness uses no jobs/building sets. Its existing network is priced at twice s
 | small | 2 | 72 | 19.48775 | 52.51225 | 216 / 36 / 112 |
 | medium | 4 | 288 | 71.554 | 216.446 | 864 / 144 / 448 |
 | large | 6 | 432 | 138.185 | 293.815 | 1296 / 216 / 672 |
+
+## Megastructure commitments
+
+Actual C resource tables, assuming the real owner passes the philosophy/eligibility/cap/input gates; mutually exclusive UAP output branches never generate cores. Running upgrade stages replace earlier stages.
+
+| Group | Gross cores | Core upkeep | Net cores | Energy upkeep | Minerals upkeep |
+|---|---:|---:|---:|---:|---:|
+| entry | 24 | 12 | 12 | 200 | 400 |
+| ultimate | 72 | 46 | 26 | 700 | 1200 |
+
+Large B economy plus ultimate infrastructure: 360 gross cores − 287.74500 upkeep = 72.25500 net. At half factory staffing, even with all three operating megastructures, net is -71.74500. Turning off/capturing an installation changes both its output eligibility and industrial support; construction still consumes stockpiled cores separately.

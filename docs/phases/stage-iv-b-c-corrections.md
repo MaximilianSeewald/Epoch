@@ -17,6 +17,19 @@ Validation: Package-B suite 4,380 assertions; observed-runtime contracts 634; fu
 
 The bounded condition model exercises building absence/presence/upgrade and serialization over repeated ticks; **it does not run Stellaris**. Actual construction persistence, UI loading, production and multiplayer remain unverified until the compact smoke test below.
 
+## Package C
+
+- Resource production triggers now execute as country triggers: no mega flag and no owner switch in country resource tables. Operational instance flags remain only in valid mega-scope modifier/access checks. Native documentation and the actual Wrong Scope diagnostics take precedence over the misleading Shroud-Seal example previously used by the suite.
+- Both capped-family counts now use native `count_owned_megastructure = { count < 2 limit = { OR = { ... } } }`. Country reservation writes are removed; no generic empty-system test rejects the unfinished custom shell. Menu uniqueness and completed-instance construction checks are separate from persistent eligibility. Upgrade stages do not reapply first-instance checks.
+- Completion sets the flag on `fromfrom` and marks its planet; cancel/complete clean obsolete reservation flags without reading them. Dismantle cleanup only releases empty anchors. Ownership and duplicate shutdown are evaluated live. Simultaneous queued construction and callback removal order remain runtime risks.
+- All ten stages register implicit build/outliner sprites pointing to installed native artwork, and keep native entity/construction/portrait assets. Every stage has a distinct DE/EN story name plus explicit tier count.
+- Both C decisions now preview native positive modifier/deposit effects while retaining guarded execution. Class, owner, diagnosis and stabilization checks remain.
+- Four trees and five perks have stronger, bounded class/philosophy roles. Class/perk gates equal the player-tested commit; no new slot limits, forced species conversion or story changes. [Nine comparisons, all 28 tradition choices, five perks and ten megastructure ledgers](../research/stage-iv-c-corrected-balance.md), [machine-readable values/source hashes](../research/stage-iv-c-corrected-balance.json).
+
+Final combined runner: 713 static checks pass (74 parsed Clausewitz files), including the existing campaign suites. The archived first-run log correctly fails the runtime gate with 169 EPOCH root diagnostics; those historical errors are not a fresh run of the correction commits.
+
+C validation: 2,474 content assertions and 208 targeted scope/count/lifecycle/UI contracts, including negative fixtures for the reported invalid resource/count patterns. Production numbers are calculated expectations after scope correction, not an assertion of native execution.
+
 ## Compact combined smoke test
 
 Use the final C branch (which includes corrected B), the existing mod and a genuine post-Leviathan save; no new test mod or feature package.

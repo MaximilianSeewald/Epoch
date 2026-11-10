@@ -1,0 +1,5 @@
+epoch_c_symbiotic_world = {
+ icon = "gfx/interface/icons/planet_modifiers/pm_natural_beauty.dds"
+ planet_jobs_produces_mult = 0.10
+ pop_environment_tolerance = 0.05
+}
