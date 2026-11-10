@@ -33,19 +33,19 @@ weapon_component_template = {
 	ai_tag_weight = 3
 	resources = { category = ship_components cost = { alloys = 120 epoch_protocol_cores = 8 } upkeep = { energy = 1.2 alloys = 0.12 epoch_protocol_cores = 0.008 } }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 
  power = -59
 
- damage = { min = 68.90 max = 182.00 }
+ damage = { min = 53 max = 140 }
 
- windup = { min = 7 max = 27 }
+ windup = { min = 53 max = 140 }
 
  total_fire_time = 40
 
  hull_damage = 1.5
 
- shield_damage = 0.25
+ shield_damage = 0.15
 
  shield_penetration = 0
 
@@ -53,7 +53,7 @@ weapon_component_template = {
 
  armor_penetration = 0
 
- range = 60
+ range = 50
 
  accuracy = 0.8
 
@@ -61,6 +61,7 @@ weapon_component_template = {
 
  size_damage_factor = 0
 
+ chain_damage = 18 chain_count = 2 chain_range = 15
  military_power_multiplier = 1
 }
 
@@ -101,19 +102,19 @@ weapon_component_template = {
 	ai_tag_weight = 3
 	resources = { category = ship_components cost = { alloys = 280 epoch_protocol_cores = 16 } upkeep = { energy = 2.8 alloys = 0.28 epoch_protocol_cores = 0.016 } }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 
  power = -134
 
- damage = { min = 163.80 max = 436.80 }
+ damage = { min = 126 max = 336 }
 
- windup = { min = 8 max = 30 }
+ windup = { min = 126 max = 336 }
 
  total_fire_time = 45
 
  hull_damage = 1.5
 
- shield_damage = 0.25
+ shield_damage = 0.15
 
  shield_penetration = 0
 
@@ -121,7 +122,7 @@ weapon_component_template = {
 
  armor_penetration = 0
 
- range = 80
+ range = 70
 
  accuracy = 0.8
 
@@ -129,6 +130,7 @@ weapon_component_template = {
 
  size_damage_factor = 0
 
+ chain_damage = 40 chain_count = 2 chain_range = 20
  military_power_multiplier = 1
 }
 
@@ -178,7 +180,7 @@ weapon_component_template = {
 		stinger_stage_3 = 2
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 
  power = -325
 
@@ -186,7 +188,7 @@ weapon_component_template = {
 
  windup = { min = 12 max = 47 }
 
- total_fire_time = 70
+ total_fire_time = 90
 
  hull_damage = 1.5
 
@@ -198,7 +200,7 @@ weapon_component_template = {
 
  armor_penetration = 0
 
- range = 150
+ range = 175
 
  accuracy = 0.85
 
@@ -206,6 +208,7 @@ weapon_component_template = {
 
  size_damage_factor = 0
 
+ min_range = 60
  military_power_multiplier = 1
 }
 
@@ -248,7 +251,7 @@ weapon_component_template = {
 	ai_tag_weight = 0
 	resources = { category = ship_components cost = { alloys = 220 epoch_protocol_cores = 16 } upkeep = { energy = 2.2 alloys = 0.22 epoch_protocol_cores = 0.016 } }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 
  power = -114
 
@@ -256,15 +259,15 @@ weapon_component_template = {
 
  windup = { min = 9 max = 34 }
 
- total_fire_time = 50
+ total_fire_time = 60
 
- hull_damage = 1
+ hull_damage = 0.75
 
- shield_damage = 2
+ shield_damage = 3
 
  shield_penetration = 0
 
- armor_damage = 0.5
+ armor_damage = 0.25
 
  armor_penetration = 0
 
@@ -308,7 +311,7 @@ weapon_component_template = {
 	}
 	resources = { category = ship_components cost = { alloys = 100 epoch_protocol_cores = 12 } upkeep = { energy = 1 alloys = 0.1 epoch_protocol_cores = 0.012 } }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 
  power = -80
 
@@ -388,7 +391,7 @@ weapon_component_template = {
 
 	point_defence_targets = { "missile" "strike_craft" }
 
- ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+ ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 
  power = -13
 
@@ -460,7 +463,7 @@ weapon_component_template = {
 		stinger_stage_3 = 2
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 
  power = -625
 
@@ -554,5 +557,5 @@ strike_craft_component_template = {
 	}
 	point_defence_targets = { "strike_craft" }
 
- ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+ ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }

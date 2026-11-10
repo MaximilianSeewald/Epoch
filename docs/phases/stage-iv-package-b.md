@@ -8,7 +8,7 @@ Es gibt genau 42 reguläre Technologien: je 14 Physik, Gesellschaft und Ingenieu
 
 Die Entwurfsstufen I/II/III werden auf native Engine-Tiers 3/4/5 abgebildet: 12 / 14 / 10 Technologien, mit 28.000 / 56.000 / 112.000 Basiskosten vor normalen Forschungsmodifikatoren. Die nativen Tierzugangsschwellen bleiben unverändert. Zum Vergleich definiert Vanilla für Tier 5 16.000 / 20.000 / 24.000 Forschung; die Ära setzt daher eine erhebliche zusätzliche Forschungsinvestition voraus. Sie ersetzt keine alten Technologien und keine normalen Forschungsslots.
 
-Organische Individuen erhalten S04/S07, biologische Schwärme S05/S08, Maschinen einschließlich individueller und synthetisch aufgestiegener Reiche S09. Universelle Infrastruktur hängt von keiner fremden Klassenforschung ab. Nur konventionell nutzbare Hardware-Forschungen schließen Bio-Schiffsreiche aus; der Infrastrukturzweig bleibt auch für diese durchgängig. Der T-Strahl setzt zusätzlich die native Titanen-Technologie voraus. Gebäudebasierte Wirtschaft folgt den Vanilla-Einschränkungen für Wilderness-/Sonderkolonien; ein eigener Wilderness-Biomassepfad ist nicht Bestandteil dieser Jobarchitektur.
+Organische Individuen erhalten S04/S07, biologische Schwärme S05/S08, Maschinen einschließlich individueller und synthetisch aufgestiegener Reiche S09. Universelle Infrastruktur hängt von keiner fremden Klassenforschung ab. Nur konventionell nutzbare Hardware-Forschungen schließen Bio-Schiffsreiche aus; der Infrastrukturzweig bleibt auch für diese durchgängig. Der T-Strahl setzt zusätzlich die native Titanen-Technologie voraus. Wilderness nutzt stattdessen bezahlte native Erlasse für Kernfertigung und direkte Infrastruktur-Erträge; normale Jobgebäude bleiben gesperrt. Herkunft und Schiffskategorie werden unabhängig geprüft. Die konkreten Grenzen und Berechnungen stehen im [Nachbesserungsbericht](stage-iv-package-b-review.md).
 
 Abhängigkeiten in der Tabelle verwenden ohne Präfix angegebene EPOCH-IDs als `tech_epoch_iv_<Name>`; `tech_titans` ist Vanilla. Der exakte maschinenlesbare DAG steht in [content.json](../research/stage-iv-b-content.json).
 
@@ -61,13 +61,13 @@ Abhängigkeiten in der Tabelle verwenden ohne Präfix angegebene EPOCH-IDs als `
 
 `epoch_protocol_cores` ist die einzige neue Ressource. Sie hat ein natives Lager von 15.000 zuzüglich normaler Lagerboni, keine Markt- oder Diplomatieversorgung und keine kostenlose Startproduktion. Die Anzeige wird mit der Fabrikationsforschung sichtbar. Kleine/graue/große Icons sind unter eigenen Ressourcennamen vorhanden; die Darstellung verwendet Vanilla-Materialgrafik.
 
-Kern-Fabriken besitzen 100 / 200 besetzbare Jobkapazität, höchstens eine pro Kolonie und sechs Fabriken über beide Ausbaustufen im Reich. Eine native Empire-Grenze schützt die Bauliste; die Basisstufe zählt zusätzlich bereits ausgebaute Fabriken. Ausbauten bleiben beim erreichten Limit möglich. **Fabriken und ihre Jobs brauchen selbst keine Kerne.** Der Start benötigt ausschließlich Mineralien, Legierungen und Energie.
+Kern-Fabriken besitzen 300 / 600 besetzbare Jobkapazität und höchstens eine pro Kolonie über beide Ausbaustufen, ohne starre Reichsgrenze. Die Basisstufe prüft beide vorhandenen Ausbaustufen; höhere Produktion verlangt weitere Kolonien, Gebäudeslots und Belegschaft. **Fabriken und ihre Jobs brauchen selbst keine Kerne.** Der Start benötigt ausschließlich Mineralien, Legierungen und Energie.
 
-Pro voller 100er-Belegschaft erzeugen Fertiger 2 Kerne gegen 12 Mineralien, 2 Legierungen und 6 Energie. Dazu kommen 4 / 8 Energie Gebäudeunterhalt. Unmodifiziert ergibt das 2 / 4 Kerne je Fabrik, bei sechs vollständig besetzten Endstufen also 24 Kerne pro Monat. Das ist ein Basismodell mit nativer Pop-/Jobskalierung, keine gemessene Ingame-Produktion. Jobsboni und Belegschaft beeinflussen den tatsächlichen Durchsatz.
+Pro voller 100er-Belegschaft erzeugen Fertiger 2 Kerne gegen 12 Mineralien, 2 Legierungen und 6 Energie. Dazu kommen 4 / 8 Energie Gebäudeunterhalt. Unmodifiziert ergibt das 6 / 12 Kerne je Fabrik, bei sechs vollständig besetzten Endstufen also 72 Kerne pro Monat. Baukosten steigen auf 1.200 / 2.400 Mineralien und 225 / 450 Legierungen; Jobinputs bleiben proportional. Das ist ein Basismodell mit nativer Pop-/Jobskalierung, keine gemessene Ingame-Produktion. Jobsboni und Belegschaft beeinflussen den tatsächlichen Durchsatz.
 
 Alle sieben anderen Gebäudefamilien verbrauchen laufend Kerne: 0,1 je Gebäudestufe plus 0,15 je voller 100er-Belegschaft, Forschung 0,20. Höhere Gebäudestufen benötigen 40 / 80 Kerne beim Ausbau. Jede neue Schiffskomponente und Waffe hat Kern-Baukosten und laufenden Kernunterhalt. Bei einem nativen Kerndefizit gelten -15% Flottenfeuerrate und -25% Produktion der neuen Forschungs-, Schmelz-, Kollektor- und Archivjobs. Hohe Schiffsqualität hängt dadurch von einer realen Versorgung ab.
 
-Eine voll besetzte Endstufe jeder der sieben Verbraucherfamilien benötigt zusammen 5,98 Kerne pro Monat; zwei zusätzliche Doktrinen benötigen zusammen weitere 6. Gegenüber maximal 24 unmodifizierten Kernen bleibt eine begrenzte Menge für hochwertige Flotten. Diese Obergrenze ist bewusst eine spezialisierte Endgame-Wirtschaft, kein unbegrenzter Ersatz sämtlicher Vanilla-Produktion. Unterauslastung oder zusätzliche Kolonien mit Verbrauchern verkleinern den verfügbaren Flottenanteil.
+Eine voll besetzte Endstufe jeder der sieben Verbraucherfamilien benötigt zusammen **5,08** Kerne monatlich (aus den tatsächlichen Tabellen berechnet; die frühere Angabe 5,98 war falsch). Die persönlich gewählte Doktrin benötigt weitere 3. Ein vollständig ausgerüstetes Artillerie-Schlachtschiff kostet 325 Kerne und 0,634 monatlich. Drei Endstufenfabriken versorgen beispielhaft 20 solche Schiffe, einen vollständigen Gebäudesatz, drei beispielhafte Sternbasen und die Doktrin; 14 Fabriken versorgen 200 Schiffe, vier Gebäudesätze und 20 Sternbasen. Die [Belastungsrechnung](stage-iv-package-b-review.md) enthält Inputs, Boni und Defizite.
 
 ## Acht Familien mit echten Ausbauten
 
@@ -79,7 +79,7 @@ Eine voll besetzte Endstufe jeder der sieben Verbraucherfamilien benötigt zusam
 | institute | 2: 100 / 200 | `restoration` / `harmonization` |
 | archive | 2: 200 / 400 | `ethics` / `identity` |
 | phase | 2: 100 / 200 | `fields` / `coupling` |
-| factory | 2: 100 / 200 | `cores` / `uap_core` |
+| factory | 2: 300 / 600 | `cores` / `uap_core` |
 | academy | 2: 200 / 400 | `ethics` / `sovereignty` |
 
 
@@ -92,8 +92,8 @@ Jede Familie besitzt einen Spezialisten- und einen Komplexdrohnenjob. Gestalts v
 - Kollektoren: 10 Energie gegen 2 Mineralien und Kerne je voller 100er-Belegschaft. Die statische Energieversorgung braucht Belegschaft und einen Zonenslot; das ist kein reichsweiter Ertragsbonus.
 - Institute: Gesellschaftsforschung, Einigkeit, Annehmlichkeiten und +2 / +4 lokale Stabilität. Stufe II bringt auf einer tatsächlich positiv umgewandelten EPOCH-Welt weitere +5% Forschungsproduktion pro Disziplin. Bestehende Merkmale werden dabei nicht ersetzt oder gestapelt.
 - Archive: 5 Einigkeit und 1 Physikforschung je voller 100er-Belegschaft, mit Konsumgüter-/Energie- und Kernunterhalt.
-- Phasengeneratoren: besetzte Verteidigungsjobs und 60 / 65% Bombardementreduktion gegenüber 50% des nativen planetaren Schildgenerators. Bei zusätzlichem Vanilla-Schildgebäude wird nur die Differenz von 10 / 15 Prozentpunkten angewandt. Weitere externe Reduktionsquellen und native Caps bleiben ein Laufzeittest.
-- Akademien: Einigkeit, Verteidigungsarmeen und 6 Flottenkapazität je voller 100er-Belegschaft. Die Endstufe benötigt 400 besetzte Jobkapazität, Energie, Legierungen und Kerne; sie ersetzt keine kostenlose globale Flottenkapazität.
+- Phasengeneratoren: besetzte Verteidigungsjobs und 60 / 65% Bombardementreduktion gegenüber 50% des nativen planetaren Schildgenerators. Bei zusätzlichem Vanilla-Schildgebäude wird nur die Differenz von 10 / 15 Prozentpunkten angewandt. Stufe II liefert zusätzlich vier feste Verteidigungsarmeen. Weitere externe Reduktionsquellen und native Caps bleiben ein Laufzeittest.
+- Akademien: Einigkeit, Verteidigungsarmeen und 6 Flottenkapazität je voller 100er-Belegschaft. Die Endstufe benötigt 400 besetzte Jobkapazität, Energie, Legierungen und Kerne; sie ersetzt keine kostenlose globale Flottenkapazität. Stufe II erhöht die Armeerekrutierungsgeschwindigkeit um 25%.
 
 ## Lokale Klassenentwicklung und Heilung
 
@@ -103,29 +103,29 @@ Die Klassenforschungen liefern bereits reale planetare Entwicklung statt Platzha
 
 | Projekt | Tatsächlicher lokaler Effekt |
 |---|---|
-| Gewebekalibrierung | +10% Nahrung, +5 Prozentpunkte Bewohnbarkeit |
-| Symbiotischer Lebensraum | ersetzt Gewebekalibrierung: +20% Nahrung, +10 Punkte Bewohnbarkeit, +10% Gesellschaftsforschung |
+| Gewebekalibrierung | +10% Nahrung (lithoide Gründerreiche: Mineralien), +5 Prozentpunkte Bewohnbarkeit |
+| Symbiotischer Lebensraum | ersetzt Gewebekalibrierung: +20% Nahrung (lithoide Gründerreiche: Mineralien), +10 Punkte Bewohnbarkeit, +10% Gesellschaftsforschung |
 | Transkriptionsnetz | +10% Gesellschaftsforschung, -10% Abweichung |
 | Autonome Synapsenknoten | ersetzt Transkriptionsnetz: +20% Gesellschaftsforschung, -20% Abweichung, 3 Verteidigungsarmeen |
 | Selbstmodell-Netz | +10% Energieproduktion und Montage |
 
-S13 und S14 erschließen tatsächlich unterhaltene Erlasse. Wächterdoktrin bringt +20% Heimatgebietsfeuerrate und Verteidigungsarmeeschaden. Offene Protokollforschung bringt eine Forschungsalternative und +10% Forschungsjobproduktion. Je Erlass: 1.000 Einigkeit + 100 Kerne Aktivierung; 50 Einigkeit + 3 Kerne monatlich. Diese Doktrinen verleihen keine Philosophie; die spätere Exklusivität der Vorteile in C wird nicht vorweggenommen. E12/E13/E14 liefern jetzt Schmelze III, Forschung III und Fabrik II; sie behaupten keine bereits baubare Megastruktur.
+S13 und S14 erschließen tatsächlich unterhaltene Erlasse. Wächterdoktrin bringt +20% Heimatgebietsfeuerrate und Verteidigungsarmeeschaden. Offene Protokollforschung bringt eine Forschungsalternative und +10% Forschungsjobproduktion. Je Erlass: 1.000 Einigkeit + 100 Kerne Aktivierung; 50 Einigkeit + 3 Kerne monatlich. Forschung, Aktivierung und laufender Bonus verlangen die passende bereits abgeschlossene persönliche Philosophie. Gegenseitige Aktivierung ist gesperrt; auch ein älterer Doppel-Erlass-Spielstand erhält nur den passenden Bonus und Unterhalt. Paket C muss dieselben unveränderten Storyflags verwenden und darf keinen zweiten widersprechenden Philosophiebonus öffnen. E12/E13/E14 liefern jetzt Schmelze III, Forschung III und Fabrik II; sie behaupten keine bereits baubare Megastruktur.
 
 ## Sieben Waffen und sechs Komponentenfamilien
 
-Die sieben Waffenfamilien sind Phasenbrecher (M/L), Kausal-Lanze (X), fraktale Artillerie (L), Nullwellen-Torpedo (G), autonome Schwarmjäger (H), fraktale Punktverteidigung (P) und Protokollbrecher (T). Acht native Templates bilden sieben Waffen ab. Größen, Rollen-Tags, Mindestreichweiten, Projektilgrafiken und Gegenmaßnahmen folgen den tatsächlich installierten Vergleichsobjekten.
+Die sieben Waffenfamilien sind Phasenbrecher (M/L), Kausal-Lanze (X), fraktale Artillerie (L), Nullwellen-Torpedo (G), autonome Schwarmjäger (H), fraktale Punktverteidigung (P) und Protokollbrecher (T). Acht native Templates bilden sieben Waffen ab. Größen, Rollen-Tags, Projektilgrafiken und Gegenmaßnahmen folgen den installierten Vergleichsobjekten; drei Rollen erhalten gezielte Änderungen.
 
 | Waffe | Vergleich aus Vanilla 4.5.3 | EPOCH-Schaden / Rolle |
 |---|---|---|
-| Phasenbrecher M / L | MEDIUM/LARGE_PLASMA_3: 53-140 / 126-336 | 68,9-182 / 163,8-436,8; Nah-/Mitteldistanz, stark gegen Panzerung, schwach gegen Schilde |
-| Kausal-Lanze X | ENERGY_LANCE_2: 780-1.950 | 1.014-2.535; präzise Großkampfschiff-Artillerie, weiterhin ohne Tracking |
-| Fraktale Artillerie L | KINETIC_ARTILLERY_2: 195-585 | 253,5-760,5; Schildbrecher, Mindestreichweite und geringe Genauigkeit bleiben |
+| Phasenbrecher M / L | MEDIUM/LARGE_PLASMA_3: 53-140 / 126-336 | 53-140 / 126-336; zwei Kettentreffer mit 18 / 40 Schaden, Reichweite 50 / 70, Schildmultiplikator nur 0,15 |
+| Kausal-Lanze X | ENERGY_LANCE_2: 780-1.950 | 1.014-2.535; Belagerungsreichweite 175, Mindestreichweite 60, Feuerzyklus 90, kein Tracking |
+| Fraktale Artillerie L | KINETIC_ARTILLERY_2: 195-585 | 253,5-760,5; Schildschaden x3, Panzerung x0,25, Hülle x0,75, Feuerzyklus 60; Mindestreichweite und geringe Genauigkeit bleiben |
 | Nullwellen-Torpedo G | TORPEDO_3: 169-254 | 219,7-330,2; kurze Reichweite, Größenfaktor 0,20, volle Schilddurchdringung, durch PD abfangbar |
 | Schwarmjäger H | STRIKE_CRAFT_HANGAR_3: 6-17 | 7,8-22,1; 8 Jäger, Schildumgehung, Jagd auf ausweichende Ziele, Flak-Kontermöglichkeit |
 | Fraktale PD P | POINT_DEFENCE_3: 4-8 | 5,2-10,4; Raketen-/Jägerabwehr, keine allgemeine Anti-Schiff-Wunderwaffe |
 | Protokollbrecher T | PERDITION_BEAM_TITAN: 5.000-10.000 | 6.500-13.000; sehr langsamer Alpha-Schlag, nativer Titanenslot und Kollateraleffekt |
 
-Die sieben direkten Waffenvarianten bewahren Reichweite, Genauigkeit, Tracking, Schichtmultiplikatoren und Durchdringung der Vanilla-CSV. Ihr Direktschaden steigt um 30%, Leistungsaufnahme um etwa 25%. Rohwerte der CSV-Feuerzyklen werden über das dokumentierte `total_fire_time` plus `windup` gesetzt; Jäger verwenden ihr eigenes natives `cooldown`. **Die tatsächliche native Auflösung dieser Inline-Zeitwerte und Designer-DPS muss im gemeinsamen Abnahmelauf gegen die Vergleichswaffen geprüft werden.** Es wird keine Vanilla-Waffen-CSV ersetzt. Gegen einzigartige Krisen-/Reliktwaffen wird keine allgemeine Überlegenheit behauptet.
+Unveränderte Waffenrollen behalten den begrenzten 30%-Direktschadensbonus. Phasenbrecher geben diesen zugunsten kurzer nativer Kettenblitze auf. Die Lanze tauscht längere Reichweite gegen geringere Dauerfeuerleistung und eine Nahkampflücke; Artillerie tauscht Panzerungs-/Hüllenschaden und Feuerrate gegen stärkere Schildwirkung. Es gibt keinen neuen globalen Schadensbonus. Rohwerte der CSV-Feuerzyklen werden über das dokumentierte `total_fire_time` plus `windup` gesetzt; Jäger verwenden ihr eigenes natives `cooldown`. **Die tatsächliche native Auflösung dieser Inline-Zeitwerte und Designer-DPS muss im gemeinsamen Abnahmelauf gegen die Vergleichswaffen geprüft werden.** Es wird keine Vanilla-Waffen-CSV ersetzt. Gegen einzigartige Krisen-/Reliktwaffen wird keine allgemeine Überlegenheit behauptet.
 
 Die Kosten steigen gegenüber den Vergleichsobjekten, dazu kommen Kerne: z.B. L-Artillerie 220 Legierungen +16 Kerne statt 156 Legierungen, X-Lanze 450 +35 statt 325, T-Strahl 750 +100 statt 500. Die unveränderten Konter verhindern, dass Schildumgehung, Reichweite und Tracking gleichzeitig maximiert werden.
 
@@ -140,7 +140,7 @@ Die sechs Komponentenfamilien ergeben 26 Templates mit Größen-/Hüllen-/Rollen
 
 ## KI, Lokalisierung und Assets
 
-Forschung nutzt positive normale Forschungs- und KI-Gewichte, Kernproduktion eine erhöhte Priorität. Die Bau-KI priorisiert Fabriken, prüft positive Legierungs-/Energieversorgung und vermeidet weitere Kernverbraucher bei zu geringem Nettoangebot. Ausrüstung bewahrt die nativen Rollen-/Ziel-Tags und prüft über `no_resource_for_component` die Kernversorgung. Das ist statische Quellenkompatibilität; tatsächliche wirtschaftliche Priorisierung der KI muss im Spiel beobachtet werden.
+Forschung nutzt positive normale Forschungs- und KI-Gewichte, Kernproduktion eine erhöhte Priorität. Die Bau-KI priorisiert Fabriken, prüft positive Legierungs-/Energieversorgung und vermeidet weitere Kernverbraucher bei zu geringem Nettoangebot. Ausrüstung bewahrt die nativen Rollen-/Ziel-Tags und prüft direkt positive monatliche Kernversorgung (>0,25) und mindestens 100 Kerne im Lager. Der marktbezogene Vanilla-Helfer `no_resource_for_component` wird für die nicht handelbaren Kerne vermieden. Das ist statische Quellenkompatibilität; tatsächliche wirtschaftliche Priorisierung der KI muss im Spiel beobachtet werden.
 
 Neue Technologien, Gebäude, Jobs, Entscheidungen, Modifikatoren, Erlasse, Ressourcen und Komponenten besitzen DE/EN-Texte mit BOM, identischen Schlüsseln und nativen Kosten-/Statistiktooltips. Entscheidungs-/Erlassfreigaben werden zusätzlich über Technologie-Featuretexte erklärt. Grafikpfade verwenden vorhandene Vanilla-Assets; neue Ressourcensprites sind ausschließlich additiv.
 
@@ -154,11 +154,13 @@ Offen bleiben native Inline-Waffenwerte/Feuerzyklen und tatsächliche DPS, Spezi
 
 ## Ein gemeinsamer Ingame-Abnahmelauf
 
+Der gebündelte Lauf wird durch den [Review-Testplan](stage-iv-package-b-review.md) ergänzt, nicht durch weitere getrennte Testdurchläufe.
+
 1. Mit Vanilla 4.5.3 und diesem PR-Stand einen bestehenden geeigneten Spielstand laden. Vor persönlichem Abschluss sicherstellen, dass kein neuer B-Forschungszweig verfügbar ist; dann den echten persönlichen Abschluss aus A erreichen bzw. einen authentisch abgeschlossenen Kontrollstand verwenden. Keine Konsolen-Schlüssel oder pauschale Forschungsbelohnungen als Erfolgsnachweis.
 2. Frühe Kette E03/E04/P04/P06/S03 erforschen: Fabrik ohne Kernbestand bauen, Jobs besetzen, monatliche reale Kosten/Produktion und Lageranzeige beobachten. Verbraucher errichten, erste Ausbauten und den verdienten Heilungsrabatt auf einer weiteren Welt prüfen. Speichern/laden.
 3. Mittlere Kette an demselben Wirtschaftssystem prüfen: ein Forschungs-/Schmelzausbau, die passende lokale Klassenentwicklung und ein gemischtes konventionelles Schiff. Kernkosten, Reaktorleistung, Rollencomputer und M/L/G/H/P-Slots im Designer prüfen. Ein kleines organisches, Schwarm- und Maschinen-Kontrollreich prüft jeweils die eigene Entscheidung und Jobvariante; fremde Klassenaktionen bleiben gesperrt.
 4. Ultimativen Ausschnitt mit transzendentem Schild, E14-Fabrik und einem nativen Titanen prüfen. Bei gleicher Flottengröße und vergleichbaren Designs gegen hochwertige Vanilla-Ausrüstung antreten; Designer-DPS und tatsächliche Feuerabstände mit Tachyon-Lanze, kinetischer Artillerie und Perdition-Strahl vergleichen. Bestehende Reichweiten-, Torpedo-/PD-/Flak- und Schildkonter beobachten. Nicht alle 42 Technologien einzeln manuell abnehmen.
-5. Lager bewusst aufbrauchen, Defizit und Erholung durch wieder besetzte Fabriken prüfen; sechs Fabriken teils ausbauen und weitere Basisfabrik blockieren. Zwei private Reiche und Save/Load prüfen: der Schlüssel des einen darf dem anderen keine Karten oder Hardware freischalten. Eine endgame KI eine Zeit lang Forschung, Versorgung, Bau und Ausrüstung selbst durchführen lassen. Multiplayer bleibt bis zu einem echten Host-/Client-Test separat offen.
+5. Lager bewusst aufbrauchen, Defizit und Erholung durch wieder besetzte Fabriken prüfen; eine Fabrik ausbauen, eine zweite auf derselben Kolonie blockieren und die Produktion auf einer weiteren Kolonie erweitern. Zwei private Reiche und Save/Load prüfen: der Schlüssel des einen darf dem anderen keine Karten oder Hardware freischalten. Eine endgame KI eine Zeit lang Forschung, Versorgung, Bau und Ausrüstung selbst durchführen lassen. Multiplayer bleibt bis zu einem echten Host-/Client-Test separat offen.
 
 ## Geänderte Dateien
 

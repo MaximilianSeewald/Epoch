@@ -11,8 +11,9 @@
       "prerequisites": [
         "tech_epoch_iv_calibration"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": "modifier = { ship_sensor_range_add = 1 }"
+      "gate": "",
+      "extra": "modifier = { ship_sensor_range_add = 1 }",
+      "icon": "tech_sensors_4"
     },
     {
       "code": "P04",
@@ -25,8 +26,9 @@
         "tech_epoch_iv_spectroscopy",
         "tech_epoch_iv_materials"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_administrative_ai"
     },
     {
       "code": "P05",
@@ -39,8 +41,9 @@
         "tech_epoch_iv_calibration",
         "tech_epoch_iv_materials"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_shields_5"
     },
     {
       "code": "P06",
@@ -52,8 +55,9 @@
       "prerequisites": [
         "tech_epoch_iv_fields"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_power_hub_2"
     },
     {
       "code": "P07",
@@ -66,8 +70,9 @@
         "tech_epoch_iv_fields",
         "tech_epoch_iv_steel"
       ],
-      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
-      "extra": ""
+      "gate": "country_uses_bio_ships = no",
+      "extra": "",
+      "icon": "tech_shields_5"
     },
     {
       "code": "P08",
@@ -80,8 +85,9 @@
         "tech_epoch_iv_fields",
         "tech_epoch_iv_cores"
       ],
-      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
-      "extra": ""
+      "gate": "country_uses_bio_ships = no",
+      "extra": "",
+      "icon": "tech_plasma_3"
     },
     {
       "code": "P09",
@@ -94,8 +100,9 @@
         "tech_epoch_iv_phase_emitter",
         "tech_epoch_iv_reactor"
       ],
-      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
-      "extra": ""
+      "gate": "country_uses_bio_ships = no",
+      "extra": "",
+      "icon": "tech_energy_lance_2"
     },
     {
       "code": "P10",
@@ -108,8 +115,9 @@
         "tech_epoch_iv_phase_emitter",
         "tech_epoch_iv_telemetry"
       ],
-      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
-      "extra": ""
+      "gate": "country_uses_bio_ships = no",
+      "extra": "",
+      "icon": "tech_torpedoes_3"
     },
     {
       "code": "P11",
@@ -122,8 +130,9 @@
         "tech_epoch_iv_sensors",
         "tech_epoch_iv_reactor"
       ],
-      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
-      "extra": ""
+      "gate": "country_uses_bio_ships = no",
+      "extra": "",
+      "icon": "tech_hyper_drive_3"
     },
     {
       "code": "P12",
@@ -136,8 +145,9 @@
         "tech_epoch_iv_shields",
         "tech_epoch_iv_reactor"
       ],
-      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
-      "extra": ""
+      "gate": "country_uses_bio_ships = no",
+      "extra": "",
+      "icon": "tech_dark_matter_deflector"
     },
     {
       "code": "P13",
@@ -151,8 +161,9 @@
         "tech_epoch_iv_artillery",
         "tech_titans"
       ],
-      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
-      "extra": ""
+      "gate": "country_uses_bio_ships = no",
+      "extra": "",
+      "icon": "tech_titans"
     },
     {
       "code": "P14",
@@ -166,8 +177,9 @@
         "tech_epoch_iv_harmonization",
         "tech_epoch_iv_nexus"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_planetary_shield_generator"
     },
     {
       "code": "S03",
@@ -179,8 +191,9 @@
       "prerequisites": [
         "tech_epoch_iv_inversion"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_climate_restoration"
     },
     {
       "code": "S04",
@@ -192,8 +205,9 @@
       "prerequisites": [
         "tech_epoch_iv_restoration"
       ],
-      "gate": "is_wilderness_empire = no is_gestalt = no is_robot_empire = no",
-      "extra": "feature_flags = { epoch_era_tissue }"
+      "gate": "is_gestalt = no is_robot_empire = no",
+      "extra": "feature_flags = { epoch_era_tissue }",
+      "icon": "tech_gene_tailoring"
     },
     {
       "code": "S05",
@@ -205,8 +219,9 @@
       "prerequisites": [
         "tech_epoch_iv_restoration"
       ],
-      "gate": "is_wilderness_empire = no is_hive_empire = yes",
-      "extra": "feature_flags = { epoch_era_transcription }"
+      "gate": "is_hive_empire = yes",
+      "extra": "feature_flags = { epoch_era_transcription }",
+      "icon": "tech_collective_self"
     },
     {
       "code": "S06",
@@ -219,8 +234,9 @@
         "tech_epoch_iv_diagnostics",
         "tech_epoch_iv_reconstruction"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_galactic_administration"
     },
     {
       "code": "S07",
@@ -233,8 +249,9 @@
         "tech_epoch_iv_tissue",
         "tech_epoch_iv_identity"
       ],
-      "gate": "is_wilderness_empire = no is_gestalt = no is_robot_empire = no",
-      "extra": "feature_flags = { epoch_era_symbiosis }"
+      "gate": "is_gestalt = no is_robot_empire = no",
+      "extra": "feature_flags = { epoch_era_symbiosis }",
+      "icon": "tech_gene_expressions"
     },
     {
       "code": "S08",
@@ -247,8 +264,9 @@
         "tech_epoch_iv_transcription",
         "tech_epoch_iv_identity"
       ],
-      "gate": "is_wilderness_empire = no is_hive_empire = yes",
-      "extra": "feature_flags = { epoch_era_synaptic_nodes }"
+      "gate": "is_hive_empire = yes",
+      "extra": "feature_flags = { epoch_era_synaptic_nodes }",
+      "icon": "tech_collective_self"
     },
     {
       "code": "S09",
@@ -261,8 +279,9 @@
         "tech_epoch_iv_restoration",
         "tech_epoch_iv_identity"
       ],
-      "gate": "is_wilderness_empire = no is_robot_empire = yes",
-      "extra": "feature_flags = { epoch_era_self_model }"
+      "gate": "is_robot_empire = yes",
+      "extra": "feature_flags = { epoch_era_self_model }",
+      "icon": "tech_synthetic_thought_patterns"
     },
     {
       "code": "S10",
@@ -275,8 +294,9 @@
         "tech_epoch_iv_restoration",
         "tech_epoch_iv_ethics"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_climate_restoration"
     },
     {
       "code": "S11",
@@ -289,8 +309,9 @@
         "tech_epoch_iv_ethics",
         "tech_epoch_iv_cores"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_adaptive_bureaucracy"
     },
     {
       "code": "S12",
@@ -303,8 +324,9 @@
         "tech_epoch_iv_identity",
         "tech_epoch_iv_harmonization"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_galactic_administration"
     },
     {
       "code": "S13",
@@ -317,8 +339,9 @@
         "tech_epoch_iv_sovereignty",
         "tech_epoch_iv_artillery"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": "feature_flags = { epoch_era_mandate }"
+      "gate": " has_country_flag = epoch_iv_philosophy_guard",
+      "extra": "feature_flags = { epoch_era_mandate }",
+      "icon": "tech_ground_defense_planning"
     },
     {
       "code": "S14",
@@ -331,8 +354,9 @@
         "tech_epoch_iv_sovereignty",
         "tech_epoch_iv_nexus"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": "feature_flags = { epoch_era_universal_sovereignty }"
+      "gate": " has_country_flag = epoch_iv_philosophy_free",
+      "extra": "feature_flags = { epoch_era_universal_sovereignty }",
+      "icon": "tech_global_research_initiative"
     },
     {
       "code": "E03",
@@ -344,8 +368,9 @@
       "prerequisites": [
         "tech_epoch_iv_materials"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_alloys_2"
     },
     {
       "code": "E04",
@@ -357,8 +382,9 @@
       "prerequisites": [
         "tech_epoch_iv_steel"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_nanite_transmutation"
     },
     {
       "code": "E05",
@@ -371,8 +397,9 @@
         "tech_epoch_iv_cores",
         "tech_epoch_iv_reconstruction"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_basic_science_lab_3"
     },
     {
       "code": "E06",
@@ -385,8 +412,9 @@
         "tech_epoch_iv_cores",
         "tech_epoch_iv_storage"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_power_hub_2"
     },
     {
       "code": "E07",
@@ -400,8 +428,9 @@
         "tech_epoch_iv_cores",
         "tech_epoch_iv_telemetry"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_kinetic_artillery_2"
     },
     {
       "code": "E08",
@@ -414,8 +443,9 @@
         "tech_epoch_iv_cores",
         "tech_epoch_iv_storage"
       ],
-      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
-      "extra": ""
+      "gate": "country_uses_bio_ships = no",
+      "extra": "",
+      "icon": "tech_dark_matter_power_core"
     },
     {
       "code": "E09",
@@ -428,8 +458,9 @@
         "tech_epoch_iv_steel",
         "tech_epoch_iv_reactor"
       ],
-      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
-      "extra": ""
+      "gate": "country_uses_bio_ships = no",
+      "extra": "",
+      "icon": "tech_armor_5"
     },
     {
       "code": "E10",
@@ -442,8 +473,9 @@
         "tech_epoch_iv_telemetry",
         "tech_epoch_iv_cores"
       ],
-      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
-      "extra": ""
+      "gate": "country_uses_bio_ships = no",
+      "extra": "",
+      "icon": "tech_strike_craft_3"
     },
     {
       "code": "E11",
@@ -456,8 +488,9 @@
         "tech_epoch_iv_artillery",
         "tech_epoch_iv_fighters"
       ],
-      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
-      "extra": ""
+      "gate": "country_uses_bio_ships = no",
+      "extra": "",
+      "icon": "tech_pd_tracking_3"
     },
     {
       "code": "E12",
@@ -470,8 +503,9 @@
         "tech_epoch_iv_artillery",
         "tech_epoch_iv_laboratories"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_alloys_3"
     },
     {
       "code": "E13",
@@ -484,8 +518,9 @@
         "tech_epoch_iv_laboratories",
         "tech_epoch_iv_identity"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_global_research_initiative"
     },
     {
       "code": "E14",
@@ -499,8 +534,9 @@
         "tech_epoch_iv_nexus",
         "tech_epoch_iv_coupling"
       ],
-      "gate": "is_wilderness_empire = no ",
-      "extra": ""
+      "gate": "",
+      "extra": "",
+      "icon": "tech_nanite_transmutation"
     }
   ],
   "buildingFamilies": [
@@ -609,8 +645,8 @@
         "tech_epoch_iv_uap_core"
       ],
       "workforce": [
-        100,
-        200
+        300,
+        600
       ]
     },
     {
@@ -634,7 +670,7 @@
       "key": "EPOCH_PHASE_M",
       "vanilla": "MEDIUM_PLASMA_3",
       "source": "00_weapons_energy.txt",
-      "damageScale": 1.3,
+      "damageScale": 1,
       "range": 60,
       "accuracy": 0.8,
       "tracking": 0.2,
@@ -644,13 +680,14 @@
         140
       ],
       "cost": 120,
-      "cores": 8
+      "cores": 8,
+      "role": "chain_anti_armor"
     },
     {
       "key": "EPOCH_PHASE_L",
       "vanilla": "LARGE_PLASMA_3",
       "source": "00_weapons_energy.txt",
-      "damageScale": 1.3,
+      "damageScale": 1,
       "range": 80,
       "accuracy": 0.8,
       "tracking": 0.05,
@@ -660,7 +697,8 @@
         336
       ],
       "cost": 280,
-      "cores": 16
+      "cores": 16,
+      "role": "chain_anti_armor"
     },
     {
       "key": "EPOCH_CAUSAL_LANCE",
@@ -676,7 +714,8 @@
         1950
       ],
       "cost": 450,
-      "cores": 35
+      "cores": 35,
+      "role": "siege_lance"
     },
     {
       "key": "EPOCH_FRACTAL_ARTILLERY",
@@ -692,7 +731,8 @@
         585
       ],
       "cost": 220,
-      "cores": 16
+      "cores": 16,
+      "role": "shield_breaker"
     },
     {
       "key": "EPOCH_NULLWAVE_TORPEDO",
@@ -750,5 +790,55 @@
     "computer",
     "drive",
     "stabilizer"
-  ]
+  ],
+  "wildernessIntegration": {
+    "reconstruction": {
+      "physics_research": 3,
+      "society_research": 3,
+      "engineering_research": 3
+    },
+    "fields": {
+      "physics_research": 3
+    },
+    "storage": {
+      "energy": 10
+    },
+    "steel": {
+      "alloys": 2
+    },
+    "laboratories": {
+      "physics_research": 6,
+      "society_research": 6,
+      "engineering_research": 6
+    },
+    "collectors": {
+      "energy": 20
+    },
+    "artillery": {
+      "alloys": 4
+    },
+    "fabrication": {
+      "alloys": 6
+    },
+    "nexus": {
+      "physics_research": 9,
+      "society_research": 9,
+      "engineering_research": 9
+    },
+    "ethics": {
+      "unity": 3
+    },
+    "identity": {
+      "unity": 6
+    },
+    "sovereignty": {
+      "unity": 9
+    },
+    "harmonization": {
+      "society_research": 6
+    },
+    "coupling": {
+      "physics_research": 6
+    }
+  }
 }

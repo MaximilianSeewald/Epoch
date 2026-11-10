@@ -26,7 +26,7 @@ utility_component_template = {
 		country_uses_bio_ships = no
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -57,7 +57,7 @@ utility_component_template = {
 		country_uses_bio_ships = no
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -89,7 +89,7 @@ utility_component_template = {
 
 	resources = { category = ship_components cost = { alloys = 50 epoch_protocol_cores = 4 } upkeep = { energy = 0.2 alloys = 0.05 epoch_protocol_cores = 0.01 } }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -120,7 +120,7 @@ utility_component_template = {
 		country_uses_bio_ships = no
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -151,7 +151,7 @@ utility_component_template = {
 		country_uses_bio_ships = no
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -183,7 +183,7 @@ utility_component_template = {
 
 	resources = { category = ship_components cost = { alloys = 125 epoch_protocol_cores = 10 } upkeep = { energy = 0.5 alloys = 0.125 epoch_protocol_cores = 0.025 } }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -214,7 +214,7 @@ utility_component_template = {
 		country_uses_bio_ships = no
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -223,7 +223,7 @@ utility_component_template = {
 	icon = "GFX_ship_part_shield_5"
 	icon_frame = 1
 	power = -279
-	resources = { category = ship_components cost = { alloys = 390 epoch_protocol_cores = 36 } upkeep = { energy = 3.9000000000000004 alloys = 0.39 epoch_protocol_cores = 0.09 } }
+	resources = { category = ship_components cost = { alloys = 390 epoch_protocol_cores = 36 } upkeep = { energy = 3.9 alloys = 0.39 epoch_protocol_cores = 0.09 } }
 	modifier = { ship_shield_add = 3627.00 ship_shield_regen_add_static = 18.135 }
 	ship_modifier = {
 		ship_shield_hardening_add = 0.04
@@ -245,7 +245,7 @@ utility_component_template = {
 		country_uses_bio_ships = no
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -275,9 +275,9 @@ utility_component_template = {
 	prerequisites = { "tech_epoch_iv_armor" }
 	component_set = "EPOCH_PHASE_ARMOR"
 
-	resources = { category = ship_components cost = { alloys = 300 epoch_protocol_cores = 24 } upkeep = { energy = 1.2000000000000002 alloys = 0.3 epoch_protocol_cores = 0.06 } }
+	resources = { category = ship_components cost = { alloys = 300 epoch_protocol_cores = 24 } upkeep = { energy = 1.2 alloys = 0.3 epoch_protocol_cores = 0.06 } }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -301,7 +301,7 @@ utility_component_template = {
 		country_uses_bio_ships = no
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -310,7 +310,7 @@ utility_component_template = {
 	icon = "GFX_ship_part_dark_matter_power_core"
 	icon_frame = 1
 	power = 688
-	resources = { category = ship_components cost = { alloys = 44 epoch_protocol_cores = 5 } upkeep = { energy = 0.36666666666666664 alloys = 0.044 epoch_protocol_cores = 0.01 } }
+	resources = { category = ship_components cost = { alloys = 44 epoch_protocol_cores = 5 } upkeep = { energy = 0.366667 alloys = 0.044 epoch_protocol_cores = 0.01 } }
 
 	prerequisites = { "tech_epoch_iv_reactor" }
 	component_set = "power_core"
@@ -325,7 +325,7 @@ utility_component_template = {
 		country_uses_bio_ships = no
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -334,7 +334,7 @@ utility_component_template = {
 	icon = "GFX_ship_part_dark_matter_power_core"
 	icon_frame = 1
 	power = 1288
-	resources = { category = ship_components cost = { alloys = 82 epoch_protocol_cores = 8 } upkeep = { energy = 0.6866666666666666 alloys = 0.082 epoch_protocol_cores = 0.0103 } }
+	resources = { category = ship_components cost = { alloys = 82 epoch_protocol_cores = 8 } upkeep = { energy = 0.686667 alloys = 0.082 epoch_protocol_cores = 0.0103 } }
 
 	prerequisites = { "tech_epoch_iv_reactor" }
 	component_set = "power_core"
@@ -349,7 +349,7 @@ utility_component_template = {
 		country_uses_bio_ships = no
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -358,7 +358,7 @@ utility_component_template = {
 	icon = "GFX_ship_part_dark_matter_power_core"
 	icon_frame = 1
 	power = 2500
-	resources = { category = ship_components cost = { alloys = 160 epoch_protocol_cores = 16 } upkeep = { energy = 1.3333333333333333 alloys = 0.16 epoch_protocol_cores = 0.02 } }
+	resources = { category = ship_components cost = { alloys = 160 epoch_protocol_cores = 16 } upkeep = { energy = 1.333333 alloys = 0.16 epoch_protocol_cores = 0.02 } }
 
 	prerequisites = { "tech_epoch_iv_reactor" }
 	component_set = "power_core"
@@ -373,7 +373,7 @@ utility_component_template = {
 		country_uses_bio_ships = no
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -397,7 +397,7 @@ utility_component_template = {
 		country_uses_bio_ships = no
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -406,7 +406,7 @@ utility_component_template = {
 	icon = "GFX_ship_part_dark_matter_power_core"
 	icon_frame = 1
 	power = 17875
-	resources = { category = ship_components cost = { alloys = 1144 epoch_protocol_cores = 114 } upkeep = { energy = 9.533333333333333 alloys = 1.144 epoch_protocol_cores = 0.143 } }
+	resources = { category = ship_components cost = { alloys = 1144 epoch_protocol_cores = 114 } upkeep = { energy = 9.533333 alloys = 1.144 epoch_protocol_cores = 0.143 } }
 
 	prerequisites = { "tech_epoch_iv_reactor" }
 	component_set = "power_core"
@@ -438,7 +438,7 @@ utility_component_template = {
 		}
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -462,7 +462,7 @@ utility_component_template = {
 		country_uses_bio_ships = no
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -471,7 +471,7 @@ utility_component_template = {
 	icon = "GFX_ship_part_dark_matter_power_core"
 	icon_frame = 1
 	power = 2500
-	resources = { category = ship_components cost = { alloys = 160 epoch_protocol_cores = 16 } upkeep = { energy = 1.3333333333333333 alloys = 0.16 epoch_protocol_cores = 0.02 } }
+	resources = { category = ship_components cost = { alloys = 160 epoch_protocol_cores = 16 } upkeep = { energy = 1.333333 alloys = 0.16 epoch_protocol_cores = 0.02 } }
 
 	prerequisites = { "tech_epoch_iv_reactor" }
 	component_set = "power_core"
@@ -485,7 +485,7 @@ utility_component_template = {
 		}
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -509,7 +509,7 @@ utility_component_template = {
 		country_uses_bio_ships = no
 	}
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 
  resources = { category = ship_components cost = { alloys = 570 epoch_protocol_cores = 57 } upkeep = { energy = 4.75 alloys = 0.57 epoch_protocol_cores = 0.07125 } }
 }
@@ -545,7 +545,7 @@ utility_component_template = {
 		ship_fire_rate_mult = 0.15
 	 ship_tracking_add = 5 }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -579,7 +579,7 @@ utility_component_template = {
 		ship_fire_rate_mult = 0.15
 		ship_tracking_add = 35 }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -611,7 +611,7 @@ utility_component_template = {
 		ship_accuracy_add = 20
 	 ship_tracking_add = 5 }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -643,7 +643,7 @@ utility_component_template = {
 		ship_weapon_range_mult = 0.20
 	 ship_tracking_add = 5 }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -674,7 +674,7 @@ utility_component_template = {
 		ship_engagement_range_mult = 1.0
 	 ship_tracking_add = 5 }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -711,7 +711,7 @@ utility_component_template = {
 		ship_orbital_bombardment_mult = 0.80
 	 ship_tracking_add = 5 }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }
 
 utility_component_template = {
@@ -724,7 +724,7 @@ utility_component_template = {
 	ftl = yes
 	ship_modifier = { ship_disengage_opportunities_add = 1 ship_windup_mult = -0.65 }
 
-	ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 
 	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
 		is_eager_explorer_ship = no
@@ -747,5 +747,5 @@ utility_component_template = {
 utility_component_template = { key = "EPOCH_TEMPORAL_STABILIZER" size = aux icon = "GFX_ship_part_auto_repair" icon_frame = 1 power = -25 component_set = "EPOCH_TEMPORAL_STABILIZER"
  potential = { from = { country_uses_bio_ships = no epoch_iv_future_research = yes } OR = { is_ship_class = shipclass_military is_ship_class = shipclass_military_station } }
  prerequisites = { "tech_epoch_iv_fields" "tech_epoch_iv_cores" } resources = { category = ship_components cost = { alloys = 60 epoch_protocol_cores = 8 } upkeep = { energy = 0.5 alloys = 0.06 epoch_protocol_cores = 0.02 } }
- modifier = { ship_shield_hardening_add = 0.15 ship_evasion_mult = 0.10 } ai_weight = { weight = 10 modifier = { factor = 0 no_resource_for_component = { RESOURCE = epoch_protocol_cores } } }
+ modifier = { ship_shield_hardening_add = 0.15 ship_evasion_mult = 0.10 } ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
 }

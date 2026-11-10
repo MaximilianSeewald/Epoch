@@ -115,6 +115,62 @@
     {
       "path": "common/defines/00_defines.txt",
       "sha256": "0fbf8c1507e8fa34eb056dabce1966af767bdafaebf1eb435eb7b1fdd28daf70"
+    },
+    {
+      "path": "common/README_TRIGGERED_MODIFIERS.txt",
+      "sha256": "39dce63c21765113a6851d4fcd9d5b28c1d7536d5851d99745967042a3a7c9ba"
+    },
+    {
+      "path": "common/scripted_triggers/00_scripted_triggers.txt",
+      "sha256": "ce79a2855dd8bfa1d3ba4bdb661a6ad20612571c9b3b13784d3b472daa337ec5"
+    },
+    {
+      "path": "common/scripted_triggers/01_scripted_triggers_jobs.txt",
+      "sha256": "48c2025dbc551476db7938053f86447a724085efc938f2a4eaebb74aabf43b62"
+    },
+    {
+      "path": "common/scripted_triggers/07_scripted_triggers_ships.txt",
+      "sha256": "1ec342d3bbd2bf3e5bebc91922b0811686d8fea0d8eb3c79a8771b231720de69"
+    },
+    {
+      "path": "common/edicts/00_edicts.txt",
+      "sha256": "5d5957f75b7282db2a9b720d8b355276c3171904fd6ee73bbbd4223fffe59c6a"
+    },
+    {
+      "path": "common/edicts/06_shroud_edicts.txt",
+      "sha256": "b262ef7c1e4755364ea7a5b431b9db2e75ef413cd529b3894548a9d888a8f5f0"
+    },
+    {
+      "path": "common/buildings/00_example.txt",
+      "sha256": "c1a289972f18146767b49f096b757ad2d0a9a7bb65e90b2a558d167f67bc5595"
+    },
+    {
+      "path": "common/economic_categories/00_common_categories.txt",
+      "sha256": "8964f75845b4a2912413c64921c9009ae75c4d037c58f515c06f51af2253b280"
+    },
+    {
+      "path": "common/economic_categories/02_wilderness_categories.txt",
+      "sha256": "2089858ec737d5737ee806586aab221ca85660d39479577410e0a8fe6e89b3d4"
+    },
+    {
+      "path": "common/pop_jobs/03_worker_jobs.txt",
+      "sha256": "a86f096d6ac18dd5ee3a6267d31551c933816300e5ccd279f5e7b6afb5fe18df"
+    },
+    {
+      "path": "common/pop_jobs/14_wilderness_jobs.txt",
+      "sha256": "ca2fa3cda3bce6e3caa052b56ab51454a7f0a06fbd09b1a58fa90244c3ff17c3"
+    },
+    {
+      "path": "common/inline_scripts/buildings/on_all_wilderness_buildings_districts.txt",
+      "sha256": "695eefc74535e634b18f56892585764d7485d4369fab6017c8b9d09a76b13c33"
+    },
+    {
+      "path": "common/section_templates/battleship.txt",
+      "sha256": "c2661235363b087c34258ef0ff21284c9d9fe65ef8681619329f4fd57a678de5"
+    },
+    {
+      "path": "common/economic_categories/99_README_ECONOMIC_CATEGORIES.txt",
+      "sha256": "c66ceb1f9ce278941255fb9c410e5127cb8c5915f81935f31a6c6efb7db8192b"
     }
   ]
 }

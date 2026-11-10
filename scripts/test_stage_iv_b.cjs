@@ -34,13 +34,12 @@ function gate(b,empire){return b.every(([k,v])=>{
  if(k==='AND')return gate(v,empire);
  if(k==='exists')return v==='owner'&&!!empire.owner;
  if(k==='owner')return gate(v,empire.owner);
- if(['is_gestalt','is_robot_empire','is_hive_empire','country_uses_bio_ships','is_wilderness_empire','is_special_colony_type'].includes(k))return !!empire[k]===(v==='yes');
+ if(['is_gestalt','is_robot_empire','is_hive_empire','country_uses_bio_ships','is_wilderness_empire','is_special_colony_type','is_lithoid_empire'].includes(k))return !!empire[k]===(v==='yes');
  throw Error('Unsupported eligibility contract '+k);
  });}
-const profiles={organic:{},hive:{is_gestalt:true,is_hive_empire:true},machine:{is_gestalt:true,is_robot_empire:true},individual_machine:{is_robot_empire:true},biological_hulls:{country_uses_bio_ships:true}};
-for(const [id,t]of era)check(!gate(get(t,'potential'),{eligible:true,is_wilderness_empire:true,flags:new Set(['epoch_iv_protocol_key','epoch_iv_complete'])}),'incompatible Wilderness job economy does not offer unusable research '+id);
-for(const [name,profile]of Object.entries(profiles)){
- const e={...profile,eligible:true,flags:new Set(['epoch_iv_protocol_key','epoch_iv_complete'])};
+const profiles={wilderness:{is_wilderness_empire:true,is_hive_empire:true,is_gestalt:true},wilderness_bio:{is_wilderness_empire:true,is_hive_empire:true,is_gestalt:true,country_uses_bio_ships:true},lithoid:{is_lithoid_empire:true},organic:{},hive:{is_gestalt:true,is_hive_empire:true},machine:{is_gestalt:true,is_robot_empire:true},individual_machine:{is_robot_empire:true},biological_hulls:{country_uses_bio_ships:true}};
+for(const [name,profile,philosophy]of Object.entries(profiles).flatMap(([n,p])=>['guard','free'].map(f=>[n+'/'+f,p,f]))){
+ const e={...profile,eligible:true,flags:new Set(['epoch_iv_protocol_key','epoch_iv_complete','epoch_iv_philosophy_'+philosophy])};
  for(const flags of [[],['epoch_iv_protocol_key'],['epoch_iv_complete']]){
   const locked={...e,flags:new Set(flags)};
   for(const [id,t]of era)check(!gate(get(t,'potential'),locked),'personal completion gate '+name+'/'+flags+'/'+id);
@@ -74,11 +73,11 @@ for(const f of manifest.buildingFamilies){
   check(get(b,'building_sets').length>0&&get(b,'planet_limit')==='1','native building set and colony cap '+id);
   if(f.id==='factory'){
    check(!deep(get(r,'cost'),'epoch_protocol_cores').length&&!deep(get(r,'upkeep'),'epoch_protocol_cores').length,'no core bootstrap loop '+id);
-   check(get(get(b,'empire_limit'),'base')==='6','native queued-construction cap '+id);
+   check(!get(b,'empire_limit'),'factory scales by paid colonies rather than fixed empire cap '+id);
   }
  }
 }
-check(JSON.stringify(get(buildings.get('building_epoch_factory_1'),'allow')).includes('count_owned_planet'),'factory cap includes upgraded factories');
+check(JSON.stringify(get(buildings.get('building_epoch_factory_1'),'potential')).includes('building_epoch_factory_2'),'factory colony guard includes upgraded factories');
 for(const id of ['epoch_factory','epoch_factory_drone']){
  const r=get(jobs.get(id),'resources');check(Number(get(get(r,'produces'),'epoch_protocol_cores'))===2,'real staffed core output '+id);
  check(!deep(r,'upkeep').some(b=>get(b,'epoch_protocol_cores')),'core job bootstraps from vanilla inputs '+id);
@@ -103,15 +102,19 @@ for(const [,b]of [...hardware,...utilities]){
  for(const p of prereqs(b))check(technologies.has(p),'hardware tech exists '+id+'/'+p);
  check(deep(get(b,'potential'),'epoch_iv_future_research').includes('yes'),'equipment owner rechecks key '+id);
  const r=get(b,'resources');check(Number(get(get(r,'cost'),'alloys'))>0&&Number(get(get(r,'cost'),'epoch_protocol_cores'))>0&&Number(get(get(r,'upkeep'),'epoch_protocol_cores'))>0,'equipment has real costs and ongoing core draw '+id);
- check(JSON.stringify(get(b,'ai_weight')).includes('no_resource_for_component'),'AI respects core supply '+id);
+ check(deep(get(b,'ai_weight'),'has_monthly_income').some(t=>get(t,'resource')==='epoch_protocol_cores')&&deep(get(b,'ai_weight'),'resource_stockpile_compare').some(t=>get(t,'resource')==='epoch_protocol_cores'),'AI requires positive core production and stockpile without market dependence '+id);
  check(!JSON.stringify(b).includes('"null"'),'no invalid null upgrade '+id);
 }
 const csv=native('common/component_templates/weapon_components.csv').split(/\r?\n/).filter(s=>s&&!s.startsWith('#')).map(s=>s.split(';'));const columns=csv.shift();const rows=new Map(csv.map(r=>[r[0],Object.fromEntries(columns.map((c,i)=>[c,Number(r[i])]))]));
 for(const entry of manifest.weapons){
  const b=component(hardware,entry.key),base=nativeComponent(entry.vanilla),stats=rows.get(entry.vanilla);
  check(get(b,'size')===get(base,'size')&&get(b,'type')===get(base,'type'),'native tactical slot/type '+entry.key);
- for(const k of ['range','accuracy','tracking','shield_damage','armor_damage','shield_penetration','armor_penetration','size_damage_factor','cooldown'])check(Number(get(b,k==='cooldown'?'total_fire_time':k))===stats[k],'native counterplay '+entry.key+'/'+k);
- for(const [k,col]of [['min','min_damage'],['max','max_damage']])check(Math.abs(Number(get(get(b,'damage'),k))/stats[col]-1.3)<0.001,'bounded 30% raw damage uplift '+entry.key+'/'+k);
+ const overrides={EPOCH_PHASE_M:{range:50,shield_damage:0.15},EPOCH_PHASE_L:{range:70,shield_damage:0.15},EPOCH_CAUSAL_LANCE:{range:175,cooldown:90},EPOCH_FRACTAL_ARTILLERY:{shield_damage:3,armor_damage:0.25,cooldown:60}}[entry.key]||{};
+ for(const k of ['range','accuracy','tracking','shield_damage','armor_damage','shield_penetration','armor_penetration','size_damage_factor','cooldown'])check(Number(get(b,k==='cooldown'?'total_fire_time':k))===(overrides[k]??stats[k]),'native values or explicitly bounded role '+entry.key+'/'+k);
+ for(const [k,col]of [['min','min_damage'],['max','max_damage']])check(Math.abs(Number(get(get(b,'damage'),k))/stats[col]-entry.damageScale)<0.001,'bounded primary damage '+entry.key+'/'+k);
+ if(entry.key.startsWith('EPOCH_PHASE_')){check(get(b,'chain_count')==='2'&&Number(get(b,'chain_range'))<=20,'two short chain bounces '+entry.key);check(Number(get(get(b,'damage'),'max'))===stats.max_damage,'no primary damage inflation '+entry.key);}
+ if(entry.key==='EPOCH_CAUSAL_LANCE')check(get(b,'min_range')==='60'&&Number(get(b,'total_fire_time'))>stats.cooldown,'siege lance has minimum range and lower sustained damage');
+ if(entry.key==='EPOCH_FRACTAL_ARTILLERY')check(get(b,'hull_damage')==='0.75'&&get(b,'min_range')==='45.0','shield artillery trades armor/hull damage and close range');
  check(Number(get(b,'power'))<stats.power,'higher power draw '+entry.key);
  check(get(b,'projectile_gfx')===get(base,'projectile_gfx'),'existing projectile art '+entry.key);
  check(!get(b,'cooldown')&&native('common/component_templates/000_documentation.txt').includes('# total_fire_time'),'documented weapon fire-cycle field '+entry.key);
@@ -132,6 +135,63 @@ for(const id of ['symbiosis','synaptic_nodes'])check(JSON.stringify(new Map(deci
 const liveUnlocks=[...buildings,...hardware,...utilities,...strategic,...decisions,...edicts];
 const references=(b,id)=>b.some(([,v])=>Array.isArray(v)?references(v,id):unquote(v)===id);
 for(const [id,t]of era)check(get(t,'modifier')||liveUnlocks.some(([,b])=>references(b,id)),'technology has a live benefit '+id);
+// Personal philosophy is immutable story state. Check offers, active effects, and legacy dual-edict saves.
+const edictMap=new Map(edicts);
+for(const choice of [[],['guard'],['free'],['guard','free']]){
+ const e={eligible:true,flags:new Set(['epoch_iv_protocol_key','epoch_iv_complete',...choice.map(x=>'epoch_iv_philosophy_'+x)]),techs:new Set(['tech_epoch_iv_mandate','tech_epoch_iv_universal_sovereignty'])};
+ for(const [id,flag]of [['warden_doctrine','guard'],['open_protocol','free']]){
+  const b=edictMap.get('epoch_era_'+id),expected=choice.length===1&&choice[0]===flag;
+  check(gate(get(b,'potential'),e)===expected,'philosophy offer '+choice+'/'+id);
+  check(gate(get(get(b,'triggered_country_modifier'),'potential'),e)===expected,'legacy active edict cannot bypass philosophy '+choice+'/'+id);
+ }
+}
+// Positive Wilderness path: production, paid universal outputs, and no dummy job-building unlocks.
+const wc=edictMap.get('epoch_era_wilderness_cores'),wi=edictMap.get('epoch_era_wilderness_integration');
+const tables=(b,k)=>get(b,'resources').filter(([key])=>key===k).map(([,v])=>v);
+function economicGate(b,e){return (b||[]).every(([k,v])=>k==='has_deficit'?e.deficits.has(v):k==='NOT'?!economicGate(v,e):gate([[k,v]],e));}
+function output(b,resource,e){return tables(b,'produces').filter(t=>economicGate(get(t,'trigger'),e)).reduce((n,t)=>n+Number(get(t,resource)||0),0);}
+const wild={eligible:true,is_wilderness_empire:true,is_hive_empire:true,is_gestalt:true,flags:new Set(['epoch_iv_protocol_key','epoch_iv_complete']),techs:new Set(['tech_epoch_iv_cores','tech_epoch_iv_reconstruction']),deficits:new Set()};
+check(gate(get(wc,'potential'),wild)&&gate(get(wi,'potential'),wild),'Wilderness can activate paid production and integration after earned research');
+check(output(wc,'epoch_protocol_cores',wild)===12,'Wilderness can bootstrap twelve actual cores without jobs');
+check(output(wi,'physics_research',wild)===3,'Wilderness gains actual early research output');
+wild.techs=new Set(era.keys());
+check(output(wc,'epoch_protocol_cores',wild)===24,'Wilderness UAP production doubles');
+check(output(wi,'physics_research',wild)===27&&output(wi,'society_research',wild)===24&&output(wi,'engineering_research',wild)===18,'universal research nodes have cumulative Wilderness benefits');
+for(const input of ['minerals','alloys','energy'])check(output(wc,'epoch_protocol_cores',{...wild,deficits:new Set([input])})===0,'Wilderness fabrication stops during '+input+' deficit');
+check(output(wi,'physics_research',{...wild,deficits:new Set(['epoch_protocol_cores'])})===0,'Wilderness research suspends under core shortage');
+for(const [id,b]of buildings)check(!gate(get(b,'potential'),{owner:wild}),'Wilderness does not see incompatible job building '+id);
+for(const tech of Object.keys(manifest.wildernessIntegration))check(JSON.stringify(wi).includes('tech_epoch_iv_'+tech),'universal building research has actual Wilderness alternative '+tech);
+for(const id of ['tissue','symbiosis']){
+ const d=new Map(decisions).get('decision_epoch_era_'+id),text=JSON.stringify(d);
+ check(text.includes('is_lithoid_empire')&&text.includes('epoch_era_'+id+'_lithoid'),'paid organic development branches for lithoids '+id);
+ const mods=new Map(tree('common/static_modifiers/epoch_era_modifiers.txt'));
+ check(get(mods.get('epoch_era_'+id+'_lithoid'),'planet_jobs_minerals_produces_mult')===(id==='tissue'?'0.10':'0.20'),'lithoid mineral effect '+id);
+ check(!get(mods.get('epoch_era_'+id+'_lithoid'),'planet_jobs_food_produces_mult'),'no useless lithoid food effect '+id);
+}
+// Bio-ships hide exactly eleven equipment-only cards; infrastructure remains reachable above.
+check([...era.values()].filter(t=>get(get(t,'potential'),'country_uses_bio_ships')==='no').length===11,'eleven incompatible military cards');
+// Economic load is derived from real component, building, workforce and job resource tables.
+const core=(b,k)=>Number(get(get(get(b,'resources'),k),'epoch_protocol_cores')||0);
+const shipLoad={EPOCH_CAUSAL_LANCE:1,EPOCH_FRACTAL_ARTILLERY:4,EPOCH_LARGE_TRANSCENDENT_SHIELD:3,EPOCH_LARGE_PHASE_ARMOR:3,EPOCH_BATTLESHIP_REACTOR:1,EPOCH_COMPUTER_ARTILLERY:1,EPOCH_COHERENCE_DRIVE:1,EPOCH_TEMPORAL_STABILIZER:2};
+const equipment=[...hardware,...utilities];
+const design=(items,k)=>Object.entries(items).reduce((n,[id,count])=>n+count*core(component(equipment,id),k),0);
+const battleship=design(shipLoad,'upkeep'),shipCost=design(shipLoad,'cost');
+const selectedPower=Object.entries(shipLoad).reduce((n,[id,count])=>n+count*Number(get(component(equipment,id),'power')||0),0);
+check(selectedPower>=500,'representative fully equipped battleship has power reserve for native mandatory parts');
+const sections=parse(native('common/section_templates/battleship.txt'),'native battleship sections').filter(([,b])=>Array.isArray(b));
+const artillerySections=['BATTLESHIP_BOW_M2S4','BATTLESHIP_MID_L3','BATTLESHIP_STERN_L1'].map(key=>component(sections,key));
+check(artillerySections.every(Boolean),'actual native artillery sections exist');
+check(artillerySections.reduce((n,b)=>n+Number(get(b,'large_utility_slots')||0),0)===6&&artillerySections.reduce((n,b)=>n+Number(get(b,'aux_utility_slots')||0),0)===2,'native six large defense and two auxiliary slots');
+check(artillerySections.flatMap(b=>deep(b,'template')).filter(x=>x==='"large_turret"').length===4,'native four large artillery mounts');
+
+const buildingLoad=manifest.buildingFamilies.filter(f=>f.id!=='factory').reduce((n,f)=>n+core(buildings.get(`building_epoch_${f.id}_${f.levels}`),'upkeep')+f.workforce.at(-1)/100*core(jobs.get('epoch_'+f.id),'upkeep'),0);
+const starbase=design({EPOCH_STARBASE_REACTOR:1,EPOCH_MEDIUM_NULL_SHIELD:6,EPOCH_PHASE_M:6},'upkeep');
+const factoryOutput=manifest.buildingFamilies.find(f=>f.id==='factory').workforce[1]/100*core(jobs.get('epoch_factory'),'produces');
+const scenarios=[{name:'small',factories:3,ships:20,sets:1,bases:3},{name:'large',factories:14,ships:200,sets:4,bases:20}];
+for(const x of scenarios){const use=x.ships*battleship+x.sets*buildingLoad+x.bases*starbase+3,production=x.factories*factoryOutput;check(production>use,'paid specialized economy can sustain '+x.name);check(production*0.5<use,'half staffing creates a real shortage '+x.name);check(production*1.25>use,'ordinary positive output bonuses retain solvency '+x.name);if(x.name==='large')check(production*0.75<use,'large economy is vulnerable to 25 percent output loss');x.use=Number(use.toFixed(5));x.production=production;x.surplus=Number((production-use).toFixed(5));}
+check(24<100*battleship+buildingLoad+3,'old six-factory ceiling demonstrably fails medium fleet');
+check(15000>=shipCost*20,'native stockpile can equip twenty representative battleships');
+console.log('ECONOMY',JSON.stringify({battleship,shipCost,buildingLoad,starbase,factoryOutput,scenarios}));
 // Verify selected native modifiers, art and localization without claiming runtime load.
 const modDoc=fs.readFileSync(path.join(process.env.USERPROFILE,'Documents/Paradox Interactive/Stellaris/logs/script_documentation/modifiers.log'),'utf8');
 const categories=new Set(tree('common/economic_categories/epoch_era_categories.txt').map(([k])=>k));
@@ -150,6 +210,9 @@ for(const lang of ['english','german']){
 }
 assert.deepEqual([...locales.english.keys()].sort(),[...locales.german.keys()].sort(),'DE/EN parity');checks++;
 const assetExists=p=>fs.existsSync(path.join(root,p))||fs.existsSync(path.join(vanilla,p));
+check(new Set([...era.values()].map(b=>get(b,'icon'))).size>=20,'visually differentiated research branches');
+for(const [,b]of era)check(assetExists('gfx/interface/icons/technologies/'+get(b,'icon')+'.dds'),'existing research icon '+get(b,'icon'));
+check(new Set(manifest.buildingFamilies.map(f=>f.icon)).size===8,'eight distinct building family icons');
 for(const [,b]of buildings)check(assetExists('gfx/interface/icons/buildings/'+get(b,'icon')+'.dds'),'existing building icon '+get(b,'icon'));
 for(const [,b]of jobs)check(assetExists('gfx/interface/icons/jobs/job_'+get(b,'icon')+'.dds'),'existing job icon '+get(b,'icon'));
 for(const match of read('common/static_modifiers/epoch_era_modifiers.txt').matchAll(/icon = "([^"]+)"/g))check(assetExists(match[1]),'existing planetary modifier art '+match[1]);
@@ -175,3 +238,4 @@ for(const p of baselineFiles){const previous=cp.execFileSync('git',['show',basel
  }else check(read(p).replaceAll('\r\n','\n')===previous.replaceAll('\r\n','\n'),'old campaign unchanged '+p);
 }
 console.log(`PASS: ${checks} Package-B counts, personal research gates, class DAG reachability, production/consumption, upgrade limits, native weapon comparisons, hull roles, DE/EN and preservation assertions. Static only.`);
+

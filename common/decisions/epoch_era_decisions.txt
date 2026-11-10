@@ -2,8 +2,8 @@ decision_epoch_era_tissue = {
  icon = decision_resources owned_planets_only = yes enactment_time = 360
  resources = { category = decisions cost = { energy = 2000 epoch_protocol_cores = 80 } }
  potential = { exists = owner owner = { epoch_iv_future_research = yes is_gestalt = no is_robot_empire = no } }
- allow = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_tissue is_gestalt = no is_robot_empire = no } NOT = { has_modifier = epoch_era_tissue } NOT = { has_modifier = epoch_era_symbiosis } }
- effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_tissue is_gestalt = no is_robot_empire = no } NOT = { has_modifier = epoch_era_tissue } NOT = { has_modifier = epoch_era_symbiosis } }  add_modifier = { modifier = epoch_era_tissue days = 3600 } } }
+ allow = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_tissue is_gestalt = no is_robot_empire = no } NOR = { has_modifier = epoch_era_tissue has_modifier = epoch_era_tissue_lithoid } NOR = { has_modifier = epoch_era_symbiosis has_modifier = epoch_era_symbiosis_lithoid } }
+ effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_tissue is_gestalt = no is_robot_empire = no } NOR = { has_modifier = epoch_era_tissue has_modifier = epoch_era_tissue_lithoid } NOR = { has_modifier = epoch_era_symbiosis has_modifier = epoch_era_symbiosis_lithoid } }  if = { limit = { owner = { is_lithoid_empire = yes } } add_modifier = { modifier = epoch_era_tissue_lithoid days = 3600 } } else = { add_modifier = { modifier = epoch_era_tissue days = 3600 } } } }
  ai_weight = { weight = 10 modifier = { factor = 0 owner = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 3 } } } } }
 }
 
@@ -11,8 +11,8 @@ decision_epoch_era_symbiosis = {
  icon = decision_resources owned_planets_only = yes enactment_time = 360
  resources = { category = decisions cost = { energy = 2000 epoch_protocol_cores = 120 } }
  potential = { exists = owner owner = { epoch_iv_future_research = yes is_gestalt = no is_robot_empire = no } }
- allow = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_symbiosis is_gestalt = no is_robot_empire = no } NOT = { has_modifier = epoch_era_symbiosis }  }
- effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_symbiosis is_gestalt = no is_robot_empire = no } NOT = { has_modifier = epoch_era_symbiosis }  } if = { limit = { has_modifier = epoch_era_tissue } remove_modifier = epoch_era_tissue } add_modifier = { modifier = epoch_era_symbiosis days = 3600 } } }
+ allow = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_symbiosis is_gestalt = no is_robot_empire = no } NOR = { has_modifier = epoch_era_symbiosis has_modifier = epoch_era_symbiosis_lithoid }  }
+ effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_symbiosis is_gestalt = no is_robot_empire = no } NOR = { has_modifier = epoch_era_symbiosis has_modifier = epoch_era_symbiosis_lithoid }  } remove_modifier = epoch_era_tissue remove_modifier = epoch_era_tissue_lithoid if = { limit = { owner = { is_lithoid_empire = yes } } add_modifier = { modifier = epoch_era_symbiosis_lithoid days = 3600 } } else = { add_modifier = { modifier = epoch_era_symbiosis days = 3600 } } } }
  ai_weight = { weight = 10 modifier = { factor = 0 owner = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 3 } } } } }
 }
 
