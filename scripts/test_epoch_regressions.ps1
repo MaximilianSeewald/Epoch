@@ -488,6 +488,8 @@ Assert-Check ($LASTEXITCODE -eq 0) 'Stage-IV technology DAG, core economy, upgra
 Assert-Check ($LASTEXITCODE -eq 0) 'Stage-IV native traditions, exclusive perks, species compatibility and physical megastructure chains must pass (static only)'
 & node (Join-Path $PSScriptRoot 'test_stage_iv_c_runtime_contracts.cjs') $Root $VanillaRoot
 Assert-Check ($LASTEXITCODE -eq 0) 'Reported C engine scope/count/implicit-asset regressions must pass'
+& node (Join-Path $PSScriptRoot 'test_stage_iv_d1.cjs')
+Assert-Check ($LASTEXITCODE -eq 0) 'D1 bilingual text, BOM, references, reveal boundaries and unchanged gameplay must pass'
 
 # Summarize existing test logs by source. Old EPOCH failures are reported as
 # evidence from the pre-fix run; unrelated-mod/base-game errors are separated.

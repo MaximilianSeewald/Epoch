@@ -267,7 +267,13 @@ for(const p of oldFiles.filter(p=>/^(common|events|localisation)\//.test(p))) {
  const expected=prior.toString('utf8');
  if(p==='common/deposits/epoch_phase_ii_features.txt'){
   check(normalize(expected.replaceAll('owner = {','exists = owner owner = {'))===normalize(text(p)),p+': only native owner-existence guard added, all old modifier values preserved');
- }else check(normalize(expected)===normalize(text(p)),p+': Stage I/II unchanged apart from display punctuation');
+ }else if(p.startsWith('localisation/')) {
+  // D1 deliberately edits prose. Preserve the merged-main key inventory;
+  // test_narrative_ui and test_stage_iv_d1 validate references and text safety.
+  const keys=s=>[...s.matchAll(/^\s*([\w.]+):\d+ /gm)].map(m=>m[1]).sort();
+  const merged=cp.execFileSync('git',['show',`12f74555756eaab2614ecea21f0f6201cfe6f9f7:${p}`],{cwd:root,encoding:'utf8'});
+  check(JSON.stringify(keys(merged))===JSON.stringify(keys(text(p))),p+': merged Stage I/II localization keys preserved');
+ }else check(normalize(expected)===normalize(text(p)),p+': Stage I/II gameplay unchanged');
 }
 // Target-installed definitions, not web/guessed interfaces.
 const native=p=>fs.readFileSync(path.join(vanilla,p),'utf8');
@@ -310,8 +316,13 @@ for(const lang of ['english','german']) {
  }
 }
 const modifierDoc=fs.readFileSync(path.join(docs,'modifiers.log'),'utf8');
+// Engine documentation reflects the mods loaded when it was generated. A
+// locally declared country type generates the same native modifier family.
+const convergenceDamageKey='damage_vs_country_type_epoch_convergence_mult';
+const generatedConvergenceDamage=parsedByPath.get('common/country_types/epoch_convergence_country_type.txt').some(([key])=>key==='epoch_convergence')
+ && modifierDoc.includes('- damage_vs_country_type_default_mult,');
 for(const [name,body]of parsedByPath.get('common/static_modifiers/epoch_convergence_modifiers.txt'))
- for(const [key]of body)if(key!=='icon')check(modifierDoc.includes('- '+key+','),`${name}: native economic/combat modifier ${key}`);
+ for(const [key]of body)if(key!=='icon')check(modifierDoc.includes('- '+key+',')||(key===convergenceDamageKey&&generatedConvergenceDamage),`${name}: native economic/combat modifier ${key}`);
 for(const key of ['create_species','every_owned_ship','set_visited','add_intel_report','set_star_flag','every_neighbor_system'])check(effectDoc.includes(key+' -'),`Native new effect ${key}`);
 check(native('events/gray_goo_events.txt').includes('diplomatic = yes'),'Native Tempest diplomatic transmission');
 check(native('events/anomaly_events_1.txt').includes('portrait = "default_robot"'),'Native non-DLC robot portrait');
@@ -441,7 +452,7 @@ check(get(get(main,'monthly_progress'),'base')==='0','No monthly progression');
 for(const [,approach]of main.filter(([k])=>k==='approach')) {
  check(!!get(approach,'modifier')&&!!get(get(approach,'resources'),'upkeep'),'Each main approach has ongoing benefits and costs');
  check(!/set_situation_progress|add_situation_progress|epoch_iii_update_chapter/.test(JSON.stringify(approach)),'Local approach cannot change global progress');
- for(const [key]of get(approach,'modifier'))check(modifierDoc.includes('- '+key+','),'Native approach modifier '+key);
+ for(const [key]of get(approach,'modifier'))check(modifierDoc.includes('- '+key+',')||(key===convergenceDamageKey&&generatedConvergenceDamage),'Native approach modifier '+key);
 }
 check(effectDoc.includes('set_situation_progress -'),'Absolute situation setter supported by installed documentation');
 check(native('common/on_actions/00_on_actions.txt').includes('on_entering_system_fleet ='),'Physical border hook exists in installed Vanilla');
@@ -504,7 +515,7 @@ for(const [,approach]of tunedMain.filter(([k])=>k==='approach')) {
  const modifier=get(approach,'modifier');
  check(+(get(modifier,'all_technology_research_speed')||0)<=0&&+(get(modifier,'planet_jobs_produces_mult')||0)<=0,'No approach grants free empire-wide science or job output');
 }
-check(modifierDoc.includes('- damage_vs_country_type_epoch_convergence_mult,'),'Crisis-specific damage modifier exists in installed generated definitions');
+check(modifierDoc.includes('- '+convergenceDamageKey+',')||generatedConvergenceDamage,'Crisis damage modifier is documented or generated from the declared country type');
 for(const n of [1,2,7,8,11,12,19,20,39,40,100]) {
  const c={...make(),numColonies:n};const cap=n>=40?10:n>=20?5:n>=12?3:n>=8?2:1;
  c.vars.epoch_iii_scar_worlds=cap-1;check(test(triggers.get('epoch_iii_scar_capacity'),ctx(c)),'Scaled scar allowance available at '+n);
