@@ -1,0 +1,11 @@
+epoch_era_core_deficit = { ship_fire_rate_mult = -0.15 planet_epoch_lab_produces_mult = -0.25 planet_epoch_forge_produces_mult = -0.25 planet_epoch_collector_produces_mult = -0.25 planet_epoch_archive_produces_mult = -0.25 }
+
+epoch_era_tissue = { icon = "gfx/interface/icons/planet_modifiers/pm_engineering_research.dds" planet_jobs_food_produces_mult = 0.10 pop_environment_tolerance = 0.05 }
+
+epoch_era_symbiosis = { icon = "gfx/interface/icons/planet_modifiers/pm_engineering_research.dds" planet_jobs_food_produces_mult = 0.20 pop_environment_tolerance = 0.10 planet_jobs_society_research_produces_mult = 0.10 }
+
+epoch_era_transcription = { icon = "gfx/interface/icons/planet_modifiers/pm_engineering_research.dds" planet_jobs_society_research_produces_mult = 0.10 planet_crime_no_happiness_mult = -0.10 }
+
+epoch_era_synaptic_nodes = { icon = "gfx/interface/icons/planet_modifiers/pm_engineering_research.dds" planet_jobs_society_research_produces_mult = 0.20 planet_crime_no_happiness_mult = -0.20 planet_defense_armies_add = 3 }
+
+epoch_era_self_model = { icon = "gfx/interface/icons/planet_modifiers/pm_engineering_research.dds" planet_jobs_energy_produces_mult = 0.10 planet_pop_assembly_mult = 0.10 }

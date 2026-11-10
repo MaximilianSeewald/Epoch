@@ -1,0 +1,13 @@
+epoch_era_warden_doctrine = { length = -1 icon = "GFX_edict_type_time"
+ resources = { category = edicts cost = { unity = 1000 epoch_protocol_cores = 100 } upkeep = { unity = 50 epoch_protocol_cores = 3 } }
+ modifier = { ship_home_territory_fire_rate_mult = 0.20 army_defense_damage_mult = 0.20 }
+ potential = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_mandate }
+ ai_weight = { weight = 5 modifier = { factor = 0 has_monthly_income = { resource = epoch_protocol_cores value < 0 } } modifier = { factor = 0 NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 6 } } NOT = { has_edict = epoch_era_warden_doctrine } } }
+}
+
+epoch_era_open_protocol = { length = -1 icon = "GFX_edict_type_time"
+ resources = { category = edicts cost = { unity = 1000 epoch_protocol_cores = 100 } upkeep = { unity = 50 epoch_protocol_cores = 3 } }
+ modifier = { num_tech_alternatives_add = 1 planet_researchers_produces_mult = 0.10 }
+ potential = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_universal_sovereignty }
+ ai_weight = { weight = 5 modifier = { factor = 0 has_monthly_income = { resource = epoch_protocol_cores value < 0 } } modifier = { factor = 0 NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 6 } } NOT = { has_edict = epoch_era_open_protocol } } }
+}

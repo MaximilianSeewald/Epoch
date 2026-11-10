@@ -6,6 +6,8 @@ Stage III's next connected run follows the [second-playtest changes and focused 
 
 ## Evidence discipline
 
+Stage IV Package B has one connected acceptance run after the complete implementation, covering an early, middle and ultimate technology subset, the core economy, upgrades and a combat comparison. Follow [Package B acceptance and runtime risks](phases/stage-iv-package-b.md). No per-technology microtest signoffs are required; static tests do not count as a completed in-game run.
+
 Record design requirements, source-verified patterns, static checks, and reproducible in-game results separately. A static pass is not in-game evidence. For each in-game run record Stellaris build, mod commit, enabled mods, empire class/player-or-AI, seed, route, saves/checkpoints, logs, and screenshots when UI behavior matters.
 
 The reported 4.5.3 playthrough completed Stage-II Chapters 1â€“3, defeated the first hunters and displayed the research options; Chapter 4 opened but its Decisions were missing. It does not establish complete multiplayer, AI, or alternative-path validation. Do not claim an individual check passed without its case-specific evidence.

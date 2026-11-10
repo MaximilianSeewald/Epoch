@@ -1,0 +1,12 @@
+component_set = { key = "EPOCH_PHASE_M" icon = "GFX_ship_part_plasma_3" icon_frame = 1 }
+component_set = { key = "EPOCH_PHASE_L" icon = "GFX_ship_part_plasma_3" icon_frame = 1 }
+component_set = { key = "EPOCH_CAUSAL_LANCE" icon = "GFX_ship_part_energy_lance_2" icon_frame = 1 }
+component_set = { key = "EPOCH_FRACTAL_ARTILLERY" icon = "GFX_ship_part_kinetic_artillery_2" icon_frame = 1 }
+component_set = { key = "EPOCH_NULLWAVE_TORPEDO" icon = "GFX_ship_part_torpedo_3" icon_frame = 1 }
+component_set = { key = "EPOCH_FRACTAL_PD" icon = "GFX_ship_part_point_defense_3" icon_frame = 1 }
+component_set = { key = "EPOCH_PROTOCOL_BREAKER" icon = "GFX_ship_part_perdition_beam" icon_frame = 1 }
+component_set = { key = "EPOCH_SWARM_FIGHTERS" icon = "GFX_ship_part_strike_craft_fighter_3" icon_frame = 1 }
+component_set = { key = "EPOCH_NULL_SHIELD" icon = "GFX_ship_part_shield_5" icon_frame = 1 }
+component_set = { key = "EPOCH_TRANSCENDENT_SHIELD" icon = "GFX_ship_part_psi_shield" icon_frame = 1 }
+component_set = { key = "EPOCH_PHASE_ARMOR" icon = "GFX_ship_part_armor_5" icon_frame = 1 }
+component_set = { key = "EPOCH_TEMPORAL_STABILIZER" icon = "GFX_ship_part_auto_repair" icon_frame = 1 }

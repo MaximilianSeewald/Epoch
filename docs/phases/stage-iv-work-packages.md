@@ -1,6 +1,6 @@
 # Stage IV – Work Packages A–D
 
-> **Status:** Package A implemented for connected native acceptance; B–D remain planned. See [implementation, evidence limits and the single playtest](stage-iv-package-a.md). Companion: [full design](stage-iv-ascension.md) and [short engine-feasibility assessment](stage-iv-technical-feasibility.md). Target: Stellaris 4.5.3. **One EPOCH mod, not a separate test mod or submod.** Keep development fast and gameplay-driven. Work on feature branches and review/merge PRs deliberately; do not merge as part of drafting.
+> **Status:** Packages A and B implemented for connected native acceptance; C–D remain planned. See [Package A](stage-iv-package-a.md) and [Package B implementation, source balance and the single acceptance run](stage-iv-package-b.md). Companion: [full design](stage-iv-ascension.md) and [short engine-feasibility assessment](stage-iv-technical-feasibility.md). Target: Stellaris 4.5.3. **One EPOCH mod, not a separate test mod or submod.** Keep development fast and gameplay-driven. Work on feature branches and review/merge PRs deliberately; do not merge as part of drafting.
 
 ## Completion contract across packages
 

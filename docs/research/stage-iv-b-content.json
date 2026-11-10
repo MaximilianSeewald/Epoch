@@ -1,0 +1,754 @@
+{
+  "version": "Cygnus v4.5.3 (4e91)",
+  "technologies": [
+    {
+      "code": "P03",
+      "id": "tech_epoch_iv_sensors",
+      "area": "physics",
+      "rank": 1,
+      "category": "computing",
+      "cost": 28000,
+      "prerequisites": [
+        "tech_epoch_iv_calibration"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": "modifier = { ship_sensor_range_add = 1 }"
+    },
+    {
+      "code": "P04",
+      "id": "tech_epoch_iv_reconstruction",
+      "area": "physics",
+      "rank": 1,
+      "category": "computing",
+      "cost": 28000,
+      "prerequisites": [
+        "tech_epoch_iv_spectroscopy",
+        "tech_epoch_iv_materials"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "P05",
+      "id": "tech_epoch_iv_fields",
+      "area": "physics",
+      "rank": 1,
+      "category": "field_manipulation",
+      "cost": 28000,
+      "prerequisites": [
+        "tech_epoch_iv_calibration",
+        "tech_epoch_iv_materials"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "P06",
+      "id": "tech_epoch_iv_storage",
+      "area": "physics",
+      "rank": 1,
+      "category": "field_manipulation",
+      "cost": 28000,
+      "prerequisites": [
+        "tech_epoch_iv_fields"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "P07",
+      "id": "tech_epoch_iv_shields",
+      "area": "physics",
+      "rank": 2,
+      "category": "field_manipulation",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_fields",
+        "tech_epoch_iv_steel"
+      ],
+      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
+      "extra": ""
+    },
+    {
+      "code": "P08",
+      "id": "tech_epoch_iv_phase_emitter",
+      "area": "physics",
+      "rank": 2,
+      "category": "particles",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_fields",
+        "tech_epoch_iv_cores"
+      ],
+      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
+      "extra": ""
+    },
+    {
+      "code": "P09",
+      "id": "tech_epoch_iv_lance",
+      "area": "physics",
+      "rank": 2,
+      "category": "particles",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_phase_emitter",
+        "tech_epoch_iv_reactor"
+      ],
+      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
+      "extra": ""
+    },
+    {
+      "code": "P10",
+      "id": "tech_epoch_iv_torpedoes",
+      "area": "physics",
+      "rank": 2,
+      "category": "particles",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_phase_emitter",
+        "tech_epoch_iv_telemetry"
+      ],
+      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
+      "extra": ""
+    },
+    {
+      "code": "P11",
+      "id": "tech_epoch_iv_hyperdrive",
+      "area": "physics",
+      "rank": 2,
+      "category": "particles",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_sensors",
+        "tech_epoch_iv_reactor"
+      ],
+      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
+      "extra": ""
+    },
+    {
+      "code": "P12",
+      "id": "tech_epoch_iv_transcendent_shields",
+      "area": "physics",
+      "rank": 3,
+      "category": "field_manipulation",
+      "cost": 112000,
+      "prerequisites": [
+        "tech_epoch_iv_shields",
+        "tech_epoch_iv_reactor"
+      ],
+      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
+      "extra": ""
+    },
+    {
+      "code": "P13",
+      "id": "tech_epoch_iv_protocol_breaker",
+      "area": "physics",
+      "rank": 3,
+      "category": "particles",
+      "cost": 112000,
+      "prerequisites": [
+        "tech_epoch_iv_lance",
+        "tech_epoch_iv_artillery",
+        "tech_titans"
+      ],
+      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
+      "extra": ""
+    },
+    {
+      "code": "P14",
+      "id": "tech_epoch_iv_coupling",
+      "area": "physics",
+      "rank": 3,
+      "category": "field_manipulation",
+      "cost": 112000,
+      "prerequisites": [
+        "tech_epoch_iv_fields",
+        "tech_epoch_iv_harmonization",
+        "tech_epoch_iv_nexus"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "S03",
+      "id": "tech_epoch_iv_restoration",
+      "area": "society",
+      "rank": 1,
+      "category": "biology",
+      "cost": 28000,
+      "prerequisites": [
+        "tech_epoch_iv_inversion"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "S04",
+      "id": "tech_epoch_iv_tissue",
+      "area": "society",
+      "rank": 1,
+      "category": "biology",
+      "cost": 28000,
+      "prerequisites": [
+        "tech_epoch_iv_restoration"
+      ],
+      "gate": "is_wilderness_empire = no is_gestalt = no is_robot_empire = no",
+      "extra": "feature_flags = { epoch_era_tissue }"
+    },
+    {
+      "code": "S05",
+      "id": "tech_epoch_iv_transcription",
+      "area": "society",
+      "rank": 1,
+      "category": "biology",
+      "cost": 28000,
+      "prerequisites": [
+        "tech_epoch_iv_restoration"
+      ],
+      "gate": "is_wilderness_empire = no is_hive_empire = yes",
+      "extra": "feature_flags = { epoch_era_transcription }"
+    },
+    {
+      "code": "S06",
+      "id": "tech_epoch_iv_ethics",
+      "area": "society",
+      "rank": 1,
+      "category": "statecraft",
+      "cost": 28000,
+      "prerequisites": [
+        "tech_epoch_iv_diagnostics",
+        "tech_epoch_iv_reconstruction"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "S07",
+      "id": "tech_epoch_iv_symbiosis",
+      "area": "society",
+      "rank": 2,
+      "category": "biology",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_tissue",
+        "tech_epoch_iv_identity"
+      ],
+      "gate": "is_wilderness_empire = no is_gestalt = no is_robot_empire = no",
+      "extra": "feature_flags = { epoch_era_symbiosis }"
+    },
+    {
+      "code": "S08",
+      "id": "tech_epoch_iv_synaptic_nodes",
+      "area": "society",
+      "rank": 2,
+      "category": "biology",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_transcription",
+        "tech_epoch_iv_identity"
+      ],
+      "gate": "is_wilderness_empire = no is_hive_empire = yes",
+      "extra": "feature_flags = { epoch_era_synaptic_nodes }"
+    },
+    {
+      "code": "S09",
+      "id": "tech_epoch_iv_self_model",
+      "area": "society",
+      "rank": 2,
+      "category": "statecraft",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_restoration",
+        "tech_epoch_iv_identity"
+      ],
+      "gate": "is_wilderness_empire = no is_robot_empire = yes",
+      "extra": "feature_flags = { epoch_era_self_model }"
+    },
+    {
+      "code": "S10",
+      "id": "tech_epoch_iv_harmonization",
+      "area": "society",
+      "rank": 2,
+      "category": "biology",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_restoration",
+        "tech_epoch_iv_ethics"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "S11",
+      "id": "tech_epoch_iv_identity",
+      "area": "society",
+      "rank": 2,
+      "category": "statecraft",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_ethics",
+        "tech_epoch_iv_cores"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "S12",
+      "id": "tech_epoch_iv_sovereignty",
+      "area": "society",
+      "rank": 3,
+      "category": "statecraft",
+      "cost": 112000,
+      "prerequisites": [
+        "tech_epoch_iv_identity",
+        "tech_epoch_iv_harmonization"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "S13",
+      "id": "tech_epoch_iv_mandate",
+      "area": "society",
+      "rank": 3,
+      "category": "military_theory",
+      "cost": 112000,
+      "prerequisites": [
+        "tech_epoch_iv_sovereignty",
+        "tech_epoch_iv_artillery"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": "feature_flags = { epoch_era_mandate }"
+    },
+    {
+      "code": "S14",
+      "id": "tech_epoch_iv_universal_sovereignty",
+      "area": "society",
+      "rank": 3,
+      "category": "statecraft",
+      "cost": 112000,
+      "prerequisites": [
+        "tech_epoch_iv_sovereignty",
+        "tech_epoch_iv_nexus"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": "feature_flags = { epoch_era_universal_sovereignty }"
+    },
+    {
+      "code": "E03",
+      "id": "tech_epoch_iv_steel",
+      "area": "engineering",
+      "rank": 1,
+      "category": "materials",
+      "cost": 28000,
+      "prerequisites": [
+        "tech_epoch_iv_materials"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "E04",
+      "id": "tech_epoch_iv_cores",
+      "area": "engineering",
+      "rank": 1,
+      "category": "materials",
+      "cost": 28000,
+      "prerequisites": [
+        "tech_epoch_iv_steel"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "E05",
+      "id": "tech_epoch_iv_laboratories",
+      "area": "engineering",
+      "rank": 1,
+      "category": "industry",
+      "cost": 28000,
+      "prerequisites": [
+        "tech_epoch_iv_cores",
+        "tech_epoch_iv_reconstruction"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "E06",
+      "id": "tech_epoch_iv_collectors",
+      "area": "engineering",
+      "rank": 1,
+      "category": "industry",
+      "cost": 28000,
+      "prerequisites": [
+        "tech_epoch_iv_cores",
+        "tech_epoch_iv_storage"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "E07",
+      "id": "tech_epoch_iv_artillery",
+      "area": "engineering",
+      "rank": 2,
+      "category": "propulsion",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_steel",
+        "tech_epoch_iv_cores",
+        "tech_epoch_iv_telemetry"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "E08",
+      "id": "tech_epoch_iv_reactor",
+      "area": "engineering",
+      "rank": 2,
+      "category": "industry",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_cores",
+        "tech_epoch_iv_storage"
+      ],
+      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
+      "extra": ""
+    },
+    {
+      "code": "E09",
+      "id": "tech_epoch_iv_armor",
+      "area": "engineering",
+      "rank": 2,
+      "category": "materials",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_steel",
+        "tech_epoch_iv_reactor"
+      ],
+      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
+      "extra": ""
+    },
+    {
+      "code": "E10",
+      "id": "tech_epoch_iv_fighters",
+      "area": "engineering",
+      "rank": 2,
+      "category": "voidcraft",
+      "cost": 56000,
+      "prerequisites": [
+        "tech_epoch_iv_telemetry",
+        "tech_epoch_iv_cores"
+      ],
+      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
+      "extra": ""
+    },
+    {
+      "code": "E11",
+      "id": "tech_epoch_iv_point_defense",
+      "area": "engineering",
+      "rank": 3,
+      "category": "propulsion",
+      "cost": 112000,
+      "prerequisites": [
+        "tech_epoch_iv_artillery",
+        "tech_epoch_iv_fighters"
+      ],
+      "gate": "is_wilderness_empire = no  country_uses_bio_ships = no",
+      "extra": ""
+    },
+    {
+      "code": "E12",
+      "id": "tech_epoch_iv_fabrication",
+      "area": "engineering",
+      "rank": 3,
+      "category": "industry",
+      "cost": 112000,
+      "prerequisites": [
+        "tech_epoch_iv_artillery",
+        "tech_epoch_iv_laboratories"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "E13",
+      "id": "tech_epoch_iv_nexus",
+      "area": "engineering",
+      "rank": 3,
+      "category": "industry",
+      "cost": 112000,
+      "prerequisites": [
+        "tech_epoch_iv_laboratories",
+        "tech_epoch_iv_identity"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    },
+    {
+      "code": "E14",
+      "id": "tech_epoch_iv_uap_core",
+      "area": "engineering",
+      "rank": 3,
+      "category": "industry",
+      "cost": 112000,
+      "prerequisites": [
+        "tech_epoch_iv_fabrication",
+        "tech_epoch_iv_nexus",
+        "tech_epoch_iv_coupling"
+      ],
+      "gate": "is_wilderness_empire = no ",
+      "extra": ""
+    }
+  ],
+  "buildingFamilies": [
+    {
+      "id": "lab",
+      "levels": 3,
+      "icon": "building_research_lab_3",
+      "category": "research",
+      "set": "research",
+      "techs": [
+        "tech_epoch_iv_reconstruction",
+        "tech_epoch_iv_laboratories",
+        "tech_epoch_iv_nexus"
+      ],
+      "workforce": [
+        180,
+        360,
+        540
+      ]
+    },
+    {
+      "id": "forge",
+      "levels": 3,
+      "icon": "building_foundry_3",
+      "category": "manufacturing",
+      "set": "foundry",
+      "techs": [
+        "tech_epoch_iv_steel",
+        "tech_epoch_iv_artillery",
+        "tech_epoch_iv_fabrication"
+      ],
+      "workforce": [
+        200,
+        400,
+        600
+      ]
+    },
+    {
+      "id": "collector",
+      "levels": 2,
+      "icon": "building_energy_grid",
+      "category": "resource",
+      "set": "generator",
+      "techs": [
+        "tech_epoch_iv_storage",
+        "tech_epoch_iv_collectors"
+      ],
+      "workforce": [
+        200,
+        400
+      ]
+    },
+    {
+      "id": "institute",
+      "levels": 2,
+      "icon": "building_institute",
+      "category": "government",
+      "set": "government",
+      "techs": [
+        "tech_epoch_iv_restoration",
+        "tech_epoch_iv_harmonization"
+      ],
+      "workforce": [
+        100,
+        200
+      ]
+    },
+    {
+      "id": "archive",
+      "levels": 2,
+      "icon": "building_autochthon_monument",
+      "category": "unity",
+      "set": "government",
+      "techs": [
+        "tech_epoch_iv_ethics",
+        "tech_epoch_iv_identity"
+      ],
+      "workforce": [
+        200,
+        400
+      ]
+    },
+    {
+      "id": "phase",
+      "levels": 2,
+      "icon": "building_planetary_shield_generator",
+      "category": "army",
+      "set": "fortress",
+      "techs": [
+        "tech_epoch_iv_fields",
+        "tech_epoch_iv_coupling"
+      ],
+      "workforce": [
+        100,
+        200
+      ]
+    },
+    {
+      "id": "factory",
+      "levels": 2,
+      "icon": "building_nanite_transmuter",
+      "category": "manufacturing",
+      "set": "industrial",
+      "techs": [
+        "tech_epoch_iv_cores",
+        "tech_epoch_iv_uap_core"
+      ],
+      "workforce": [
+        100,
+        200
+      ]
+    },
+    {
+      "id": "academy",
+      "levels": 2,
+      "icon": "building_fortress",
+      "category": "army",
+      "set": "fortress",
+      "techs": [
+        "tech_epoch_iv_ethics",
+        "tech_epoch_iv_sovereignty"
+      ],
+      "workforce": [
+        200,
+        400
+      ]
+    }
+  ],
+  "weapons": [
+    {
+      "key": "EPOCH_PHASE_M",
+      "vanilla": "MEDIUM_PLASMA_3",
+      "source": "00_weapons_energy.txt",
+      "damageScale": 1.3,
+      "range": 60,
+      "accuracy": 0.8,
+      "tracking": 0.2,
+      "cooldown": 40,
+      "baseDamage": [
+        53,
+        140
+      ],
+      "cost": 120,
+      "cores": 8
+    },
+    {
+      "key": "EPOCH_PHASE_L",
+      "vanilla": "LARGE_PLASMA_3",
+      "source": "00_weapons_energy.txt",
+      "damageScale": 1.3,
+      "range": 80,
+      "accuracy": 0.8,
+      "tracking": 0.05,
+      "cooldown": 45,
+      "baseDamage": [
+        126,
+        336
+      ],
+      "cost": 280,
+      "cores": 16
+    },
+    {
+      "key": "EPOCH_CAUSAL_LANCE",
+      "vanilla": "ENERGY_LANCE_2",
+      "source": "00_weapons_extra_large.txt",
+      "damageScale": 1.3,
+      "range": 150,
+      "accuracy": 0.85,
+      "tracking": 0,
+      "cooldown": 70,
+      "baseDamage": [
+        780,
+        1950
+      ],
+      "cost": 450,
+      "cores": 35
+    },
+    {
+      "key": "EPOCH_FRACTAL_ARTILLERY",
+      "vanilla": "KINETIC_ARTILLERY_2",
+      "source": "00_weapons_projectile.txt",
+      "damageScale": 1.3,
+      "range": 120,
+      "accuracy": 0.75,
+      "tracking": 0,
+      "cooldown": 50,
+      "baseDamage": [
+        195,
+        585
+      ],
+      "cost": 220,
+      "cores": 16
+    },
+    {
+      "key": "EPOCH_NULLWAVE_TORPEDO",
+      "vanilla": "TORPEDO_3",
+      "source": "00_weapons_missiles.txt",
+      "damageScale": 1.3,
+      "range": 30,
+      "accuracy": 1,
+      "tracking": 0.1,
+      "cooldown": 200,
+      "baseDamage": [
+        169,
+        254
+      ],
+      "cost": 100,
+      "cores": 12
+    },
+    {
+      "key": "EPOCH_FRACTAL_PD",
+      "vanilla": "POINT_DEFENCE_3",
+      "source": "00_weapons_pointdefence.txt",
+      "damageScale": 1.3,
+      "range": 30,
+      "accuracy": 0.75,
+      "tracking": 0.3,
+      "cooldown": 5,
+      "baseDamage": [
+        4,
+        8
+      ],
+      "cost": 25,
+      "cores": 4
+    },
+    {
+      "key": "EPOCH_PROTOCOL_BREAKER",
+      "vanilla": "PERDITION_BEAM_TITAN",
+      "source": "00_weapons_extra_large.txt",
+      "damageScale": 1.3,
+      "range": 250,
+      "accuracy": 0.85,
+      "tracking": 0,
+      "cooldown": 180,
+      "baseDamage": [
+        5000,
+        10000
+      ],
+      "cost": 750,
+      "cores": 100
+    }
+  ],
+  "utilityFamilies": [
+    "shield",
+    "armor",
+    "reactor",
+    "computer",
+    "drive",
+    "stabilizer"
+  ]
+}

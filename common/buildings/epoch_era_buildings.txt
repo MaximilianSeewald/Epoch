@@ -1,0 +1,386 @@
+building_epoch_lab_1 = {
+ icon = building_research_lab_3
+ base_buildtime = 360
+ can_build = yes
+ category = research building_sets = { research  }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony } NOR = { has_building = building_epoch_lab_1 has_building = building_epoch_lab_2 has_building = building_epoch_lab_3 } }
+
+ prerequisites = { "tech_epoch_iv_reconstruction" }
+ resources = { category = planet_buildings cost = { minerals = 800 alloys = 150  } upkeep = { energy = 4 epoch_protocol_cores = 0.1  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_lab_add = 180 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_lab_drone_add = 180 }
+
+ triggered_planet_modifier = { potential = { OR = { has_deposit = d_epoch_iv_matrix has_deposit = d_epoch_iv_fold has_deposit = d_epoch_iv_archive } } planet_epoch_lab_produces_mult = 0.10 }
+ upgrades = { "building_epoch_lab_2" }
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_lab_2 = {
+ icon = building_research_lab_3
+ base_buildtime = 540
+ can_build = no
+ category = research building_sets = { research  }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony }  }
+
+ prerequisites = { "tech_epoch_iv_laboratories" }
+ resources = { category = planet_buildings cost = { minerals = 1600 alloys = 300 epoch_protocol_cores = 40 } upkeep = { energy = 8 epoch_protocol_cores = 0.2 exotic_gases = 1 } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_lab_add = 360 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_lab_drone_add = 360 }
+
+ triggered_planet_modifier = { potential = { OR = { has_deposit = d_epoch_iv_matrix has_deposit = d_epoch_iv_fold has_deposit = d_epoch_iv_archive } } planet_epoch_lab_produces_mult = 0.10 }
+ upgrades = { "building_epoch_lab_3" }
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_lab_3 = {
+ icon = building_research_lab_3
+ base_buildtime = 720
+ can_build = no
+ category = research building_sets = { research  }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony }  }
+
+ prerequisites = { "tech_epoch_iv_nexus" }
+ resources = { category = planet_buildings cost = { minerals = 2400 alloys = 450 epoch_protocol_cores = 80 } upkeep = { energy = 12 epoch_protocol_cores = 0.30000000000000004 exotic_gases = 2 } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_lab_add = 540 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_lab_drone_add = 540 }
+
+ triggered_planet_modifier = { potential = { OR = { has_deposit = d_epoch_iv_matrix has_deposit = d_epoch_iv_fold has_deposit = d_epoch_iv_archive } } planet_epoch_lab_produces_mult = 0.10 }
+
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_forge_1 = {
+ icon = building_foundry_3
+ base_buildtime = 360
+ can_build = yes
+ category = manufacturing building_sets = { foundry  }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony } NOR = { has_building = building_epoch_forge_1 has_building = building_epoch_forge_2 has_building = building_epoch_forge_3 } }
+
+ prerequisites = { "tech_epoch_iv_steel" }
+ resources = { category = planet_buildings cost = { minerals = 800 alloys = 150  } upkeep = { energy = 4 epoch_protocol_cores = 0.1  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_forge_add = 200 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_forge_drone_add = 200 }
+
+ upgrades = { "building_epoch_forge_2" }
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_forge_2 = {
+ icon = building_foundry_3
+ base_buildtime = 540
+ can_build = no
+ category = manufacturing building_sets = { foundry  }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony }  }
+
+ prerequisites = { "tech_epoch_iv_artillery" }
+ resources = { category = planet_buildings cost = { minerals = 1600 alloys = 300 epoch_protocol_cores = 40 } upkeep = { energy = 8 epoch_protocol_cores = 0.2  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_forge_add = 400 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_forge_drone_add = 400 }
+
+ upgrades = { "building_epoch_forge_3" }
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_forge_3 = {
+ icon = building_foundry_3
+ base_buildtime = 720
+ can_build = no
+ category = manufacturing building_sets = { foundry  }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony }  }
+
+ prerequisites = { "tech_epoch_iv_fabrication" }
+ resources = { category = planet_buildings cost = { minerals = 2400 alloys = 450 epoch_protocol_cores = 80 } upkeep = { energy = 12 epoch_protocol_cores = 0.30000000000000004  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_forge_add = 600 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_forge_drone_add = 600 }
+
+
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_collector_1 = {
+ icon = building_energy_grid
+ base_buildtime = 360
+ can_build = yes
+ category = resource building_sets = { generator  }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony } NOR = { has_building = building_epoch_collector_1 has_building = building_epoch_collector_2 } }
+
+ prerequisites = { "tech_epoch_iv_storage" }
+ resources = { category = planet_buildings cost = { minerals = 800 alloys = 150  } upkeep = { energy = 4 epoch_protocol_cores = 0.1  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_collector_add = 200 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_collector_drone_add = 200 }
+
+ upgrades = { "building_epoch_collector_2" }
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_collector_2 = {
+ icon = building_energy_grid
+ base_buildtime = 540
+ can_build = no
+ category = resource building_sets = { generator  }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony }  }
+
+ prerequisites = { "tech_epoch_iv_collectors" }
+ resources = { category = planet_buildings cost = { minerals = 1600 alloys = 300 epoch_protocol_cores = 40 } upkeep = { energy = 8 epoch_protocol_cores = 0.2  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_collector_add = 400 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_collector_drone_add = 400 }
+
+
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_institute_1 = {
+ icon = building_institute
+ base_buildtime = 360
+ can_build = yes
+ category = government building_sets = { government }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony } NOR = { has_building = building_epoch_institute_1 has_building = building_epoch_institute_2 } }
+
+ prerequisites = { "tech_epoch_iv_restoration" }
+ resources = { category = planet_buildings cost = { minerals = 800 alloys = 150  } upkeep = { energy = 4 epoch_protocol_cores = 0.1  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_institute_add = 100 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_institute_drone_add = 100 }
+ planet_modifier = { planet_stability_add = 2 }
+ upgrades = { "building_epoch_institute_2" }
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_institute_2 = {
+ icon = building_institute
+ base_buildtime = 540
+ can_build = no
+ category = government building_sets = { government }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony }  }
+
+ prerequisites = { "tech_epoch_iv_harmonization" }
+ resources = { category = planet_buildings cost = { minerals = 1600 alloys = 300 epoch_protocol_cores = 40 } upkeep = { energy = 8 epoch_protocol_cores = 0.2  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_institute_add = 200 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_institute_drone_add = 200 }
+ planet_modifier = { planet_stability_add = 4 }
+ triggered_planet_modifier = {
+  potential = { OR = { has_deposit = d_epoch_iv_matrix has_deposit = d_epoch_iv_fold has_deposit = d_epoch_iv_archive } }
+  planet_jobs_physics_research_produces_mult = 0.05
+  planet_jobs_society_research_produces_mult = 0.05
+  planet_jobs_engineering_research_produces_mult = 0.05
+ }
+
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_archive_1 = {
+ icon = building_autochthon_monument
+ base_buildtime = 360
+ can_build = yes
+ category = unity building_sets = { government  }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony } NOR = { has_building = building_epoch_archive_1 has_building = building_epoch_archive_2 } }
+
+ prerequisites = { "tech_epoch_iv_ethics" }
+ resources = { category = planet_buildings cost = { minerals = 800 alloys = 150  } upkeep = { energy = 4 epoch_protocol_cores = 0.1  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_archive_add = 200 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_archive_drone_add = 200 }
+
+ upgrades = { "building_epoch_archive_2" }
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_archive_2 = {
+ icon = building_autochthon_monument
+ base_buildtime = 540
+ can_build = no
+ category = unity building_sets = { government  }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony }  }
+
+ prerequisites = { "tech_epoch_iv_identity" }
+ resources = { category = planet_buildings cost = { minerals = 1600 alloys = 300 epoch_protocol_cores = 40 } upkeep = { energy = 8 epoch_protocol_cores = 0.2  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_archive_add = 400 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_archive_drone_add = 400 }
+
+
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_phase_1 = {
+ icon = building_planetary_shield_generator
+ base_buildtime = 360
+ can_build = yes
+ category = army building_sets = { fortress government }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony } NOR = { has_building = building_epoch_phase_1 has_building = building_epoch_phase_2 } }
+
+ prerequisites = { "tech_epoch_iv_fields" }
+ resources = { category = planet_buildings cost = { minerals = 800 alloys = 150  } upkeep = { energy = 4 epoch_protocol_cores = 0.1  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_phase_add = 100 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_phase_drone_add = 100 }
+ triggered_planet_modifier = { potential = { NOT = { has_building = building_planetary_shield_generator } } planet_orbital_bombardment_damage = -0.60 } triggered_planet_modifier = { potential = { has_building = building_planetary_shield_generator } planet_orbital_bombardment_damage = -0.10 }
+ upgrades = { "building_epoch_phase_2" }
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_phase_2 = {
+ icon = building_planetary_shield_generator
+ base_buildtime = 540
+ can_build = no
+ category = army building_sets = { fortress government }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony }  }
+
+ prerequisites = { "tech_epoch_iv_coupling" }
+ resources = { category = planet_buildings cost = { minerals = 1600 alloys = 300 epoch_protocol_cores = 40 } upkeep = { energy = 8 epoch_protocol_cores = 0.2  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_phase_add = 200 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_phase_drone_add = 200 }
+ triggered_planet_modifier = { potential = { NOT = { has_building = building_planetary_shield_generator } } planet_orbital_bombardment_damage = -0.65 } triggered_planet_modifier = { potential = { has_building = building_planetary_shield_generator } planet_orbital_bombardment_damage = -0.15 }
+
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_factory_1 = {
+ icon = building_nanite_transmuter
+ base_buildtime = 360
+ can_build = yes
+ category = manufacturing building_sets = { industrial  }
+ planet_limit = 1 empire_limit = { base = 6 }
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony } NOR = { has_building = building_epoch_factory_1 has_building = building_epoch_factory_2 } }
+ allow = { owner = { count_owned_planet = { limit = { OR = { has_building = building_epoch_factory_1 has_building = building_epoch_factory_2 } } count < 6 } OR = { is_ai = no has_monthly_income = { resource = alloys value > 5 } } } }
+ prerequisites = { "tech_epoch_iv_cores" }
+ resources = { category = planet_buildings cost = { minerals = 800 alloys = 150  } upkeep = { energy = 4   } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_factory_add = 100 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_factory_drone_add = 100 }
+
+ upgrades = { "building_epoch_factory_2" }
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 60
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+
+ }
+}
+
+building_epoch_factory_2 = {
+ icon = building_nanite_transmuter
+ base_buildtime = 540
+ can_build = no
+ category = manufacturing building_sets = { industrial  }
+ planet_limit = 1 empire_limit = { base = 6 }
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony }  }
+ allow = { owner = {  OR = { is_ai = no has_monthly_income = { resource = alloys value > 5 } } } }
+ prerequisites = { "tech_epoch_iv_uap_core" }
+ resources = { category = planet_buildings cost = { minerals = 1600 alloys = 300  } upkeep = { energy = 8   } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_factory_add = 200 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_factory_drone_add = 200 }
+
+
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 60
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+
+ }
+}
+
+building_epoch_academy_1 = {
+ icon = building_fortress
+ base_buildtime = 360
+ can_build = yes
+ category = army building_sets = { fortress government }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony } NOR = { has_building = building_epoch_academy_1 has_building = building_epoch_academy_2 } }
+
+ prerequisites = { "tech_epoch_iv_ethics" }
+ resources = { category = planet_buildings cost = { minerals = 800 alloys = 150  } upkeep = { energy = 4 epoch_protocol_cores = 0.1  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_academy_add = 200 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_academy_drone_add = 200 }
+
+ upgrades = { "building_epoch_academy_2" }
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}
+
+building_epoch_academy_2 = {
+ icon = building_fortress
+ base_buildtime = 540
+ can_build = no
+ category = army building_sets = { fortress government }
+ planet_limit = 1
+ potential = { exists = owner owner = { epoch_iv_future_research = yes is_wilderness_empire = no } is_special_colony_type = no NOR = { has_modifier = resort_colony has_modifier = slave_colony has_modifier = penal_colony }  }
+
+ prerequisites = { "tech_epoch_iv_sovereignty" }
+ resources = { category = planet_buildings cost = { minerals = 1600 alloys = 300 epoch_protocol_cores = 40 } upkeep = { energy = 8 epoch_protocol_cores = 0.2  } }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = no } } job_epoch_academy_add = 400 }
+ triggered_planet_modifier = { potential = { exists = owner owner = { is_gestalt = yes } } job_epoch_academy_drone_add = 400 }
+
+
+ ai_weight_coefficient = 0.1
+ ai_weight = { weight = 10
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = energy value > 10 } } } }
+ modifier = { factor = 0 owner = { is_ai = yes NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 1 } } } }
+ }
+}

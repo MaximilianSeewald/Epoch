@@ -1,0 +1,120 @@
+{
+  "version": "Cygnus v4.5.3 (4e91)",
+  "checkedOn": "2026-11-10",
+  "baseline": "e9aa03d3f59e12ab15b9aa94c6a07c90b1b59318",
+  "evidence": "Installed primary source; static evidence only. No game session was run for this package.",
+  "files": [
+    {
+      "path": "launcher-settings.json",
+      "sha256": "65f9b547c0d5194f885ec015ff46edba941d45e78706b5a92efb03d079fa07e9"
+    },
+    {
+      "path": "common/component_templates/000_documentation.txt",
+      "sha256": "f9c0edfee06c59422609c04030e890afeb824055deeee18507315d8acb875286"
+    },
+    {
+      "path": "common/component_templates/weapon_components.csv",
+      "sha256": "a0d4b199ea51e59a600beab99046fad3c8a11a49ae39c8ace0aed73ebf6ff330"
+    },
+    {
+      "path": "common/component_templates/00_weapons_energy.txt",
+      "sha256": "01ff71cab87c210eb06a739d3177d7b158fb2478fecd29f3b787d44e3c3201a7"
+    },
+    {
+      "path": "common/component_templates/00_weapons_extra_large.txt",
+      "sha256": "55852d2fa0c12f8101b90b562678108a58078a4f31e29b7629c3f047509b3b61"
+    },
+    {
+      "path": "common/component_templates/00_weapons_projectile.txt",
+      "sha256": "12f3db4e3567fa707ff0f52d1bdc5cb47716b32ed7244425f4a70265dc6f5666"
+    },
+    {
+      "path": "common/component_templates/00_weapons_missiles.txt",
+      "sha256": "8115d3ee865d63962166d300d23af918c21224a8b828351c09b63d9cd8c9315c"
+    },
+    {
+      "path": "common/component_templates/00_weapons_pointdefence.txt",
+      "sha256": "7464d8a915a6e25132bd653d37bd634336956cc94d77c28bf55bb79e542e6352"
+    },
+    {
+      "path": "common/component_templates/00_strike_craft.txt",
+      "sha256": "f224e2737f2bdde3474375ad5f47253b1f2790e26908e38bae9d50a880f4e060"
+    },
+    {
+      "path": "common/component_templates/00_utilities.txt",
+      "sha256": "cd8a9a20f856d6abb6fdb98636cfb5dcda471f25d4ed757d46a668f95d0fa254"
+    },
+    {
+      "path": "common/component_templates/00_utilities_shields.txt",
+      "sha256": "54ab3bdfa086ca2e50829641087eff44728c52d5295a44fe42fe9ec2f69e7293"
+    },
+    {
+      "path": "common/component_templates/00_utilities_reactors.txt",
+      "sha256": "934821c1e8e05e71e1d2a142a9628e029a1b43636347f0bed34a74cd0cc2f333"
+    },
+    {
+      "path": "common/component_templates/00_utilities_roles.txt",
+      "sha256": "e3cf0c8f74da5b7d8e5a031f25fc37e43c3047c9e1b792b0383c36bfd36846fe"
+    },
+    {
+      "path": "common/component_templates/00_utilities_drives.txt",
+      "sha256": "7db6b11cc78d37e6c16eab98b0c8960e336a1f860c8aca2b1c4033d3b5475889"
+    },
+    {
+      "path": "common/scripted_variables/02_scripted_variables_component_cost.txt",
+      "sha256": "d2b035df63e70f0ae970f03c06c70ee6b6f52ef372e049b6c69a50517d183d07"
+    },
+    {
+      "path": "common/scripted_variables/100_scripted_variables_zones.txt",
+      "sha256": "f67b8c2d1d53c5b392ae60d0b89d069b581e59dee52f8102a2a47c430b216155"
+    },
+    {
+      "path": "common/scripted_variables/00_scripted_variables.txt",
+      "sha256": "24104d62e8ef7eb26ccb14e7d22980f790d5b5f7821bbdbb42450d3215b62a98"
+    },
+    {
+      "path": "common/pop_jobs/02_specialist_jobs.txt",
+      "sha256": "3e35067fd9b2524a101c2cc35dbbc3c67b383a46c8bf3bbfe475da77edbf6fbc"
+    },
+    {
+      "path": "common/pop_jobs/04_gestalt_jobs.txt",
+      "sha256": "9469c178efbaa2d8e5bce43545ee6d5a184ee0e764336e85170795d0cc6820ad"
+    },
+    {
+      "path": "common/inline_scripts/output/foundry_output.txt",
+      "sha256": "872d1c29a4242c4847d455e00638fa2131582ba2e7808848d312072def677796"
+    },
+    {
+      "path": "common/inline_scripts/jobs/researchers_add.txt",
+      "sha256": "9eeec59bb74326909ab30041dc5080e1ea4a717f1ae746471b42953cf02894d8"
+    },
+    {
+      "path": "common/buildings/05_research_buildings.txt",
+      "sha256": "17f2bf908c25b2c357756628340790457d41cdd5a9e2e07a62fb9fbc6d209af5"
+    },
+    {
+      "path": "common/buildings/04_manufacturing_buildings.txt",
+      "sha256": "48d9fb1613fd0c32b07c98399441f744464b72c0c902ab0c53749c348e69c44c"
+    },
+    {
+      "path": "common/buildings/09_army_buildings.txt",
+      "sha256": "f3f847c877e6ce8aa64340c13f059f535105290ec7fe4cca4df71cf0360f780e"
+    },
+    {
+      "path": "common/economic_categories/01_job_categories.txt",
+      "sha256": "ed538c98f6af75039ceff16dc532f55ca265d180504f7f709fce372127760468"
+    },
+    {
+      "path": "common/decisions/00_resource_decisions.txt",
+      "sha256": "8d0ee3fb30f25d81285a6ae505e9023470431b423168a218ff112ead63568df9"
+    },
+    {
+      "path": "common/strategic_resources/00_strategic_resources.txt",
+      "sha256": "140dea921a77f76726f361eca99f59f0c7755e4e728dec4699d3b732457911a4"
+    },
+    {
+      "path": "common/defines/00_defines.txt",
+      "sha256": "0fbf8c1507e8fa34eb056dabce1966af767bdafaebf1eb435eb7b1fdd28daf70"
+    }
+  ]
+}

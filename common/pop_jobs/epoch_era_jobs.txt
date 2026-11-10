@@ -1,0 +1,299 @@
+epoch_lab = {
+ category = specialist
+ icon = physicist
+ tags = { research }
+ building_icon = building_research_lab_3
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_specialist_job
+ possible = { complex_specialist_job_check_trigger = yes }
+ resources = { category = planet_epoch_lab
+ produces = { physics_research = 1.25 society_research = 1.25 engineering_research = 1.25 }
+
+ upkeep = {  epoch_protocol_cores = 0.2 }
+ upkeep = { consumer_goods = 1.5 }
+ }
+
+ weight = { weight = @specialist_job_weight }
+}
+
+epoch_lab_drone = {
+ category = complex_drone
+ icon = physicist
+ tags = { research }
+ building_icon = building_research_lab_3
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_drone_job
+ possible = { can_think = yes }
+ resources = { category = planet_epoch_lab
+ produces = { physics_research = 1.25 society_research = 1.25 engineering_research = 1.25 }
+
+ upkeep = {  epoch_protocol_cores = 0.2 }
+ upkeep = { energy = 2 }
+ }
+
+ weight = { weight = @complex_drone_job_weight }
+}
+
+epoch_forge = {
+ category = specialist
+ icon = foundry
+ tags = { alloys industry }
+ building_icon = building_foundry_3
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_specialist_job
+ possible = { complex_specialist_job_check_trigger = yes }
+ resources = { category = planet_epoch_forge
+ produces = { alloys = 4 }
+ produces = { trigger = { owner = { is_robot_empire = yes } } alloys = 1.333333 }
+ produces = { trigger = { industrial_jobs_are_catalytic_trigger = yes } alloys = 1 }
+ produces = { trigger = { industrial_jobs_are_catalytic_trigger = yes owner = { is_robot_empire = yes } } alloys = 0.333333 }
+ upkeep = { trigger = { industrial_jobs_are_catalytic_trigger = no } minerals = 8 }
+ upkeep = { trigger = { industrial_jobs_are_catalytic_trigger = no owner = { is_robot_empire = yes } } minerals = 2.666667 }
+ upkeep = { trigger = { industrial_jobs_are_catalytic_trigger = yes } food = 12 }
+ upkeep = { trigger = { industrial_jobs_are_catalytic_trigger = yes owner = { is_robot_empire = yes } } food = 4 }
+ upkeep = { epoch_protocol_cores = 0.15 }
+
+ }
+
+ weight = { weight = @specialist_job_weight }
+}
+
+epoch_forge_drone = {
+ category = complex_drone
+ icon = foundry
+ tags = { alloys industry }
+ building_icon = building_foundry_3
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_drone_job
+ possible = { can_think = yes }
+ resources = { category = planet_epoch_forge
+ produces = { alloys = 4 }
+ produces = { trigger = { owner = { is_robot_empire = yes } } alloys = 1.333333 }
+ produces = { trigger = { industrial_jobs_are_catalytic_trigger = yes } alloys = 1 }
+ produces = { trigger = { industrial_jobs_are_catalytic_trigger = yes owner = { is_robot_empire = yes } } alloys = 0.333333 }
+ upkeep = { trigger = { industrial_jobs_are_catalytic_trigger = no } minerals = 8 }
+ upkeep = { trigger = { industrial_jobs_are_catalytic_trigger = no owner = { is_robot_empire = yes } } minerals = 2.666667 }
+ upkeep = { trigger = { industrial_jobs_are_catalytic_trigger = yes } food = 12 }
+ upkeep = { trigger = { industrial_jobs_are_catalytic_trigger = yes owner = { is_robot_empire = yes } } food = 4 }
+ upkeep = { epoch_protocol_cores = 0.15 }
+
+ }
+
+ weight = { weight = @complex_drone_job_weight }
+}
+
+epoch_collector = {
+ category = specialist
+ icon = technician
+ tags = { energy }
+ building_icon = building_energy_grid
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_specialist_job
+ possible = { complex_specialist_job_check_trigger = yes }
+ resources = { category = planet_epoch_collector
+ produces = { energy = 10 }
+
+ upkeep = { minerals = 2 epoch_protocol_cores = 0.15 }
+
+ }
+
+ weight = { weight = @specialist_job_weight }
+}
+
+epoch_collector_drone = {
+ category = complex_drone
+ icon = technician
+ tags = { energy }
+ building_icon = building_energy_grid
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_drone_job
+ possible = { can_think = yes }
+ resources = { category = planet_epoch_collector
+ produces = { energy = 10 }
+
+ upkeep = { minerals = 2 epoch_protocol_cores = 0.15 }
+
+ }
+
+ weight = { weight = @complex_drone_job_weight }
+}
+
+epoch_institute = {
+ category = specialist
+ icon = healthcare
+ tags = { research unity amenities }
+ building_icon = building_institute
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_specialist_job
+ possible = { complex_specialist_job_check_trigger = yes }
+ resources = { category = planet_epoch_institute
+ produces = { society_research = 2 unity = 2 }
+
+ upkeep = {  epoch_protocol_cores = 0.15 }
+ upkeep = { consumer_goods = 1.5 }
+ }
+ planet_modifier = { planet_amenities_add = 500 }
+ weight = { weight = @specialist_job_weight }
+}
+
+epoch_institute_drone = {
+ category = complex_drone
+ icon = healthcare
+ tags = { research unity amenities }
+ building_icon = building_institute
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_drone_job
+ possible = { can_think = yes }
+ resources = { category = planet_epoch_institute
+ produces = { society_research = 2 unity = 2 }
+
+ upkeep = {  epoch_protocol_cores = 0.15 }
+ upkeep = { energy = 2 }
+ }
+ planet_modifier = { planet_amenities_add = 500 }
+ weight = { weight = @complex_drone_job_weight }
+}
+
+epoch_archive = {
+ category = specialist
+ icon = culture_worker
+ tags = { unity research }
+ building_icon = building_autochthon_monument
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_specialist_job
+ possible = { complex_specialist_job_check_trigger = yes }
+ resources = { category = planet_epoch_archive
+ produces = { unity = 5 physics_research = 1 }
+
+ upkeep = {  epoch_protocol_cores = 0.15 }
+ upkeep = { consumer_goods = 1.5 }
+ }
+
+ weight = { weight = @specialist_job_weight }
+}
+
+epoch_archive_drone = {
+ category = complex_drone
+ icon = culture_worker
+ tags = { unity research }
+ building_icon = building_autochthon_monument
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_drone_job
+ possible = { can_think = yes }
+ resources = { category = planet_epoch_archive
+ produces = { unity = 5 physics_research = 1 }
+
+ upkeep = {  epoch_protocol_cores = 0.15 }
+ upkeep = { energy = 2 }
+ }
+
+ weight = { weight = @complex_drone_job_weight }
+}
+
+epoch_phase = {
+ category = specialist
+ icon = soldier
+ tags = { soldier }
+ building_icon = building_planetary_shield_generator
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_specialist_job
+ possible = { complex_specialist_job_check_trigger = yes }
+ resources = { category = planet_epoch_phase
+ produces = {  }
+
+ upkeep = { energy = 2 epoch_protocol_cores = 0.15 }
+
+ }
+ planet_modifier = { planet_defense_armies_add = 3 }
+ weight = { weight = @specialist_job_weight }
+}
+
+epoch_phase_drone = {
+ category = complex_drone
+ icon = soldier
+ tags = { soldier }
+ building_icon = building_planetary_shield_generator
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_drone_job
+ possible = { can_think = yes }
+ resources = { category = planet_epoch_phase
+ produces = {  }
+
+ upkeep = { energy = 2 epoch_protocol_cores = 0.15 }
+
+ }
+ planet_modifier = { planet_defense_armies_add = 3 }
+ weight = { weight = @complex_drone_job_weight }
+}
+
+epoch_factory = {
+ category = specialist
+ icon = translucer
+ tags = { strategic_resource industry }
+ building_icon = building_nanite_transmuter
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_specialist_job
+ possible = { complex_specialist_job_check_trigger = yes }
+ resources = { category = planet_epoch_factory
+ produces = { epoch_protocol_cores = 2 }
+
+ upkeep = { minerals = 12 alloys = 2 energy = 6 }
+
+ }
+
+ weight = { weight = @specialist_job_weight }
+}
+
+epoch_factory_drone = {
+ category = complex_drone
+ icon = translucer
+ tags = { strategic_resource industry }
+ building_icon = building_nanite_transmuter
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_drone_job
+ possible = { can_think = yes }
+ resources = { category = planet_epoch_factory
+ produces = { epoch_protocol_cores = 2 }
+
+ upkeep = { minerals = 12 alloys = 2 energy = 6 }
+
+ }
+
+ weight = { weight = @complex_drone_job_weight }
+}
+
+epoch_academy = {
+ category = specialist
+ icon = soldier
+ tags = { soldier unity }
+ building_icon = building_fortress
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_specialist_job
+ possible = { complex_specialist_job_check_trigger = yes }
+ resources = { category = planet_epoch_academy
+ produces = { unity = 1 }
+
+ upkeep = { energy = 2 alloys = 0.5 epoch_protocol_cores = 0.15 }
+
+ }
+ country_modifier = { country_naval_cap_add = 6 } planet_modifier = { planet_defense_armies_add = 2 }
+ weight = { weight = @specialist_job_weight }
+}
+
+epoch_academy_drone = {
+ category = complex_drone
+ icon = soldier
+ tags = { soldier unity }
+ building_icon = building_fortress
+ possible_pre_triggers = { has_owner = yes is_being_purged = no is_being_assimilated = no is_sapient = yes }
+ possible_precalc = can_fill_drone_job
+ possible = { can_think = yes }
+ resources = { category = planet_epoch_academy
+ produces = { unity = 1 }
+
+ upkeep = { energy = 2 alloys = 0.5 epoch_protocol_cores = 0.15 }
+
+ }
+ country_modifier = { country_naval_cap_add = 6 } planet_modifier = { planet_defense_armies_add = 2 }
+ weight = { weight = @complex_drone_job_weight }
+}
