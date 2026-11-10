@@ -39,7 +39,7 @@ weapon_component_template = {
 
  damage = { min = 53 max = 140 }
 
- windup = { min = 53 max = 140 }
+ windup = { min = 7 max = 27 }
 
  total_fire_time = 40
 
@@ -108,7 +108,7 @@ weapon_component_template = {
 
  damage = { min = 126 max = 336 }
 
- windup = { min = 126 max = 336 }
+ windup = { min = 8 max = 30 }
 
  total_fire_time = 45
 

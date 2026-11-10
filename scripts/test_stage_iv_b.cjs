@@ -109,6 +109,10 @@ const csv=native('common/component_templates/weapon_components.csv').split(/\r?\
 for(const entry of manifest.weapons){
  const b=component(hardware,entry.key),base=nativeComponent(entry.vanilla),stats=rows.get(entry.vanilla);
  check(get(b,'size')===get(base,'size')&&get(b,'type')===get(base,'type'),'native tactical slot/type '+entry.key);
+ // No intentional windup deviations: compare both bounds separately from damage.
+ for(const [bound,column]of [['min','min_windup'],['max','max_windup']])check(Number(get(get(b,'windup'),bound))===stats[column],'native CSV windup '+entry.key+'/'+column);
+ // Intentional role tradeoffs: siege lance 90 vs vanilla 70; shield artillery
+ // 60 vs vanilla 50. All other fire cycles retain the native CSV value.
  const overrides={EPOCH_PHASE_M:{range:50,shield_damage:0.15},EPOCH_PHASE_L:{range:70,shield_damage:0.15},EPOCH_CAUSAL_LANCE:{range:175,cooldown:90},EPOCH_FRACTAL_ARTILLERY:{shield_damage:3,armor_damage:0.25,cooldown:60}}[entry.key]||{};
  for(const k of ['range','accuracy','tracking','shield_damage','armor_damage','shield_penetration','armor_penetration','size_damage_factor','cooldown'])check(Number(get(b,k==='cooldown'?'total_fire_time':k))===(overrides[k]??stats[k]),'native values or explicitly bounded role '+entry.key+'/'+k);
  for(const [k,col]of [['min','min_damage'],['max','max_damage']])check(Math.abs(Number(get(get(b,'damage'),k))/stats[col]-entry.damageScale)<0.001,'bounded primary damage '+entry.key+'/'+k);
@@ -121,6 +125,8 @@ for(const entry of manifest.weapons){
 }
 check(get(component(hardware,'EPOCH_NULLWAVE_TORPEDO'),'size')==='torpedo','anti-capital torpedo uses G slot');
 const fighters=component(hardware,'EPOCH_SWARM_FIGHTERS'),vanillaFighters=nativeComponent('STRIKE_CRAFT_HANGAR_3');
+check(get(fighters,'cooldown')===get(vanillaFighters,'cooldown'),'strike-craft native template cooldown');
+assert.deepEqual(get(fighters,'windup'),get(vanillaFighters,'windup'),'strike-craft native template windup (neither defines one)');checks++;
 check(Number(get(get(fighters,'damage'),'max'))/Number(get(get(vanillaFighters,'damage'),'max'))===1.3,'strike-craft damage uplift');
 check(get(fighters,'count')==='8'&&get(fighters,'shield_penetration')==='1.0','eight shield-bypassing fighters per H slot');
 for(const role of ['SWARM','PICKET','LINE','ARTILLERY','CARRIER','TORPEDO']){
