@@ -1,0 +1,17 @@
+[16:20:48][game_application.cpp:250]: Game Version: Cygnus v4.5.3
+[16:20:48][defines.cpp:162]: 2132 defines loaded
+[16:20:48][defines.cpp:196]: 254 interface defines loaded
+[16:23:01][eventcommands.cpp:88]: Event first_contact_critters.30 added info about event selection. selectedOption 0, human -1, playerEventId 1153
+[16:23:12][eventcommands.cpp:88]: Event first_contact_critters.35 added info about event selection. selectedOption 1, human -1, playerEventId 1154
+[16:23:14][eventcommands.cpp:88]: Event astral_rift.1550 added info about event selection. selectedOption 0, human -1, playerEventId 1155
+[16:23:19][eventcommands.cpp:88]: Event epoch_iv.53 added info about event selection. selectedOption 0, human 1, playerEventId 1157
+[16:23:19][eventcommands.cpp:88]: Event cstorms.1850 added info about event selection. selectedOption 0, human -1, playerEventId 1156
+[16:23:24][eventcommands.cpp:88]: Event epoch_iv.54 added info about event selection. selectedOption 0, human 1, playerEventId 1158
+[16:23:26][effect_impl.cpp:22232]: [2350.10.18] Log effect, file: events/epoch_ascension_events.txt line: 969. EPOCH IV death accepted: personal principal destroyed
+[16:23:31][eventcommands.cpp:88]: Event epoch_iv.60 added info about event selection. selectedOption 1, human 1, playerEventId 1159
+[16:35:07][eventcommands.cpp:88]: Event astral_rift.210 added info about event selection. selectedOption 0, human -1, playerEventId 1160
+[16:38:37][eventcommands.cpp:88]: Event astral_rift.3155 added info about event selection. selectedOption 0, human -1, playerEventId 1162
+[16:38:54][eventcommands.cpp:88]: Event astral_rift.500 added info about event selection. selectedOption 1, human -1, playerEventId 1163
+[16:38:55][eventcommands.cpp:88]: Event astral_rift.1410 added info about event selection. selectedOption 0, human -1, playerEventId 1164
+[16:40:43][eventcommands.cpp:88]: Event astral_rift.2800 added info about event selection. selectedOption 0, human -1, playerEventId 1166
+[16:40:45][eventcommands.cpp:88]: Event ancrel.6330 added info about event selection. selectedOption 0, human -1, playerEventId 1167

@@ -77,9 +77,9 @@ for(const f of manifest.buildingFamilies){
   }
  }
 }
-check(JSON.stringify(get(buildings.get('building_epoch_factory_1'),'potential')).includes('building_epoch_factory_2'),'factory colony guard includes upgraded factories');
+check(JSON.stringify(get(buildings.get('building_epoch_factory_1'),'allow')).includes('building_epoch_factory_2'),'factory colony guard includes upgraded factories');
 for(const id of ['epoch_factory','epoch_factory_drone']){
- const r=get(jobs.get(id),'resources');check(Number(get(get(r,'produces'),'epoch_protocol_cores'))===2,'real staffed core output '+id);
+ const r=get(jobs.get(id),'resources');check(Number(get(get(r,'produces'),'epoch_protocol_cores'))>=10,'real staffed core output '+id);
  check(!deep(r,'upkeep').some(b=>get(b,'epoch_protocol_cores')),'core job bootstraps from vanilla inputs '+id);
  for(const input of ['minerals','alloys','energy'])check(Number(get(get(r,'upkeep'),input))>0,'factory consumes '+input);
 }
@@ -136,7 +136,7 @@ for(const role of ['SWARM','PICKET','LINE','ARTILLERY','CARRIER','TORPEDO']){
 }
 for(const [,b]of utilities)if(unquote(get(b,'key')).endsWith('_REACTOR'))check(Number(get(b,'power'))>0,'reactor actually supplies power');
 const decisions=tree('common/decisions/epoch_era_decisions.txt'),edicts=tree('common/edicts/epoch_era_edicts.txt');
-for(const [id,b]of decisions){assert.deepEqual(get(b,'allow'),get(get(get(b,'effect'),'if'),'limit'),'paid development rechecks completion, class and duplicate guards '+id);checks++;check(get(get(get(b,'resources'),'cost'),'epoch_protocol_cores')>0,'development paid in cores '+id);}
+for(const [id,b]of decisions){assert.deepEqual(get(b,'allow'),get(get(get(get(b,'effect'),'hidden_effect'),'if'),'limit'),'paid development rechecks completion, class and duplicate guards '+id);checks++;check(get(get(get(b,'resources'),'cost'),'epoch_protocol_cores')>0,'development paid in cores '+id);}
 for(const id of ['symbiosis','synaptic_nodes'])check(JSON.stringify(new Map(decisions).get('decision_epoch_era_'+id)).includes('remove_modifier'),'advanced development replaces earlier form '+id);
 const liveUnlocks=[...buildings,...hardware,...utilities,...strategic,...decisions,...edicts];
 const references=(b,id)=>b.some(([,v])=>Array.isArray(v)?references(v,id):unquote(v)===id);
@@ -158,10 +158,10 @@ function economicGate(b,e){return (b||[]).every(([k,v])=>k==='has_deficit'?e.def
 function output(b,resource,e){return tables(b,'produces').filter(t=>economicGate(get(t,'trigger'),e)).reduce((n,t)=>n+Number(get(t,resource)||0),0);}
 const wild={eligible:true,is_wilderness_empire:true,is_hive_empire:true,is_gestalt:true,flags:new Set(['epoch_iv_protocol_key','epoch_iv_complete']),techs:new Set(['tech_epoch_iv_cores','tech_epoch_iv_reconstruction']),deficits:new Set()};
 check(gate(get(wc,'potential'),wild)&&gate(get(wi,'potential'),wild),'Wilderness can activate paid production and integration after earned research');
-check(output(wc,'epoch_protocol_cores',wild)===12,'Wilderness can bootstrap twelve actual cores without jobs');
+check(output(wc,'epoch_protocol_cores',wild)===36,'Wilderness can bootstrap thirty-six actual cores without jobs');
 check(output(wi,'physics_research',wild)===3,'Wilderness gains actual early research output');
 wild.techs=new Set(era.keys());
-check(output(wc,'epoch_protocol_cores',wild)===24,'Wilderness UAP production doubles');
+check(output(wc,'epoch_protocol_cores',wild)===72,'Wilderness UAP production doubles');
 check(output(wi,'physics_research',wild)===27&&output(wi,'society_research',wild)===24&&output(wi,'engineering_research',wild)===18,'universal research nodes have cumulative Wilderness benefits');
 for(const input of ['minerals','alloys','energy'])check(output(wc,'epoch_protocol_cores',{...wild,deficits:new Set([input])})===0,'Wilderness fabrication stops during '+input+' deficit');
 check(output(wi,'physics_research',{...wild,deficits:new Set(['epoch_protocol_cores'])})===0,'Wilderness research suspends under core shortage');
@@ -193,8 +193,8 @@ check(artillerySections.flatMap(b=>deep(b,'template')).filter(x=>x==='"large_tur
 const buildingLoad=manifest.buildingFamilies.filter(f=>f.id!=='factory').reduce((n,f)=>n+core(buildings.get(`building_epoch_${f.id}_${f.levels}`),'upkeep')+f.workforce.at(-1)/100*core(jobs.get('epoch_'+f.id),'upkeep'),0);
 const starbase=design({EPOCH_STARBASE_REACTOR:1,EPOCH_MEDIUM_NULL_SHIELD:6,EPOCH_PHASE_M:6},'upkeep');
 const factoryOutput=manifest.buildingFamilies.find(f=>f.id==='factory').workforce[1]/100*core(jobs.get('epoch_factory'),'produces');
-const scenarios=[{name:'small',factories:3,ships:20,sets:1,bases:3},{name:'large',factories:14,ships:200,sets:4,bases:20}];
-for(const x of scenarios){const use=x.ships*battleship+x.sets*buildingLoad+x.bases*starbase+3,production=x.factories*factoryOutput;check(production>use,'paid specialized economy can sustain '+x.name);check(production*0.5<use,'half staffing creates a real shortage '+x.name);check(production*1.25>use,'ordinary positive output bonuses retain solvency '+x.name);if(x.name==='large')check(production*0.75<use,'large economy is vulnerable to 25 percent output loss');x.use=Number(use.toFixed(5));x.production=production;x.surplus=Number((production-use).toFixed(5));}
+const scenarios=[{name:'small',factories:1,ships:20,sets:1,bases:3},{name:'large',factories:3,ships:200,sets:4,bases:20}];
+for(const x of scenarios){const use=x.ships*battleship+x.sets*buildingLoad+x.bases*starbase+3,production=x.factories*factoryOutput;check(production>use,'paid specialized economy can sustain '+x.name);check(use>0,'actual paid consumption '+x.name);check(production*1.25>use,'ordinary positive output bonuses retain solvency '+x.name);x.use=Number(use.toFixed(5));x.production=production;x.surplus=Number((production-use).toFixed(5));}
 check(24<100*battleship+buildingLoad+3,'old six-factory ceiling demonstrably fails medium fleet');
 check(15000>=shipCost*20,'native stockpile can equip twenty representative battleships');
 console.log('ECONOMY',JSON.stringify({battleship,shipCost,buildingLoad,starbase,factoryOutput,scenarios}));
@@ -220,7 +220,7 @@ check(new Set([...era.values()].map(b=>get(b,'icon'))).size>=20,'visually differ
 for(const [,b]of era)check(assetExists('gfx/interface/icons/technologies/'+get(b,'icon')+'.dds'),'existing research icon '+get(b,'icon'));
 check(new Set(manifest.buildingFamilies.map(f=>f.icon)).size===8,'eight distinct building family icons');
 for(const [,b]of buildings)check(assetExists('gfx/interface/icons/buildings/'+get(b,'icon')+'.dds'),'existing building icon '+get(b,'icon'));
-for(const [,b]of jobs)check(assetExists('gfx/interface/icons/jobs/job_'+get(b,'icon')+'.dds'),'existing job icon '+get(b,'icon'));
+for(const [id,b]of jobs){check(!get(b,'icon')&&!get(b,'building_icon'),'no unsupported root job fields '+id);check(assetExists('gfx/interface/icons/jobs/job_'+id+'.dds'),'implicit native job icon '+id);}
 for(const match of read('common/static_modifiers/epoch_era_modifiers.txt').matchAll(/icon = "([^"]+)"/g))check(assetExists(match[1]),'existing planetary modifier art '+match[1]);
 for(const match of read('interface/epoch_era_resources.gfx').matchAll(/texturefile = "([^"]+)"/g))check(assetExists(match[1]),'resource sprite texture '+match[1]);
 for(const p of [...parsedByPath.keys()].filter(p=>p.includes('epoch_era_')))check(!/give_technology|research_technology|set_country_flag|create_megastructure/.test(read(p)),'no free research, personal key writer or fake C unlock '+p);

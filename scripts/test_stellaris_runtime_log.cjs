@@ -5,6 +5,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const rules = [
+  ['Missing EPOCH native asset', /missing texture|couldn.t find texture|unknown sprite|error initialising texture/i],
+  ['Unlocalized EPOCH modifier', /modifier is used but not localized/i],
   ['Critical scripted-effect depth', /max effects post init recursive depth/i],
   ['Invalid context switch', /invalid context switch/i],
   ['Invalid name promotion', /unknown promotion|unknown property/i],
@@ -32,7 +34,7 @@ function classify(text) {
   const epochCorruptFiles = new Set(entries.filter(e => e.epoch && /corrupt event table entry/i.test(e.text)).map(e => e.text.match(/(?:events[\\/])?epoch_[\w.-]+\.txt/i)?.[0]?.toLowerCase()).filter(Boolean));
   const root = [], cascades = [], foreign = [], seenCorruptFiles = new Set();
   for (const entry of entries) {
-    if (!entry.text.trim() || !/error|warning|invalid|corrupt|could not find|missing|unexpected|wrong scope|critical|unknown promotion|unknown property/i.test(entry.text)) continue;
+    if (!entry.text.trim() || !/error|warning|invalid|corrupt|could not find|missing|unexpected|wrong scope|critical|unknown promotion|unknown property|unknown sprite|not localized/i.test(entry.text)) continue;
     if (!entry.epoch) { foreign.push(entry); continue; }
     const file = entry.text.match(/(?:events[\\/])?epoch_[\w.-]+\.txt/i)?.[0]?.toLowerCase();
     const category = rules.find(([, regex]) => regex.test(entry.text));
@@ -74,6 +76,8 @@ function selfTest() {
     '[game_text.cpp:1531]: Unknown promotion `event_target:epoch_res_battle_location`',
   ].join('\n'));
   if(runtime.root.length!==3||runtime.foreign.length)throw Error('All three reported runtime failures must be EPOCH root errors');
+  const bc=classify('[job.cpp:1]: Job epoch_factory is missing texture gfx/interface/icons/jobs/job_epoch_factory.dds\n[3dicon.cpp:2]: Trying to change sprite to unknown sprite GFX_epoch_nexus_1_build_icon\n[modifier.cpp:3]: mod_pop_epoch_lab_bonus_workforce_mult modifier is used but not localized!');
+  if(bc.root.length!==3)throw Error('B+C missing assets and generated localization must fail the log gate');
   console.log('PASS: runtime log classifier self-test (root causes, EPOCH cascades, foreign diagnostics).');
 }
 

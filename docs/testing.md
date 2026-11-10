@@ -1,5 +1,7 @@
 # Acceptance and Verification
 
+> 2026-11-10: The first B+C runtime test found critical failures. Current corrections, evidence limits and the sole compact follow-up smoke test: [correction report](phases/stage-iv-b-c-corrections.md). Earlier static PASS statements do not establish runtime compatibility.
+
 Stage III's next connected run follows the [second-playtest changes and focused acceptance sequence](phases/stage-iii-second-playtest.md). Earlier foundational matrices remain coverage references; they do not require repeated player signoffs for already confirmed opening mechanics.
 
 **Status: Binding test criteria.** Stage design is in the [stage specifications](phases/); engine evidence limits are in the [technical contract](technical-contract.md). This file is an acceptance plan, not a completed test report.
@@ -98,4 +100,4 @@ Required connected matrix:
 The reported successful player test of Stage II on commit `84aaa4cf72cdc32f6aee6c371178f5fcb8e3693e` is evidence of a connected **main player route only**, not proof of Stage-III implementation, AI/MP compatibility or all alternate Stage-I/II paths.
 <!-- /EPOCH_STAGE_III_DESIGN_V1:testing -->
 
-Paket-B-Nachbesserung zu PR #18: [konkrete Belastungsrechnung, Grenzen und genau ein gebündelter Ingame-Abnahmelauf](phases/stage-iv-package-b-review.md). Statische Review-Ausgabe: [10.11.2026](research/stage-iv-b-review-static-checks-2026-11-10.txt).
+Paket-B-Nachbesserung zu PR #18: [konkrete Belastungsrechnung, Grenzen und genau ein gebï¿½ndelter Ingame-Abnahmelauf](phases/stage-iv-package-b-review.md). Statische Review-Ausgabe: [10.11.2026](research/stage-iv-b-review-static-checks-2026-11-10.txt).

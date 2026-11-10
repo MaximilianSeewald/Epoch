@@ -19,11 +19,11 @@ epoch_era_wilderness_cores = {
  length = -1 icon = "GFX_edict_type_policy"
  potential = { epoch_iv_future_research = yes is_wilderness_empire = yes has_technology = tech_epoch_iv_cores }
  resources = { category = edicts_unscaled
-  cost = { minerals = 1200 alloys = 225 }
-  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  NOT = { has_deficit = minerals } NOT = { has_deficit = alloys } NOT = { has_deficit = energy } } epoch_protocol_cores = 12 }
-  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_uap_core NOT = { has_deficit = minerals } NOT = { has_deficit = alloys } NOT = { has_deficit = energy } } epoch_protocol_cores = 12 }
-  upkeep = { minerals = 72 alloys = 12 energy = 48 }
-  upkeep = { trigger = { has_technology = tech_epoch_iv_uap_core } minerals = 72 alloys = 12 energy = 48 }
+  cost = { multiplier = value:epoch_era_wilderness_network_scale minerals = 1200 alloys = 225 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  NOT = { has_deficit = minerals } NOT = { has_deficit = alloys } NOT = { has_deficit = energy } } epoch_protocol_cores = 36 multiplier = value:epoch_era_wilderness_network_scale }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_uap_core NOT = { has_deficit = minerals } NOT = { has_deficit = alloys } NOT = { has_deficit = energy } } epoch_protocol_cores = 36 multiplier = value:epoch_era_wilderness_network_scale }
+  upkeep = { multiplier = value:epoch_era_wilderness_network_scale minerals = 108 alloys = 18 energy = 56 }
+  upkeep = { multiplier = value:epoch_era_wilderness_network_scale trigger = { has_technology = tech_epoch_iv_uap_core } minerals = 108 alloys = 18 energy = 56 }
  }
  ai_weight = { weight = 60 modifier = { factor = 0 NOT = { has_monthly_income = { resource = minerals value > 144 } } NOT = { has_edict = epoch_era_wilderness_cores } } modifier = { factor = 0 NOT = { has_monthly_income = { resource = alloys value > 24 } } NOT = { has_edict = epoch_era_wilderness_cores } } modifier = { factor = 0 NOT = { has_monthly_income = { resource = energy value > 96 } } NOT = { has_edict = epoch_era_wilderness_cores } } }
 }

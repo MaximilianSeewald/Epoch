@@ -3,7 +3,7 @@ decision_epoch_era_tissue = {
  resources = { category = decisions cost = { energy = 2000 epoch_protocol_cores = 80 } }
  potential = { exists = owner owner = { epoch_iv_future_research = yes is_gestalt = no is_robot_empire = no } }
  allow = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_tissue is_gestalt = no is_robot_empire = no } NOR = { has_modifier = epoch_era_tissue has_modifier = epoch_era_tissue_lithoid } NOR = { has_modifier = epoch_era_symbiosis has_modifier = epoch_era_symbiosis_lithoid } }
- effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_tissue is_gestalt = no is_robot_empire = no } NOR = { has_modifier = epoch_era_tissue has_modifier = epoch_era_tissue_lithoid } NOR = { has_modifier = epoch_era_symbiosis has_modifier = epoch_era_symbiosis_lithoid } }  if = { limit = { owner = { is_lithoid_empire = yes } } add_modifier = { modifier = epoch_era_tissue_lithoid days = 3600 } } else = { add_modifier = { modifier = epoch_era_tissue days = 3600 } } } }
+ effect = { tooltip = { if = { limit = { owner = { is_lithoid_empire = yes } } add_modifier = { modifier = epoch_era_tissue_lithoid days = 3600 } } else = { add_modifier = { modifier = epoch_era_tissue days = 3600 } } } hidden_effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_tissue is_gestalt = no is_robot_empire = no } NOR = { has_modifier = epoch_era_tissue has_modifier = epoch_era_tissue_lithoid } NOR = { has_modifier = epoch_era_symbiosis has_modifier = epoch_era_symbiosis_lithoid } }  if = { limit = { owner = { is_lithoid_empire = yes } } add_modifier = { modifier = epoch_era_tissue_lithoid days = 3600 } } else = { add_modifier = { modifier = epoch_era_tissue days = 3600 } } } } }
  ai_weight = { weight = 10 modifier = { factor = 0 owner = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 3 } } } } }
 }
 
@@ -12,7 +12,7 @@ decision_epoch_era_symbiosis = {
  resources = { category = decisions cost = { energy = 2000 epoch_protocol_cores = 120 } }
  potential = { exists = owner owner = { epoch_iv_future_research = yes is_gestalt = no is_robot_empire = no } }
  allow = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_symbiosis is_gestalt = no is_robot_empire = no } NOR = { has_modifier = epoch_era_symbiosis has_modifier = epoch_era_symbiosis_lithoid }  }
- effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_symbiosis is_gestalt = no is_robot_empire = no } NOR = { has_modifier = epoch_era_symbiosis has_modifier = epoch_era_symbiosis_lithoid }  } remove_modifier = epoch_era_tissue remove_modifier = epoch_era_tissue_lithoid if = { limit = { owner = { is_lithoid_empire = yes } } add_modifier = { modifier = epoch_era_symbiosis_lithoid days = 3600 } } else = { add_modifier = { modifier = epoch_era_symbiosis days = 3600 } } } }
+ effect = { tooltip = { if = { limit = { owner = { is_lithoid_empire = yes } } add_modifier = { modifier = epoch_era_symbiosis_lithoid days = 3600 } } else = { add_modifier = { modifier = epoch_era_symbiosis days = 3600 } } } hidden_effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_symbiosis is_gestalt = no is_robot_empire = no } NOR = { has_modifier = epoch_era_symbiosis has_modifier = epoch_era_symbiosis_lithoid }  } remove_modifier = epoch_era_tissue remove_modifier = epoch_era_tissue_lithoid if = { limit = { owner = { is_lithoid_empire = yes } } add_modifier = { modifier = epoch_era_symbiosis_lithoid days = 3600 } } else = { add_modifier = { modifier = epoch_era_symbiosis days = 3600 } } } } }
  ai_weight = { weight = 10 modifier = { factor = 0 owner = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 3 } } } } }
 }
 
@@ -21,7 +21,7 @@ decision_epoch_era_transcription = {
  resources = { category = decisions cost = { energy = 2000 epoch_protocol_cores = 80 } }
  potential = { exists = owner owner = { epoch_iv_future_research = yes is_hive_empire = yes } }
  allow = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_transcription is_hive_empire = yes } NOT = { has_modifier = epoch_era_transcription } NOT = { has_modifier = epoch_era_synaptic_nodes } }
- effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_transcription is_hive_empire = yes } NOT = { has_modifier = epoch_era_transcription } NOT = { has_modifier = epoch_era_synaptic_nodes } }  add_modifier = { modifier = epoch_era_transcription days = 3600 } } }
+ effect = { tooltip = { add_modifier = { modifier = epoch_era_transcription days = 3600 } } hidden_effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_transcription is_hive_empire = yes } NOT = { has_modifier = epoch_era_transcription } NOT = { has_modifier = epoch_era_synaptic_nodes } }  add_modifier = { modifier = epoch_era_transcription days = 3600 } } } }
  ai_weight = { weight = 10 modifier = { factor = 0 owner = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 3 } } } } }
 }
 
@@ -30,7 +30,7 @@ decision_epoch_era_synaptic_nodes = {
  resources = { category = decisions cost = { energy = 2000 epoch_protocol_cores = 120 } }
  potential = { exists = owner owner = { epoch_iv_future_research = yes is_hive_empire = yes } }
  allow = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_synaptic_nodes is_hive_empire = yes } NOT = { has_modifier = epoch_era_synaptic_nodes }  }
- effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_synaptic_nodes is_hive_empire = yes } NOT = { has_modifier = epoch_era_synaptic_nodes }  } if = { limit = { has_modifier = epoch_era_transcription } remove_modifier = epoch_era_transcription } add_modifier = { modifier = epoch_era_synaptic_nodes days = 3600 } } }
+ effect = { tooltip = { add_modifier = { modifier = epoch_era_synaptic_nodes days = 3600 } } hidden_effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_synaptic_nodes is_hive_empire = yes } NOT = { has_modifier = epoch_era_synaptic_nodes }  } if = { limit = { has_modifier = epoch_era_transcription } remove_modifier = epoch_era_transcription } add_modifier = { modifier = epoch_era_synaptic_nodes days = 3600 } } } }
  ai_weight = { weight = 10 modifier = { factor = 0 owner = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 3 } } } } }
 }
 
@@ -39,6 +39,6 @@ decision_epoch_era_self_model = {
  resources = { category = decisions cost = { energy = 2000 epoch_protocol_cores = 80 } }
  potential = { exists = owner owner = { epoch_iv_future_research = yes is_robot_empire = yes } }
  allow = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_self_model is_robot_empire = yes } NOT = { has_modifier = epoch_era_self_model }  }
- effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_self_model is_robot_empire = yes } NOT = { has_modifier = epoch_era_self_model }  }  add_modifier = { modifier = epoch_era_self_model days = 3600 } } }
+ effect = { tooltip = { add_modifier = { modifier = epoch_era_self_model days = 3600 } } hidden_effect = { if = { limit = { is_occupied_flag = no owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_self_model is_robot_empire = yes } NOT = { has_modifier = epoch_era_self_model }  }  add_modifier = { modifier = epoch_era_self_model days = 3600 } } } }
  ai_weight = { weight = 10 modifier = { factor = 0 owner = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 3 } } } } }
 }

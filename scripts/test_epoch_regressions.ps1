@@ -476,6 +476,9 @@ Assert-Check ($LASTEXITCODE -eq 0) 'Stage-III opening guards, finite physical-so
 & node (Join-Path $PSScriptRoot 'test_stage_iv.cjs') $Root $VanillaRoot
 Assert-Check ($LASTEXITCODE -eq 0) 'Stage-IV personal kill attribution, project callbacks and safe feature transitions must pass (static only)'
 & node (Join-Path $PSScriptRoot 'test_stage_iv_b.cjs') $Root $VanillaRoot
+Assert-Check ($LASTEXITCODE -eq 0) 'Package-B content suite must pass'
+& node (Join-Path $PSScriptRoot 'test_stage_iv_runtime_contracts.cjs') $Root $VanillaRoot
+if ($LASTEXITCODE -ne 0) { $script:Failures.Add('Stage IV runtime contracts failed') }
 Assert-Check ($LASTEXITCODE -eq 0) 'Stage-IV technology DAG, core economy, upgrades, native equipment and old-campaign preservation must pass (static only)'
 
 # Summarize existing test logs by source. Old EPOCH failures are reported as
