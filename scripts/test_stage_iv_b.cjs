@@ -177,7 +177,7 @@ for(const id of ['tissue','symbiosis']){
 // Bio-ships hide exactly eleven equipment-only cards; infrastructure remains reachable above.
 check([...era.values()].filter(t=>get(get(t,'potential'),'country_uses_bio_ships')==='no').length===11,'eleven incompatible military cards');
 // Economic load is derived from real component, building, workforce and job resource tables.
-const core=(b,k)=>Number(get(get(get(b,'resources'),k),'epoch_protocol_cores')||0);
+const core=(b,k)=>get(b,'resources').filter(([key])=>key===k).reduce((n,[,t])=>n+Number(get(t,'epoch_protocol_cores')||0),0);
 const shipLoad={EPOCH_CAUSAL_LANCE:1,EPOCH_FRACTAL_ARTILLERY:4,EPOCH_LARGE_TRANSCENDENT_SHIELD:3,EPOCH_LARGE_PHASE_ARMOR:3,EPOCH_BATTLESHIP_REACTOR:1,EPOCH_COMPUTER_ARTILLERY:1,EPOCH_COHERENCE_DRIVE:1,EPOCH_TEMPORAL_STABILIZER:2};
 const equipment=[...hardware,...utilities];
 const design=(items,k)=>Object.entries(items).reduce((n,[id,count])=>n+count*core(component(equipment,id),k),0);
@@ -193,8 +193,8 @@ check(artillerySections.flatMap(b=>deep(b,'template')).filter(x=>x==='"large_tur
 const buildingLoad=manifest.buildingFamilies.filter(f=>f.id!=='factory').reduce((n,f)=>n+core(buildings.get(`building_epoch_${f.id}_${f.levels}`),'upkeep')+f.workforce.at(-1)/100*core(jobs.get('epoch_'+f.id),'upkeep'),0);
 const starbase=design({EPOCH_STARBASE_REACTOR:1,EPOCH_MEDIUM_NULL_SHIELD:6,EPOCH_PHASE_M:6},'upkeep');
 const factoryOutput=manifest.buildingFamilies.find(f=>f.id==='factory').workforce[1]/100*core(jobs.get('epoch_factory'),'produces');
-const scenarios=[{name:'small',factories:1,ships:20,sets:1,bases:3},{name:'large',factories:3,ships:200,sets:4,bases:20}];
-for(const x of scenarios){const use=x.ships*battleship+x.sets*buildingLoad+x.bases*starbase+3,production=x.factories*factoryOutput;check(production>use,'paid specialized economy can sustain '+x.name);check(use>0,'actual paid consumption '+x.name);check(production*1.25>use,'ordinary positive output bonuses retain solvency '+x.name);x.use=Number(use.toFixed(5));x.production=production;x.surplus=Number((production-use).toFixed(5));}
+const scenarios=require('./epoch_core_economy.cjs').economy(root).scenarios;
+for(const x of scenarios){check(x.net>0,'funded paid economy sustains '+x.name);check(x.halfStaffedNet<0,'partial staffing causes a real modeled shortfall '+x.name);}
 check(24<100*battleship+buildingLoad+3,'old six-factory ceiling demonstrably fails medium fleet');
 check(15000>=shipCost*20,'native stockpile can equip twenty representative battleships');
 console.log('ECONOMY',JSON.stringify({battleship,shipCost,buildingLoad,starbase,factoryOutput,scenarios}));

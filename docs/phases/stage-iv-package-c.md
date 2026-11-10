@@ -1,5 +1,7 @@
 # Stage IV – Paket C: Aufstieg und Megastrukturen
 
+> Third player test confirms construction and UI progress but resource production failed. Use only the [production correction and minimal Factory I/II, Nexus I, Forge I smoke test](stage-iv-production-correction.md). Earlier recurring scope assumptions below were wrong and are superseded.
+
 > 2026-11-10: The actual B+C playtest invalidated the earlier resource-scope assumptions. Current [runtime corrections and compact smoke test](stage-iv-b-c-corrections.md) supersede those statements; [revised balance tables](../research/stage-iv-c-corrected-balance.md) use installed 4.5.3 comparisons.
 
 Implementiert auf `a330bfedcb362c90b5551b283935753ca99cbce7` (geprüftes Paket B), Ziel **Cygnus 4.5.3 (4e91)**. Quellenprüfung und statische Regressionen sind keine Ingame-Abnahme. Es gibt weiterhin genau eine EPOCH-Mod. Der [gemeinsame B+C-Abnahmeplan](stage-iv-b-c-acceptance.md) bündelt die nächste manuelle Prüfung; jetzt ist kein eigener umfangreicher Zwischentest vorgesehen.

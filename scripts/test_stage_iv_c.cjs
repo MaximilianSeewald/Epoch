@@ -19,7 +19,7 @@ function gate(b,e){return b.every(([k,v])=>{
  if(k==='OR')return v.some(p=>gate([p],e));
  if(k==='AND')return gate(v,e);
  if(k==='exists')return !!e[v];
- if(k==='owner'||k==='from')return !!e[k]&&gate(v,e[k]);
+ if(k==='owner'||k==='owner?'||k==='from')return !!e[k==='owner?'?'owner':k]&&gate(v,e[k==='owner?'?'owner':k]);
  if(k==='has_country_flag')return e.flags?.has(v)||false;
  if(k==='has_ascension_perk')return e.perks?.has(v)||false;
  if(k==='has_tradition'||k==='has_active_tradition')return e.traditions?.has(v)||false;
@@ -33,10 +33,10 @@ function gate(b,e){return b.every(([k,v])=>{
  if(k==='ROOT')return !!e.root&&gate(v,e.root);
  if(k==='can_add_genetic_traits')return e.from?.techs.has('tech_gene_tailoring')||false;
  if(k==='has_deficit')return e.deficits?.has(v)||false;
- if(k==='has_megastructure_flag'){assert.equal(v,'epoch_c_operational');return e.operational!==false;}
- if(k==='count_owned_megastructure')return (e.megas||[]).filter(type=>gate(get(v,'limit'),typeof type==='string'?{type}:type)).length<Number(get(v,'count'));
+ if(k==='has_megastructure_flag'){assert.equal(e.scope,'megastructure','instance flag requires a typed mega context');assert.equal(v,'epoch_c_operational');return e.operational!==false;}
+ if(k==='count_owned_megastructure')return (e.megas||[]).filter(type=>gate(get(v,'limit'),typeof type==='string'?{type,scope:'megastructure'}:{...type,scope:'megastructure'})).length<Number(get(v,'count'));
  if(k==='is_megastructure_type')return e.type===v;
- if(k==='any_owned_megastructure')return (e.megas||[]).some(type=>gate(v,typeof type==='string'?{type}:type));
+ if(k==='any_owned_megastructure')return (e.megas||[]).some(type=>gate(v,typeof type==='string'?{type,scope:'megastructure'}:{...type,scope:'megastructure'}));
  if(['is_gestalt','is_robot_empire','is_hive_empire','is_wilderness_empire','is_machine_empire','is_colony'].includes(k))return !!e[k]===(v==='yes');
  throw Error('Unmodelled eligibility key '+k);
 });}
@@ -44,7 +44,7 @@ const techs=new Set([...parsedByPath].filter(([p])=>p.startsWith('common/technol
 for(const id of ['tech_gene_tailoring','tech_robomodding','tech_robomodding_m','tech_mega_engineering'])techs.add(id);
 const profiles={organic:{},lithoid:{},hive:{is_gestalt:true,is_hive_empire:true},wilderness:{is_gestalt:true,is_hive_empire:true,is_wilderness_empire:true},machine:{is_gestalt:true,is_robot_empire:true},individual_machine:{is_robot_empire:true},synthetic:{is_robot_empire:true}};
 const classFor=n=>['hive','wilderness'].includes(n)?'hive':['machine','individual_machine','synthetic'].includes(n)?'machine':'organic';
-const empire=(p,philosophy)=>({...p,eligible:true,flags:new Set(['epoch_iv_protocol_key','epoch_iv_complete',...(philosophy?[`epoch_iv_philosophy_${philosophy}`]:[])]),techs:new Set(techs),perks:new Set(),traditions:new Set([...traditions.keys()]),deficits:new Set(),megas:[]});
+const empire=(p,philosophy)=>({...p,scope:'country',eligible:true,flags:new Set(['epoch_iv_protocol_key','epoch_iv_complete',...(philosophy?[`epoch_iv_philosophy_${philosophy}`]:[])]),techs:new Set(techs),perks:new Set(),traditions:new Set([...traditions.keys()]),deficits:new Set(),megas:[]});
 check(cats.size===4&&traditions.size===28&&perks.size===5&&traits.size===5&&megas.size===10,'exact four/seven, five perks, five traits, three/three/four content counts');
 check((read('common/scripted_triggers/epoch_c_triggers.txt').match(/count_owned_megastructure = \{ count < 2 /g)||[]).length===2,'bounded cap evaluator matches actual comparison operators');
 for(const f of manifest.trees){
@@ -166,15 +166,15 @@ for(const [name,profile]of Object.entries(profiles))for(const p of ['guard','fre
  for(const family of manifest.megastructures){
   const owned={...e,megas:['epoch_'+family.id+'_1']};
   const first=megas.get('epoch_'+family.id+'_1'),r=get(first,'resources');
-  const produces=values(r,'produces').filter(b=>gate(get(b,'trigger'),owned));
+  const produces=values(r,'produces').filter(b=>gate(get(b,'trigger'),{scope:'megastructure',owner:owned}));
   check(produces.length===1,'operating stage one '+name+'/'+p+'/'+family.id);
-  check(values(r,'produces').every(b=>!deep(get(b,'trigger'),'has_megastructure_flag').length),'production uses country scope; native engine activates completed stages '+family.id);
+  check(values(r,'produces').every(b=>!gate(get(b,'trigger'),owned)),'optional owner yields no invalid instance predicate in country-only preview '+family.id);
   if(family.id!=='forge'){
    const duplicate={...owned,megas:[...owned.megas,'epoch_'+family.id+'_2']};
-   check(values(r,'produces').every(b=>!gate(get(b,'trigger'),duplicate)),'conquered duplicates do not stack production '+family.id);
-   check(values(first,'triggered_country_modifier').every(b=>!gate(get(b,'potential'),{owner:duplicate})),'conquered duplicates do not stack modifiers '+family.id);
+   check(values(r,'produces').every(b=>!gate(get(b,'trigger'),{scope:'megastructure',owner:duplicate})),'conquered duplicates do not stack production '+family.id);
+   check(values(first,'triggered_country_modifier').every(b=>!gate(get(b,'potential'),duplicate)),'conquered duplicates do not stack modifiers '+family.id);
   }
-  for(const res of ['energy',family.id==='forge'?'minerals':'epoch_protocol_cores'])check(values(r,'produces').every(b=>!gate(get(b,'trigger'),{...owned,deficits:new Set([res])})),'no output through input shortage '+family.id+'/'+res);
+  for(const res of ['energy',family.id==='forge'?'minerals':'epoch_protocol_cores'])check(values(r,'produces').every(b=>!gate(get(b,'trigger'),{scope:'megastructure',owner:{...owned,deficits:new Set([res])}})),'no output through input shortage '+family.id+'/'+res);
  }
  const inversion=defs('decisions').get('decision_epoch_c_network_inversion'),costs=values(get(inversion,'resources'),'cost');
  for(const structures of [[],['epoch_nexus_1'],['epoch_uap_1'],['epoch_nexus_1','epoch_uap_4']]){
@@ -215,6 +215,37 @@ const upkeep=(id,res)=>Number(get(get(get(megas.get(id),'resources'),'upkeep'),r
 check(output('epoch_forge_3','epoch_protocol_cores')+output('epoch_nexus_3','epoch_protocol_cores')-upkeep('epoch_nexus_3','epoch_protocol_cores')-upkeep('epoch_uap_4','epoch_protocol_cores')===26,'integrated infrastructure core surplus is real');
 check(output('epoch_nexus_3','epoch_protocol_cores')-upkeep('epoch_nexus_3','epoch_protocol_cores')===6,'Nexus is a limited net core source');
 check(upkeep('epoch_forge_3','minerals')===1200&&upkeep('epoch_forge_3','energy')===180,'industrial production has significant native inputs');
+// Forecast only real resource tables in the engine-observed mega context.
+// This arithmetic is not a treasury observation. Descriptions/tooltips are never read.
+function flow(body,owner){
+ const net={};for(const [kind,t]of get(body,'resources')||[]){
+  if(!['produces','upkeep'].includes(kind)||!gate(get(t,'trigger')||[],{scope:'megastructure',owner}))continue;
+  for(const [resource,n]of t)if(Number.isFinite(Number(n)))net[resource]=(net[resource]||0)+(kind==='produces'?1:-1)*Number(n);
+ }return net;
+}
+for(const [id,b]of megas)for(const philosophy of ['guard','free']){
+ const [,family,rank]=id.match(/^epoch_(\w+)_(\d)$/),n=Number(rank),owner={...empire(profiles.organic,philosophy),megas:[id]},net=flow(b,owner);
+ const activeMods=values(b,'triggered_country_modifier').filter(m=>gate(get(m,'potential'),owner));
+ check(activeMods.length===(family==='forge'?0:1),'one real country modifier branch for valid owner '+id+'/'+philosophy);
+ if(family==='nexus'){
+  for(const r of ['physics_research','society_research','engineering_research'])check(net[r]===200*n,'real resource-table research, every Nexus tier '+id+'/'+r);
+  check(net.epoch_protocol_cores===2*n&&net.energy===-40*n,'Nexus gross-minus-upkeep projection '+id);
+ }else if(family==='forge')check(net.epoch_protocol_cores===20*n&&net.alloys===100*n&&net.minerals===-400*n&&net.energy===-60*n,'paid Forge flow, every tier '+id);
+ else {
+  check(net.epoch_protocol_cores===-10*n&&net.energy===-100*n,'UAP core/energy sink '+id);
+  if(philosophy==='guard')check(net.alloys===30*n&&!net.physics_research,'only Guardian economic branch '+id);
+  else check(net.physics_research===150*n&&net.society_research===150*n&&net.engineering_research===150*n&&net.unity===20*n&&!net.alloys,'only Free economic branch '+id);
+ }
+ const deficit={...owner,deficits:new Set([family==='forge'?'minerals':'epoch_protocol_cores'])},short=flow(b,deficit);
+ check((short.epoch_protocol_cores||0)<=0&&!(short.alloys>0)&&!(short.physics_research>0),'input-deficit owner loses output but keeps native upkeep '+id);
+ const captured={...owner,flags:new Set()},foreign=flow(b,captured);
+ check(!(foreign.epoch_protocol_cores>0)&&!(foreign.alloys>0)&&!(foreign.physics_research>0),'unqualified new owner receives no production '+id);
+ if(family!=='forge'){
+  const duplicate=flow(b,{...owner,megas:[id,'epoch_'+family+'_1']});
+  check(!(duplicate.epoch_protocol_cores>0)&&!(duplicate.alloys>0)&&!(duplicate.physics_research>0),'duplicate family cannot bypass output cap '+id);
+ }
+}
+assert.deepEqual(flow(parse('fake = { resources = { upkeep = { epoch_protocol_cores = 2 } } tooltip = { epoch_protocol_cores = 999 } }','tooltip is not production')[0][1],empire(profiles.organic,'free')),{epoch_protocol_cores:-2});checks++;
 // Every modifier must exist in generated engine documentation, native static aliases, or be generated by a real EPOCH job.
 const modDoc=fs.readFileSync(path.join(process.env.USERPROFILE,'Documents/Paradox Interactive/Stellaris/logs/script_documentation/modifiers.log'),'utf8');
 const aliases=new Set(parse(native('common/static_modifiers/24_static_modifiers_jobs.txt'),'native workforce aliases').map(([k])=>k));
@@ -247,7 +278,7 @@ check(native('launcher-settings.json').includes('Cygnus v4.5.3 (4e91)'),'install
 check(/ASCENSION_PERKS_SLOTS\s*=\s*8/.test(native('common/defines/00_defines.txt'))&&/TRADITION_CATEGORIES_MAX\s*=\s*7/.test(native('common/defines/00_defines.txt')),'native slot bounds');
 const megaDoc=native('common/megastructures/99_README_MEGASTRUCTURES.txt');
 for(const field of ['upgrade_from','potential','possible','placement_rules','resources','dismantle_possible','triggered_country_modifier'])check(megaDoc.includes(field),'native megastructure contract '+field);
-check(megaDoc.includes('trigger, scope: country. Monthly output'),'native resource COUNTRY scope, confirmed by actual playtest diagnostics');
+check(/trigger\s*=\s*\{\s*owner\?\s*=/.test(native('common/megastructures/22_shroud_seal.txt')),'native recurring mega output qualifies country predicates through owner; third runtime diagnostics determine context');
 check(native('common/traits/000_documentation_species_traits.txt').includes('this = species, from = country'),'documented species modification scopes');
 const robo=native('common/technology/00_synthetic_dawn_tech.txt');
 check(robo.includes('tech_robomodding_m =')&&robo.includes('is_individual_machine = yes'),'machine/individual machine modification tech');
@@ -276,7 +307,7 @@ const nativeOrganicRequirement=get(organicRule,'custom_tooltip').filter(([k])=>k
 check(gate(nativeOrganicRequirement,{root:{techs:new Set(['tech_gene_tailoring'])}}),'native organic modification rule accepts researched Gene Tailoring');
 check(!gate(nativeOrganicRequirement,{root:{techs:new Set()}}),'native organic modification rule still rejects missing technology/traditions');
 for(const [p]of [...parsedByPath].filter(([p])=>p.includes('/epoch_c_')))check(!/give_technology|research_technology|modify_species|change_species|add_trait_species|set_country_flag = epoch_iv_philosophy_/.test(read(p)),'no free unlock, species conversion or story rewrite '+p);
-const base='944c3c2';
+const base='b8ba791';
 for(const p of cp.execFileSync('git',['ls-tree','-r','--name-only',base,'common','events','interface'],{encoding:'utf8'}).trim().split(/\r?\n/))check(read(p).replaceAll('\r\n','\n')===cp.execFileSync('git',['show',base+':'+p],{encoding:'utf8'}).replaceAll('\r\n','\n'),'Package A/B and story preserved '+p);
 check(!fs.existsSync(path.join(root,'common/defines'))&&!fs.existsSync(path.join(root,'interface/topbar_traditions_view.gui')),'no slot or vanilla GUI override');
 console.log(`PASS: ${checks} Package-C native content, class/philosophy matrices, trait/template gates, paid upgrade chains, capped capture behavior, shortage economy, DE/EN, art and B preservation assertions. Static only.`);

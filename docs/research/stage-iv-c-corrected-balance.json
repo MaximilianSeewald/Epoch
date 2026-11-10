@@ -1397,28 +1397,33 @@
               "trigger",
               [
                 [
-                  "epoch_iv_future_research",
-                  "yes"
-                ],
-                [
-                  "epoch_c_single_nexus",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_iv_future_research",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "epoch_protocol_cores"
+                      "epoch_c_single_nexus",
+                      "yes"
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "epoch_protocol_cores"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -1449,23 +1454,36 @@
             "potential",
             [
               [
-                "exists",
-                "owner"
+                "epoch_iv_future_research",
+                "yes"
               ],
               [
-                "has_megastructure_flag",
-                "epoch_c_operational"
+                "epoch_c_single_nexus",
+                "yes"
               ],
               [
-                "owner",
+                "any_owned_megastructure",
                 [
                   [
-                    "epoch_iv_future_research",
-                    "yes"
+                    "has_megastructure_flag",
+                    "epoch_c_operational"
                   ],
                   [
-                    "epoch_c_single_nexus",
-                    "yes"
+                    "OR",
+                    [
+                      [
+                        "is_megastructure_type",
+                        "epoch_nexus_1"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_nexus_2"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_nexus_3"
+                      ]
+                    ]
                   ]
                 ]
               ]
@@ -1527,28 +1545,33 @@
               "trigger",
               [
                 [
-                  "epoch_iv_future_research",
-                  "yes"
-                ],
-                [
-                  "epoch_c_single_nexus",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_iv_future_research",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "epoch_protocol_cores"
+                      "epoch_c_single_nexus",
+                      "yes"
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "epoch_protocol_cores"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -1579,23 +1602,36 @@
             "potential",
             [
               [
-                "exists",
-                "owner"
+                "epoch_iv_future_research",
+                "yes"
               ],
               [
-                "has_megastructure_flag",
-                "epoch_c_operational"
+                "epoch_c_single_nexus",
+                "yes"
               ],
               [
-                "owner",
+                "any_owned_megastructure",
                 [
                   [
-                    "epoch_iv_future_research",
-                    "yes"
+                    "has_megastructure_flag",
+                    "epoch_c_operational"
                   ],
                   [
-                    "epoch_c_single_nexus",
-                    "yes"
+                    "OR",
+                    [
+                      [
+                        "is_megastructure_type",
+                        "epoch_nexus_1"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_nexus_2"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_nexus_3"
+                      ]
+                    ]
                   ]
                 ]
               ]
@@ -1657,28 +1693,33 @@
               "trigger",
               [
                 [
-                  "epoch_iv_future_research",
-                  "yes"
-                ],
-                [
-                  "epoch_c_single_nexus",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_iv_future_research",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "epoch_protocol_cores"
+                      "epoch_c_single_nexus",
+                      "yes"
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "epoch_protocol_cores"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -1709,23 +1750,36 @@
             "potential",
             [
               [
-                "exists",
-                "owner"
+                "epoch_iv_future_research",
+                "yes"
               ],
               [
-                "has_megastructure_flag",
-                "epoch_c_operational"
+                "epoch_c_single_nexus",
+                "yes"
               ],
               [
-                "owner",
+                "any_owned_megastructure",
                 [
                   [
-                    "epoch_iv_future_research",
-                    "yes"
+                    "has_megastructure_flag",
+                    "epoch_c_operational"
                   ],
                   [
-                    "epoch_c_single_nexus",
-                    "yes"
+                    "OR",
+                    [
+                      [
+                        "is_megastructure_type",
+                        "epoch_nexus_1"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_nexus_2"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_nexus_3"
+                      ]
+                    ]
                   ]
                 ]
               ]
@@ -1787,24 +1841,29 @@
               "trigger",
               [
                 [
-                  "epoch_iv_future_research",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_iv_future_research",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "minerals"
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "minerals"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -1868,24 +1927,29 @@
               "trigger",
               [
                 [
-                  "epoch_iv_future_research",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_iv_future_research",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "minerals"
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "minerals"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -1949,24 +2013,29 @@
               "trigger",
               [
                 [
-                  "epoch_iv_future_research",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_iv_future_research",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "minerals"
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "minerals"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -2030,32 +2099,37 @@
               "trigger",
               [
                 [
-                  "epoch_c_guard",
-                  "yes"
-                ],
-                [
-                  "has_technology",
-                  "tech_epoch_iv_mandate"
-                ],
-                [
-                  "epoch_c_single_uap",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_c_guard",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "epoch_protocol_cores"
+                      "has_technology",
+                      "tech_epoch_iv_mandate"
+                    ],
+                    [
+                      "epoch_c_single_uap",
+                      "yes"
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "epoch_protocol_cores"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -2074,32 +2148,37 @@
               "trigger",
               [
                 [
-                  "epoch_c_free",
-                  "yes"
-                ],
-                [
-                  "has_technology",
-                  "tech_epoch_iv_universal_sovereignty"
-                ],
-                [
-                  "epoch_c_single_uap",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_c_free",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "epoch_protocol_cores"
+                      "has_technology",
+                      "tech_epoch_iv_universal_sovereignty"
+                    ],
+                    [
+                      "epoch_c_single_uap",
+                      "yes"
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "epoch_protocol_cores"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -2130,27 +2209,44 @@
             "potential",
             [
               [
-                "exists",
-                "owner"
+                "epoch_c_guard",
+                "yes"
               ],
               [
-                "has_megastructure_flag",
-                "epoch_c_operational"
+                "has_technology",
+                "tech_epoch_iv_mandate"
               ],
               [
-                "owner",
+                "epoch_c_single_uap",
+                "yes"
+              ],
+              [
+                "any_owned_megastructure",
                 [
                   [
-                    "epoch_c_guard",
-                    "yes"
+                    "has_megastructure_flag",
+                    "epoch_c_operational"
                   ],
                   [
-                    "has_technology",
-                    "tech_epoch_iv_mandate"
-                  ],
-                  [
-                    "epoch_c_single_uap",
-                    "yes"
+                    "OR",
+                    [
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_1"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_2"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_3"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_4"
+                      ]
+                    ]
                   ]
                 ]
               ]
@@ -2170,27 +2266,44 @@
             "potential",
             [
               [
-                "exists",
-                "owner"
+                "epoch_c_free",
+                "yes"
               ],
               [
-                "has_megastructure_flag",
-                "epoch_c_operational"
+                "has_technology",
+                "tech_epoch_iv_universal_sovereignty"
               ],
               [
-                "owner",
+                "epoch_c_single_uap",
+                "yes"
+              ],
+              [
+                "any_owned_megastructure",
                 [
                   [
-                    "epoch_c_free",
-                    "yes"
+                    "has_megastructure_flag",
+                    "epoch_c_operational"
                   ],
                   [
-                    "has_technology",
-                    "tech_epoch_iv_universal_sovereignty"
-                  ],
-                  [
-                    "epoch_c_single_uap",
-                    "yes"
+                    "OR",
+                    [
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_1"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_2"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_3"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_4"
+                      ]
+                    ]
                   ]
                 ]
               ]
@@ -2252,32 +2365,37 @@
               "trigger",
               [
                 [
-                  "epoch_c_guard",
-                  "yes"
-                ],
-                [
-                  "has_technology",
-                  "tech_epoch_iv_mandate"
-                ],
-                [
-                  "epoch_c_single_uap",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_c_guard",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "epoch_protocol_cores"
+                      "has_technology",
+                      "tech_epoch_iv_mandate"
+                    ],
+                    [
+                      "epoch_c_single_uap",
+                      "yes"
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "epoch_protocol_cores"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -2296,32 +2414,37 @@
               "trigger",
               [
                 [
-                  "epoch_c_free",
-                  "yes"
-                ],
-                [
-                  "has_technology",
-                  "tech_epoch_iv_universal_sovereignty"
-                ],
-                [
-                  "epoch_c_single_uap",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_c_free",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "epoch_protocol_cores"
+                      "has_technology",
+                      "tech_epoch_iv_universal_sovereignty"
+                    ],
+                    [
+                      "epoch_c_single_uap",
+                      "yes"
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "epoch_protocol_cores"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -2352,27 +2475,44 @@
             "potential",
             [
               [
-                "exists",
-                "owner"
+                "epoch_c_guard",
+                "yes"
               ],
               [
-                "has_megastructure_flag",
-                "epoch_c_operational"
+                "has_technology",
+                "tech_epoch_iv_mandate"
               ],
               [
-                "owner",
+                "epoch_c_single_uap",
+                "yes"
+              ],
+              [
+                "any_owned_megastructure",
                 [
                   [
-                    "epoch_c_guard",
-                    "yes"
+                    "has_megastructure_flag",
+                    "epoch_c_operational"
                   ],
                   [
-                    "has_technology",
-                    "tech_epoch_iv_mandate"
-                  ],
-                  [
-                    "epoch_c_single_uap",
-                    "yes"
+                    "OR",
+                    [
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_1"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_2"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_3"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_4"
+                      ]
+                    ]
                   ]
                 ]
               ]
@@ -2392,27 +2532,44 @@
             "potential",
             [
               [
-                "exists",
-                "owner"
+                "epoch_c_free",
+                "yes"
               ],
               [
-                "has_megastructure_flag",
-                "epoch_c_operational"
+                "has_technology",
+                "tech_epoch_iv_universal_sovereignty"
               ],
               [
-                "owner",
+                "epoch_c_single_uap",
+                "yes"
+              ],
+              [
+                "any_owned_megastructure",
                 [
                   [
-                    "epoch_c_free",
-                    "yes"
+                    "has_megastructure_flag",
+                    "epoch_c_operational"
                   ],
                   [
-                    "has_technology",
-                    "tech_epoch_iv_universal_sovereignty"
-                  ],
-                  [
-                    "epoch_c_single_uap",
-                    "yes"
+                    "OR",
+                    [
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_1"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_2"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_3"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_4"
+                      ]
+                    ]
                   ]
                 ]
               ]
@@ -2474,32 +2631,37 @@
               "trigger",
               [
                 [
-                  "epoch_c_guard",
-                  "yes"
-                ],
-                [
-                  "has_technology",
-                  "tech_epoch_iv_mandate"
-                ],
-                [
-                  "epoch_c_single_uap",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_c_guard",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "epoch_protocol_cores"
+                      "has_technology",
+                      "tech_epoch_iv_mandate"
+                    ],
+                    [
+                      "epoch_c_single_uap",
+                      "yes"
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "epoch_protocol_cores"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -2518,32 +2680,37 @@
               "trigger",
               [
                 [
-                  "epoch_c_free",
-                  "yes"
-                ],
-                [
-                  "has_technology",
-                  "tech_epoch_iv_universal_sovereignty"
-                ],
-                [
-                  "epoch_c_single_uap",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_c_free",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "epoch_protocol_cores"
+                      "has_technology",
+                      "tech_epoch_iv_universal_sovereignty"
+                    ],
+                    [
+                      "epoch_c_single_uap",
+                      "yes"
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "epoch_protocol_cores"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -2574,27 +2741,44 @@
             "potential",
             [
               [
-                "exists",
-                "owner"
+                "epoch_c_guard",
+                "yes"
               ],
               [
-                "has_megastructure_flag",
-                "epoch_c_operational"
+                "has_technology",
+                "tech_epoch_iv_mandate"
               ],
               [
-                "owner",
+                "epoch_c_single_uap",
+                "yes"
+              ],
+              [
+                "any_owned_megastructure",
                 [
                   [
-                    "epoch_c_guard",
-                    "yes"
+                    "has_megastructure_flag",
+                    "epoch_c_operational"
                   ],
                   [
-                    "has_technology",
-                    "tech_epoch_iv_mandate"
-                  ],
-                  [
-                    "epoch_c_single_uap",
-                    "yes"
+                    "OR",
+                    [
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_1"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_2"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_3"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_4"
+                      ]
+                    ]
                   ]
                 ]
               ]
@@ -2614,27 +2798,44 @@
             "potential",
             [
               [
-                "exists",
-                "owner"
+                "epoch_c_free",
+                "yes"
               ],
               [
-                "has_megastructure_flag",
-                "epoch_c_operational"
+                "has_technology",
+                "tech_epoch_iv_universal_sovereignty"
               ],
               [
-                "owner",
+                "epoch_c_single_uap",
+                "yes"
+              ],
+              [
+                "any_owned_megastructure",
                 [
                   [
-                    "epoch_c_free",
-                    "yes"
+                    "has_megastructure_flag",
+                    "epoch_c_operational"
                   ],
                   [
-                    "has_technology",
-                    "tech_epoch_iv_universal_sovereignty"
-                  ],
-                  [
-                    "epoch_c_single_uap",
-                    "yes"
+                    "OR",
+                    [
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_1"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_2"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_3"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_4"
+                      ]
+                    ]
                   ]
                 ]
               ]
@@ -2696,32 +2897,37 @@
               "trigger",
               [
                 [
-                  "epoch_c_guard",
-                  "yes"
-                ],
-                [
-                  "has_technology",
-                  "tech_epoch_iv_mandate"
-                ],
-                [
-                  "epoch_c_single_uap",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_c_guard",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "epoch_protocol_cores"
+                      "has_technology",
+                      "tech_epoch_iv_mandate"
+                    ],
+                    [
+                      "epoch_c_single_uap",
+                      "yes"
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "epoch_protocol_cores"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -2740,32 +2946,37 @@
               "trigger",
               [
                 [
-                  "epoch_c_free",
-                  "yes"
-                ],
-                [
-                  "has_technology",
-                  "tech_epoch_iv_universal_sovereignty"
-                ],
-                [
-                  "epoch_c_single_uap",
-                  "yes"
-                ],
-                [
-                  "NOT",
+                  "owner?",
                   [
                     [
-                      "has_deficit",
-                      "energy"
-                    ]
-                  ]
-                ],
-                [
-                  "NOT",
-                  [
+                      "epoch_c_free",
+                      "yes"
+                    ],
                     [
-                      "has_deficit",
-                      "epoch_protocol_cores"
+                      "has_technology",
+                      "tech_epoch_iv_universal_sovereignty"
+                    ],
+                    [
+                      "epoch_c_single_uap",
+                      "yes"
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "energy"
+                        ]
+                      ]
+                    ],
+                    [
+                      "NOT",
+                      [
+                        [
+                          "has_deficit",
+                          "epoch_protocol_cores"
+                        ]
+                      ]
                     ]
                   ]
                 ]
@@ -2796,27 +3007,44 @@
             "potential",
             [
               [
-                "exists",
-                "owner"
+                "epoch_c_guard",
+                "yes"
               ],
               [
-                "has_megastructure_flag",
-                "epoch_c_operational"
+                "has_technology",
+                "tech_epoch_iv_mandate"
               ],
               [
-                "owner",
+                "epoch_c_single_uap",
+                "yes"
+              ],
+              [
+                "any_owned_megastructure",
                 [
                   [
-                    "epoch_c_guard",
-                    "yes"
+                    "has_megastructure_flag",
+                    "epoch_c_operational"
                   ],
                   [
-                    "has_technology",
-                    "tech_epoch_iv_mandate"
-                  ],
-                  [
-                    "epoch_c_single_uap",
-                    "yes"
+                    "OR",
+                    [
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_1"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_2"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_3"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_4"
+                      ]
+                    ]
                   ]
                 ]
               ]
@@ -2836,27 +3064,44 @@
             "potential",
             [
               [
-                "exists",
-                "owner"
+                "epoch_c_free",
+                "yes"
               ],
               [
-                "has_megastructure_flag",
-                "epoch_c_operational"
+                "has_technology",
+                "tech_epoch_iv_universal_sovereignty"
               ],
               [
-                "owner",
+                "epoch_c_single_uap",
+                "yes"
+              ],
+              [
+                "any_owned_megastructure",
                 [
                   [
-                    "epoch_c_free",
-                    "yes"
+                    "has_megastructure_flag",
+                    "epoch_c_operational"
                   ],
                   [
-                    "has_technology",
-                    "tech_epoch_iv_universal_sovereignty"
-                  ],
-                  [
-                    "epoch_c_single_uap",
-                    "yes"
+                    "OR",
+                    [
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_1"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_2"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_3"
+                      ],
+                      [
+                        "is_megastructure_type",
+                        "epoch_uap_4"
+                      ]
+                    ]
                   ]
                 ]
               ]

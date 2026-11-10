@@ -1,0 +1,44 @@
+{
+  "testedB": "944c3c205b40bb0f3057fbf99015da88ab6133d8",
+  "testedC": "4f8530e135e1889fccda1b6ab52bcc933e39d84c",
+  "evidence": "Third player test, before production correction. No agent-controlled engine run.",
+  "error.log": {
+    "bytes": 63768,
+    "sha256": "c4417eb6614712e0a7db5c40a5ad88c666be0ca21a6577253c0530c4cb496480"
+  },
+  "game.log": {
+    "bytes": 2384,
+    "sha256": "a65cbcd6283095c38c4c51e99d19f56e2365ec83956a977db530d8590b55f942"
+  },
+  "nativeSources": [
+    {
+      "path": "common/pop_jobs/02_specialist_jobs.txt",
+      "sha256": "3e35067fd9b2524a101c2cc35dbbc3c67b383a46c8bf3bbfe475da77edbf6fbc"
+    },
+    {
+      "path": "common/pop_jobs/04_gestalt_jobs.txt",
+      "sha256": "9469c178efbaa2d8e5bce43545ee6d5a184ee0e764336e85170795d0cc6820ad"
+    },
+    {
+      "path": "common/strategic_resources/00_strategic_resources.txt",
+      "sha256": "140dea921a77f76726f361eca99f59f0c7755e4e728dec4699d3b732457911a4"
+    },
+    {
+      "path": "common/situations/02_deficit_situations.txt",
+      "sha256": "87cdf69d9f777ba7f232ea1fad031217211d332f7da4fd809606c3b297ecf972"
+    },
+    {
+      "path": "common/megastructures/22_shroud_seal.txt",
+      "sha256": "08d1112ae898d68d33ce5a509f657e886cfb7085dae199e81cde80cd52983a5b"
+    },
+    {
+      "path": "common/megastructures/03_think_tank.txt",
+      "sha256": "f43ea4dcace513ad449b957f2df73b218b06936c9887a843d7fd60399478e023"
+    },
+    {
+      "path": "common/megastructures/99_README_MEGASTRUCTURES.txt",
+      "sha256": "852b68dd5873ea5e19bb08192ab1b323f274bfdad0c1cfe30d39706d19d2fe85"
+    }
+  ],
+  "triggerDocumentationSha256": "ef787c81109fab05be1fce2129f73c33c032b562ce9120c297f9ef33eb019022"
+}

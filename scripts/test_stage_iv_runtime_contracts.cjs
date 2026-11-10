@@ -74,10 +74,10 @@ for(const [id,b]of tree('common/decisions/epoch_era_decisions.txt')){
  for(const x of bonuses)check(deep(actual,'add_modifier').some(y=>JSON.stringify(x)===JSON.stringify(y)),'preview matches awarded modifier and duration '+id);
  assert.deepEqual(get(b,'allow'),get(get(actual,'if'),'limit'),'completion safety retained '+id);checks++;
 }
-// Resource production must stop when any paid industrial input is in deficit.
+// Unconditional native base output replaces the unproven economic deficit gate.
 for(const id of ['epoch_factory','epoch_factory_drone']){
  const p=get(get(jobs.get(id),'resources'),'produces');
- for(const input of ['minerals','alloys','energy'])check(deep(get(p,'trigger'),'has_deficit').includes(input),'no core production without paid input '+id+'/'+input);
+ check(!get(p,'trigger'),'no conditional factory base output '+id);
 }
 const wild=tree('common/edicts/epoch_era_edicts.txt').find(([k])=>k==='epoch_era_wilderness_cores')[1];
 for(const [k,b]of get(wild,'resources').filter(([k])=>['cost','produces','upkeep'].includes(k)))check(get(b,'multiplier')==='value:epoch_era_wilderness_network_scale','identical paid Wilderness scaling '+k);

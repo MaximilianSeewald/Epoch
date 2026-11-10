@@ -2,7 +2,7 @@
 // Cyan circuit frame + amber three-blade core, intentionally unlike purple Dark Matter.
 const fs=require('node:fs'),zlib=require('node:zlib');
 const dir='gfx/interface/icons/resources';fs.mkdirSync(dir,{recursive:true});
-const shapes=[
+const sourceShapes=[
  ['#54e8ec',[[32,3],[57,17],[57,47],[32,61],[7,47],[7,17]]],
  ['#102f3c',[[32,8],[52,20],[52,44],[32,56],[12,44],[12,20]]],
  ['#ffba43',[[29,14],[35,14],[38,25],[49,29],[49,35],[38,39],[35,50],[29,50],[25,39],[15,35],[15,29],[25,25]]],
@@ -10,6 +10,9 @@ const shapes=[
  ['#54e8ec',[[2,28],[13,28],[13,36],[2,36]]],
  ['#54e8ec',[[51,28],[62,28],[62,36],[51,36]]]
 ];
+// Preserve 32/64 DDS canvases; shrink visible geometry to native 14–17px scale.
+const shapeScale=0.48;
+const shapes=sourceShapes.map(([c,p])=>[c,p.map(([x,y])=>[32+(x-32)*shapeScale,32+(y-32)*shapeScale])]);
 fs.writeFileSync(dir+'/epoch_protocol_cores.svg',`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">${shapes.map(([fill,p])=>`<polygon fill="${fill}" points="${p.map(x=>x.join(',')).join(' ')}"/>`).join('')}</svg>\n`);
 function inside(x,y,p){let b=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],c=p[j];if((a[1]>y)!==(c[1]>y)&&x<(c[0]-a[0])*(y-a[1])/(c[1]-a[1])+a[0])b=!b;}return b;}
 function pixels(n,grey){const b=Buffer.alloc(n*n*4);for(let y=0;y<n;y++)for(let x=0;x<n;x++){

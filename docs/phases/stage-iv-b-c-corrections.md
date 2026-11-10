@@ -1,5 +1,7 @@
 # B+C correction report — first 4.5.3 playtest
 
+> Third player test: construction now passes, production still failed. The [production correction and minimal treasury-delta smoke test](stage-iv-production-correction.md) supersede earlier resource-scope, deficit-stop and core-balance claims below.
+
 The first player run on `cf13857ebbd277c02faed11cc35a6e29b66bb7f4` supersedes the earlier optimistic static acceptance language. The preserved [error log](../research/first-b-c-playtest-2026-11-10/error.log.txt) and [game log](../research/first-b-c-playtest-2026-11-10/game.log.txt) are **pre-correction evidence**, never evidence that the new code ran successfully.
 
 ## Package B

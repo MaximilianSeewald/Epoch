@@ -9,7 +9,7 @@ epoch_nexus_1 = {
  resources = { category = megastructures
  cost = { unity = 2000 alloys = 6000 epoch_protocol_cores = 200 }
  upkeep = { energy = 40 epoch_protocol_cores = 2 }
- produces = { trigger = { epoch_iv_future_research = yes epoch_c_single_nexus = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } physics_research = 200 society_research = 200 engineering_research = 200 epoch_protocol_cores = 4 }
+ produces = { trigger = { owner? = { epoch_iv_future_research = yes epoch_c_single_nexus = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 200 society_research = 200 engineering_research = 200 epoch_protocol_cores = 4 }
  }
  prerequisites = { "tech_mega_engineering" "tech_epoch_iv_nexus" "tech_epoch_iv_coupling" }
  potential = { epoch_iv_future_research = yes }
@@ -35,7 +35,7 @@ epoch_nexus_1 = {
  dismantle_time = 360
  dismantle_cost = { category = megastructures cost = { energy = 1000 } }
  on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_nexus_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_nexus_anchor remove_planet_flag = has_megastructure } }
- triggered_country_modifier = { potential = { exists = owner has_megastructure_flag = epoch_c_operational owner = { epoch_iv_future_research = yes epoch_c_single_nexus = yes } } planet_stability_add = 1 terraforming_cost_mult = -0.05 }
+ triggered_country_modifier = { potential = { epoch_iv_future_research = yes epoch_c_single_nexus = yes any_owned_megastructure = { has_megastructure_flag = epoch_c_operational OR = { is_megastructure_type = epoch_nexus_1 is_megastructure_type = epoch_nexus_2 is_megastructure_type = epoch_nexus_3 } } } planet_stability_add = 1 terraforming_cost_mult = -0.05 }
  ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 2 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 40 } } } }
 }
 
@@ -49,7 +49,7 @@ epoch_nexus_2 = {
  resources = { category = megastructures
  cost = { unity = 4000 alloys = 12000 epoch_protocol_cores = 400 }
  upkeep = { energy = 80 epoch_protocol_cores = 4 }
- produces = { trigger = { epoch_iv_future_research = yes epoch_c_single_nexus = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } physics_research = 400 society_research = 400 engineering_research = 400 epoch_protocol_cores = 8 }
+ produces = { trigger = { owner? = { epoch_iv_future_research = yes epoch_c_single_nexus = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 400 society_research = 400 engineering_research = 400 epoch_protocol_cores = 8 }
  }
  prerequisites = { "tech_mega_engineering" "tech_epoch_iv_nexus" "tech_epoch_iv_coupling" }
  potential = { epoch_iv_future_research = yes }
@@ -64,7 +64,7 @@ epoch_nexus_2 = {
  dismantle_time = 360
  dismantle_cost = { category = megastructures cost = { energy = 1000 } }
  on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_nexus_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_nexus_anchor remove_planet_flag = has_megastructure } }
- triggered_country_modifier = { potential = { exists = owner has_megastructure_flag = epoch_c_operational owner = { epoch_iv_future_research = yes epoch_c_single_nexus = yes } } planet_stability_add = 2 terraforming_cost_mult = -0.10 }
+ triggered_country_modifier = { potential = { epoch_iv_future_research = yes epoch_c_single_nexus = yes any_owned_megastructure = { has_megastructure_flag = epoch_c_operational OR = { is_megastructure_type = epoch_nexus_1 is_megastructure_type = epoch_nexus_2 is_megastructure_type = epoch_nexus_3 } } } planet_stability_add = 2 terraforming_cost_mult = -0.10 }
  ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 4 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 80 } } } }
 }
 
@@ -78,7 +78,7 @@ epoch_nexus_3 = {
  resources = { category = megastructures
  cost = { unity = 6000 alloys = 18000 epoch_protocol_cores = 600 }
  upkeep = { energy = 120 epoch_protocol_cores = 6 }
- produces = { trigger = { epoch_iv_future_research = yes epoch_c_single_nexus = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } physics_research = 600 society_research = 600 engineering_research = 600 epoch_protocol_cores = 12 }
+ produces = { trigger = { owner? = { epoch_iv_future_research = yes epoch_c_single_nexus = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 600 society_research = 600 engineering_research = 600 epoch_protocol_cores = 12 }
  }
  prerequisites = { "tech_mega_engineering" "tech_epoch_iv_nexus" "tech_epoch_iv_coupling" }
  potential = { epoch_iv_future_research = yes }
@@ -93,7 +93,7 @@ epoch_nexus_3 = {
  dismantle_time = 360
  dismantle_cost = { category = megastructures cost = { energy = 1000 } }
  on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_nexus_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_nexus_anchor remove_planet_flag = has_megastructure } }
- triggered_country_modifier = { potential = { exists = owner has_megastructure_flag = epoch_c_operational owner = { epoch_iv_future_research = yes epoch_c_single_nexus = yes } } planet_stability_add = 3 terraforming_cost_mult = -0.15 }
+ triggered_country_modifier = { potential = { epoch_iv_future_research = yes epoch_c_single_nexus = yes any_owned_megastructure = { has_megastructure_flag = epoch_c_operational OR = { is_megastructure_type = epoch_nexus_1 is_megastructure_type = epoch_nexus_2 is_megastructure_type = epoch_nexus_3 } } } planet_stability_add = 3 terraforming_cost_mult = -0.15 }
  ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 6 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 120 } } } }
 }
 
@@ -107,7 +107,7 @@ epoch_forge_1 = {
  resources = { category = megastructures
  cost = { unity = 2000 alloys = 6000 epoch_protocol_cores = 200 }
  upkeep = { energy = 60 minerals = 400 }
- produces = { trigger = { epoch_iv_future_research = yes NOT = { has_deficit = energy } NOT = { has_deficit = minerals } } alloys = 100 epoch_protocol_cores = 20 }
+ produces = { trigger = { owner? = { epoch_iv_future_research = yes NOT = { has_deficit = energy } NOT = { has_deficit = minerals } } } alloys = 100 epoch_protocol_cores = 20 }
  }
  prerequisites = { "tech_mega_engineering" "tech_epoch_iv_fabrication" }
  potential = { epoch_iv_future_research = yes }
@@ -146,7 +146,7 @@ epoch_forge_2 = {
  resources = { category = megastructures
  cost = { unity = 4000 alloys = 12000 epoch_protocol_cores = 400 }
  upkeep = { energy = 120 minerals = 800 }
- produces = { trigger = { epoch_iv_future_research = yes NOT = { has_deficit = energy } NOT = { has_deficit = minerals } } alloys = 200 epoch_protocol_cores = 40 }
+ produces = { trigger = { owner? = { epoch_iv_future_research = yes NOT = { has_deficit = energy } NOT = { has_deficit = minerals } } } alloys = 200 epoch_protocol_cores = 40 }
  }
  prerequisites = { "tech_mega_engineering" "tech_epoch_iv_fabrication" }
  potential = { epoch_iv_future_research = yes }
@@ -174,7 +174,7 @@ epoch_forge_3 = {
  resources = { category = megastructures
  cost = { unity = 6000 alloys = 18000 epoch_protocol_cores = 600 }
  upkeep = { energy = 180 minerals = 1200 }
- produces = { trigger = { epoch_iv_future_research = yes NOT = { has_deficit = energy } NOT = { has_deficit = minerals } } alloys = 300 epoch_protocol_cores = 60 }
+ produces = { trigger = { owner? = { epoch_iv_future_research = yes NOT = { has_deficit = energy } NOT = { has_deficit = minerals } } } alloys = 300 epoch_protocol_cores = 60 }
  }
  prerequisites = { "tech_mega_engineering" "tech_epoch_iv_fabrication" }
  potential = { epoch_iv_future_research = yes }
@@ -203,8 +203,8 @@ epoch_uap_1 = {
  resources = { category = megastructures
  cost = { unity = 2000 alloys = 10000 epoch_protocol_cores = 600 }
  upkeep = { energy = 100 epoch_protocol_cores = 10 }
- produces = { trigger = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } alloys = 30 }
- produces = { trigger = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } physics_research = 150 society_research = 150 engineering_research = 150 unity = 20 }
+ produces = { trigger = { owner? = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } alloys = 30 }
+ produces = { trigger = { owner? = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 150 society_research = 150 engineering_research = 150 unity = 20 }
  }
  prerequisites = { "tech_mega_engineering" "tech_epoch_iv_uap_core" "tech_epoch_iv_coupling" }
  potential = { epoch_iv_future_research = yes OR = { AND = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate } AND = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty } } }
@@ -230,8 +230,8 @@ epoch_uap_1 = {
  dismantle_time = 360
  dismantle_cost = { category = megastructures cost = { energy = 1000 } }
  on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_uap_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_uap_anchor remove_planet_flag = has_megastructure } }
- triggered_country_modifier = { potential = { exists = owner has_megastructure_flag = epoch_c_operational owner = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes } } country_naval_cap_add = 60 ship_home_territory_fire_rate_mult = 0.05 }
- triggered_country_modifier = { potential = { exists = owner has_megastructure_flag = epoch_c_operational owner = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes } } all_technology_research_speed = 0.025 terraforming_cost_mult = -0.05 }
+ triggered_country_modifier = { potential = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes any_owned_megastructure = { has_megastructure_flag = epoch_c_operational OR = { is_megastructure_type = epoch_uap_1 is_megastructure_type = epoch_uap_2 is_megastructure_type = epoch_uap_3 is_megastructure_type = epoch_uap_4 } } } country_naval_cap_add = 60 ship_home_territory_fire_rate_mult = 0.05 }
+ triggered_country_modifier = { potential = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes any_owned_megastructure = { has_megastructure_flag = epoch_c_operational OR = { is_megastructure_type = epoch_uap_1 is_megastructure_type = epoch_uap_2 is_megastructure_type = epoch_uap_3 is_megastructure_type = epoch_uap_4 } } } all_technology_research_speed = 0.025 terraforming_cost_mult = -0.05 }
  ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 10 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 100 } } } }
 }
 
@@ -245,8 +245,8 @@ epoch_uap_2 = {
  resources = { category = megastructures
  cost = { unity = 4000 alloys = 20000 epoch_protocol_cores = 1200 }
  upkeep = { energy = 200 epoch_protocol_cores = 20 }
- produces = { trigger = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } alloys = 60 }
- produces = { trigger = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } physics_research = 300 society_research = 300 engineering_research = 300 unity = 40 }
+ produces = { trigger = { owner? = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } alloys = 60 }
+ produces = { trigger = { owner? = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 300 society_research = 300 engineering_research = 300 unity = 40 }
  }
  prerequisites = { "tech_mega_engineering" "tech_epoch_iv_uap_core" "tech_epoch_iv_coupling" }
  potential = { epoch_iv_future_research = yes OR = { AND = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate } AND = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty } } }
@@ -261,8 +261,8 @@ epoch_uap_2 = {
  dismantle_time = 360
  dismantle_cost = { category = megastructures cost = { energy = 1000 } }
  on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_uap_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_uap_anchor remove_planet_flag = has_megastructure } }
- triggered_country_modifier = { potential = { exists = owner has_megastructure_flag = epoch_c_operational owner = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes } } country_naval_cap_add = 120 ship_home_territory_fire_rate_mult = 0.10 }
- triggered_country_modifier = { potential = { exists = owner has_megastructure_flag = epoch_c_operational owner = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes } } all_technology_research_speed = 0.050 terraforming_cost_mult = -0.10 }
+ triggered_country_modifier = { potential = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes any_owned_megastructure = { has_megastructure_flag = epoch_c_operational OR = { is_megastructure_type = epoch_uap_1 is_megastructure_type = epoch_uap_2 is_megastructure_type = epoch_uap_3 is_megastructure_type = epoch_uap_4 } } } country_naval_cap_add = 120 ship_home_territory_fire_rate_mult = 0.10 }
+ triggered_country_modifier = { potential = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes any_owned_megastructure = { has_megastructure_flag = epoch_c_operational OR = { is_megastructure_type = epoch_uap_1 is_megastructure_type = epoch_uap_2 is_megastructure_type = epoch_uap_3 is_megastructure_type = epoch_uap_4 } } } all_technology_research_speed = 0.050 terraforming_cost_mult = -0.10 }
  ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 20 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 200 } } } }
 }
 
@@ -276,8 +276,8 @@ epoch_uap_3 = {
  resources = { category = megastructures
  cost = { unity = 6000 alloys = 30000 epoch_protocol_cores = 1800 }
  upkeep = { energy = 300 epoch_protocol_cores = 30 }
- produces = { trigger = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } alloys = 90 }
- produces = { trigger = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } physics_research = 450 society_research = 450 engineering_research = 450 unity = 60 }
+ produces = { trigger = { owner? = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } alloys = 90 }
+ produces = { trigger = { owner? = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 450 society_research = 450 engineering_research = 450 unity = 60 }
  }
  prerequisites = { "tech_mega_engineering" "tech_epoch_iv_uap_core" "tech_epoch_iv_coupling" }
  potential = { epoch_iv_future_research = yes OR = { AND = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate } AND = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty } } }
@@ -292,8 +292,8 @@ epoch_uap_3 = {
  dismantle_time = 360
  dismantle_cost = { category = megastructures cost = { energy = 1000 } }
  on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_uap_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_uap_anchor remove_planet_flag = has_megastructure } }
- triggered_country_modifier = { potential = { exists = owner has_megastructure_flag = epoch_c_operational owner = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes } } country_naval_cap_add = 180 ship_home_territory_fire_rate_mult = 0.15 }
- triggered_country_modifier = { potential = { exists = owner has_megastructure_flag = epoch_c_operational owner = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes } } all_technology_research_speed = 0.075 terraforming_cost_mult = -0.15 }
+ triggered_country_modifier = { potential = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes any_owned_megastructure = { has_megastructure_flag = epoch_c_operational OR = { is_megastructure_type = epoch_uap_1 is_megastructure_type = epoch_uap_2 is_megastructure_type = epoch_uap_3 is_megastructure_type = epoch_uap_4 } } } country_naval_cap_add = 180 ship_home_territory_fire_rate_mult = 0.15 }
+ triggered_country_modifier = { potential = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes any_owned_megastructure = { has_megastructure_flag = epoch_c_operational OR = { is_megastructure_type = epoch_uap_1 is_megastructure_type = epoch_uap_2 is_megastructure_type = epoch_uap_3 is_megastructure_type = epoch_uap_4 } } } all_technology_research_speed = 0.075 terraforming_cost_mult = -0.15 }
  ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 30 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 300 } } } }
 }
 
@@ -307,8 +307,8 @@ epoch_uap_4 = {
  resources = { category = megastructures
  cost = { unity = 8000 alloys = 40000 epoch_protocol_cores = 2400 }
  upkeep = { energy = 400 epoch_protocol_cores = 40 }
- produces = { trigger = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } alloys = 120 }
- produces = { trigger = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } physics_research = 600 society_research = 600 engineering_research = 600 unity = 80 }
+ produces = { trigger = { owner? = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } alloys = 120 }
+ produces = { trigger = { owner? = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes NOT = { has_deficit = energy } NOT = { has_deficit = epoch_protocol_cores } } } physics_research = 600 society_research = 600 engineering_research = 600 unity = 80 }
  }
  prerequisites = { "tech_mega_engineering" "tech_epoch_iv_uap_core" "tech_epoch_iv_coupling" }
  potential = { epoch_iv_future_research = yes OR = { AND = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate } AND = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty } } }
@@ -323,8 +323,8 @@ epoch_uap_4 = {
  dismantle_time = 360
  dismantle_cost = { category = megastructures cost = { energy = 1000 } }
  on_dismantle_complete = { every_system_planet = { limit = { has_planet_flag = epoch_c_uap_anchor has_any_megastructure = no } remove_planet_flag = epoch_c_uap_anchor remove_planet_flag = has_megastructure } }
- triggered_country_modifier = { potential = { exists = owner has_megastructure_flag = epoch_c_operational owner = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes } } country_naval_cap_add = 240 ship_home_territory_fire_rate_mult = 0.20 }
- triggered_country_modifier = { potential = { exists = owner has_megastructure_flag = epoch_c_operational owner = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes } } all_technology_research_speed = 0.100 terraforming_cost_mult = -0.20 }
+ triggered_country_modifier = { potential = { epoch_c_guard = yes has_technology = tech_epoch_iv_mandate epoch_c_single_uap = yes any_owned_megastructure = { has_megastructure_flag = epoch_c_operational OR = { is_megastructure_type = epoch_uap_1 is_megastructure_type = epoch_uap_2 is_megastructure_type = epoch_uap_3 is_megastructure_type = epoch_uap_4 } } } country_naval_cap_add = 240 ship_home_territory_fire_rate_mult = 0.20 }
+ triggered_country_modifier = { potential = { epoch_c_free = yes has_technology = tech_epoch_iv_universal_sovereignty epoch_c_single_uap = yes any_owned_megastructure = { has_megastructure_flag = epoch_c_operational OR = { is_megastructure_type = epoch_uap_1 is_megastructure_type = epoch_uap_2 is_megastructure_type = epoch_uap_3 is_megastructure_type = epoch_uap_4 } } } all_technology_research_speed = 0.100 terraforming_cost_mult = -0.20 }
  ai_weight = { factor = 15 modifier = { factor = 0 from = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 40 } } } } modifier = { factor = 0 from = { has_monthly_income = { resource = energy value < 400 } } } }
 }
 

@@ -1,5 +1,5 @@
 // Semantic checks for the actual 4.5.3 failures, with deliberately broken fixtures.
-const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),cp=require('node:child_process');
 const {parse,get,parsedByPath}=require('./test_clausewitz_structure.cjs');
 const root=process.argv[2]||path.resolve(__dirname,'..'),vanilla=process.argv[3]||'G:/Steam/steamapps/common/Stellaris';
 const read=p=>fs.readFileSync(path.join(root,p),'utf8'),native=p=>fs.readFileSync(path.join(vanilla,p),'utf8');
@@ -13,6 +13,16 @@ const nativeTriggerSources=fs.readdirSync(path.join(vanilla,'common/scripted_tri
 function validate(b,scope,stack=[]){for(const [key,v]of b||[]){
  if(['NOT','NOR','AND','OR','hidden_trigger'].includes(key)){validate(v,scope,stack);continue;}
  if(key==='owner'){assert.ok(['planet','megastructure','pop','pop_group'].includes(scope),'owner switch is invalid from '+scope);validate(v,'country',stack);continue;}
+ if(key==='owner?'){
+  // Native optional links do not evaluate their children if the link is absent,
+  // including country-only construction/UI economy queries (first playtest).
+  if(['planet','megastructure','pop','pop_group'].includes(scope))validate(v,'country',stack);
+  else assert.equal(scope,'country','unmodelled optional owner context');
+  continue;
+ }
+ if(key==='from'){assert.ok(['galactic_object','fleet','megastructure'].includes(scope));validate(v,'country',stack);continue;}
+ if(key==='any_system_planet'){assert.equal(scope,'galactic_object');validate(v,'planet',stack);continue;}
+ if(key==='has_no_non_gate_megastructure'){assert.equal(scope,'galactic_object');assert.ok(nativeTriggerSources.includes('has_no_non_gate_megastructure ='));continue;}
  if(key==='count_owned_megastructure'){
   assert.equal(scope,'country');assert.ok(get(v,'limit'),'native count requires limit');
   assert.ok(v.every(([k])=>['count','limit'].includes(k)),'no triggers beside limit in count');validate(get(v,'limit'),'megastructure',stack);continue;
@@ -24,19 +34,61 @@ function validate(b,scope,stack=[]){for(const [key,v]of b||[]){
  if(nativePredicates.includes(key)&&!scopes.has(key)){
   assert.equal(scope,'country');assert.ok(new RegExp('^'+key+'\\s*=','m').test(nativeTriggerSources),'real native country predicate '+key);continue;
  }
+ if(!scopes.has(key)){const n=nativeTriggerSources.match(new RegExp('^'+key+' = \\{[\\s\\S]*?^\\}','m'));if(n){assert.ok(!stack.includes(key),'recursive native macro '+key);validate(parse(n[0],'native '+key)[0][1],scope,[...stack,key]);continue;}}
  const allowed=scopes.get(key);assert.ok(allowed,'unknown trigger '+key);assert.ok(allowed.includes('all')||allowed.includes(scope),`${key} cannot run in ${scope}`);
  if(key==='exists'&&v==='owner')assert.notEqual(scope,'country','country resource table has no megastructure owner');
 }}
 function rejects(source,scope){checks++;assert.throws(()=>validate(parse('t = {'+source+'}','broken')[0][1],scope));}
 rejects('has_megastructure_flag = epoch_c_operational','country');
+rejects('epoch_iv_future_research = yes','megastructure');
+rejects('epoch_c_guard = yes','megastructure');
+rejects('epoch_c_free = yes','megastructure');
 rejects('exists = owner owner = { epoch_iv_future_research = yes }','country');
+rejects('owner = { owner = { epoch_iv_future_research = yes } }','megastructure');
+rejects('has_deficit = minerals','pop_group');
 rejects('count_owned_megastructure = { count < 2 OR = { is_megastructure_type = epoch_nexus_1 } }','country');
 rejects('count_owned_megastructure = { count < 2 limit = { has_country_flag = x } }','country');
 const mega=new Map(tree('common/megastructures/epoch_c_megastructures.txt'));
+// Bind the context oracle to recorded engine errors, not the contradicted README comment.
+const priorSource=cp.execFileSync('git',['show','4f8530e:common/megastructures/epoch_c_megastructures.txt'],{encoding:'utf8'});
+const priorLines=priorSource.split(/\r?\n/),priorMega=new Map(parse(priorSource,'third-test mega baseline'));
+const observed=read('docs/research/third-b-c-playtest-2026-11-10/scope-errors.txt');
+let resourceEvidence=0,modifierEvidence=0;
+for(const m of observed.matchAll(/epoch_c_megastructures\.txt line: (\d+)\r?\nCurrent Scope: (\w+)/g)){
+ const line=priorLines[Number(m[1])-1].trim();
+ if(line.startsWith('produces =')){check(m[2]==='megastructure','engine observed recurring resource mega context');resourceEvidence++;}
+ else if(line.startsWith('triggered_country_modifier =')){check(m[2]==='country','engine observed modifier country context');modifierEvidence++;}
+ else throw Error('Unmapped real scope diagnostic: '+line);
+}
+check(resourceEvidence>=10&&modifierEvidence>=10,'both recurring contexts have direct third-run engine evidence');
+const firstObserved=read('docs/research/first-b-c-playtest-2026-11-10/error.log.txt');
+const firstLines=cp.execFileSync('git',['show','cf13857:common/megastructures/epoch_c_megastructures.txt'],{encoding:'utf8'}).split(/\r?\n/);
+let countryResourceQueries=0;
+for(const m of firstObserved.matchAll(/Wrong scope[^\n]+has_megastructure_flag[^\n]+epoch_c_megastructures\.txt line: (\d+)\r?\nCurrent Scope: country/g))if(firstLines[Number(m[1])-1].trim().startsWith('produces ='))countryResourceQueries++;
+check(countryResourceQueries>0,'first run also observed country-only resource queries; require native optional-owner pattern');
+for(const [id,b]of priorMega){
+ for(const [,t]of get(b,'resources').filter(([k])=>k==='produces')){checks++;assert.throws(()=>validate(get(t,'trigger'),'megastructure'),undefined,'reject actual previous broken resource condition '+id);}
+ for(const potential of deep(b,'triggered_country_modifier').map(t=>get(t,'potential'))){checks++;assert.throws(()=>validate(potential,'country'),undefined,'reject actual previous broken modifier condition '+id);}
+}
 for(const [id,b]of mega){
  const family=id.match(/^epoch_(\w+)_/)[1];
- for(const [,t]of get(b,'resources').filter(([k])=>['cost','upkeep','produces'].includes(k))){validate(get(t,'trigger'),'country');checks++;}
- for(const potential of deep(b,'triggered_country_modifier').map(t=>get(t,'potential'))){validate(potential,'megastructure');checks++;}
+ for(const [kind,t]of get(b,'resources').filter(([k])=>['cost','upkeep','produces'].includes(k))){
+  if(kind==='upkeep')check(!get(t,'trigger'),'keep native unconditional upkeep; no unobserved conditional-upkeep scope assumption');
+  else{
+   validate(get(t,'trigger'),kind==='cost'?'country':'megastructure');checks++;
+   if(kind==='produces'){
+    validate(get(t,'trigger'),'country');checks++;
+    check(get(t,'trigger').length===1&&!!get(get(t,'trigger'),'owner?'),'native optional-owner predicate only; no instance flag in recurring resource query');
+   }
+  }
+ }
+ for(const potential of deep(b,'triggered_country_modifier').map(t=>get(t,'potential'))){validate(potential,'country');checks++;}
+ validate(get(b,'potential'),'country');validate(get(b,'build_menu_potential'),'fleet');validate(get(b,'possible'),'galactic_object');validate(get(get(b,'placement_rules')||[],'planet_possible'),'planet');validate(get(b,'dismantle_possible'),'megastructure');checks+=5;
+ for(const field of ['potential','build_menu_potential','possible','placement_rules','upgrade_from','prerequisites','on_build_start','on_build_cancel','on_build_complete','on_dismantle_complete']){assert.deepEqual(get(b,field),get(priorMega.get(id),field),'successful construction and callbacks preserved '+id+'/'+field);checks++;}
+ const resources=get(b,'resources'),oldResources=get(priorMega.get(id),'resources');
+ assert.deepEqual(get(resources,'cost'),get(oldResources,'cost'));assert.deepEqual(get(resources,'upkeep'),get(oldResources,'upkeep'));checks+=2;
+ const amounts=r=>r.filter(([k])=>k==='produces').map(([,x])=>x.filter(([k])=>k!=='trigger'));
+ assert.deepEqual(amounts(resources),amounts(oldResources),'all ten stage resource amounts preserved '+id);checks++;
  check(get(get(b,'on_build_complete'),'fromfrom')?.some(([k,v])=>k==='set_megastructure_flag'&&v==='epoch_c_operational'),'operational marker only on completed instance '+id);
  check(!deep(get(b,'on_build_start'),'set_country_flag').length,'start cannot reserve against itself '+id);
  check(!deep(get(b,'possible'),'has_country_flag').length,'no stale/captured reservation lock '+id);
