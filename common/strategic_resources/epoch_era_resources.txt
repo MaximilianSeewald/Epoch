@@ -1,0 +1,8 @@
+epoch_protocol_cores = {
+ tradable = no category = rare max = 15000
+ visibility_prerequisite = { has_technology = tech_epoch_iv_cores }
+ prerequisites = { "tech_epoch_iv_cores" }
+ deficit_modifier = epoch_era_core_deficit
+ ai_weight = { weight = 100 }
+ ai_wants = { base = 20 }
+}

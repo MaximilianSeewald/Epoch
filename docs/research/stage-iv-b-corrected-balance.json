@@ -1,0 +1,1481 @@
+{
+  "version": "4.5.3",
+  "sources": [
+    {
+      "path": "common/buildings/05_research_buildings.txt",
+      "sha256": "17f2bf908c25b2c357756628340790457d41cdd5a9e2e07a62fb9fbc6d209af5"
+    },
+    {
+      "path": "common/buildings/04_manufacturing_buildings.txt",
+      "sha256": "48d9fb1613fd0c32b07c98399441f744464b72c0c902ab0c53749c348e69c44c"
+    },
+    {
+      "path": "common/buildings/03_resource_buildings.txt",
+      "sha256": "1d0ab107cedb5be2c0de9bfadd9a2b44490bcdee7dc2af184df1580dc02592dc"
+    },
+    {
+      "path": "common/buildings/07_amenity_buildings.txt",
+      "sha256": "6483b2c11e3b42fb5eb46f5466bcedd774733646dfbdb6c480b1c0504705af1e"
+    },
+    {
+      "path": "common/buildings/08_unity_buildings.txt",
+      "sha256": "aa26f94daf90a18fecf53ba37d94156c6d3acee601cec6117738e8d0be9950d1"
+    },
+    {
+      "path": "common/buildings/09_army_buildings.txt",
+      "sha256": "f3f847c877e6ce8aa64340c13f059f535105290ec7fe4cca4df71cf0360f780e"
+    },
+    {
+      "path": "common/buildings/13_fallen_empire_buildings.txt",
+      "sha256": "25d498a7d0952c56db081980c79ad9a0911b5ae4bbd6c531554d85477e0147b8"
+    },
+    {
+      "path": "common/pop_jobs/02_specialist_jobs.txt",
+      "sha256": "3e35067fd9b2524a101c2cc35dbbc3c67b383a46c8bf3bbfe475da77edbf6fbc"
+    },
+    {
+      "path": "common/pop_jobs/03_worker_jobs.txt",
+      "sha256": "a86f096d6ac18dd5ee3a6267d31551c933816300e5ccd279f5e7b6afb5fe18df"
+    },
+    {
+      "path": "common/inline_scripts/output/foundry_output.txt",
+      "sha256": "872d1c29a4242c4847d455e00638fa2131582ba2e7808848d312072def677796"
+    },
+    {
+      "path": "common/inline_scripts/output/healthcare_triggered_modifiers.txt",
+      "sha256": "f4926b0d4773bcbcb0fe2118e73fdd73dcbf0da547b06289b11da73164c5b8d8"
+    },
+    {
+      "path": "common/scripted_variables/100_scripted_variables_zones.txt",
+      "sha256": "f67b8c2d1d53c5b392ae60d0b89d069b581e59dee52f8102a2a47c430b216155"
+    },
+    {
+      "path": "common/scripted_variables/00_scripted_variables.txt",
+      "sha256": "24104d62e8ef7eb26ccb14e7d22980f790d5b5f7821bbdbb42450d3215b62a98"
+    }
+  ],
+  "comparisons": [
+    {
+      "family": "lab",
+      "native": "building_research_lab_3",
+      "metric": "research / field",
+      "vanilla": 5.4,
+      "epoch": 9.72,
+      "ratio": 1.8
+    },
+    {
+      "family": "forge",
+      "native": "building_foundry_3",
+      "metric": "organic alloys",
+      "vanilla": 18,
+      "epoch": 36,
+      "ratio": 2
+    },
+    {
+      "family": "collector",
+      "native": "building_energy_nexus",
+      "metric": "local energy / 100 technician workforce",
+      "vanilla": 1,
+      "epoch": 2,
+      "ratio": 2
+    },
+    {
+      "family": "institute",
+      "native": "building_medical_2",
+      "metric": "amenities (base doctors, no civic/trait)",
+      "vanilla": 1500,
+      "epoch": 2700,
+      "ratio": 1.8
+    },
+    {
+      "family": "archive",
+      "native": "building_bureaucratic_3",
+      "metric": "unity on 20 staffed bureaucrat units, with building workforce bonus; EPOCH + 4 archivists",
+      "vanilla": 66,
+      "epoch": 105.8,
+      "ratio": 1.603
+    },
+    {
+      "family": "phase",
+      "native": "building_planetary_shield_generator",
+      "metric": "effective bombardment endurance, equal planet",
+      "vanilla": 2,
+      "epoch": 4,
+      "ratio": 2
+    },
+    {
+      "family": "academy",
+      "native": "building_fortress",
+      "metric": "naval cap, four units; Vanilla includes Ground Defense Planning",
+      "vanilla": 20,
+      "epoch": 40,
+      "ratio": 2
+    },
+    {
+      "family": "factory",
+      "native": "building_crystal_plant_2 / strategic refinery",
+      "metric": "distinct strategic outputs, no interchangeable unit value",
+      "vanilla": null,
+      "epoch": 72
+    }
+  ],
+  "rows": [
+    {
+      "id": "building_epoch_lab_1",
+      "profile": "organic",
+      "workforce": 1.8,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "physics_research": 3.24,
+        "society_research": 3.24,
+        "engineering_research": 3.24
+      },
+      "net": {
+        "physics_research": 3.24,
+        "society_research": 3.24,
+        "engineering_research": 3.24,
+        "epoch_protocol_cores": -2.18,
+        "consumer_goods": -2.7,
+        "energy": -4
+      }
+    },
+    {
+      "id": "building_epoch_lab_1",
+      "profile": "hive",
+      "workforce": 1.8,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "physics_research": 3.24,
+        "society_research": 3.24,
+        "engineering_research": 3.24
+      },
+      "net": {
+        "physics_research": 3.24,
+        "society_research": 3.24,
+        "engineering_research": 3.24,
+        "epoch_protocol_cores": -2.18,
+        "energy": -7.6
+      }
+    },
+    {
+      "id": "building_epoch_lab_1",
+      "profile": "machine",
+      "workforce": 1.8,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "physics_research": 3.24,
+        "society_research": 3.24,
+        "engineering_research": 3.24
+      },
+      "net": {
+        "physics_research": 3.24,
+        "society_research": 3.24,
+        "engineering_research": 3.24,
+        "epoch_protocol_cores": -2.18,
+        "energy": -7.6
+      }
+    },
+    {
+      "id": "building_epoch_lab_1",
+      "profile": "catalytic",
+      "workforce": 1.8,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "physics_research": 3.24,
+        "society_research": 3.24,
+        "engineering_research": 3.24
+      },
+      "net": {
+        "physics_research": 3.24,
+        "society_research": 3.24,
+        "engineering_research": 3.24,
+        "epoch_protocol_cores": -2.18,
+        "consumer_goods": -2.7,
+        "energy": -4
+      }
+    },
+    {
+      "id": "building_epoch_lab_2",
+      "profile": "organic",
+      "workforce": 3.6,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "physics_research": 6.48,
+        "society_research": 6.48,
+        "engineering_research": 6.48
+      },
+      "net": {
+        "physics_research": 6.48,
+        "society_research": 6.48,
+        "engineering_research": 6.48,
+        "epoch_protocol_cores": -4.36,
+        "consumer_goods": -5.4,
+        "energy": -8,
+        "exotic_gases": -1
+      }
+    },
+    {
+      "id": "building_epoch_lab_2",
+      "profile": "hive",
+      "workforce": 3.6,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "physics_research": 6.48,
+        "society_research": 6.48,
+        "engineering_research": 6.48
+      },
+      "net": {
+        "physics_research": 6.48,
+        "society_research": 6.48,
+        "engineering_research": 6.48,
+        "epoch_protocol_cores": -4.36,
+        "energy": -15.2,
+        "exotic_gases": -1
+      }
+    },
+    {
+      "id": "building_epoch_lab_2",
+      "profile": "machine",
+      "workforce": 3.6,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "physics_research": 6.48,
+        "society_research": 6.48,
+        "engineering_research": 6.48
+      },
+      "net": {
+        "physics_research": 6.48,
+        "society_research": 6.48,
+        "engineering_research": 6.48,
+        "epoch_protocol_cores": -4.36,
+        "energy": -15.2,
+        "exotic_gases": -1
+      }
+    },
+    {
+      "id": "building_epoch_lab_2",
+      "profile": "catalytic",
+      "workforce": 3.6,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "physics_research": 6.48,
+        "society_research": 6.48,
+        "engineering_research": 6.48
+      },
+      "net": {
+        "physics_research": 6.48,
+        "society_research": 6.48,
+        "engineering_research": 6.48,
+        "epoch_protocol_cores": -4.36,
+        "consumer_goods": -5.4,
+        "energy": -8,
+        "exotic_gases": -1
+      }
+    },
+    {
+      "id": "building_epoch_lab_3",
+      "profile": "organic",
+      "workforce": 5.4,
+      "cost": {
+        "minerals": 2400,
+        "alloys": 450,
+        "epoch_protocol_cores": 80
+      },
+      "gross": {
+        "physics_research": 9.72,
+        "society_research": 9.72,
+        "engineering_research": 9.72
+      },
+      "net": {
+        "physics_research": 9.72,
+        "society_research": 9.72,
+        "engineering_research": 9.72,
+        "epoch_protocol_cores": -6.54,
+        "consumer_goods": -8.1,
+        "energy": -12,
+        "exotic_gases": -2
+      }
+    },
+    {
+      "id": "building_epoch_lab_3",
+      "profile": "hive",
+      "workforce": 5.4,
+      "cost": {
+        "minerals": 2400,
+        "alloys": 450,
+        "epoch_protocol_cores": 80
+      },
+      "gross": {
+        "physics_research": 9.72,
+        "society_research": 9.72,
+        "engineering_research": 9.72
+      },
+      "net": {
+        "physics_research": 9.72,
+        "society_research": 9.72,
+        "engineering_research": 9.72,
+        "epoch_protocol_cores": -6.54,
+        "energy": -22.8,
+        "exotic_gases": -2
+      }
+    },
+    {
+      "id": "building_epoch_lab_3",
+      "profile": "machine",
+      "workforce": 5.4,
+      "cost": {
+        "minerals": 2400,
+        "alloys": 450,
+        "epoch_protocol_cores": 80
+      },
+      "gross": {
+        "physics_research": 9.72,
+        "society_research": 9.72,
+        "engineering_research": 9.72
+      },
+      "net": {
+        "physics_research": 9.72,
+        "society_research": 9.72,
+        "engineering_research": 9.72,
+        "epoch_protocol_cores": -6.54,
+        "energy": -22.8,
+        "exotic_gases": -2
+      }
+    },
+    {
+      "id": "building_epoch_lab_3",
+      "profile": "catalytic",
+      "workforce": 5.4,
+      "cost": {
+        "minerals": 2400,
+        "alloys": 450,
+        "epoch_protocol_cores": 80
+      },
+      "gross": {
+        "physics_research": 9.72,
+        "society_research": 9.72,
+        "engineering_research": 9.72
+      },
+      "net": {
+        "physics_research": 9.72,
+        "society_research": 9.72,
+        "engineering_research": 9.72,
+        "epoch_protocol_cores": -6.54,
+        "consumer_goods": -8.1,
+        "energy": -12,
+        "exotic_gases": -2
+      }
+    },
+    {
+      "id": "building_epoch_forge_1",
+      "profile": "organic",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "alloys": 12
+      },
+      "net": {
+        "alloys": 12,
+        "epoch_protocol_cores": -2.1,
+        "energy": -4
+      }
+    },
+    {
+      "id": "building_epoch_forge_1",
+      "profile": "hive",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "alloys": 12
+      },
+      "net": {
+        "alloys": 12,
+        "epoch_protocol_cores": -2.1,
+        "energy": -4
+      }
+    },
+    {
+      "id": "building_epoch_forge_1",
+      "profile": "machine",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "alloys": 16
+      },
+      "net": {
+        "alloys": 16,
+        "epoch_protocol_cores": -2.1,
+        "energy": -4
+      }
+    },
+    {
+      "id": "building_epoch_forge_1",
+      "profile": "catalytic",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "alloys": 15
+      },
+      "net": {
+        "alloys": 15,
+        "food": -30,
+        "epoch_protocol_cores": -2.1,
+        "energy": -4
+      }
+    },
+    {
+      "id": "building_epoch_forge_2",
+      "profile": "organic",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "alloys": 24
+      },
+      "net": {
+        "alloys": 24,
+        "epoch_protocol_cores": -4.2,
+        "energy": -8
+      }
+    },
+    {
+      "id": "building_epoch_forge_2",
+      "profile": "hive",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "alloys": 24
+      },
+      "net": {
+        "alloys": 24,
+        "epoch_protocol_cores": -4.2,
+        "energy": -8
+      }
+    },
+    {
+      "id": "building_epoch_forge_2",
+      "profile": "machine",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "alloys": 32
+      },
+      "net": {
+        "alloys": 32,
+        "epoch_protocol_cores": -4.2,
+        "energy": -8
+      }
+    },
+    {
+      "id": "building_epoch_forge_2",
+      "profile": "catalytic",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "alloys": 30
+      },
+      "net": {
+        "alloys": 30,
+        "food": -60,
+        "epoch_protocol_cores": -4.2,
+        "energy": -8
+      }
+    },
+    {
+      "id": "building_epoch_forge_3",
+      "profile": "organic",
+      "workforce": 6,
+      "cost": {
+        "minerals": 2400,
+        "alloys": 450,
+        "epoch_protocol_cores": 80
+      },
+      "gross": {
+        "alloys": 36
+      },
+      "net": {
+        "alloys": 36,
+        "epoch_protocol_cores": -6.3,
+        "energy": -12
+      }
+    },
+    {
+      "id": "building_epoch_forge_3",
+      "profile": "hive",
+      "workforce": 6,
+      "cost": {
+        "minerals": 2400,
+        "alloys": 450,
+        "epoch_protocol_cores": 80
+      },
+      "gross": {
+        "alloys": 36
+      },
+      "net": {
+        "alloys": 36,
+        "epoch_protocol_cores": -6.3,
+        "energy": -12
+      }
+    },
+    {
+      "id": "building_epoch_forge_3",
+      "profile": "machine",
+      "workforce": 6,
+      "cost": {
+        "minerals": 2400,
+        "alloys": 450,
+        "epoch_protocol_cores": 80
+      },
+      "gross": {
+        "alloys": 48
+      },
+      "net": {
+        "alloys": 48,
+        "epoch_protocol_cores": -6.3,
+        "energy": -12
+      }
+    },
+    {
+      "id": "building_epoch_forge_3",
+      "profile": "catalytic",
+      "workforce": 6,
+      "cost": {
+        "minerals": 2400,
+        "alloys": 450,
+        "epoch_protocol_cores": 80
+      },
+      "gross": {
+        "alloys": 45
+      },
+      "net": {
+        "alloys": 45,
+        "food": -90,
+        "epoch_protocol_cores": -6.3,
+        "energy": -12
+      }
+    },
+    {
+      "id": "building_epoch_collector_1",
+      "profile": "organic",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "energy": 35
+      },
+      "net": {
+        "energy": 31,
+        "minerals": -4,
+        "epoch_protocol_cores": -1.6
+      }
+    },
+    {
+      "id": "building_epoch_collector_1",
+      "profile": "hive",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "energy": 35
+      },
+      "net": {
+        "energy": 31,
+        "minerals": -4,
+        "epoch_protocol_cores": -1.6
+      }
+    },
+    {
+      "id": "building_epoch_collector_1",
+      "profile": "machine",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "energy": 35
+      },
+      "net": {
+        "energy": 31,
+        "minerals": -4,
+        "epoch_protocol_cores": -1.6
+      }
+    },
+    {
+      "id": "building_epoch_collector_1",
+      "profile": "catalytic",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "energy": 35
+      },
+      "net": {
+        "energy": 31,
+        "minerals": -4,
+        "epoch_protocol_cores": -1.6
+      }
+    },
+    {
+      "id": "building_epoch_collector_2",
+      "profile": "organic",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "energy": 64
+      },
+      "net": {
+        "energy": 56,
+        "minerals": -8,
+        "epoch_protocol_cores": -3.2
+      }
+    },
+    {
+      "id": "building_epoch_collector_2",
+      "profile": "hive",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "energy": 64
+      },
+      "net": {
+        "energy": 56,
+        "minerals": -8,
+        "epoch_protocol_cores": -3.2
+      }
+    },
+    {
+      "id": "building_epoch_collector_2",
+      "profile": "machine",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "energy": 64
+      },
+      "net": {
+        "energy": 56,
+        "minerals": -8,
+        "epoch_protocol_cores": -3.2
+      }
+    },
+    {
+      "id": "building_epoch_collector_2",
+      "profile": "catalytic",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "energy": 64
+      },
+      "net": {
+        "energy": 56,
+        "minerals": -8,
+        "epoch_protocol_cores": -3.2
+      }
+    },
+    {
+      "id": "building_epoch_institute_1",
+      "profile": "organic",
+      "workforce": 1,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "society_research": 4,
+        "unity": 3
+      },
+      "net": {
+        "society_research": 4,
+        "unity": 3,
+        "epoch_protocol_cores": -1.05,
+        "consumer_goods": -1.5,
+        "energy": -4
+      }
+    },
+    {
+      "id": "building_epoch_institute_1",
+      "profile": "hive",
+      "workforce": 1,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "society_research": 4,
+        "unity": 3
+      },
+      "net": {
+        "society_research": 4,
+        "unity": 3,
+        "epoch_protocol_cores": -1.05,
+        "energy": -6
+      }
+    },
+    {
+      "id": "building_epoch_institute_1",
+      "profile": "machine",
+      "workforce": 1,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "society_research": 4,
+        "unity": 3
+      },
+      "net": {
+        "society_research": 4,
+        "unity": 3,
+        "epoch_protocol_cores": -1.05,
+        "energy": -6
+      }
+    },
+    {
+      "id": "building_epoch_institute_1",
+      "profile": "catalytic",
+      "workforce": 1,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "society_research": 4,
+        "unity": 3
+      },
+      "net": {
+        "society_research": 4,
+        "unity": 3,
+        "epoch_protocol_cores": -1.05,
+        "consumer_goods": -1.5,
+        "energy": -4
+      }
+    },
+    {
+      "id": "building_epoch_institute_2",
+      "profile": "organic",
+      "workforce": 2,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "society_research": 8,
+        "unity": 6
+      },
+      "net": {
+        "society_research": 8,
+        "unity": 6,
+        "epoch_protocol_cores": -2.1,
+        "consumer_goods": -3,
+        "energy": -8
+      }
+    },
+    {
+      "id": "building_epoch_institute_2",
+      "profile": "hive",
+      "workforce": 2,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "society_research": 8,
+        "unity": 6
+      },
+      "net": {
+        "society_research": 8,
+        "unity": 6,
+        "epoch_protocol_cores": -2.1,
+        "energy": -12
+      }
+    },
+    {
+      "id": "building_epoch_institute_2",
+      "profile": "machine",
+      "workforce": 2,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "society_research": 8,
+        "unity": 6
+      },
+      "net": {
+        "society_research": 8,
+        "unity": 6,
+        "epoch_protocol_cores": -2.1,
+        "energy": -12
+      }
+    },
+    {
+      "id": "building_epoch_institute_2",
+      "profile": "catalytic",
+      "workforce": 2,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "society_research": 8,
+        "unity": 6
+      },
+      "net": {
+        "society_research": 8,
+        "unity": 6,
+        "epoch_protocol_cores": -2.1,
+        "consumer_goods": -3,
+        "energy": -8
+      }
+    },
+    {
+      "id": "building_epoch_archive_1",
+      "profile": "organic",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "unity": 17.6,
+        "physics_research": 2
+      },
+      "net": {
+        "unity": 17.6,
+        "physics_research": 2,
+        "epoch_protocol_cores": -1.6,
+        "consumer_goods": -3,
+        "energy": -4
+      }
+    },
+    {
+      "id": "building_epoch_archive_1",
+      "profile": "hive",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "unity": 17.6,
+        "physics_research": 2
+      },
+      "net": {
+        "unity": 17.6,
+        "physics_research": 2,
+        "epoch_protocol_cores": -1.6,
+        "energy": -8
+      }
+    },
+    {
+      "id": "building_epoch_archive_1",
+      "profile": "machine",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "unity": 17.6,
+        "physics_research": 2
+      },
+      "net": {
+        "unity": 17.6,
+        "physics_research": 2,
+        "epoch_protocol_cores": -1.6,
+        "energy": -8
+      }
+    },
+    {
+      "id": "building_epoch_archive_1",
+      "profile": "catalytic",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "unity": 17.6,
+        "physics_research": 2
+      },
+      "net": {
+        "unity": 17.6,
+        "physics_research": 2,
+        "epoch_protocol_cores": -1.6,
+        "consumer_goods": -3,
+        "energy": -4
+      }
+    },
+    {
+      "id": "building_epoch_archive_2",
+      "profile": "organic",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "unity": 36.8,
+        "physics_research": 4
+      },
+      "net": {
+        "unity": 36.8,
+        "physics_research": 4,
+        "epoch_protocol_cores": -3.2,
+        "consumer_goods": -6,
+        "energy": -8
+      }
+    },
+    {
+      "id": "building_epoch_archive_2",
+      "profile": "hive",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "unity": 36.8,
+        "physics_research": 4
+      },
+      "net": {
+        "unity": 36.8,
+        "physics_research": 4,
+        "epoch_protocol_cores": -3.2,
+        "energy": -16
+      }
+    },
+    {
+      "id": "building_epoch_archive_2",
+      "profile": "machine",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "unity": 36.8,
+        "physics_research": 4
+      },
+      "net": {
+        "unity": 36.8,
+        "physics_research": 4,
+        "epoch_protocol_cores": -3.2,
+        "energy": -16
+      }
+    },
+    {
+      "id": "building_epoch_archive_2",
+      "profile": "catalytic",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "unity": 36.8,
+        "physics_research": 4
+      },
+      "net": {
+        "unity": 36.8,
+        "physics_research": 4,
+        "epoch_protocol_cores": -3.2,
+        "consumer_goods": -6,
+        "energy": -8
+      }
+    },
+    {
+      "id": "building_epoch_phase_1",
+      "profile": "organic",
+      "workforce": 1,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {},
+      "net": {
+        "energy": -6,
+        "epoch_protocol_cores": -1.05
+      }
+    },
+    {
+      "id": "building_epoch_phase_1",
+      "profile": "hive",
+      "workforce": 1,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {},
+      "net": {
+        "energy": -6,
+        "epoch_protocol_cores": -1.05
+      }
+    },
+    {
+      "id": "building_epoch_phase_1",
+      "profile": "machine",
+      "workforce": 1,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {},
+      "net": {
+        "energy": -6,
+        "epoch_protocol_cores": -1.05
+      }
+    },
+    {
+      "id": "building_epoch_phase_1",
+      "profile": "catalytic",
+      "workforce": 1,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {},
+      "net": {
+        "energy": -6,
+        "epoch_protocol_cores": -1.05
+      }
+    },
+    {
+      "id": "building_epoch_phase_2",
+      "profile": "organic",
+      "workforce": 2,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {},
+      "net": {
+        "energy": -12,
+        "epoch_protocol_cores": -2.1
+      }
+    },
+    {
+      "id": "building_epoch_phase_2",
+      "profile": "hive",
+      "workforce": 2,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {},
+      "net": {
+        "energy": -12,
+        "epoch_protocol_cores": -2.1
+      }
+    },
+    {
+      "id": "building_epoch_phase_2",
+      "profile": "machine",
+      "workforce": 2,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {},
+      "net": {
+        "energy": -12,
+        "epoch_protocol_cores": -2.1
+      }
+    },
+    {
+      "id": "building_epoch_phase_2",
+      "profile": "catalytic",
+      "workforce": 2,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {},
+      "net": {
+        "energy": -12,
+        "epoch_protocol_cores": -2.1
+      }
+    },
+    {
+      "id": "building_epoch_factory_1",
+      "profile": "organic",
+      "workforce": 3,
+      "cost": {
+        "minerals": 1200,
+        "alloys": 225
+      },
+      "gross": {
+        "epoch_protocol_cores": 36
+      },
+      "net": {
+        "epoch_protocol_cores": 36,
+        "minerals": -54,
+        "alloys": -9,
+        "energy": -28
+      }
+    },
+    {
+      "id": "building_epoch_factory_1",
+      "profile": "hive",
+      "workforce": 3,
+      "cost": {
+        "minerals": 1200,
+        "alloys": 225
+      },
+      "gross": {
+        "epoch_protocol_cores": 36
+      },
+      "net": {
+        "epoch_protocol_cores": 36,
+        "minerals": -54,
+        "alloys": -9,
+        "energy": -28
+      }
+    },
+    {
+      "id": "building_epoch_factory_1",
+      "profile": "machine",
+      "workforce": 3,
+      "cost": {
+        "minerals": 1200,
+        "alloys": 225
+      },
+      "gross": {
+        "epoch_protocol_cores": 36
+      },
+      "net": {
+        "epoch_protocol_cores": 36,
+        "minerals": -54,
+        "alloys": -9,
+        "energy": -28
+      }
+    },
+    {
+      "id": "building_epoch_factory_1",
+      "profile": "catalytic",
+      "workforce": 3,
+      "cost": {
+        "minerals": 1200,
+        "alloys": 225
+      },
+      "gross": {
+        "epoch_protocol_cores": 36
+      },
+      "net": {
+        "epoch_protocol_cores": 36,
+        "minerals": -54,
+        "alloys": -9,
+        "energy": -28
+      }
+    },
+    {
+      "id": "building_epoch_factory_2",
+      "profile": "organic",
+      "workforce": 6,
+      "cost": {
+        "minerals": 2400,
+        "alloys": 450
+      },
+      "gross": {
+        "epoch_protocol_cores": 72
+      },
+      "net": {
+        "epoch_protocol_cores": 72,
+        "minerals": -108,
+        "alloys": -18,
+        "energy": -56
+      }
+    },
+    {
+      "id": "building_epoch_factory_2",
+      "profile": "hive",
+      "workforce": 6,
+      "cost": {
+        "minerals": 2400,
+        "alloys": 450
+      },
+      "gross": {
+        "epoch_protocol_cores": 72
+      },
+      "net": {
+        "epoch_protocol_cores": 72,
+        "minerals": -108,
+        "alloys": -18,
+        "energy": -56
+      }
+    },
+    {
+      "id": "building_epoch_factory_2",
+      "profile": "machine",
+      "workforce": 6,
+      "cost": {
+        "minerals": 2400,
+        "alloys": 450
+      },
+      "gross": {
+        "epoch_protocol_cores": 72
+      },
+      "net": {
+        "epoch_protocol_cores": 72,
+        "minerals": -108,
+        "alloys": -18,
+        "energy": -56
+      }
+    },
+    {
+      "id": "building_epoch_factory_2",
+      "profile": "catalytic",
+      "workforce": 6,
+      "cost": {
+        "minerals": 2400,
+        "alloys": 450
+      },
+      "gross": {
+        "epoch_protocol_cores": 72
+      },
+      "net": {
+        "epoch_protocol_cores": 72,
+        "minerals": -108,
+        "alloys": -18,
+        "energy": -56
+      }
+    },
+    {
+      "id": "building_epoch_academy_1",
+      "profile": "organic",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "unity": 2
+      },
+      "net": {
+        "unity": 2,
+        "energy": -8,
+        "alloys": -1,
+        "epoch_protocol_cores": -1.6
+      }
+    },
+    {
+      "id": "building_epoch_academy_1",
+      "profile": "hive",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "unity": 2
+      },
+      "net": {
+        "unity": 2,
+        "energy": -8,
+        "alloys": -1,
+        "epoch_protocol_cores": -1.6
+      }
+    },
+    {
+      "id": "building_epoch_academy_1",
+      "profile": "machine",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "unity": 2
+      },
+      "net": {
+        "unity": 2,
+        "energy": -8,
+        "alloys": -1,
+        "epoch_protocol_cores": -1.6
+      }
+    },
+    {
+      "id": "building_epoch_academy_1",
+      "profile": "catalytic",
+      "workforce": 2,
+      "cost": {
+        "minerals": 800,
+        "alloys": 150
+      },
+      "gross": {
+        "unity": 2
+      },
+      "net": {
+        "unity": 2,
+        "energy": -8,
+        "alloys": -1,
+        "epoch_protocol_cores": -1.6
+      }
+    },
+    {
+      "id": "building_epoch_academy_2",
+      "profile": "organic",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "unity": 4
+      },
+      "net": {
+        "unity": 4,
+        "energy": -16,
+        "alloys": -2,
+        "epoch_protocol_cores": -3.2
+      }
+    },
+    {
+      "id": "building_epoch_academy_2",
+      "profile": "hive",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "unity": 4
+      },
+      "net": {
+        "unity": 4,
+        "energy": -16,
+        "alloys": -2,
+        "epoch_protocol_cores": -3.2
+      }
+    },
+    {
+      "id": "building_epoch_academy_2",
+      "profile": "machine",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "unity": 4
+      },
+      "net": {
+        "unity": 4,
+        "energy": -16,
+        "alloys": -2,
+        "epoch_protocol_cores": -3.2
+      }
+    },
+    {
+      "id": "building_epoch_academy_2",
+      "profile": "catalytic",
+      "workforce": 4,
+      "cost": {
+        "minerals": 1600,
+        "alloys": 300,
+        "epoch_protocol_cores": 40
+      },
+      "gross": {
+        "unity": 4
+      },
+      "net": {
+        "unity": 4,
+        "energy": -16,
+        "alloys": -2,
+        "epoch_protocol_cores": -3.2
+      }
+    }
+  ]
+}

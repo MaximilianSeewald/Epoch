@@ -1,0 +1,467 @@
+tech_epoch_iv_sensors = {
+ icon = tech_sensors_4
+ cost = 28000 area = physics tier = 3
+ category = { computing }
+ prerequisites = { "tech_epoch_iv_calibration" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 140
+ ai_weight = { weight = 10 }
+ modifier = { ship_sensor_range_add = 1 }
+}
+
+tech_epoch_iv_reconstruction = {
+ icon = tech_administrative_ai
+ cost = 28000 area = physics tier = 3
+ category = { computing }
+ prerequisites = { "tech_epoch_iv_spectroscopy" "tech_epoch_iv_materials" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 140
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_fields = {
+ icon = tech_shields_5
+ cost = 28000 area = physics tier = 3
+ category = { field_manipulation }
+ prerequisites = { "tech_epoch_iv_calibration" "tech_epoch_iv_materials" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 140
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_storage = {
+ icon = tech_power_hub_2
+ cost = 28000 area = physics tier = 3
+ category = { field_manipulation }
+ prerequisites = { "tech_epoch_iv_fields" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 140
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_shields = {
+ icon = tech_shields_5
+ cost = 56000 area = physics tier = 4
+ category = { field_manipulation }
+ prerequisites = { "tech_epoch_iv_fields" "tech_epoch_iv_steel" }
+ potential = { epoch_iv_future_research = yes  country_uses_bio_ships = no }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_phase_emitter = {
+ icon = tech_plasma_3
+ cost = 56000 area = physics tier = 4
+ category = { particles }
+ prerequisites = { "tech_epoch_iv_fields" "tech_epoch_iv_cores" }
+ potential = { epoch_iv_future_research = yes  country_uses_bio_ships = no }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_lance = {
+ icon = tech_energy_lance_2
+ cost = 56000 area = physics tier = 4
+ category = { particles }
+ prerequisites = { "tech_epoch_iv_phase_emitter" "tech_epoch_iv_reactor" }
+ potential = { epoch_iv_future_research = yes  country_uses_bio_ships = no }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_torpedoes = {
+ icon = tech_torpedoes_3
+ cost = 56000 area = physics tier = 4
+ category = { particles }
+ prerequisites = { "tech_epoch_iv_phase_emitter" "tech_epoch_iv_telemetry" }
+ potential = { epoch_iv_future_research = yes  country_uses_bio_ships = no }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_hyperdrive = {
+ icon = tech_hyper_drive_3
+ cost = 56000 area = physics tier = 4
+ category = { particles }
+ prerequisites = { "tech_epoch_iv_sensors" "tech_epoch_iv_reactor" }
+ potential = { epoch_iv_future_research = yes  country_uses_bio_ships = no }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_transcendent_shields = {
+ icon = tech_dark_matter_deflector
+ cost = 112000 area = physics tier = 5
+ category = { field_manipulation }
+ prerequisites = { "tech_epoch_iv_shields" "tech_epoch_iv_reactor" }
+ potential = { epoch_iv_future_research = yes  country_uses_bio_ships = no }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_protocol_breaker = {
+ icon = tech_titans
+ cost = 112000 area = physics tier = 5
+ category = { particles }
+ prerequisites = { "tech_epoch_iv_lance" "tech_epoch_iv_artillery" "tech_titans" }
+ potential = { epoch_iv_future_research = yes  country_uses_bio_ships = no }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_coupling = {
+ icon = tech_planetary_shield_generator
+ cost = 112000 area = physics tier = 5
+ category = { field_manipulation }
+ prerequisites = { "tech_epoch_iv_fields" "tech_epoch_iv_harmonization" "tech_epoch_iv_nexus" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_restoration = {
+ icon = tech_climate_restoration
+ cost = 28000 area = society tier = 3
+ category = { biology }
+ prerequisites = { "tech_epoch_iv_inversion" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 140
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_tissue = {
+ icon = tech_gene_tailoring
+ cost = 28000 area = society tier = 3
+ category = { biology }
+ prerequisites = { "tech_epoch_iv_restoration" }
+ potential = { epoch_iv_future_research = yes  is_gestalt = no is_robot_empire = no }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 140
+ ai_weight = { weight = 10 }
+ feature_flags = { epoch_era_tissue }
+}
+
+tech_epoch_iv_transcription = {
+ icon = tech_collective_self
+ cost = 28000 area = society tier = 3
+ category = { biology }
+ prerequisites = { "tech_epoch_iv_restoration" }
+ potential = { epoch_iv_future_research = yes  is_hive_empire = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 140
+ ai_weight = { weight = 10 }
+ feature_flags = { epoch_era_transcription }
+}
+
+tech_epoch_iv_ethics = {
+ icon = tech_galactic_administration
+ cost = 28000 area = society tier = 3
+ category = { statecraft }
+ prerequisites = { "tech_epoch_iv_diagnostics" "tech_epoch_iv_reconstruction" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 140
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_symbiosis = {
+ icon = tech_gene_expressions
+ cost = 56000 area = society tier = 4
+ category = { biology }
+ prerequisites = { "tech_epoch_iv_tissue" "tech_epoch_iv_identity" }
+ potential = { epoch_iv_future_research = yes  is_gestalt = no is_robot_empire = no }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+ feature_flags = { epoch_era_symbiosis }
+}
+
+tech_epoch_iv_synaptic_nodes = {
+ icon = tech_collective_self
+ cost = 56000 area = society tier = 4
+ category = { biology }
+ prerequisites = { "tech_epoch_iv_transcription" "tech_epoch_iv_identity" }
+ potential = { epoch_iv_future_research = yes  is_hive_empire = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+ feature_flags = { epoch_era_synaptic_nodes }
+}
+
+tech_epoch_iv_self_model = {
+ icon = tech_synthetic_thought_patterns
+ cost = 56000 area = society tier = 4
+ category = { statecraft }
+ prerequisites = { "tech_epoch_iv_restoration" "tech_epoch_iv_identity" }
+ potential = { epoch_iv_future_research = yes  is_robot_empire = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+ feature_flags = { epoch_era_self_model }
+}
+
+tech_epoch_iv_harmonization = {
+ icon = tech_climate_restoration
+ cost = 56000 area = society tier = 4
+ category = { biology }
+ prerequisites = { "tech_epoch_iv_restoration" "tech_epoch_iv_ethics" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_identity = {
+ icon = tech_adaptive_bureaucracy
+ cost = 56000 area = society tier = 4
+ category = { statecraft }
+ prerequisites = { "tech_epoch_iv_ethics" "tech_epoch_iv_cores" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_sovereignty = {
+ icon = tech_galactic_administration
+ cost = 112000 area = society tier = 5
+ category = { statecraft }
+ prerequisites = { "tech_epoch_iv_identity" "tech_epoch_iv_harmonization" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_mandate = {
+ icon = tech_ground_defense_planning
+ cost = 112000 area = society tier = 5
+ category = { military_theory }
+ prerequisites = { "tech_epoch_iv_sovereignty" "tech_epoch_iv_artillery" }
+ potential = { epoch_iv_future_research = yes  has_country_flag = epoch_iv_philosophy_guard }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+ feature_flags = { epoch_era_mandate }
+}
+
+tech_epoch_iv_universal_sovereignty = {
+ icon = tech_global_research_initiative
+ cost = 112000 area = society tier = 5
+ category = { statecraft }
+ prerequisites = { "tech_epoch_iv_sovereignty" "tech_epoch_iv_nexus" }
+ potential = { epoch_iv_future_research = yes  has_country_flag = epoch_iv_philosophy_free }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+ feature_flags = { epoch_era_universal_sovereignty }
+}
+
+tech_epoch_iv_steel = {
+ icon = tech_alloys_2
+ cost = 28000 area = engineering tier = 3
+ category = { materials }
+ prerequisites = { "tech_epoch_iv_materials" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 140
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_cores = {
+ icon = tech_nanite_transmutation
+ cost = 28000 area = engineering tier = 3
+ category = { materials }
+ prerequisites = { "tech_epoch_iv_steel" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 140
+ ai_weight = { weight = 30 }
+
+}
+
+tech_epoch_iv_laboratories = {
+ icon = tech_basic_science_lab_3
+ cost = 28000 area = engineering tier = 3
+ category = { industry }
+ prerequisites = { "tech_epoch_iv_cores" "tech_epoch_iv_reconstruction" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 140
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_collectors = {
+ icon = tech_power_hub_2
+ cost = 28000 area = engineering tier = 3
+ category = { industry }
+ prerequisites = { "tech_epoch_iv_cores" "tech_epoch_iv_storage" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 140
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_artillery = {
+ icon = tech_kinetic_artillery_2
+ cost = 56000 area = engineering tier = 4
+ category = { propulsion }
+ prerequisites = { "tech_epoch_iv_steel" "tech_epoch_iv_cores" "tech_epoch_iv_telemetry" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_reactor = {
+ icon = tech_dark_matter_power_core
+ cost = 56000 area = engineering tier = 4
+ category = { industry }
+ prerequisites = { "tech_epoch_iv_cores" "tech_epoch_iv_storage" }
+ potential = { epoch_iv_future_research = yes  country_uses_bio_ships = no }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_armor = {
+ icon = tech_ship_armor_5
+ cost = 56000 area = engineering tier = 4
+ category = { materials }
+ prerequisites = { "tech_epoch_iv_steel" "tech_epoch_iv_reactor" }
+ potential = { epoch_iv_future_research = yes  country_uses_bio_ships = no }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_fighters = {
+ icon = tech_strike_craft_3
+ cost = 56000 area = engineering tier = 4
+ category = { voidcraft }
+ prerequisites = { "tech_epoch_iv_telemetry" "tech_epoch_iv_cores" }
+ potential = { epoch_iv_future_research = yes  country_uses_bio_ships = no }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_point_defense = {
+ icon = tech_pd_tracking_3
+ cost = 112000 area = engineering tier = 5
+ category = { propulsion }
+ prerequisites = { "tech_epoch_iv_artillery" "tech_epoch_iv_fighters" }
+ potential = { epoch_iv_future_research = yes  country_uses_bio_ships = no }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_fabrication = {
+ icon = tech_alloys_3
+ cost = 112000 area = engineering tier = 5
+ category = { industry }
+ prerequisites = { "tech_epoch_iv_artillery" "tech_epoch_iv_laboratories" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_nexus = {
+ icon = tech_global_research_initiative
+ cost = 112000 area = engineering tier = 5
+ category = { industry }
+ prerequisites = { "tech_epoch_iv_laboratories" "tech_epoch_iv_identity" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}
+
+tech_epoch_iv_uap_core = {
+ icon = tech_nanite_transmutation
+ cost = 112000 area = engineering tier = 5
+ category = { industry }
+ prerequisites = { "tech_epoch_iv_fabrication" "tech_epoch_iv_nexus" "tech_epoch_iv_coupling" }
+ potential = { epoch_iv_future_research = yes }
+ is_reverse_engineerable = no
+ weight_modifier = { factor = 1 modifier = { factor = 0 NOT = { epoch_iv_future_research = yes } } }
+ weight = 80
+ ai_weight = { weight = 10 }
+
+}

@@ -79,11 +79,11 @@
  EPOCH_IV_COUNTER:0 "Compare Guardian Telemetry"
  EPOCH_IV_COUNTER_DESC:0 "300 days of staffed analysis at your research location. Reduces the personal Adjudicator's weapon output and fire rate, without replacing combat."
  decision_epoch_iv_diagnose:0 "Diagnose Resonance State"
- decision_epoch_iv_diagnose_desc:0 "90 days; 600 energy. Records the existing resonance feature family for this empire."
+ decision_epoch_iv_diagnose_desc:0 "90 days. Records the existing resonance feature family for this empire."
  decision_epoch_iv_stabilize:0 "Stabilize Resonance State"
- decision_epoch_iv_stabilize_desc:0 "180 days; 1,800 energy, 600 alloys. Requires your diagnosis and prepares the inversion."
+ decision_epoch_iv_stabilize_desc:0 "180 days. Requires your diagnosis and prepares the inversion."
  decision_epoch_iv_invert:0 "Invert Resonance Positively"
- decision_epoch_iv_invert_desc:0 "360 days; 3,500 energy, 1,500 alloys. Positively converts exactly the diagnosed and stabilized family and removes its treated burden. Other families and independent earlier decisions remain intact."
+ decision_epoch_iv_invert_desc:0 "360 days. Positively converts exactly the diagnosed and stabilized family and removes its treated burden. Other families and independent earlier decisions remain intact."
  decision_epoch_iv_operations:0 "Contact Expedition Operations"
  decision_epoch_iv_operations_desc:0 "Opens current personal assignments and recovery options."
  d_epoch_iv_matrix:0 "Symbiotic Resonance Matrix"
@@ -146,11 +146,11 @@
 
  epoch_iv.46.desc:0 "The Adjudicator has vanished, but no verifiable victory was recovered. We cannot claim its protocol key. The expedition directorate can reconstruct the trial for 2,000 energy and 4,000 alloys, at most twice. The replacement must be defeated in battle."
 
- epoch_iv.diagnose.tt:0 "Map the affected feature and unlock its stabilization. No burden is removed yet. Takes 90 days; costs 600 energy."
+ epoch_iv.diagnose.tt:0 "Map the affected feature and unlock its stabilization. No burden is removed yet. Takes 90 days."
 
- epoch_iv.stabilize.tt:0 "Secure the diagnosed feature for inversion. This preparation grants no production bonus by itself. Takes 180 days; costs 1,800 energy and 600 alloys."
+ epoch_iv.stabilize.tt:0 "Secure the diagnosed feature for inversion. This preparation grants no production bonus by itself. Takes 180 days."
 
- epoch_iv.invert.tt:0 "Replace the diagnosed, stabilized feature with its restored form and remove its associated burdens. Independent emergency damage remains. Takes 360 days; costs 3,500 energy and 1,500 alloys."
+ epoch_iv.invert.tt:0 "Replace the diagnosed, stabilized feature with its restored form and remove its associated burdens. Independent emergency damage remains. Takes 360 days."
 
  epoch_iv.family.contamination:0 "Treatment: $d_epoch_resonance_contamination_active$ -> $d_epoch_iv_matrix$."
 

@@ -1,0 +1,333 @@
+{
+  "runtimeValidated": false,
+  "ship": 0.634,
+  "starbase": 0.26925,
+  "edictCore": 3,
+  "buildingSetI": 11.18,
+  "buildingSetTop": 26.64,
+  "factory1": {
+    "id": "building_epoch_factory_1",
+    "family": "factory",
+    "tier": 1,
+    "workforce": 3,
+    "fixedCore": 0,
+    "jobCore": 0,
+    "totalCore": 0,
+    "grossCore": 36,
+    "inputs": {
+      "minerals": 54,
+      "alloys": 9,
+      "energy": 28
+    }
+  },
+  "factory2": {
+    "id": "building_epoch_factory_2",
+    "family": "factory",
+    "tier": 2,
+    "workforce": 6,
+    "fixedCore": 0,
+    "jobCore": 0,
+    "totalCore": 0,
+    "grossCore": 72,
+    "inputs": {
+      "minerals": 108,
+      "alloys": 18,
+      "energy": 56
+    }
+  },
+  "rows": [
+    {
+      "id": "building_epoch_lab_1",
+      "family": "lab",
+      "tier": 1,
+      "workforce": 1.8,
+      "fixedCore": 2,
+      "jobCore": 0.18,
+      "totalCore": 2.18,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_lab_2",
+      "family": "lab",
+      "tier": 2,
+      "workforce": 3.6,
+      "fixedCore": 4,
+      "jobCore": 0.36,
+      "totalCore": 4.36,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_lab_3",
+      "family": "lab",
+      "tier": 3,
+      "workforce": 5.4,
+      "fixedCore": 6,
+      "jobCore": 0.54,
+      "totalCore": 6.54,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_forge_1",
+      "family": "forge",
+      "tier": 1,
+      "workforce": 2,
+      "fixedCore": 2,
+      "jobCore": 0.1,
+      "totalCore": 2.1,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_forge_2",
+      "family": "forge",
+      "tier": 2,
+      "workforce": 4,
+      "fixedCore": 4,
+      "jobCore": 0.2,
+      "totalCore": 4.2,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_forge_3",
+      "family": "forge",
+      "tier": 3,
+      "workforce": 6,
+      "fixedCore": 6,
+      "jobCore": 0.3,
+      "totalCore": 6.3,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_collector_1",
+      "family": "collector",
+      "tier": 1,
+      "workforce": 2,
+      "fixedCore": 1.5,
+      "jobCore": 0.1,
+      "totalCore": 1.6,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_collector_2",
+      "family": "collector",
+      "tier": 2,
+      "workforce": 4,
+      "fixedCore": 3,
+      "jobCore": 0.2,
+      "totalCore": 3.2,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_institute_1",
+      "family": "institute",
+      "tier": 1,
+      "workforce": 1,
+      "fixedCore": 1,
+      "jobCore": 0.05,
+      "totalCore": 1.05,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_institute_2",
+      "family": "institute",
+      "tier": 2,
+      "workforce": 2,
+      "fixedCore": 2,
+      "jobCore": 0.1,
+      "totalCore": 2.1,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_archive_1",
+      "family": "archive",
+      "tier": 1,
+      "workforce": 2,
+      "fixedCore": 1.5,
+      "jobCore": 0.1,
+      "totalCore": 1.6,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_archive_2",
+      "family": "archive",
+      "tier": 2,
+      "workforce": 4,
+      "fixedCore": 3,
+      "jobCore": 0.2,
+      "totalCore": 3.2,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_phase_1",
+      "family": "phase",
+      "tier": 1,
+      "workforce": 1,
+      "fixedCore": 1,
+      "jobCore": 0.05,
+      "totalCore": 1.05,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_phase_2",
+      "family": "phase",
+      "tier": 2,
+      "workforce": 2,
+      "fixedCore": 2,
+      "jobCore": 0.1,
+      "totalCore": 2.1,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_factory_1",
+      "family": "factory",
+      "tier": 1,
+      "workforce": 3,
+      "fixedCore": 0,
+      "jobCore": 0,
+      "totalCore": 0,
+      "grossCore": 36,
+      "inputs": {
+        "minerals": 54,
+        "alloys": 9,
+        "energy": 28
+      }
+    },
+    {
+      "id": "building_epoch_factory_2",
+      "family": "factory",
+      "tier": 2,
+      "workforce": 6,
+      "fixedCore": 0,
+      "jobCore": 0,
+      "totalCore": 0,
+      "grossCore": 72,
+      "inputs": {
+        "minerals": 108,
+        "alloys": 18,
+        "energy": 56
+      }
+    },
+    {
+      "id": "building_epoch_academy_1",
+      "family": "academy",
+      "tier": 1,
+      "workforce": 2,
+      "fixedCore": 1.5,
+      "jobCore": 0.1,
+      "totalCore": 1.6,
+      "grossCore": 0
+    },
+    {
+      "id": "building_epoch_academy_2",
+      "family": "academy",
+      "tier": 2,
+      "workforce": 4,
+      "fixedCore": 3,
+      "jobCore": 0.2,
+      "totalCore": 3.2,
+      "grossCore": 0
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "small",
+      "colonies": 5,
+      "factories": 1,
+      "tier": 1,
+      "ships": 20,
+      "sets": 1,
+      "top": false,
+      "bases": 3,
+      "production": 36,
+      "use": 27.66775,
+      "net": 8.33225,
+      "halfStaffedNet": -9.66775,
+      "oneFactoryNet": 8.33225,
+      "factoryInputs": {
+        "minerals": 54,
+        "alloys": 9,
+        "energy": 28
+      }
+    },
+    {
+      "name": "medium",
+      "colonies": 15,
+      "factories": 2,
+      "tier": 2,
+      "ships": 100,
+      "sets": 2,
+      "top": true,
+      "bases": 8,
+      "production": 144,
+      "use": 121.834,
+      "net": 22.166,
+      "halfStaffedNet": -49.834,
+      "oneFactoryNet": -49.834,
+      "factoryInputs": {
+        "minerals": 216,
+        "alloys": 36,
+        "energy": 112
+      }
+    },
+    {
+      "name": "large",
+      "colonies": 30,
+      "factories": 4,
+      "tier": 2,
+      "ships": 200,
+      "sets": 4,
+      "top": true,
+      "bases": 20,
+      "production": 288,
+      "use": 241.745,
+      "net": 46.255,
+      "halfStaffedNet": -97.745,
+      "oneFactoryNet": -169.745,
+      "factoryInputs": {
+        "minerals": 432,
+        "alloys": 72,
+        "energy": 224
+      }
+    }
+  ],
+  "wilderness": [
+    {
+      "name": "small",
+      "nodes": 2,
+      "production": 72,
+      "use": 19.48775,
+      "net": 52.51225,
+      "halfNetworkNet": 16.51225,
+      "inputs": {
+        "minerals": 216,
+        "alloys": 36,
+        "energy": 112
+      }
+    },
+    {
+      "name": "medium",
+      "nodes": 4,
+      "production": 288,
+      "use": 71.554,
+      "net": 216.446,
+      "halfNetworkNet": 72.446,
+      "inputs": {
+        "minerals": 864,
+        "alloys": 144,
+        "energy": 448
+      }
+    },
+    {
+      "name": "large",
+      "nodes": 6,
+      "production": 432,
+      "use": 138.185,
+      "net": 293.815,
+      "halfNetworkNet": 77.815,
+      "inputs": {
+        "minerals": 1296,
+        "alloys": 216,
+        "energy": 672
+      }
+    }
+  ]
+}

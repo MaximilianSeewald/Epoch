@@ -475,6 +475,15 @@ Assert-Check ($LASTEXITCODE -eq 0) 'Runtime log classifier must separate root ca
 Assert-Check ($LASTEXITCODE -eq 0) 'Stage-III opening guards, finite physical-source budget and old-stage isolation must pass (static only)'
 & node (Join-Path $PSScriptRoot 'test_stage_iv.cjs') $Root $VanillaRoot
 Assert-Check ($LASTEXITCODE -eq 0) 'Stage-IV personal kill attribution, project callbacks and safe feature transitions must pass (static only)'
+& node (Join-Path $PSScriptRoot 'test_stage_iv_b.cjs') $Root $VanillaRoot
+Assert-Check ($LASTEXITCODE -eq 0) 'Package-B content suite must pass'
+& node (Join-Path $PSScriptRoot 'test_epoch_core_production.cjs') $Root $VanillaRoot
+Assert-Check ($LASTEXITCODE -eq 0) 'Third-playtest factory production tables and signed core scenarios must pass'
+& node (Join-Path $PSScriptRoot 'test_epoch_core_icon.cjs') $Root $VanillaRoot
+Assert-Check ($LASTEXITCODE -eq 0) 'Protocol Core alpha coverage must match installed native icons'
+& node (Join-Path $PSScriptRoot 'test_stage_iv_runtime_contracts.cjs') $Root $VanillaRoot
+if ($LASTEXITCODE -ne 0) { $script:Failures.Add('Stage IV runtime contracts failed') }
+Assert-Check ($LASTEXITCODE -eq 0) 'Stage-IV technology DAG, core economy, upgrades, native equipment and old-campaign preservation must pass (static only)'
 
 # Summarize existing test logs by source. Old EPOCH failures are reported as
 # evidence from the pre-fix run; unrelated-mod/base-game errors are separated.

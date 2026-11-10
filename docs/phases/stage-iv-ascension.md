@@ -1,6 +1,6 @@
 # Stage IV – Ascension: Das Vermächtnis der Architekten
 
-> **Status: approved design; Package A implemented for connected acceptance, static-only evidence.** Target: Stellaris Cygnus 4.5.3. See [Package-A implementation, adaptations and one connected test](stage-iv-package-a.md). Packages B/C remain planned. This document supersedes the earlier direction-only Stage-IV outline. It does not assert native-engine compatibility or claim the player has tested Stage IV. Technical unknowns are tracked in [stage-iv-technical-feasibility.md](stage-iv-technical-feasibility.md), and deliverables in [stage-iv-work-packages.md](stage-iv-work-packages.md).
+> **Status: approved design; Packages A/B implemented for connected acceptance, static-only evidence.** Target: Stellaris Cygnus 4.5.3. See [Package A](stage-iv-package-a.md) and [Package B implementation, exact technology IDs and source balance](stage-iv-package-b.md). Packages C/D remain planned. This document supersedes the earlier direction-only Stage-IV outline. It does not assert native-engine compatibility or claim the player has tested Stage IV. Technical unknowns are tracked in [stage-iv-technical-feasibility.md](stage-iv-technical-feasibility.md), and deliverables in [stage-iv-work-packages.md](stage-iv-work-packages.md).
 
 ## 1. Vision and boundaries
 

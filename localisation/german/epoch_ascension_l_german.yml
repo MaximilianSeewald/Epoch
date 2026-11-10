@@ -79,11 +79,11 @@
  EPOCH_IV_COUNTER:0 "Wächter-Telemetrie abgleichen"
  EPOCH_IV_COUNTER_DESC:0 "300 Tage bemannte Analyse am eigenen Forschungsstandort. Senkt Waffenleistung und Feuerrate des persönlichen Richters, ersetzt aber keinen Kampf."
  decision_epoch_iv_diagnose:0 "Resonanzzustand diagnostizieren"
- decision_epoch_iv_diagnose_desc:0 "90 Tage; 600 Energie. Erfasst die vorhandene Resonanzfamilie für dieses Reich."
+ decision_epoch_iv_diagnose_desc:0 "90 Tage. Erfasst die vorhandene Resonanzfamilie für dieses Reich."
  decision_epoch_iv_stabilize:0 "Resonanzzustand stabilisieren"
- decision_epoch_iv_stabilize_desc:0 "180 Tage; 1.800 Energie, 600 Legierungen. Benötigt die eigene Diagnose und bereitet die Umkehrung vor."
+ decision_epoch_iv_stabilize_desc:0 "180 Tage. Benötigt die eigene Diagnose und bereitet die Umkehrung vor."
  decision_epoch_iv_invert:0 "Resonanz positiv umkehren"
- decision_epoch_iv_invert_desc:0 "360 Tage; 3.500 Energie, 1.500 Legierungen. Wandelt genau die diagnostizierte und stabilisierte Familie positiv um und entfernt ihre behandelte Belastung. Andere Familien und unabhängige frühere Entscheidungen bleiben erhalten."
+ decision_epoch_iv_invert_desc:0 "360 Tage. Wandelt genau die diagnostizierte und stabilisierte Familie positiv um und entfernt ihre behandelte Belastung. Andere Familien und unabhängige frühere Entscheidungen bleiben erhalten."
  decision_epoch_iv_operations:0 "Expeditionsleitung kontaktieren"
  decision_epoch_iv_operations_desc:0 "Öffnet die aktuellen persönlichen Aufträge und Wiederherstellungswege."
  d_epoch_iv_matrix:0 "Symbiotische Resonanzmatrix"
@@ -146,11 +146,11 @@
 
  epoch_iv.46.desc:0 "Der Richter ist verschwunden, doch ein belegbarer Sieg wurde nicht geborgen. Wir können seinen Protokollschlüssel nicht beanspruchen. Die Expeditionsleitung kann die Prüfung für 2.000 Energie und 4.000 Legierungen höchstens zweimal rekonstruieren. Der Ersatz muss im Kampf besiegt werden."
 
- epoch_iv.diagnose.tt:0 "Erfasst das betroffene Merkmal und ermöglicht seine Stabilisierung. Belastungen bleiben zunächst bestehen. Dauer: 90 Tage; Kosten: 600 Energie."
+ epoch_iv.diagnose.tt:0 "Erfasst das betroffene Merkmal und ermöglicht seine Stabilisierung. Belastungen bleiben zunächst bestehen. Dauer: 90 Tage."
 
- epoch_iv.stabilize.tt:0 "Sichert das diagnostizierte Merkmal für die Inversion. Die Vorbereitung allein gewährt keinen Produktionsbonus. Dauer: 180 Tage; Kosten: 1.800 Energie und 600 Legierungen."
+ epoch_iv.stabilize.tt:0 "Sichert das diagnostizierte Merkmal für die Inversion. Die Vorbereitung allein gewährt keinen Produktionsbonus. Dauer: 180 Tage."
 
- epoch_iv.invert.tt:0 "Ersetzt das diagnostizierte, stabilisierte Merkmal durch seine geheilte Form und entfernt zugehörige Belastungen. Unabhängige Notfallschäden bleiben bestehen. Dauer: 360 Tage; Kosten: 3.500 Energie und 1.500 Legierungen."
+ epoch_iv.invert.tt:0 "Ersetzt das diagnostizierte, stabilisierte Merkmal durch seine geheilte Form und entfernt zugehörige Belastungen. Unabhängige Notfallschäden bleiben bestehen. Dauer: 360 Tage."
 
  epoch_iv.family.contamination:0 "Behandlung: $d_epoch_resonance_contamination_active$ -> $d_epoch_iv_matrix$."
 

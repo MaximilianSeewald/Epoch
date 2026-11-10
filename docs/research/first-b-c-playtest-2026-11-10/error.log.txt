@@ -1,0 +1,324 @@
+[16:20:46][dlc.cpp:346]: Invalid supported_version in  file: mod/ugc_1595876588.mod line: 8
+[16:20:46][dlc.cpp:346]: Invalid supported_version in  file: mod/ugc_2288335512.mod line: 9
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 3
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 3
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 5
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 5
+[16:21:29][job_type.cpp:164]: Job epoch_lab is missing texture gfx/interface/icons/jobs/job_epoch_lab.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_lab.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_lab.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_lab.dds for spritetype GFX_text_job_epoch_lab
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 21
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 21
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 23
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 23
+[16:21:29][job_type.cpp:164]: Job epoch_lab_drone is missing texture gfx/interface/icons/jobs/job_epoch_lab_drone.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_lab_drone.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_lab_drone.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_lab_drone.dds for spritetype GFX_text_job_epoch_lab_drone
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 39
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 39
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 41
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 41
+[16:21:29][job_type.cpp:164]: Job epoch_forge is missing texture gfx/interface/icons/jobs/job_epoch_forge.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_forge.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_forge.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_forge.dds for spritetype GFX_text_job_epoch_forge
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 63
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 63
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 65
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 65
+[16:21:29][job_type.cpp:164]: Job epoch_forge_drone is missing texture gfx/interface/icons/jobs/job_epoch_forge_drone.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_forge_drone.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_forge_drone.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_forge_drone.dds for spritetype GFX_text_job_epoch_forge_drone
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 87
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 87
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 89
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 89
+[16:21:29][job_type.cpp:164]: Job epoch_collector is missing texture gfx/interface/icons/jobs/job_epoch_collector.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_collector.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_collector.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_collector.dds for spritetype GFX_text_job_epoch_collector
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 105
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 105
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 107
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 107
+[16:21:29][job_type.cpp:164]: Job epoch_collector_drone is missing texture gfx/interface/icons/jobs/job_epoch_collector_drone.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_collector_drone.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_collector_drone.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_collector_drone.dds for spritetype GFX_text_job_epoch_collector_drone
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 123
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 123
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 125
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 125
+[16:21:29][job_type.cpp:164]: Job epoch_institute is missing texture gfx/interface/icons/jobs/job_epoch_institute.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_institute.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_institute.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_institute.dds for spritetype GFX_text_job_epoch_institute
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 141
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 141
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 143
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 143
+[16:21:29][job_type.cpp:164]: Job epoch_institute_drone is missing texture gfx/interface/icons/jobs/job_epoch_institute_drone.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_institute_drone.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_institute_drone.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_institute_drone.dds for spritetype GFX_text_job_epoch_institute_drone
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 159
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 159
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 161
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 161
+[16:21:29][job_type.cpp:164]: Job epoch_archive is missing texture gfx/interface/icons/jobs/job_epoch_archive.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_archive.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_archive.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_archive.dds for spritetype GFX_text_job_epoch_archive
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 177
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 177
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 179
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 179
+[16:21:29][job_type.cpp:164]: Job epoch_archive_drone is missing texture gfx/interface/icons/jobs/job_epoch_archive_drone.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_archive_drone.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_archive_drone.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_archive_drone.dds for spritetype GFX_text_job_epoch_archive_drone
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 195
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 195
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 197
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 197
+[16:21:29][job_type.cpp:164]: Job epoch_phase is missing texture gfx/interface/icons/jobs/job_epoch_phase.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_phase.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_phase.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_phase.dds for spritetype GFX_text_job_epoch_phase
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 213
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 213
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 215
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 215
+[16:21:29][job_type.cpp:164]: Job epoch_phase_drone is missing texture gfx/interface/icons/jobs/job_epoch_phase_drone.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_phase_drone.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_phase_drone.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_phase_drone.dds for spritetype GFX_text_job_epoch_phase_drone
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 231
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 231
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 233
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 233
+[16:21:29][job_type.cpp:164]: Job epoch_factory is missing texture gfx/interface/icons/jobs/job_epoch_factory.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_factory.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_factory.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_factory.dds for spritetype GFX_text_job_epoch_factory
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 249
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 249
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 251
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 251
+[16:21:29][job_type.cpp:164]: Job epoch_factory_drone is missing texture gfx/interface/icons/jobs/job_epoch_factory_drone.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_factory_drone.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_factory_drone.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_factory_drone.dds for spritetype GFX_text_job_epoch_factory_drone
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 267
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 267
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 269
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 269
+[16:21:29][job_type.cpp:164]: Job epoch_academy is missing texture gfx/interface/icons/jobs/job_epoch_academy.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_academy.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_academy.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_academy.dds for spritetype GFX_text_job_epoch_academy
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: icon, near line: 285
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 285
+[16:21:29][persistent.cpp:41]: Error: "Unexpected token: building_icon, near line: 287
+" in file: "common/pop_jobs/epoch_era_jobs.txt" near line: 287
+[16:21:29][job_type.cpp:164]: Job epoch_academy_drone is missing texture gfx/interface/icons/jobs/job_epoch_academy_drone.dds
+[16:21:29][texturehandler.cpp:66]: Texture Handler encountered missing texture file: gfx/interface/icons/jobs/job_epoch_academy_drone.dds
+[16:21:29][texturehandler.cpp:350]: Couldn't find texture file: gfx/interface/icons/jobs/job_epoch_academy_drone.dds.
+[16:21:29][spritetype.cpp:317]: Error initialising texture: gfx/interface/icons/jobs/job_epoch_academy_drone.dds for spritetype GFX_text_job_epoch_academy_drone
+[16:21:35][empire_flag.cpp:940]: could not find normal-sized texture "flags/flusionian/elwin_flag.dds"  file: user_empire_designs_v3.4.txt line: 506
+[16:21:35][empire_flag.cpp:946]: could not find map-sized texture "flags/flusionian/map/elwin_flag.dds"  file: user_empire_designs_v3.4.txt line: 506
+[16:21:35][empire_flag.cpp:940]: could not find normal-sized texture "flags/backgrounds/sa.dds"  file: user_empire_designs_v3.4.txt line: 731
+[16:21:35][empire_flag.cpp:940]: could not find normal-sized texture "flags/mem/mem_fox.dds"  file: user_empire_designs_v3.4.txt line: 1717
+[16:21:35][empire_flag.cpp:946]: could not find map-sized texture "flags/mem/map/mem_fox.dds"  file: user_empire_designs_v3.4.txt line: 1717
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 11
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 50
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 79
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 108
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 146
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 174
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 202
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 203
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 243
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 244
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 274
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 275
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 305
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 306
+Current Scope: country
+Supported Scopes: megastructure
+[16:21:37][economic_category.cpp:518]: Missing economic category Localization Key: planet_epoch_lab
+[16:21:37][economic_category.cpp:518]: Missing economic category Localization Key: planet_epoch_forge
+[16:21:37][economic_category.cpp:518]: Missing economic category Localization Key: planet_epoch_collector
+[16:21:37][economic_category.cpp:518]: Missing economic category Localization Key: planet_epoch_institute
+[16:21:37][economic_category.cpp:518]: Missing economic category Localization Key: planet_epoch_archive
+[16:21:37][economic_category.cpp:518]: Missing economic category Localization Key: planet_epoch_phase
+[16:21:37][economic_category.cpp:518]: Missing economic category Localization Key: planet_epoch_factory
+[16:21:37][economic_category.cpp:518]: Missing economic category Localization Key: planet_epoch_academy
+[16:21:38][situation_type.cpp:498]: on_complete in situation type epoch_first_echo_investigation is probably lacking a description of what it does
+[16:21:38][megastructure_type.cpp:2002]: Megastructure epoch_nexus_1 is missing outliner icon sprite GFX_epoch_nexus_1_outliner_icon
+[16:21:38][megastructure_type.cpp:2002]: Megastructure epoch_nexus_2 is missing outliner icon sprite GFX_epoch_nexus_2_outliner_icon
+[16:21:38][megastructure_type.cpp:2002]: Megastructure epoch_nexus_3 is missing outliner icon sprite GFX_epoch_nexus_3_outliner_icon
+[16:21:38][megastructure_type.cpp:2002]: Megastructure epoch_forge_1 is missing outliner icon sprite GFX_epoch_forge_1_outliner_icon
+[16:21:38][megastructure_type.cpp:2002]: Megastructure epoch_forge_2 is missing outliner icon sprite GFX_epoch_forge_2_outliner_icon
+[16:21:38][megastructure_type.cpp:2002]: Megastructure epoch_forge_3 is missing outliner icon sprite GFX_epoch_forge_3_outliner_icon
+[16:21:38][megastructure_type.cpp:2002]: Megastructure epoch_uap_1 is missing outliner icon sprite GFX_epoch_uap_1_outliner_icon
+[16:21:38][megastructure_type.cpp:2002]: Megastructure epoch_uap_2 is missing outliner icon sprite GFX_epoch_uap_2_outliner_icon
+[16:21:38][megastructure_type.cpp:2002]: Megastructure epoch_uap_3 is missing outliner icon sprite GFX_epoch_uap_3_outliner_icon
+[16:21:38][megastructure_type.cpp:2002]: Megastructure epoch_uap_4 is missing outliner icon sprite GFX_epoch_uap_4_outliner_icon
+[16:21:39][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_resource_epoch_protocol_cores_mult.dds"
+[16:21:39][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_epoch_protocol_cores_cost_mult.dds"
+[16:21:39][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_epoch_protocol_cores_produces_mult.dds"
+[16:21:39][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_epoch_protocol_cores_produces_add.dds"
+[16:21:39][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_epoch_protocol_cores_upkeep_mult.dds"
+[16:21:39][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_epoch_protocol_cores_upkeep_add.dds"
+[16:21:39][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_epoch_protocol_cores_logistics_mult.dds"
+[16:21:39][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_epoch_protocol_cores_cost_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_lab_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_lab_drone_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_forge_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_forge_drone_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_collector_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_collector_drone_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_institute_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_institute_drone_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_archive_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_archive_drone_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_phase_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_phase_drone_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_factory_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_factory_drone_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_academy_add.dds"
+[16:21:40][modifier.cpp:2558]: Missing modifier icon "gfx/interface/icons/modifiers/mod_job_epoch_academy_drone_add.dds"
+[16:21:41][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 243" near line: 1
+[16:21:41][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 322" near line: 1
+[16:21:41][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 321" near line: 1
+[16:21:41][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 229" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 202" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 305" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_nexus at file: common/megastructures/epoch_c_megastructures.txt line: 94" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_nexus at file: common/megastructures/epoch_c_megastructures.txt line: 11" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 244" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_nexus at file: common/megastructures/epoch_c_megastructures.txt line: 79" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 275" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 228" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 260" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_nexus at file: common/megastructures/epoch_c_megastructures.txt line: 65" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 203" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 291" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 274" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_nexus at file: common/megastructures/epoch_c_megastructures.txt line: 50" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_nexus at file: common/megastructures/epoch_c_megastructures.txt line: 36" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 306" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 259" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at file: common/megastructures/epoch_c_megastructures.txt line: 290" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at common/scripted_triggers/epoch_c_triggers.txt:12 @ in scripted trigger epoch_c_free_interface at file: common/decisions/epoch_c_decisions.txt line: 35" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_nexus at common/scripted_triggers/epoch_c_triggers.txt:22 @ in scripted trigger epoch_c_healing_network at file: common/decisions/epoch_c_decisions.txt line: 42" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at common/scripted_triggers/epoch_c_triggers.txt:12 @ in scripted trigger epoch_c_free_interface at file: common/decisions/epoch_c_decisions.txt line: 36" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_nexus at common/scripted_triggers/epoch_c_triggers.txt:22 @ in scripted trigger epoch_c_healing_network at file: common/decisions/epoch_c_decisions.txt line: 38" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at common/scripted_triggers/epoch_c_triggers.txt:12 @ in scripted trigger epoch_c_free_interface at common/scripted_triggers/epoch_c_triggers.txt:21 @ in scripted trigger epoch_c_healing_network at file: common/decisions/epoch_c_decisions.txt line: 42" near line: 1
+[16:21:42][trigger.cpp:372]: Error: "Unexpected token: OR, near line: 1
+" in file: "in scripted trigger epoch_c_single_uap at common/scripted_triggers/epoch_c_triggers.txt:12 @ in scripted trigger epoch_c_free_interface at common/scripted_triggers/epoch_c_triggers.txt:21 @ in scripted trigger epoch_c_healing_network at file: common/decisions/epoch_c_decisions.txt line: 38" near line: 1
+[16:21:45][modifier.cpp:2250]: mod_pop_epoch_lab_bonus_workforce_mult modifier is used but not localized!
+[16:21:45][economic_category.cpp:772]: Economic Category: planet_epoch_lab. Generated 'mult' modifiers for table 'upkeep' is never used from script.
+[16:21:45][economic_category.cpp:772]: Economic Category: planet_epoch_forge. Generated 'mult' modifiers for table 'upkeep' is never used from script.
+[16:21:45][economic_category.cpp:772]: Economic Category: planet_epoch_collector. Generated 'mult' modifiers for table 'upkeep' is never used from script.
+[16:21:45][economic_category.cpp:772]: Economic Category: planet_epoch_institute. Generated 'mult' modifiers for table 'produces' is never used from script.
+[16:21:45][economic_category.cpp:772]: Economic Category: planet_epoch_institute. Generated 'mult' modifiers for table 'upkeep' is never used from script.
+[16:21:45][economic_category.cpp:772]: Economic Category: planet_epoch_archive. Generated 'mult' modifiers for table 'upkeep' is never used from script.
+[16:21:45][economic_category.cpp:772]: Economic Category: planet_epoch_phase. Generated 'mult' modifiers for table 'produces' is never used from script.
+[16:21:45][economic_category.cpp:772]: Economic Category: planet_epoch_phase. Generated 'mult' modifiers for table 'upkeep' is never used from script.
+[16:21:45][economic_category.cpp:772]: Economic Category: planet_epoch_factory. Generated 'mult' modifiers for table 'produces' is never used from script.
+[16:21:45][economic_category.cpp:772]: Economic Category: planet_epoch_factory. Generated 'mult' modifiers for table 'upkeep' is never used from script.
+[16:21:45][economic_category.cpp:772]: Economic Category: planet_epoch_academy. Generated 'mult' modifiers for table 'produces' is never used from script.
+[16:21:45][economic_category.cpp:772]: Economic Category: planet_epoch_academy. Generated 'mult' modifiers for table 'upkeep' is never used from script.
+[16:21:52][portraitobject.cpp:722]: Failed to find portrait selector mem_Theophany
+[16:21:52][empire_flag.cpp:940]: could not find normal-sized texture "flags/mem/mem_fox.dds"  file:  line: 44
+[16:21:52][empire_flag.cpp:946]: could not find map-sized texture "flags/mem/map/mem_fox.dds"  file:  line: 44
+[16:21:52][portraitobject.cpp:722]: Failed to find portrait selector mem_Orila_holo_robot
+[16:21:52][portraitobject.cpp:722]: Failed to find portrait selector mem_Orila_robot
+[16:21:52][empire_flag.cpp:940]: could not find normal-sized texture "flags/flusionian/sergeant_flag.dds"  file:  line: 32
+[16:21:52][empire_flag.cpp:946]: could not find map-sized texture "flags/flusionian/map/sergeant_flag.dds"  file:  line: 32
+[16:21:53][empire_flag.cpp:940]: could not find normal-sized texture "flags/flusionian/sergeant_flag.dds"  file:  line: 27
+[16:21:53][empire_flag.cpp:946]: could not find map-sized texture "flags/flusionian/map/sergeant_flag.dds"  file:  line: 27
+[16:21:53][empire_flag.cpp:940]: could not find normal-sized texture "flags/flusionian/sergeant_flag.dds"  file:  line: 26
+[16:21:53][empire_flag.cpp:946]: could not find map-sized texture "flags/flusionian/map/sergeant_flag.dds"  file:  line: 26
+[16:21:53][empire_flag.cpp:940]: could not find normal-sized texture "flags/backgrounds/sa.dds"  file:  line: 30
+[16:22:00][persistent.cpp:41]: Error: "Invalid ship class: none, near line: 2711197
+" in file: "save games/keinmenschenfresser_2016353681/autosave_2350.07.01.sav/gamestate" near line: 2711197
+[16:22:01][fleet.cpp:2765]: Load Error: Fleet  wasn't in a system , but isn't MIA or in FTL, setting to MIA
+[16:22:01][agreement_manager.cpp:189]: Repaired savegame, changed 9 invalid subject agreements!
+[16:22:01][game_text.cpp:1531]: Unknown promotion `questing_knight_1` in text: questing_knight_1.GetName]: Homecoming
+[16:22:01][game_text.cpp:1287]: Unknown property `GetName` in text: GetName]: Homecoming
+[16:22:01][game_text.cpp:1287]: Unknown property `GetAdjective` in text: GetAdjective] homeworld
+[16:22:01][game_text.cpp:1287]: Unknown property `GetSpeciesName` in text: GetSpeciesName] before it tragically tore itself apart. This final memorial highlights the strength of [EVENT_TARGET_1.GetName]'s will, able to adapt and overcome even in the most challenging circumstances: "We will carry on."
+[16:22:01][game_text.cpp:1531]: Unknown promotion `questing_knight_4` in text: questing_knight_4.GetName]: Passage of Arms
+[16:22:01][game_text.cpp:1287]: Unknown property `GetName` in text: GetName]: Passage of Arms
+[16:26:21][trigger.cpp:485]: Wrong scope for trigger 'is_nomadic' at  file: common/scripted_loc/15_scripted_loc_nomads.txt line: 427
+Current Scope: colony
+Supported Scopes: country
+[16:33:37][3dicon.cpp:546]: Trying to change sprite to unknown sprite 'GFX_epoch_forge_1_build_icon'
+[16:33:37][3dicon.cpp:546]: Trying to change sprite to unknown sprite 'GFX_epoch_nexus_1_build_icon'
+[16:33:47][trigger.cpp:485]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 146
+Current Scope: country
+Supported Scopes: megastructure
+[16:33:47][trigger.cpp:485]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 174
+Current Scope: country
+Supported Scopes: megastructure
+[16:38:43][game_text.cpp:1287]: Unknown property `GetName` in text: GetName]
+[16:38:51][galaxy_generator.cpp:613]: Trying to create a starbase with an invalid starbase design Pori Aahe for ship size orbital_ring_tier_1 (note: starbases cannot have components that allow them to move or go FTL)

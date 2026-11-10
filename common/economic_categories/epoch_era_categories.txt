@@ -1,0 +1,8 @@
+planet_epoch_lab = { parent = planet_researchers generate_mult_modifiers = { produces upkeep } modifier_category = colony }
+planet_epoch_forge = { parent = planet_metallurgists generate_mult_modifiers = { produces upkeep } modifier_category = colony }
+planet_epoch_collector = { parent = planet_technician generate_mult_modifiers = { produces upkeep } modifier_category = colony }
+planet_epoch_institute = { parent = planet_jobs_specialist generate_mult_modifiers = { produces upkeep } modifier_category = colony }
+planet_epoch_archive = { parent = planet_bureaucrats generate_mult_modifiers = { produces upkeep } modifier_category = colony }
+planet_epoch_phase = { parent = planet_soldiers generate_mult_modifiers = { produces upkeep } modifier_category = colony }
+planet_epoch_factory = { parent = planet_jobs_specialist generate_mult_modifiers = { produces upkeep } modifier_category = colony }
+planet_epoch_academy = { parent = planet_soldiers generate_mult_modifiers = { produces upkeep } modifier_category = colony }

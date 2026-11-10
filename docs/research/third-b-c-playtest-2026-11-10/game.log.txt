@@ -1,0 +1,19 @@
+[17:59:11][game_application.cpp:250]: Game Version: Cygnus v4.5.3
+[17:59:11][defines.cpp:162]: 2132 defines loaded
+[17:59:11][defines.cpp:196]: 254 interface defines loaded
+[18:01:14][eventcommands.cpp:88]: Event ancrel.6330 added info about event selection. selectedOption 0, human -1, playerEventId 1161
+[18:01:14][eventcommands.cpp:88]: Event astral_rift.2800 added info about event selection. selectedOption 0, human -1, playerEventId 1160
+[18:02:33][eventcommands.cpp:88]: Event astral_rift.210 added info about event selection. selectedOption 0, human -1, playerEventId 1162
+[18:03:18][eventcommands.cpp:88]: Event astral_rift.3155 added info about event selection. selectedOption 0, human -1, playerEventId 1164
+[18:03:47][eventcommands.cpp:88]: Event astral_rift.1560 added info about event selection. selectedOption 0, human -1, playerEventId 1165
+[18:03:55][eventcommands.cpp:88]: Event astral_rift.500 added info about event selection. selectedOption 0, human -1, playerEventId 1167
+[18:05:10][eventcommands.cpp:88]: Event astral_rift.1410 added info about event selection. selectedOption 0, human -1, playerEventId 1168
+[18:05:16][eventcommands.cpp:88]: Event astral_rift.2805 added info about event selection. selectedOption 0, human -1, playerEventId 1169
+[18:05:22][eventcommands.cpp:88]: Event astral_rift.215 added info about event selection. selectedOption 1, human -1, playerEventId 1170
+[18:07:27][eventcommands.cpp:88]: Event astral_rift.505 added info about event selection. selectedOption 2, human -1, playerEventId 1171
+[18:08:12][eventcommands.cpp:88]: Event astral_rift.1425 added info about event selection. selectedOption 2, human -1, playerEventId 1172
+[18:08:16][eventcommands.cpp:88]: Event marauder.86 added info about event selection. selectedOption 0, human 1, playerEventId 1173
+[18:08:39][eventcommands.cpp:88]: Event astral_rift.2810 added info about event selection. selectedOption 0, human -1, playerEventId 1174
+[18:12:08][eventcommands.cpp:88]: Event astral_rift.3000 added info about event selection. selectedOption 2, human -1, playerEventId 1176
+[18:12:20][eventcommands.cpp:88]: Event astral_rift.1505 added info about event selection. selectedOption 0, human -1, playerEventId 1177
+[18:13:17][eventcommands.cpp:88]: Event astral_rift.225 added info about event selection. selectedOption 0, human -1, playerEventId 1178

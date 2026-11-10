@@ -1,6 +1,9 @@
 decision_epoch_iv_diagnose = {
  icon = decision_resources owned_planets_only = yes enactment_time = 90
- resources = { category = decisions cost = { energy = 600 } }
+ resources = { category = decisions
+ cost = { trigger = { NOT = { owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_restoration } } } energy = 600 }
+ cost = { trigger = { owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_restoration } } energy = 480 }
+ }
  potential = { epoch_iv_safe_world = yes owner = { OR = { has_country_flag = epoch_iv_archive_done has_country_flag = epoch_iv_protocol_key } } }
  allow = { NOT = { epoch_iv_diagnosis_matches = yes } owner = { has_technology = tech_epoch_iv_diagnostics } }
  effect = {
@@ -34,7 +37,10 @@ decision_epoch_iv_diagnose = {
 }
 decision_epoch_iv_stabilize = {
  icon = decision_resources owned_planets_only = yes enactment_time = 180
- resources = { category = decisions cost = { energy = 1800 alloys = 600 } }
+ resources = { category = decisions
+ cost = { trigger = { NOT = { owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_restoration } } } energy = 1800 alloys = 600 }
+ cost = { trigger = { owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_restoration } } energy = 1440 alloys = 480 }
+ }
  potential = { epoch_iv_safe_world = yes owner = { OR = { has_country_flag = epoch_iv_archive_done has_country_flag = epoch_iv_protocol_key } } }
  allow = { epoch_iv_diagnosis_matches = yes NOT = { has_planet_flag = epoch_iv_stabilized@owner } }
  effect = {
@@ -59,7 +65,10 @@ decision_epoch_iv_stabilize = {
 }
 decision_epoch_iv_invert = {
  icon = decision_resources owned_planets_only = yes enactment_time = 360
- resources = { category = decisions cost = { energy = 3500 alloys = 1500 } }
+ resources = { category = decisions
+ cost = { trigger = { NOT = { owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_restoration } } } energy = 3500 alloys = 1500 }
+ cost = { trigger = { owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_restoration } } energy = 2800 alloys = 1200 }
+ }
  potential = { epoch_iv_safe_world = yes owner = { OR = { has_country_flag = epoch_iv_archive_done has_country_flag = epoch_iv_protocol_key } } }
  allow = { epoch_iv_diagnosis_matches = yes has_planet_flag = epoch_iv_stabilized@owner owner = { has_technology = tech_epoch_iv_inversion } }
  effect = {

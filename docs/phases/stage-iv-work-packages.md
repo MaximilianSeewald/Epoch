@@ -1,6 +1,6 @@
 # Stage IV – Work Packages A–D
 
-> **Status:** Package A implemented for connected native acceptance; B–D remain planned. See [implementation, evidence limits and the single playtest](stage-iv-package-a.md). Companion: [full design](stage-iv-ascension.md) and [short engine-feasibility assessment](stage-iv-technical-feasibility.md). Target: Stellaris 4.5.3. **One EPOCH mod, not a separate test mod or submod.** Keep development fast and gameplay-driven. Work on feature branches and review/merge PRs deliberately; do not merge as part of drafting.
+> **Status:** Packages A and B implemented for connected native acceptance; C–D remain planned. See [Package A](stage-iv-package-a.md) and [Package B implementation, source balance and the single acceptance run](stage-iv-package-b.md). Companion: [full design](stage-iv-ascension.md) and [short engine-feasibility assessment](stage-iv-technical-feasibility.md). Target: Stellaris 4.5.3. **One EPOCH mod, not a separate test mod or submod.** Keep development fast and gameplay-driven. Work on feature branches and review/merge PRs deliberately; do not merge as part of drafting.
 
 ## Completion contract across packages
 
@@ -32,7 +32,7 @@ Stage IV begins after private Stage-I/II continuation and global Stage-III victo
 
 **Goal:** Native 4-tree, 5-perk social ascension content with real lasting transformations.
 
-**Deliverables:** one universal + three class-bound traditions (each adoption + five + finisher); three class-specific perks + two mutually exclusive ultimate philosophies; 5 class-compatible species traits; 3 multistage megastructures; guardian/free philosophy variations and different class implementations; appropriate prerequisite guards; EPOCH Mod UI assets; save compatibility.
+**Deliverables:** one universal + three class-bound traditions (each adoption + five + finisher); three class-specific perks + two mutually exclusive ultimate philosophies; 5 class-compatible species traits; 3 multistage megastructures; guardian/free philosophy variations and different class implementations; reuse the immutable `epoch_iv_philosophy_guard/free` choice for exclusive perks and Package-B doctrines, never open the opposite philosophy or stack contradictory bonuses; appropriate prerequisite guards; EPOCH Mod UI assets; save compatibility.
 
 **Slot decision before implementation:** vanilla 7 tree slots/8 perks. Examine installed source and determine whether a **single-mod additive approach** can grant usable capacity without overriding Vanilla GUI/defines or other mods. If not, leave slots native and document that players with no free slots still finish narrative/research but cannot add native perks/traditions. No new dependency, second optional mod, silent global UI override or fake perk claims.
 

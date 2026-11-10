@@ -1,0 +1,751 @@
+utility_component_template = {
+	key = "EPOCH_SMALL_NULL_SHIELD"
+	size = small
+	icon = "GFX_ship_part_shield_5"
+	icon_frame = 1
+	power = -59
+	resources = { category = ship_components cost = { alloys = 50 epoch_protocol_cores = 4 } upkeep = { energy = 0.5 alloys = 0.05 epoch_protocol_cores = 0.01 } }
+	modifier = { ship_shield_add = 338.00 ship_shield_regen_add_static = 1.690 }
+	ship_modifier = {
+		ship_shield_hardening_add = 0.04
+	}
+	prerequisites = { "tech_epoch_iv_shields" }
+	upgrades_to = "EPOCH_SMALL_TRANSCENDENT_SHIELD"
+	component_set = "EPOCH_NULL_SHIELD"
+
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		OR = {
+			from = {
+				country_uses_bio_ships = no
+			}
+			is_arkship_ship = yes
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_SMALL_TRANSCENDENT_SHIELD"
+	size = small
+	icon = "GFX_ship_part_shield_5"
+	icon_frame = 1
+	power = -70
+	resources = { category = ship_components cost = { alloys = 65 epoch_protocol_cores = 6 } upkeep = { energy = 0.65 alloys = 0.065 epoch_protocol_cores = 0.015 } }
+	modifier = { ship_shield_add = 403.00 ship_shield_regen_add_static = 2.015 }
+	ship_modifier = {
+		ship_shield_hardening_add = 0.04
+	}
+	prerequisites = { "tech_epoch_iv_transcendent_shields" }
+
+	component_set = "EPOCH_TRANSCENDENT_SHIELD"
+
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		OR = {
+			from = {
+				country_uses_bio_ships = no
+			}
+			is_arkship_ship = yes
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_SMALL_PHASE_ARMOR"
+	size = small
+	icon = "GFX_ship_part_armor_5"
+	icon_frame = 1
+	power = 0
+	modifier = { ship_armor_add = 338.00 ship_armor_regen_add_static = 0.25 }
+	ship_modifier = {
+		ship_armor_hardening_add = 0.04
+	}
+
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		OR = {
+			from = {
+				country_uses_bio_ships = no
+			}
+			is_arkship_ship = yes
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	prerequisites = { "tech_epoch_iv_armor" }
+	component_set = "EPOCH_PHASE_ARMOR"
+
+	resources = { category = ship_components cost = { alloys = 50 epoch_protocol_cores = 4 } upkeep = { energy = 0.2 alloys = 0.05 epoch_protocol_cores = 0.01 } }
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_MEDIUM_NULL_SHIELD"
+	size = medium
+	icon = "GFX_ship_part_shield_5"
+	icon_frame = 1
+	power = -117
+	resources = { category = ship_components cost = { alloys = 125 epoch_protocol_cores = 10 } upkeep = { energy = 1.25 alloys = 0.125 epoch_protocol_cores = 0.025 } }
+	modifier = { ship_shield_add = 1014.00 ship_shield_regen_add_static = 5.070 }
+	ship_modifier = {
+		ship_shield_hardening_add = 0.04
+	}
+	prerequisites = { "tech_epoch_iv_shields" }
+	upgrades_to = "EPOCH_MEDIUM_TRANSCENDENT_SHIELD"
+	component_set = "EPOCH_NULL_SHIELD"
+
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		OR = {
+			from = {
+				country_uses_bio_ships = no
+			}
+			is_arkship_ship = yes
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_MEDIUM_TRANSCENDENT_SHIELD"
+	size = medium
+	icon = "GFX_ship_part_shield_5"
+	icon_frame = 1
+	power = -140
+	resources = { category = ship_components cost = { alloys = 162.5 epoch_protocol_cores = 15 } upkeep = { energy = 1.625 alloys = 0.1625 epoch_protocol_cores = 0.0375 } }
+	modifier = { ship_shield_add = 1209.00 ship_shield_regen_add_static = 6.045 }
+	ship_modifier = {
+		ship_shield_hardening_add = 0.04
+	}
+	prerequisites = { "tech_epoch_iv_transcendent_shields" }
+
+	component_set = "EPOCH_TRANSCENDENT_SHIELD"
+
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		OR = {
+			from = {
+				country_uses_bio_ships = no
+			}
+			is_arkship_ship = yes
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_MEDIUM_PHASE_ARMOR"
+	size = medium
+	icon = "GFX_ship_part_armor_5"
+	icon_frame = 1
+	power = 0
+	modifier = { ship_armor_add = 1014.00 ship_armor_regen_add_static = 0.625 }
+	ship_modifier = {
+		ship_armor_hardening_add = 0.04
+	}
+
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		OR = {
+			from = {
+				country_uses_bio_ships = no
+			}
+			is_arkship_ship = yes
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	prerequisites = { "tech_epoch_iv_armor" }
+	component_set = "EPOCH_PHASE_ARMOR"
+
+	resources = { category = ship_components cost = { alloys = 125 epoch_protocol_cores = 10 } upkeep = { energy = 0.5 alloys = 0.125 epoch_protocol_cores = 0.025 } }
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_LARGE_NULL_SHIELD"
+	size = large
+	icon = "GFX_ship_part_shield_5"
+	icon_frame = 1
+	power = -234
+	resources = { category = ship_components cost = { alloys = 300 epoch_protocol_cores = 24 } upkeep = { energy = 3 alloys = 0.3 epoch_protocol_cores = 0.06 } }
+	modifier = { ship_shield_add = 3042.00 ship_shield_regen_add_static = 15.210 }
+	ship_modifier = {
+		ship_shield_hardening_add = 0.04
+	}
+	prerequisites = { "tech_epoch_iv_shields" }
+	upgrades_to = "EPOCH_LARGE_TRANSCENDENT_SHIELD"
+	component_set = "EPOCH_NULL_SHIELD"
+
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		OR = {
+			from = {
+				country_uses_bio_ships = no
+			}
+			is_arkship_ship = yes
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_LARGE_TRANSCENDENT_SHIELD"
+	size = large
+	icon = "GFX_ship_part_shield_5"
+	icon_frame = 1
+	power = -279
+	resources = { category = ship_components cost = { alloys = 390 epoch_protocol_cores = 36 } upkeep = { energy = 3.9 alloys = 0.39 epoch_protocol_cores = 0.09 } }
+	modifier = { ship_shield_add = 3627.00 ship_shield_regen_add_static = 18.135 }
+	ship_modifier = {
+		ship_shield_hardening_add = 0.04
+	}
+	prerequisites = { "tech_epoch_iv_transcendent_shields" }
+
+	component_set = "EPOCH_TRANSCENDENT_SHIELD"
+
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		OR = {
+			from = {
+				country_uses_bio_ships = no
+			}
+			is_arkship_ship = yes
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_LARGE_PHASE_ARMOR"
+	size = large
+	icon = "GFX_ship_part_armor_5"
+	icon_frame = 1
+	power = 0
+	modifier = { ship_armor_add = 3042.00 ship_armor_regen_add_static = 1.5 }
+	ship_modifier = {
+		ship_armor_hardening_add = 0.04
+	}
+
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		OR = {
+			from = {
+				country_uses_bio_ships = no
+			}
+			is_arkship_ship = yes
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	prerequisites = { "tech_epoch_iv_armor" }
+	component_set = "EPOCH_PHASE_ARMOR"
+
+	resources = { category = ship_components cost = { alloys = 300 epoch_protocol_cores = 24 } upkeep = { energy = 1.2 alloys = 0.3 epoch_protocol_cores = 0.06 } }
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_CORVETTE_REACTOR"
+	size = small
+	icon = "GFX_ship_part_dark_matter_power_core"
+	icon_frame = 1
+	power = 356
+	resources = { category = ship_components cost = { alloys = 23 epoch_protocol_cores = 5 } upkeep = { energy = 0.19 alloys = 0.023 epoch_protocol_cores = 0.01 } }
+
+	prerequisites = { "tech_epoch_iv_reactor" }
+	component_set = "power_core"
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		ship_uses_corvette_reactors = yes
+		from = {
+			country_uses_bio_ships = no
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_DESTROYER_REACTOR"
+	size = small
+	icon = "GFX_ship_part_dark_matter_power_core"
+	icon_frame = 1
+	power = 688
+	resources = { category = ship_components cost = { alloys = 44 epoch_protocol_cores = 5 } upkeep = { energy = 0.366667 alloys = 0.044 epoch_protocol_cores = 0.01 } }
+
+	prerequisites = { "tech_epoch_iv_reactor" }
+	component_set = "power_core"
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		ship_uses_destroyer_reactors = yes
+		from = {
+			country_uses_bio_ships = no
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_CRUISER_REACTOR"
+	size = small
+	icon = "GFX_ship_part_dark_matter_power_core"
+	icon_frame = 1
+	power = 1288
+	resources = { category = ship_components cost = { alloys = 82 epoch_protocol_cores = 8 } upkeep = { energy = 0.686667 alloys = 0.082 epoch_protocol_cores = 0.0103 } }
+
+	prerequisites = { "tech_epoch_iv_reactor" }
+	component_set = "power_core"
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		ship_uses_cruiser_reactors = yes
+		from = {
+			country_uses_bio_ships = no
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_BATTLESHIP_REACTOR"
+	size = small
+	icon = "GFX_ship_part_dark_matter_power_core"
+	icon_frame = 1
+	power = 2500
+	resources = { category = ship_components cost = { alloys = 160 epoch_protocol_cores = 16 } upkeep = { energy = 1.333333 alloys = 0.16 epoch_protocol_cores = 0.02 } }
+
+	prerequisites = { "tech_epoch_iv_reactor" }
+	component_set = "power_core"
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		ship_uses_battleship_reactors = yes
+		from = {
+			country_uses_bio_ships = no
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_TITAN_REACTOR"
+	size = small
+	icon = "GFX_ship_part_dark_matter_power_core"
+	icon_frame = 1
+	power = 5250
+	resources = { category = ship_components cost = { alloys = 336 epoch_protocol_cores = 34 } upkeep = { energy = 2.8 alloys = 0.336 epoch_protocol_cores = 0.042 } }
+
+	prerequisites = { "tech_epoch_iv_reactor" }
+	component_set = "power_core"
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		ship_uses_titan_reactors = yes
+		from = {
+			country_uses_bio_ships = no
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_JUGGERNAUT_REACTOR"
+	size = small
+	icon = "GFX_ship_part_dark_matter_power_core"
+	icon_frame = 1
+	power = 17875
+	resources = { category = ship_components cost = { alloys = 1144 epoch_protocol_cores = 114 } upkeep = { energy = 9.533333 alloys = 1.144 epoch_protocol_cores = 0.143 } }
+
+	prerequisites = { "tech_epoch_iv_reactor" }
+	component_set = "power_core"
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		ship_uses_juggernaut_reactors = yes
+		OR = {
+			from = {
+				country_uses_bio_ships = no
+			}
+			is_arkship_ship = yes
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	friendly_aura = {
+		name = "juggernaut_logistics"
+		system_wide = yes
+
+		stack_info = {			#A ship can only be affected by one aura of a certain id. If multiple auras have the same ID the one with the highest priority will be applied.
+			id = juggernaut_logistics
+			priority = 1
+		}
+
+		modifier = {
+			ships_logistics_mult = -0.75
+		}
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_PLATFORM_REACTOR"
+	size = large
+	icon = "GFX_ship_part_dark_matter_power_core"
+	icon_frame = 1
+	power = 938
+	resources = { category = ship_components cost = { alloys = 60 epoch_protocol_cores = 6 } upkeep = { energy = 0.5 alloys = 0.06 epoch_protocol_cores = 0.01 } }
+
+	prerequisites = { "tech_epoch_iv_reactor" }
+	component_set = "power_core"
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		ship_uses_platform_reactors = yes
+		from = {
+			country_uses_bio_ships = no
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_ION_CANNON_REACTOR"
+	size = small
+	icon = "GFX_ship_part_dark_matter_power_core"
+	icon_frame = 1
+	power = 2500
+	resources = { category = ship_components cost = { alloys = 160 epoch_protocol_cores = 16 } upkeep = { energy = 1.333333 alloys = 0.16 epoch_protocol_cores = 0.02 } }
+
+	prerequisites = { "tech_epoch_iv_reactor" }
+	component_set = "power_core"
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		ship_uses_ion_cannon_components = yes
+		OR = {
+			from = {
+				country_uses_bio_ships = no
+			}
+			is_arkship_ship = yes
+		}
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_STARBASE_REACTOR"
+	size = large
+	icon = "GFX_ship_part_dark_matter_power_core"
+	icon_frame = 1
+	power = 8906
+
+	prerequisites = { "tech_epoch_iv_reactor" }
+	component_set = "power_core"
+
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		ship_uses_starbase_components = yes
+		from = {
+			country_uses_bio_ships = no
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+
+ resources = { category = ship_components cost = { alloys = 570 epoch_protocol_cores = 57 } upkeep = { energy = 4.75 alloys = 0.57 epoch_protocol_cores = 0.07125 } }
+}
+
+utility_component_template = {
+	key = "EPOCH_COMPUTER_SWARM"
+	size = small
+	icon = "GFX_ship_part_computer_swarm_sapient"
+	icon_frame = 1
+	power = -25
+	resources = { category = ship_components cost = { alloys = 40 epoch_protocol_cores = 6 } upkeep = { energy = 0.4 alloys = 0.04 epoch_protocol_cores = 0.01 } }
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		from = {
+			country_uses_bio_ships = no
+		}
+		ship_uses_swarm_role = yes
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+	component_set = "combat_computers"
+	ship_behavior = "swarm"
+	upgrade_path = swarm
+	prerequisites = { "tech_epoch_iv_sensors" }
+	ai_tags = { gunship gunship_stealth brawler brawler_stealth }
+	ai_tag_weight = 0
+
+	modifier = {
+		ship_evasion_mult = 0.25
+	}
+	ship_modifier = {
+		ship_fire_rate_mult = 0.15
+	 ship_tracking_add = 5 }
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_COMPUTER_PICKET"
+	size = small
+	icon = "GFX_ship_part_computer_picket_sapient"
+	icon_frame = 1
+	power = -25
+	resources = { category = ship_components cost = { alloys = 40 epoch_protocol_cores = 6 } upkeep = { energy = 0.4 alloys = 0.04 epoch_protocol_cores = 0.01 } }
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		from = {
+			country_uses_bio_ships = no
+		}
+		ship_uses_picket_role = yes
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+	component_set = "combat_computers"
+	ship_behavior = "picket"
+	upgrade_path = picket
+	prerequisites = { "tech_epoch_iv_sensors" }
+	ai_tags = { screen screen_stealth }
+	ai_tag_weight = 0
+
+	modifier = {
+		ship_evasion_mult = 0.10
+	}
+	ship_modifier = {
+		ship_fire_rate_mult = 0.15
+		ship_tracking_add = 35 }
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_COMPUTER_LINE"
+	size = small
+	icon = "GFX_ship_part_computer_line_sapient"
+	icon_frame = 1
+	power = -25
+	resources = { category = ship_components cost = { alloys = 40 epoch_protocol_cores = 6 } upkeep = { energy = 0.4 alloys = 0.04 epoch_protocol_cores = 0.01 } }
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		from = {
+			country_uses_bio_ships = no
+		}
+		ship_uses_line_role = yes
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+	component_set = "combat_computers"
+	ship_behavior = "line"
+	upgrade_path = line
+	prerequisites = { "tech_epoch_iv_sensors" }
+	ai_tags = { gunship gunship_stealth }
+	ai_tag_weight = 0
+
+	ship_modifier = {
+		ship_fire_rate_mult = 0.20
+		ship_accuracy_add = 20
+	 ship_tracking_add = 5 }
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_COMPUTER_ARTILLERY"
+	size = small
+	icon = "GFX_ship_part_computer_artillery_sapient"
+	icon_frame = 1
+	power = -25
+	resources = { category = ship_components cost = { alloys = 40 epoch_protocol_cores = 6 } upkeep = { energy = 0.4 alloys = 0.04 epoch_protocol_cores = 0.01 } }
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		from = {
+			country_uses_bio_ships = no
+		}
+		ship_uses_artillery_role = yes
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+	component_set = "combat_computers"
+	ship_behavior = "artillery"
+	upgrade_path = artillery
+	prerequisites = { "tech_epoch_iv_sensors" }
+	ai_tags = { artillery artillery_stealth energy_torpedoes energy_torpedoes_stealth }
+	ai_tag_weight = 0
+
+	ship_modifier = {
+		ship_fire_rate_mult = 0.20
+		ship_weapon_range_mult = 0.20
+	 ship_tracking_add = 5 }
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_COMPUTER_CARRIER"
+	size = small
+	icon = "GFX_ship_part_computer_carrier_sapient"
+	icon_frame = 1
+	power = -25
+	resources = { category = ship_components cost = { alloys = 40 epoch_protocol_cores = 6 } upkeep = { energy = 0.4 alloys = 0.04 epoch_protocol_cores = 0.01 } }
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		from = {
+			country_uses_bio_ships = no
+		}
+		ship_uses_carrier_role = yes
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+	component_set = "combat_computers"
+	ship_behavior = "carrier"
+	upgrade_path = carrier
+	prerequisites = { "tech_epoch_iv_sensors" }
+	ai_tags = { carrier }
+	ai_tag_weight = 0
+
+	ship_modifier = {
+		ship_engagement_range_mult = 1.0
+	 ship_tracking_add = 5 }
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_COMPUTER_TORPEDO"
+	size = small
+	icon = "GFX_ship_part_computer_swarm_sapient"
+	icon_frame = 1
+	power = -25
+	resources = { category = ship_components cost = { alloys = 40 epoch_protocol_cores = 6 } upkeep = { energy = 0.4 alloys = 0.04 epoch_protocol_cores = 0.01 } }
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		from = {
+			country_uses_bio_ships = no
+		}
+		ship_uses_torpedo_role = yes
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+	component_set = "combat_computers"
+	ship_behavior = "torpedo"
+	upgrade_path = torpedo
+	prerequisites = { "tech_epoch_iv_sensors" }
+	ai_tags = { explosive explosive_stealth }
+	ai_tag_weight = 0
+
+	modifier = {
+		ship_evasion_mult = 0.10
+	}
+
+	ship_modifier = {
+		weapon_type_explosive_weapon_damage_mult = 0.15
+		ship_damage_against_starbases_mult = 0.80
+		ship_orbital_bombardment_mult = 0.80
+	 ship_tracking_add = 5 }
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}
+
+utility_component_template = {
+	key = "EPOCH_COHERENCE_DRIVE"
+	size = small
+	icon = "GFX_ship_part_hyper_drive_3"
+	icon_frame = 1
+	power = -30
+	resources = { category = ship_components cost = { alloys = 45 epoch_protocol_cores = 8 } upkeep = { energy = 0.4 alloys = 0.045 epoch_protocol_cores = 0.015 } }
+	ftl = yes
+	ship_modifier = { ship_disengage_opportunities_add = 1 ship_windup_mult = -0.65 }
+
+	ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+
+	potential = { from = { epoch_iv_future_research = yes country_uses_bio_ships = no }
+		is_eager_explorer_ship = no
+		OR = {
+			from = {
+				country_uses_bio_ships = no
+			}
+			is_arkship_ship = yes
+		}
+	}
+
+	show_tech_unlock_if = {
+		country_uses_bio_ships = no
+	}
+	prerequisites = { "tech_epoch_iv_hyperdrive" }
+	component_set = "ftl_components"
+
+}
+
+utility_component_template = { key = "EPOCH_TEMPORAL_STABILIZER" size = aux icon = "GFX_ship_part_auto_repair" icon_frame = 1 power = -25 component_set = "EPOCH_TEMPORAL_STABILIZER"
+ potential = { from = { country_uses_bio_ships = no epoch_iv_future_research = yes } OR = { is_ship_class = shipclass_military is_ship_class = shipclass_military_station } }
+ prerequisites = { "tech_epoch_iv_fields" "tech_epoch_iv_cores" } resources = { category = ship_components cost = { alloys = 60 epoch_protocol_cores = 8 } upkeep = { energy = 0.5 alloys = 0.06 epoch_protocol_cores = 0.02 } }
+ modifier = { ship_shield_hardening_add = 0.15 ship_evasion_mult = 0.10 } ai_weight = { weight = 10 modifier = { factor = 0 OR = { NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 0.25 } } resource_stockpile_compare = { resource = epoch_protocol_cores value < 100 } } } }
+}

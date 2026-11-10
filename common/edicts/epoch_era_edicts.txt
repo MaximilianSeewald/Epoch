@@ -1,0 +1,53 @@
+epoch_era_warden_doctrine = { length = -1 icon = "GFX_edict_type_time"
+ resources = { category = edicts cost = { unity = 1000 epoch_protocol_cores = 100 } upkeep = { trigger = { has_country_flag = epoch_iv_philosophy_guard NOT = { has_country_flag = epoch_iv_philosophy_free } } unity = 50 epoch_protocol_cores = 3 } }
+ triggered_country_modifier = { potential = { epoch_iv_future_research = yes has_country_flag = epoch_iv_philosophy_guard NOT = { has_country_flag = epoch_iv_philosophy_free } } modifier = { ship_home_territory_fire_rate_mult = 0.20 army_defense_damage_mult = 0.20 } }
+ potential = { epoch_iv_future_research = yes has_country_flag = epoch_iv_philosophy_guard NOT = { has_country_flag = epoch_iv_philosophy_free } has_technology = tech_epoch_iv_mandate }
+ allow = { NOT = { has_edict = epoch_era_open_protocol } }
+ ai_weight = { weight = 5 modifier = { factor = 0 has_monthly_income = { resource = epoch_protocol_cores value < 0 } } modifier = { factor = 0 NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 6 } } NOT = { has_edict = epoch_era_warden_doctrine } } }
+}
+
+epoch_era_open_protocol = { length = -1 icon = "GFX_edict_type_time"
+ resources = { category = edicts cost = { unity = 1000 epoch_protocol_cores = 100 } upkeep = { trigger = { has_country_flag = epoch_iv_philosophy_free NOT = { has_country_flag = epoch_iv_philosophy_guard } } unity = 50 epoch_protocol_cores = 3 } }
+ triggered_country_modifier = { potential = { epoch_iv_future_research = yes has_country_flag = epoch_iv_philosophy_free NOT = { has_country_flag = epoch_iv_philosophy_guard } } modifier = { num_tech_alternatives_add = 1 planet_researchers_produces_mult = 0.10 } }
+ potential = { epoch_iv_future_research = yes has_country_flag = epoch_iv_philosophy_free NOT = { has_country_flag = epoch_iv_philosophy_guard } has_technology = tech_epoch_iv_universal_sovereignty }
+ allow = { NOT = { has_edict = epoch_era_warden_doctrine } }
+ ai_weight = { weight = 5 modifier = { factor = 0 has_monthly_income = { resource = epoch_protocol_cores value < 0 } } modifier = { factor = 0 NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 6 } } NOT = { has_edict = epoch_era_open_protocol } } }
+}
+
+# Wilderness alternative: no pop jobs, special building slots or biomass invention.
+epoch_era_wilderness_cores = {
+ length = -1 icon = "GFX_edict_type_policy"
+ potential = { epoch_iv_future_research = yes is_wilderness_empire = yes has_technology = tech_epoch_iv_cores }
+ resources = { category = edicts_unscaled
+  cost = { multiplier = value:epoch_era_wilderness_network_scale minerals = 1200 alloys = 225 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  NOT = { has_deficit = minerals } NOT = { has_deficit = alloys } NOT = { has_deficit = energy } } epoch_protocol_cores = 36 multiplier = value:epoch_era_wilderness_network_scale }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_uap_core NOT = { has_deficit = minerals } NOT = { has_deficit = alloys } NOT = { has_deficit = energy } } epoch_protocol_cores = 36 multiplier = value:epoch_era_wilderness_network_scale }
+  upkeep = { multiplier = value:epoch_era_wilderness_network_scale minerals = 108 alloys = 18 energy = 56 }
+  upkeep = { multiplier = value:epoch_era_wilderness_network_scale trigger = { has_technology = tech_epoch_iv_uap_core } minerals = 108 alloys = 18 energy = 56 }
+ }
+ ai_weight = { weight = 60 modifier = { factor = 0 NOT = { has_monthly_income = { resource = minerals value > 144 } } NOT = { has_edict = epoch_era_wilderness_cores } } modifier = { factor = 0 NOT = { has_monthly_income = { resource = alloys value > 24 } } NOT = { has_edict = epoch_era_wilderness_cores } } modifier = { factor = 0 NOT = { has_monthly_income = { resource = energy value > 96 } } NOT = { has_edict = epoch_era_wilderness_cores } } }
+}
+
+epoch_era_wilderness_integration = {
+ length = -1 icon = "GFX_edict_type_policy"
+ potential = { epoch_iv_future_research = yes is_wilderness_empire = yes has_technology = tech_epoch_iv_cores has_technology = tech_epoch_iv_reconstruction }
+ resources = { category = edicts_unscaled
+  cost = { energy = 2000 epoch_protocol_cores = 80 }
+  upkeep = { epoch_protocol_cores = 3 energy = 12 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_reconstruction NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } physics_research = 3 society_research = 3 engineering_research = 3 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_fields NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } physics_research = 3 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_storage NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } energy = 10 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_steel NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } alloys = 2 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_laboratories NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } physics_research = 6 society_research = 6 engineering_research = 6 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_collectors NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } energy = 20 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_artillery NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } alloys = 4 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_fabrication NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } alloys = 6 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_nexus NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } physics_research = 9 society_research = 9 engineering_research = 9 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_ethics NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } unity = 3 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_identity NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } unity = 6 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_sovereignty NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } unity = 9 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_harmonization NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } society_research = 6 }
+  produces = { trigger = { epoch_iv_future_research = yes is_wilderness_empire = yes  has_technology = tech_epoch_iv_coupling NOT = { has_deficit = epoch_protocol_cores } NOT = { has_deficit = energy } } physics_research = 6 }
+ }
+ ai_weight = { weight = 10 modifier = { factor = 0 NOT = { has_monthly_income = { resource = epoch_protocol_cores value > 6 } } NOT = { has_edict = epoch_era_wilderness_integration } } modifier = { factor = 0 NOT = { has_monthly_income = { resource = energy value > 12 } } NOT = { has_edict = epoch_era_wilderness_integration } } }
+}
