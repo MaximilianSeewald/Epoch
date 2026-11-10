@@ -1,0 +1,29 @@
+decision_epoch_c_symbiotic_world = {
+ icon = decision_resources
+ owned_planets_only = yes
+ enactment_time = 360
+ resources = { category = decisions cost = { energy = 3000 alloys = 1000 epoch_protocol_cores = 100 } }
+ potential = { is_colony = yes owner = { epoch_c_organic = yes has_ascension_perk = ap_epoch_living } OR = { has_deposit = d_epoch_iv_matrix has_deposit = d_epoch_iv_fold has_deposit = d_epoch_iv_archive } NOT = { has_modifier = epoch_c_symbiotic_world } }
+ allow = { owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_harmonization } }
+ effect = { if = { limit = { owner = { epoch_c_organic = yes has_ascension_perk = ap_epoch_living epoch_iv_future_research = yes } NOT = { has_modifier = epoch_c_symbiotic_world } } add_modifier = { modifier = epoch_c_symbiotic_world days = -1 } } }
+ ai_weight = { weight = 20 }
+}
+
+# An additional paid route uses the existing authenticated conversion effect.
+# Diagnosis/stabilization, family isolation and mission guards are still required.
+decision_epoch_c_network_inversion = {
+ icon = decision_resources
+ owned_planets_only = yes
+ enactment_time = 180
+ resources = { category = decisions
+  cost = { trigger = { owner = { epoch_c_free_interface = no } } energy = 2400 alloys = 900 epoch_protocol_cores = 60 }
+  cost = { trigger = { owner = { epoch_c_free_interface = yes } } energy = 1600 alloys = 600 epoch_protocol_cores = 40 }
+ }
+ potential = { epoch_iv_safe_world = yes owner = { epoch_c_healing_network = yes } }
+ allow = { epoch_iv_diagnosis_matches = yes has_planet_flag = epoch_iv_stabilized@owner owner = { has_technology = tech_epoch_iv_inversion } }
+ effect = {
+  custom_tooltip = epoch_c_network_inversion_effect
+  if = { limit = { epoch_iv_safe_world = yes epoch_iv_diagnosis_matches = yes has_planet_flag = epoch_iv_stabilized@owner owner = { epoch_c_healing_network = yes has_technology = tech_epoch_iv_inversion } } epoch_iv_convert_world = yes }
+ }
+ ai_weight = { weight = 150 }
+}

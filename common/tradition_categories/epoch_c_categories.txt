@@ -1,0 +1,37 @@
+tradition_epoch_legacy = {
+ tree_template = "tree_11_12"
+ adoption_bonus = "tr_epoch_legacy_adopt"
+ finish_bonus = "tr_epoch_legacy_finish"
+ traditions = { "tr_epoch_legacy_chronicles" "tr_epoch_legacy_reconstruction" "tr_epoch_legacy_discipline" "tr_epoch_legacy_harmonization" "tr_epoch_legacy_wardens" }
+ potential = { epoch_iv_future_research = yes }
+ ai_weight = { factor = 20 }
+}
+
+tradition_epoch_symbiosis = {
+ tree_template = "tree_11_12"
+ adoption_bonus = "tr_epoch_symbiosis_adopt"
+ finish_bonus = "tr_epoch_symbiosis_finish"
+ traditions = { "tr_epoch_symbiosis_adaptation" "tr_epoch_symbiosis_architecture" "tr_epoch_symbiosis_regeneration" "tr_epoch_symbiosis_evolution" "tr_epoch_symbiosis_sovereignty" }
+ potential = { epoch_iv_future_research = yes epoch_c_organic = yes has_tradition = tr_epoch_legacy_finish }
+ ai_weight = { factor = 20 }
+}
+
+tradition_epoch_convergence = {
+ tree_template = "tree_11_12"
+ adoption_bonus = "tr_epoch_convergence_adopt"
+ finish_bonus = "tr_epoch_convergence_finish"
+ traditions = { "tr_epoch_convergence_expansion" "tr_epoch_convergence_drones" "tr_epoch_convergence_nodes" "tr_epoch_convergence_adaptation" "tr_epoch_convergence_consciousness" }
+ potential = { epoch_iv_future_research = yes epoch_c_hive = yes has_tradition = tr_epoch_legacy_finish }
+ ai_weight = { factor = 20 }
+}
+
+tradition_epoch_network = {
+ tree_template = "tree_11_12"
+ adoption_bonus = "tr_epoch_network_adopt"
+ finish_bonus = "tr_epoch_network_finish"
+ traditions = { "tr_epoch_network_correction" "tr_epoch_network_intelligence" "tr_epoch_network_architecture" "tr_epoch_network_independence" "tr_epoch_network_sovereignty" }
+ potential = { epoch_iv_future_research = yes epoch_c_machine = yes has_tradition = tr_epoch_legacy_finish }
+ ai_weight = { factor = 20 }
+}
+
+
