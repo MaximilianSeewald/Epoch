@@ -47,6 +47,9 @@ for(const [id,b]of buildings){
 function supportedJob(b){assert.ok(!get(b,'icon')&&!get(b,'building_icon'),'4.5 jobs do not support root icon/building_icon');}
 expectRejected(()=>supportedJob(parse('job = { icon = foundry }','bad')[0][1]),'reject unsupported job icon');
 const exists=p=>fs.existsSync(path.join(root,p))||fs.existsSync(path.join(vanilla,p));
+// These exact generated paths were missed by the earlier asset audit.
+const observedLog=read('docs/research/first-b-c-playtest-2026-11-10/error.log.txt');
+for(const m of observedLog.matchAll(/Missing modifier icon "([^"]+)"/g))check(exists(m[1]),'every actually reported missing modifier texture resolves '+m[1]);
 function dds(p){const b=fs.readFileSync(path.join(root,p));check(b.toString('ascii',0,4)==='DDS '&&b.readUInt32LE(4)===124,'DDS header '+p);check(b.readUInt32LE(12)>0&&b.readUInt32LE(16)>0,'DDS dimensions '+p);}
 for(const [id,b]of jobs){supportedJob(b);checks++;dds(`gfx/interface/icons/jobs/job_${id}.dds`);dds(`gfx/interface/icons/modifiers/mod_pop_${id}_bonus_workforce_mult.dds`);}
 for(const lang of ['english','german']){

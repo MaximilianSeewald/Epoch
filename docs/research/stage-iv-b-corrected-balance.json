@@ -618,10 +618,10 @@
         "alloys": 150
       },
       "gross": {
-        "energy": 32
+        "energy": 35
       },
       "net": {
-        "energy": 28,
+        "energy": 31,
         "minerals": -4,
         "epoch_protocol_cores": -0.2
       }
@@ -635,10 +635,10 @@
         "alloys": 150
       },
       "gross": {
-        "energy": 32
+        "energy": 35
       },
       "net": {
-        "energy": 28,
+        "energy": 31,
         "minerals": -4,
         "epoch_protocol_cores": -0.2
       }
@@ -652,10 +652,10 @@
         "alloys": 150
       },
       "gross": {
-        "energy": 32
+        "energy": 35
       },
       "net": {
-        "energy": 28,
+        "energy": 31,
         "minerals": -4,
         "epoch_protocol_cores": -0.2
       }
@@ -669,10 +669,10 @@
         "alloys": 150
       },
       "gross": {
-        "energy": 32
+        "energy": 35
       },
       "net": {
-        "energy": 28,
+        "energy": 31,
         "minerals": -4,
         "epoch_protocol_cores": -0.2
       }
@@ -918,11 +918,11 @@
         "alloys": 150
       },
       "gross": {
-        "unity": 16,
+        "unity": 17.6,
         "physics_research": 2
       },
       "net": {
-        "unity": 16,
+        "unity": 17.6,
         "physics_research": 2,
         "epoch_protocol_cores": -0.2,
         "consumer_goods": -3,
@@ -938,11 +938,11 @@
         "alloys": 150
       },
       "gross": {
-        "unity": 16,
+        "unity": 17.6,
         "physics_research": 2
       },
       "net": {
-        "unity": 16,
+        "unity": 17.6,
         "physics_research": 2,
         "epoch_protocol_cores": -0.2,
         "energy": -8
@@ -957,11 +957,11 @@
         "alloys": 150
       },
       "gross": {
-        "unity": 16,
+        "unity": 17.6,
         "physics_research": 2
       },
       "net": {
-        "unity": 16,
+        "unity": 17.6,
         "physics_research": 2,
         "epoch_protocol_cores": -0.2,
         "energy": -8
@@ -976,11 +976,11 @@
         "alloys": 150
       },
       "gross": {
-        "unity": 16,
+        "unity": 17.6,
         "physics_research": 2
       },
       "net": {
-        "unity": 16,
+        "unity": 17.6,
         "physics_research": 2,
         "epoch_protocol_cores": -0.2,
         "consumer_goods": -3,
@@ -997,11 +997,11 @@
         "epoch_protocol_cores": 40
       },
       "gross": {
-        "unity": 32,
+        "unity": 36.8,
         "physics_research": 4
       },
       "net": {
-        "unity": 32,
+        "unity": 36.8,
         "physics_research": 4,
         "epoch_protocol_cores": -0.4,
         "consumer_goods": -6,
@@ -1018,11 +1018,11 @@
         "epoch_protocol_cores": 40
       },
       "gross": {
-        "unity": 32,
+        "unity": 36.8,
         "physics_research": 4
       },
       "net": {
-        "unity": 32,
+        "unity": 36.8,
         "physics_research": 4,
         "epoch_protocol_cores": -0.4,
         "energy": -16
@@ -1038,11 +1038,11 @@
         "epoch_protocol_cores": 40
       },
       "gross": {
-        "unity": 32,
+        "unity": 36.8,
         "physics_research": 4
       },
       "net": {
-        "unity": 32,
+        "unity": 36.8,
         "physics_research": 4,
         "epoch_protocol_cores": -0.4,
         "energy": -16
@@ -1058,11 +1058,11 @@
         "epoch_protocol_cores": 40
       },
       "gross": {
-        "unity": 32,
+        "unity": 36.8,
         "physics_research": 4
       },
       "net": {
-        "unity": 32,
+        "unity": 36.8,
         "physics_research": 4,
         "epoch_protocol_cores": -0.4,
         "consumer_goods": -6,

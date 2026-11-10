@@ -25,3 +25,6 @@ const crc=b=>{let c=0xffffffff;for(const x of b){c^=x;for(let i=0;i<8;i++)c=(c>>
 const chunk=(t,d)=>{const h=Buffer.alloc(4),c=Buffer.alloc(4),x=Buffer.concat([Buffer.from(t),d]);h.writeUInt32BE(d.length);c.writeUInt32BE(crc(x));return Buffer.concat([h,x,c]);};
 const n=256,b=pixels(n),raw=Buffer.alloc(n*(n*4+1)),ih=Buffer.alloc(13);ih.writeUInt32BE(n);ih.writeUInt32BE(n,4);ih[8]=8;ih[9]=6;for(let y=0;y<n;y++)b.copy(raw,y*(n*4+1)+1,y*n*4,(y+1)*n*4);
 fs.writeFileSync(`${dir}/epoch_protocol_cores.png`,Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),chunk('IHDR',ih),chunk('IDAT',zlib.deflateSync(raw)),chunk('IEND',Buffer.alloc(0))]));
+
+// Keep all native generated resource modifier variants synchronized with the mark.
+for(const key of ["resource_epoch_protocol_cores_mult","epoch_protocol_cores_cost_mult","epoch_protocol_cores_produces_mult","epoch_protocol_cores_produces_add","epoch_protocol_cores_upkeep_mult","epoch_protocol_cores_upkeep_add","epoch_protocol_cores_logistics_mult","epoch_protocol_cores_cost_add"])fs.copyFileSync(`${dir}/epoch_protocol_cores.dds`,`gfx/interface/icons/modifiers/mod_${key}.dds`);
