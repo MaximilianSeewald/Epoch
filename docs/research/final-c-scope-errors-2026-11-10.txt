@@ -1,0 +1,103 @@
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'any_owned_megastructure' at  file: common/megastructures/epoch_c_megastructures.txt line: 38
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'any_owned_megastructure' at  file: common/megastructures/epoch_c_megastructures.txt line: 67
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'any_owned_megastructure' at  file: common/megastructures/epoch_c_megastructures.txt line: 96
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'has_technology' at  file: common/megastructures/epoch_c_megastructures.txt line: 233
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'any_owned_megastructure' at  file: common/megastructures/epoch_c_megastructures.txt line: 233
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'has_technology' at  file: common/megastructures/epoch_c_megastructures.txt line: 234
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'any_owned_megastructure' at  file: common/megastructures/epoch_c_megastructures.txt line: 234
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'has_technology' at  file: common/megastructures/epoch_c_megastructures.txt line: 264
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'any_owned_megastructure' at  file: common/megastructures/epoch_c_megastructures.txt line: 264
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'has_technology' at  file: common/megastructures/epoch_c_megastructures.txt line: 265
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'any_owned_megastructure' at  file: common/megastructures/epoch_c_megastructures.txt line: 265
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'has_technology' at  file: common/megastructures/epoch_c_megastructures.txt line: 295
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'any_owned_megastructure' at  file: common/megastructures/epoch_c_megastructures.txt line: 295
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'has_technology' at  file: common/megastructures/epoch_c_megastructures.txt line: 296
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'any_owned_megastructure' at  file: common/megastructures/epoch_c_megastructures.txt line: 296
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'has_technology' at  file: common/megastructures/epoch_c_megastructures.txt line: 326
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'any_owned_megastructure' at  file: common/megastructures/epoch_c_megastructures.txt line: 326
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'has_technology' at  file: common/megastructures/epoch_c_megastructures.txt line: 327
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:55:33][trigger.cpp:635]: Wrong scope for trigger 'any_owned_megastructure' at  file: common/megastructures/epoch_c_megastructures.txt line: 327
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:57:17][trigger.cpp:485]: Wrong scope for trigger 'is_country_type' at  common/scripted_triggers/epoch_convergence_triggers.txt:2 @ in scripted trigger epoch_iii_public_empire at common/scripted_triggers/epoch_convergence_triggers.txt:22 @ in scripted trigger epoch_iii_preparation_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:2 @ in scripted trigger epoch_iv_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:14 @ in scripted trigger epoch_iv_future_research at file: common/megastructures/epoch_c_megastructures.txt line: 96
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:57:46][trigger.cpp:485]: Wrong scope for trigger 'is_country_type' at  common/scripted_triggers/epoch_convergence_triggers.txt:2 @ in scripted trigger epoch_iii_public_empire at common/scripted_triggers/epoch_convergence_triggers.txt:22 @ in scripted trigger epoch_iii_preparation_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:2 @ in scripted trigger epoch_iv_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:14 @ in scripted trigger epoch_iv_future_research at common/scripted_triggers/epoch_c_triggers.txt:5 @ in scripted trigger epoch_c_guard at file: common/megastructures/epoch_c_megastructures.txt line: 233
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:57:46][trigger.cpp:485]: Wrong scope for trigger 'is_country_type' at  common/scripted_triggers/epoch_convergence_triggers.txt:2 @ in scripted trigger epoch_iii_public_empire at common/scripted_triggers/epoch_convergence_triggers.txt:22 @ in scripted trigger epoch_iii_preparation_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:2 @ in scripted trigger epoch_iv_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:14 @ in scripted trigger epoch_iv_future_research at common/scripted_triggers/epoch_c_triggers.txt:6 @ in scripted trigger epoch_c_free at file: common/megastructures/epoch_c_megastructures.txt line: 234
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:57:47][trigger.cpp:485]: Wrong scope for trigger 'is_country_type' at  common/scripted_triggers/epoch_convergence_triggers.txt:2 @ in scripted trigger epoch_iii_public_empire at common/scripted_triggers/epoch_convergence_triggers.txt:22 @ in scripted trigger epoch_iii_preparation_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:2 @ in scripted trigger epoch_iv_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:14 @ in scripted trigger epoch_iv_future_research at common/scripted_triggers/epoch_c_triggers.txt:5 @ in scripted trigger epoch_c_guard at file: common/megastructures/epoch_c_megastructures.txt line: 264
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:57:47][trigger.cpp:485]: Wrong scope for trigger 'is_country_type' at  common/scripted_triggers/epoch_convergence_triggers.txt:2 @ in scripted trigger epoch_iii_public_empire at common/scripted_triggers/epoch_convergence_triggers.txt:22 @ in scripted trigger epoch_iii_preparation_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:2 @ in scripted trigger epoch_iv_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:14 @ in scripted trigger epoch_iv_future_research at common/scripted_triggers/epoch_c_triggers.txt:6 @ in scripted trigger epoch_c_free at file: common/megastructures/epoch_c_megastructures.txt line: 265
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:58:01][trigger.cpp:485]: Wrong scope for trigger 'is_country_type' at  common/scripted_triggers/epoch_convergence_triggers.txt:2 @ in scripted trigger epoch_iii_public_empire at common/scripted_triggers/epoch_convergence_triggers.txt:22 @ in scripted trigger epoch_iii_preparation_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:2 @ in scripted trigger epoch_iv_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:14 @ in scripted trigger epoch_iv_future_research at common/scripted_triggers/epoch_c_triggers.txt:5 @ in scripted trigger epoch_c_guard at file: common/megastructures/epoch_c_megastructures.txt line: 295
+Current Scope: megastructure
+Supported Scopes: country
+
+[18:58:01][trigger.cpp:485]: Wrong scope for trigger 'is_country_type' at  common/scripted_triggers/epoch_convergence_triggers.txt:2 @ in scripted trigger epoch_iii_public_empire at common/scripted_triggers/epoch_convergence_triggers.txt:22 @ in scripted trigger epoch_iii_preparation_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:2 @ in scripted trigger epoch_iv_eligible at common/scripted_triggers/epoch_ascension_scripted_triggers.txt:14 @ in scripted trigger epoch_iv_future_research at common/scripted_triggers/epoch_c_triggers.txt:6 @ in scripted trigger epoch_c_free at file: common/megastructures/epoch_c_megastructures.txt line: 296
+Current Scope: megastructure
+Supported Scopes: country

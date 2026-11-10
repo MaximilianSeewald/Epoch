@@ -172,7 +172,7 @@ for(const [name,profile]of Object.entries(profiles))for(const p of ['guard','fre
   if(family.id!=='forge'){
    const duplicate={...owned,megas:[...owned.megas,'epoch_'+family.id+'_2']};
    check(values(r,'produces').every(b=>!gate(get(b,'trigger'),{scope:'megastructure',owner:duplicate})),'conquered duplicates do not stack production '+family.id);
-   check(values(first,'triggered_country_modifier').every(b=>!gate(get(b,'potential'),duplicate)),'conquered duplicates do not stack modifiers '+family.id);
+   check(values(first,'triggered_country_modifier').every(b=>!gate(get(b,'potential'),{scope:'megastructure',owner:duplicate})),'conquered duplicates do not stack modifiers '+family.id);
   }
   for(const res of ['energy',family.id==='forge'?'minerals':'epoch_protocol_cores'])check(values(r,'produces').every(b=>!gate(get(b,'trigger'),{scope:'megastructure',owner:{...owned,deficits:new Set([res])}})),'no output through input shortage '+family.id+'/'+res);
  }
@@ -225,8 +225,24 @@ function flow(body,owner){
 }
 for(const [id,b]of megas)for(const philosophy of ['guard','free']){
  const [,family,rank]=id.match(/^epoch_(\w+)_(\d)$/),n=Number(rank),owner={...empire(profiles.organic,philosophy),megas:[id]},net=flow(b,owner);
- const activeMods=values(b,'triggered_country_modifier').filter(m=>gate(get(m,'potential'),owner));
+ const instance={scope:'megastructure',type:id,operational:true,owner};
+ const activeFor=i=>values(b,'triggered_country_modifier').filter(m=>gate(get(m,'potential'),i));
+ const activeMods=activeFor(instance);
  check(activeMods.length===(family==='forge'?0:1),'one real country modifier branch for valid owner '+id+'/'+philosophy);
+ if(family!=='forge'){
+  for(const [reason,changed]of Object.entries({unfinished:{...instance,operational:false},ownerless:{...instance,owner:null},foreign:{...instance,owner:{...owner,flags:new Set()}},duplicate:{...instance,owner:{...owner,megas:[id,id]}},ineligible:{...instance,owner:{...owner,eligible:false}},...(family==='uap'?{technology:{...instance,owner:{...owner,techs:new Set()}}}:{})})){
+   check(activeFor(changed).length===0,'modifier fails closed for '+reason+'/'+id);
+  }
+  // Capture evaluates the new owner's own philosophy, never the former owner's flags.
+  const successor={...empire(profiles.organic,philosophy==='guard'?'free':'guard'),megas:[id]};
+  const transferred=activeFor({...instance,owner:successor});
+  check(transferred.length===1,'qualified successor gets exactly one own bonus '+id);
+  if(family==='uap'){
+   check(!!get(transferred[0],'all_technology_research_speed')===(philosophy==='guard'),'capture switches UAP bonus to new owner philosophy '+id);
+   const conflict={...owner,flags:new Set([...owner.flags,'epoch_iv_philosophy_guard','epoch_iv_philosophy_free'])};
+   check(activeFor({...instance,owner:conflict}).length===0,'conflicting philosophy cannot stack '+id);
+  }
+ }
  if(family==='nexus'){
   for(const r of ['physics_research','society_research','engineering_research'])check(net[r]===200*n,'real resource-table research, every Nexus tier '+id+'/'+r);
   check(net.epoch_protocol_cores===2*n&&net.energy===-40*n,'Nexus gross-minus-upkeep projection '+id);

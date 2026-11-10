@@ -57,7 +57,7 @@ let resourceEvidence=0,modifierEvidence=0;
 for(const m of observed.matchAll(/epoch_c_megastructures\.txt line: (\d+)\r?\nCurrent Scope: (\w+)/g)){
  const line=priorLines[Number(m[1])-1].trim();
  if(line.startsWith('produces =')){check(m[2]==='megastructure','engine observed recurring resource mega context');resourceEvidence++;}
- else if(line.startsWith('triggered_country_modifier =')){check(m[2]==='country','engine observed modifier country context');modifierEvidence++;}
+ else if(line.startsWith('triggered_country_modifier =')){check(m[2]==='country','historical auxiliary country query; superseded for live modifier potential by final run');modifierEvidence++;}
  else throw Error('Unmapped real scope diagnostic: '+line);
 }
 check(resourceEvidence>=10&&modifierEvidence>=10,'both recurring contexts have direct third-run engine evidence');
@@ -70,6 +70,25 @@ for(const [id,b]of priorMega){
  for(const [,t]of get(b,'resources').filter(([k])=>k==='produces')){checks++;assert.throws(()=>validate(get(t,'trigger'),'megastructure'),undefined,'reject actual previous broken resource condition '+id);}
  for(const potential of deep(b,'triggered_country_modifier').map(t=>get(t,'potential'))){checks++;assert.throws(()=>validate(potential,'country'),undefined,'reject actual previous broken modifier condition '+id);}
 }
+// Actual final-run diagnostics on bec484a: all eleven modifier potentials run on the instance.
+const finalBaseline=cp.execFileSync('git',['show','bec484a85f4dec226905a7d746bc1fcb83fcd981:common/megastructures/epoch_c_megastructures.txt'],{encoding:'utf8'});
+const finalMega=new Map(parse(finalBaseline,'successful gameplay baseline'));
+const reportedSites=[38,67,96,233,234,264,265,295,296,326,327];
+const finalObserved=read('docs/research/final-c-scope-errors-2026-11-10.txt');
+const observedSites=new Set();
+for(const m of finalObserved.matchAll(/epoch_c_megastructures\.txt line: (\d+)\r?\nCurrent Scope: (\w+)/g)){
+ check(m[2]==='megastructure','final engine modifier context');observedSites.add(+m[1]);
+}
+assert.deepEqual([...observedSites].sort((a,b)=>a-b),reportedSites);checks++;
+for(const line of reportedSites){
+ const fixture=parse('t = { '+finalBaseline.split(/\r?\n/)[line-1]+' }','actual reported line '+line)[0][1];
+ const potential=get(get(fixture,'triggered_country_modifier'),'potential');
+ checks++;assert.throws(()=>validate(potential,'megastructure'),undefined,'reject actual broken modifier at line '+line);
+}
+// Verify the installed native definition, rather than treating a validator assumption as evidence.
+const nativeModifiers=deep(parse(native('common/megastructures/22_shroud_seal.txt'),'native shroud seal'),'triggered_country_modifier');
+check(nativeModifiers.some(m=>get(get(m,'potential'),'owner?')?.some(([k])=>k==='has_technology')),'native modifier potential switches to owner? for country technology');
+for(const m of nativeModifiers){validate(get(m,'potential'),'megastructure');checks++;}
 for(const [id,b]of mega){
  const family=id.match(/^epoch_(\w+)_/)[1];
  for(const [kind,t]of get(b,'resources').filter(([k])=>['cost','upkeep','produces'].includes(k))){
@@ -82,7 +101,16 @@ for(const [id,b]of mega){
    }
   }
  }
- for(const potential of deep(b,'triggered_country_modifier').map(t=>get(t,'potential'))){validate(potential,'country');checks++;}
+ for(const potential of deep(b,'triggered_country_modifier').map(t=>get(t,'potential'))){
+  validate(potential,'megastructure');checks++;
+  // Mutations must fail scope validation even when the desired keys still exist.
+  const owner=get(potential,'owner?');check(!!owner,'current-owner country gate');
+  checks++;assert.throws(()=>validate([...potential.filter(([k])=>k!=='owner?'),...owner],'megastructure'),undefined,'reject unwrapped country conditions '+id);
+  checks++;assert.throws(()=>validate(potential.map(([k,v])=>[k,k==='owner?'?[...v,['has_megastructure_flag','epoch_c_operational']]:v]),'megastructure'),undefined,'reject instance flag moved into owner '+id);
+ }
+ assert.deepEqual(b.filter(([k])=>k!=='triggered_country_modifier'),finalMega.get(id).filter(([k])=>k!=='triggered_country_modifier'),'all non-modifier fields including complete resources.produces unchanged '+id);checks++;
+ const bonusValues=x=>deep(x,'triggered_country_modifier').map(m=>m.filter(([k])=>k!=='potential'));
+ assert.deepEqual(bonusValues(b),bonusValues(finalMega.get(id)),'modifier amounts and branch count unchanged '+id);checks++;
  validate(get(b,'potential'),'country');validate(get(b,'build_menu_potential'),'fleet');validate(get(b,'possible'),'galactic_object');validate(get(get(b,'placement_rules')||[],'planet_possible'),'planet');validate(get(b,'dismantle_possible'),'megastructure');checks+=5;
  for(const field of ['potential','build_menu_potential','possible','placement_rules','upgrade_from','prerequisites','on_build_start','on_build_cancel','on_build_complete','on_dismantle_complete']){assert.deepEqual(get(b,field),get(priorMega.get(id),field),'successful construction and callbacks preserved '+id+'/'+field);checks++;}
  const resources=get(b,'resources'),oldResources=get(priorMega.get(id),'resources');
