@@ -137,7 +137,7 @@
         "physics_research": 3.24,
         "society_research": 3.24,
         "engineering_research": 3.24,
-        "epoch_protocol_cores": -0.28,
+        "epoch_protocol_cores": -2.18,
         "consumer_goods": -2.7,
         "energy": -4
       }
@@ -159,7 +159,7 @@
         "physics_research": 3.24,
         "society_research": 3.24,
         "engineering_research": 3.24,
-        "epoch_protocol_cores": -0.28,
+        "epoch_protocol_cores": -2.18,
         "energy": -7.6
       }
     },
@@ -180,7 +180,7 @@
         "physics_research": 3.24,
         "society_research": 3.24,
         "engineering_research": 3.24,
-        "epoch_protocol_cores": -0.28,
+        "epoch_protocol_cores": -2.18,
         "energy": -7.6
       }
     },
@@ -201,7 +201,7 @@
         "physics_research": 3.24,
         "society_research": 3.24,
         "engineering_research": 3.24,
-        "epoch_protocol_cores": -0.28,
+        "epoch_protocol_cores": -2.18,
         "consumer_goods": -2.7,
         "energy": -4
       }
@@ -224,7 +224,7 @@
         "physics_research": 6.48,
         "society_research": 6.48,
         "engineering_research": 6.48,
-        "epoch_protocol_cores": -0.56,
+        "epoch_protocol_cores": -4.36,
         "consumer_goods": -5.4,
         "energy": -8,
         "exotic_gases": -1
@@ -248,7 +248,7 @@
         "physics_research": 6.48,
         "society_research": 6.48,
         "engineering_research": 6.48,
-        "epoch_protocol_cores": -0.56,
+        "epoch_protocol_cores": -4.36,
         "energy": -15.2,
         "exotic_gases": -1
       }
@@ -271,7 +271,7 @@
         "physics_research": 6.48,
         "society_research": 6.48,
         "engineering_research": 6.48,
-        "epoch_protocol_cores": -0.56,
+        "epoch_protocol_cores": -4.36,
         "energy": -15.2,
         "exotic_gases": -1
       }
@@ -294,7 +294,7 @@
         "physics_research": 6.48,
         "society_research": 6.48,
         "engineering_research": 6.48,
-        "epoch_protocol_cores": -0.56,
+        "epoch_protocol_cores": -4.36,
         "consumer_goods": -5.4,
         "energy": -8,
         "exotic_gases": -1
@@ -318,7 +318,7 @@
         "physics_research": 9.72,
         "society_research": 9.72,
         "engineering_research": 9.72,
-        "epoch_protocol_cores": -0.84,
+        "epoch_protocol_cores": -6.54,
         "consumer_goods": -8.1,
         "energy": -12,
         "exotic_gases": -2
@@ -342,7 +342,7 @@
         "physics_research": 9.72,
         "society_research": 9.72,
         "engineering_research": 9.72,
-        "epoch_protocol_cores": -0.84,
+        "epoch_protocol_cores": -6.54,
         "energy": -22.8,
         "exotic_gases": -2
       }
@@ -365,7 +365,7 @@
         "physics_research": 9.72,
         "society_research": 9.72,
         "engineering_research": 9.72,
-        "epoch_protocol_cores": -0.84,
+        "epoch_protocol_cores": -6.54,
         "energy": -22.8,
         "exotic_gases": -2
       }
@@ -388,7 +388,7 @@
         "physics_research": 9.72,
         "society_research": 9.72,
         "engineering_research": 9.72,
-        "epoch_protocol_cores": -0.84,
+        "epoch_protocol_cores": -6.54,
         "consumer_goods": -8.1,
         "energy": -12,
         "exotic_gases": -2
@@ -407,7 +407,7 @@
       },
       "net": {
         "alloys": 12,
-        "epoch_protocol_cores": -0.2,
+        "epoch_protocol_cores": -2.1,
         "energy": -4
       }
     },
@@ -424,7 +424,7 @@
       },
       "net": {
         "alloys": 12,
-        "epoch_protocol_cores": -0.2,
+        "epoch_protocol_cores": -2.1,
         "energy": -4
       }
     },
@@ -441,7 +441,7 @@
       },
       "net": {
         "alloys": 16,
-        "epoch_protocol_cores": -0.2,
+        "epoch_protocol_cores": -2.1,
         "energy": -4
       }
     },
@@ -459,7 +459,7 @@
       "net": {
         "alloys": 15,
         "food": -30,
-        "epoch_protocol_cores": -0.2,
+        "epoch_protocol_cores": -2.1,
         "energy": -4
       }
     },
@@ -477,7 +477,7 @@
       },
       "net": {
         "alloys": 24,
-        "epoch_protocol_cores": -0.4,
+        "epoch_protocol_cores": -4.2,
         "energy": -8
       }
     },
@@ -495,7 +495,7 @@
       },
       "net": {
         "alloys": 24,
-        "epoch_protocol_cores": -0.4,
+        "epoch_protocol_cores": -4.2,
         "energy": -8
       }
     },
@@ -513,7 +513,7 @@
       },
       "net": {
         "alloys": 32,
-        "epoch_protocol_cores": -0.4,
+        "epoch_protocol_cores": -4.2,
         "energy": -8
       }
     },
@@ -532,7 +532,7 @@
       "net": {
         "alloys": 30,
         "food": -60,
-        "epoch_protocol_cores": -0.4,
+        "epoch_protocol_cores": -4.2,
         "energy": -8
       }
     },
@@ -550,7 +550,7 @@
       },
       "net": {
         "alloys": 36,
-        "epoch_protocol_cores": -0.6,
+        "epoch_protocol_cores": -6.3,
         "energy": -12
       }
     },
@@ -568,7 +568,7 @@
       },
       "net": {
         "alloys": 36,
-        "epoch_protocol_cores": -0.6,
+        "epoch_protocol_cores": -6.3,
         "energy": -12
       }
     },
@@ -586,7 +586,7 @@
       },
       "net": {
         "alloys": 48,
-        "epoch_protocol_cores": -0.6,
+        "epoch_protocol_cores": -6.3,
         "energy": -12
       }
     },
@@ -605,7 +605,7 @@
       "net": {
         "alloys": 45,
         "food": -90,
-        "epoch_protocol_cores": -0.6,
+        "epoch_protocol_cores": -6.3,
         "energy": -12
       }
     },
@@ -623,7 +623,7 @@
       "net": {
         "energy": 31,
         "minerals": -4,
-        "epoch_protocol_cores": -0.2
+        "epoch_protocol_cores": -1.6
       }
     },
     {
@@ -640,7 +640,7 @@
       "net": {
         "energy": 31,
         "minerals": -4,
-        "epoch_protocol_cores": -0.2
+        "epoch_protocol_cores": -1.6
       }
     },
     {
@@ -657,7 +657,7 @@
       "net": {
         "energy": 31,
         "minerals": -4,
-        "epoch_protocol_cores": -0.2
+        "epoch_protocol_cores": -1.6
       }
     },
     {
@@ -674,7 +674,7 @@
       "net": {
         "energy": 31,
         "minerals": -4,
-        "epoch_protocol_cores": -0.2
+        "epoch_protocol_cores": -1.6
       }
     },
     {
@@ -692,7 +692,7 @@
       "net": {
         "energy": 56,
         "minerals": -8,
-        "epoch_protocol_cores": -0.4
+        "epoch_protocol_cores": -3.2
       }
     },
     {
@@ -710,7 +710,7 @@
       "net": {
         "energy": 56,
         "minerals": -8,
-        "epoch_protocol_cores": -0.4
+        "epoch_protocol_cores": -3.2
       }
     },
     {
@@ -728,7 +728,7 @@
       "net": {
         "energy": 56,
         "minerals": -8,
-        "epoch_protocol_cores": -0.4
+        "epoch_protocol_cores": -3.2
       }
     },
     {
@@ -746,7 +746,7 @@
       "net": {
         "energy": 56,
         "minerals": -8,
-        "epoch_protocol_cores": -0.4
+        "epoch_protocol_cores": -3.2
       }
     },
     {
@@ -764,7 +764,7 @@
       "net": {
         "society_research": 4,
         "unity": 3,
-        "epoch_protocol_cores": -0.15,
+        "epoch_protocol_cores": -1.05,
         "consumer_goods": -1.5,
         "energy": -4
       }
@@ -784,7 +784,7 @@
       "net": {
         "society_research": 4,
         "unity": 3,
-        "epoch_protocol_cores": -0.15,
+        "epoch_protocol_cores": -1.05,
         "energy": -6
       }
     },
@@ -803,7 +803,7 @@
       "net": {
         "society_research": 4,
         "unity": 3,
-        "epoch_protocol_cores": -0.15,
+        "epoch_protocol_cores": -1.05,
         "energy": -6
       }
     },
@@ -822,7 +822,7 @@
       "net": {
         "society_research": 4,
         "unity": 3,
-        "epoch_protocol_cores": -0.15,
+        "epoch_protocol_cores": -1.05,
         "consumer_goods": -1.5,
         "energy": -4
       }
@@ -843,7 +843,7 @@
       "net": {
         "society_research": 8,
         "unity": 6,
-        "epoch_protocol_cores": -0.3,
+        "epoch_protocol_cores": -2.1,
         "consumer_goods": -3,
         "energy": -8
       }
@@ -864,7 +864,7 @@
       "net": {
         "society_research": 8,
         "unity": 6,
-        "epoch_protocol_cores": -0.3,
+        "epoch_protocol_cores": -2.1,
         "energy": -12
       }
     },
@@ -884,7 +884,7 @@
       "net": {
         "society_research": 8,
         "unity": 6,
-        "epoch_protocol_cores": -0.3,
+        "epoch_protocol_cores": -2.1,
         "energy": -12
       }
     },
@@ -904,7 +904,7 @@
       "net": {
         "society_research": 8,
         "unity": 6,
-        "epoch_protocol_cores": -0.3,
+        "epoch_protocol_cores": -2.1,
         "consumer_goods": -3,
         "energy": -8
       }
@@ -924,7 +924,7 @@
       "net": {
         "unity": 17.6,
         "physics_research": 2,
-        "epoch_protocol_cores": -0.2,
+        "epoch_protocol_cores": -1.6,
         "consumer_goods": -3,
         "energy": -4
       }
@@ -944,7 +944,7 @@
       "net": {
         "unity": 17.6,
         "physics_research": 2,
-        "epoch_protocol_cores": -0.2,
+        "epoch_protocol_cores": -1.6,
         "energy": -8
       }
     },
@@ -963,7 +963,7 @@
       "net": {
         "unity": 17.6,
         "physics_research": 2,
-        "epoch_protocol_cores": -0.2,
+        "epoch_protocol_cores": -1.6,
         "energy": -8
       }
     },
@@ -982,7 +982,7 @@
       "net": {
         "unity": 17.6,
         "physics_research": 2,
-        "epoch_protocol_cores": -0.2,
+        "epoch_protocol_cores": -1.6,
         "consumer_goods": -3,
         "energy": -4
       }
@@ -1003,7 +1003,7 @@
       "net": {
         "unity": 36.8,
         "physics_research": 4,
-        "epoch_protocol_cores": -0.4,
+        "epoch_protocol_cores": -3.2,
         "consumer_goods": -6,
         "energy": -8
       }
@@ -1024,7 +1024,7 @@
       "net": {
         "unity": 36.8,
         "physics_research": 4,
-        "epoch_protocol_cores": -0.4,
+        "epoch_protocol_cores": -3.2,
         "energy": -16
       }
     },
@@ -1044,7 +1044,7 @@
       "net": {
         "unity": 36.8,
         "physics_research": 4,
-        "epoch_protocol_cores": -0.4,
+        "epoch_protocol_cores": -3.2,
         "energy": -16
       }
     },
@@ -1064,7 +1064,7 @@
       "net": {
         "unity": 36.8,
         "physics_research": 4,
-        "epoch_protocol_cores": -0.4,
+        "epoch_protocol_cores": -3.2,
         "consumer_goods": -6,
         "energy": -8
       }
@@ -1080,7 +1080,7 @@
       "gross": {},
       "net": {
         "energy": -6,
-        "epoch_protocol_cores": -0.15
+        "epoch_protocol_cores": -1.05
       }
     },
     {
@@ -1094,7 +1094,7 @@
       "gross": {},
       "net": {
         "energy": -6,
-        "epoch_protocol_cores": -0.15
+        "epoch_protocol_cores": -1.05
       }
     },
     {
@@ -1108,7 +1108,7 @@
       "gross": {},
       "net": {
         "energy": -6,
-        "epoch_protocol_cores": -0.15
+        "epoch_protocol_cores": -1.05
       }
     },
     {
@@ -1122,7 +1122,7 @@
       "gross": {},
       "net": {
         "energy": -6,
-        "epoch_protocol_cores": -0.15
+        "epoch_protocol_cores": -1.05
       }
     },
     {
@@ -1137,7 +1137,7 @@
       "gross": {},
       "net": {
         "energy": -12,
-        "epoch_protocol_cores": -0.3
+        "epoch_protocol_cores": -2.1
       }
     },
     {
@@ -1152,7 +1152,7 @@
       "gross": {},
       "net": {
         "energy": -12,
-        "epoch_protocol_cores": -0.3
+        "epoch_protocol_cores": -2.1
       }
     },
     {
@@ -1167,7 +1167,7 @@
       "gross": {},
       "net": {
         "energy": -12,
-        "epoch_protocol_cores": -0.3
+        "epoch_protocol_cores": -2.1
       }
     },
     {
@@ -1182,7 +1182,7 @@
       "gross": {},
       "net": {
         "energy": -12,
-        "epoch_protocol_cores": -0.3
+        "epoch_protocol_cores": -2.1
       }
     },
     {
@@ -1344,7 +1344,7 @@
         "unity": 2,
         "energy": -8,
         "alloys": -1,
-        "epoch_protocol_cores": -0.2
+        "epoch_protocol_cores": -1.6
       }
     },
     {
@@ -1362,7 +1362,7 @@
         "unity": 2,
         "energy": -8,
         "alloys": -1,
-        "epoch_protocol_cores": -0.2
+        "epoch_protocol_cores": -1.6
       }
     },
     {
@@ -1380,7 +1380,7 @@
         "unity": 2,
         "energy": -8,
         "alloys": -1,
-        "epoch_protocol_cores": -0.2
+        "epoch_protocol_cores": -1.6
       }
     },
     {
@@ -1398,7 +1398,7 @@
         "unity": 2,
         "energy": -8,
         "alloys": -1,
-        "epoch_protocol_cores": -0.2
+        "epoch_protocol_cores": -1.6
       }
     },
     {
@@ -1417,7 +1417,7 @@
         "unity": 4,
         "energy": -16,
         "alloys": -2,
-        "epoch_protocol_cores": -0.4
+        "epoch_protocol_cores": -3.2
       }
     },
     {
@@ -1436,7 +1436,7 @@
         "unity": 4,
         "energy": -16,
         "alloys": -2,
-        "epoch_protocol_cores": -0.4
+        "epoch_protocol_cores": -3.2
       }
     },
     {
@@ -1455,7 +1455,7 @@
         "unity": 4,
         "energy": -16,
         "alloys": -2,
-        "epoch_protocol_cores": -0.4
+        "epoch_protocol_cores": -3.2
       }
     },
     {
@@ -1474,7 +1474,7 @@
         "unity": 4,
         "energy": -16,
         "alloys": -2,
-        "epoch_protocol_cores": -0.4
+        "epoch_protocol_cores": -3.2
       }
     }
   ]

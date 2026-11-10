@@ -222,7 +222,8 @@ epoch_factory = {
  possible_precalc = can_fill_specialist_job
  possible = { complex_specialist_job_check_trigger = yes }
  resources = { category = planet_epoch_factory
- produces = { trigger = { owner = { NOT = { has_deficit = minerals } NOT = { has_deficit = alloys } NOT = { has_deficit = energy } } } epoch_protocol_cores = 12 }
+ # Native unconditional base output; standard resource deficits/upkeep remain engine-managed.
+ produces = { epoch_protocol_cores = 12 }
 
  upkeep = { minerals = 18 alloys = 3 energy = 8 }
 
@@ -239,7 +240,8 @@ epoch_factory_drone = {
  possible_precalc = can_fill_drone_job
  possible = { can_think = yes }
  resources = { category = planet_epoch_factory
- produces = { trigger = { owner = { NOT = { has_deficit = minerals } NOT = { has_deficit = alloys } NOT = { has_deficit = energy } } } epoch_protocol_cores = 12 }
+ # Native unconditional base output; standard resource deficits/upkeep remain engine-managed.
+ produces = { epoch_protocol_cores = 12 }
 
  upkeep = { minerals = 18 alloys = 3 energy = 8 }
 

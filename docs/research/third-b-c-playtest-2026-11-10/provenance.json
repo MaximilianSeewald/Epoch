@@ -1,0 +1,13 @@
+{
+  "testedB": "944c3c205b40bb0f3057fbf99015da88ab6133d8",
+  "testedC": "4f8530e135e1889fccda1b6ab52bcc933e39d84c",
+  "evidence": "Third player test, before production correction. No agent-controlled engine run.",
+  "error.log": {
+    "bytes": 63768,
+    "sha256": "c4417eb6614712e0a7db5c40a5ad88c666be0ca21a6577253c0530c4cb496480"
+  },
+  "game.log": {
+    "bytes": 2384,
+    "sha256": "a65cbcd6283095c38c4c51e99d19f56e2365ec83956a977db530d8590b55f942"
+  }
+}
