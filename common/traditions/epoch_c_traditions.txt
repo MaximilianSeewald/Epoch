@@ -86,12 +86,29 @@ tr_epoch_convergence_expansion = {
 tr_epoch_convergence_drones = {
  possible = { has_tradition = tr_epoch_convergence_expansion }
  modifier = { planet_jobs_produces_mult = 0.05 }
+ tradition_swap = {
+  name = tr_epoch_convergence_drones_wilderness
+  inherit_effects = no
+  inherit_name = no
+  inherit_icon = yes
+  trigger = { is_wilderness_empire = yes }
+  modifier = { megastructure_build_speed_mult = 0.10 }
+  weight = { factor = 1 }
+ }
  ai_weight = { factor = 90 }
 }
 
 tr_epoch_convergence_nodes = {
  modifier = { planet_stability_add = 5 }
- tradition_swap = { name = tr_epoch_convergence_nodes_wilderness inherit_icon = yes trigger = { is_wilderness_empire = yes } modifier = { building_time_mult = -0.15 } weight = { factor = 1 } }
+ tradition_swap = {
+  name = tr_epoch_convergence_nodes_wilderness
+  inherit_effects = no
+  inherit_name = no
+  inherit_icon = yes
+  trigger = { is_wilderness_empire = yes }
+  modifier = { building_time_mult = -0.15 }
+  weight = { factor = 1 }
+ }
  ai_weight = { factor = 80 }
 }
 

@@ -112,6 +112,18 @@
         {
           "text": "allowed_archetypes",
           "line": 32
+        },
+        {
+          "text": "normal(default)",
+          "line": 23
+        },
+        {
+          "text": "allowed_archetypes = {}",
+          "line": 32
+        },
+        {
+          "text": "species_possible_add = {}",
+          "line": 75
         }
       ]
     },
@@ -182,6 +194,14 @@
         {
           "text": "modify_traits",
           "line": 2751
+        },
+        {
+          "text": "tech_genome_mapping =",
+          "line": 2241
+        },
+        {
+          "text": "is_natural_design_empire = no",
+          "line": 2495
         }
       ]
     },
@@ -391,6 +411,110 @@
       "path": "C:\\Users\\Maxim/Documents/Paradox Interactive/Stellaris/logs/script_documentation/effects.log",
       "sha256": "24227be4a422ddc58bfb5ca6e59349341903ca90e385da6ecd2b54e3de4553c3",
       "existingGeneratedDocumentation": true
+    },
+    {
+      "path": "common/traditions/00_versatility.txt",
+      "sha256": "b2f0602bf6b0b1c1873aa21f8329686c5abf448987cfcbb039f3bf1e9e2b5eea",
+      "anchors": [
+        {
+          "text": "tr_versatility_finish =",
+          "line": 8
+        },
+        {
+          "text": "inherit_name = no",
+          "line": 17
+        },
+        {
+          "text": "inherit_icon = yes",
+          "line": 18
+        },
+        {
+          "text": "inherit_effects = no",
+          "line": 19
+        }
+      ]
+    },
+    {
+      "path": "common/traits/18_nomads_species_traits.txt",
+      "sha256": "ed2e77951290083e49c8682e1088595111749a73f02480291aa336bf31a1bd18",
+      "anchors": [
+        {
+          "text": "trait_structural_awareness =",
+          "line": 150
+        },
+        {
+          "text": "trait_interconnected =",
+          "line": 199
+        },
+        {
+          "text": "species_possible_add =",
+          "line": 10
+        },
+        {
+          "text": "allowed_archetypes = { MACHINE ROBOT }",
+          "line": 67
+        }
+      ]
+    },
+    {
+      "path": "common/species_archetypes/00_species_archetypes.txt",
+      "sha256": "0f754e5de7327af7d65c0459e2dbd145a311ea0d2319efc40a1019cb3ff29386",
+      "anchors": [
+        {
+          "text": "ROBOT =",
+          "line": 45
+        },
+        {
+          "text": "MACHINE =",
+          "line": 56
+        },
+        {
+          "text": "robotic = yes",
+          "line": 12
+        }
+      ]
+    },
+    {
+      "path": "common/game_rules/00_rules.txt",
+      "sha256": "95711247e018e7cde46b586a828e9f001bd1b65f73f83e6cd4c988eebd2523bf",
+      "anchors": [
+        {
+          "text": "can_modify_species =",
+          "line": 570
+        },
+        {
+          "text": "NEEDS_GENE_TAILORING_OR_INTERGRATED_ANATOMY",
+          "line": 601
+        },
+        {
+          "text": "NEEDS_ROBOT_MODDING",
+          "line": 659
+        },
+        {
+          "text": "CANNOT_MODIFY_SELF_MODIFIED_SPECIES",
+          "line": 672
+        },
+        {
+          "text": "CANNOT_MODIFY_MALLEABLE_GENES_SPECIES",
+          "line": 682
+        }
+      ]
+    },
+    {
+      "path": "common/scripted_triggers/02_scripted_triggers_machine_age.txt",
+      "sha256": "b2b7e19153dc8186741cbb487239d6e307c1b05df2bbc99b27b171be1221ad58",
+      "anchors": [
+        {
+          "text": "is_natural_design_empire =",
+          "line": 49
+        },
+        {
+          "text": "civic_hive_natural_design",
+          "line": 52
+        }
+      ]
     }
-  ]
+  ],
+  "reviewBaseCommit": "021cbb14ced853280cf6d3881787c9b9a02e52af",
+  "reviewEvidence": "Explicit Wilderness swap inheritance follows native Versatility. Default-normal paid mechanical traits have native species_possible_add examples. Native Genome Mapping/Gene Tailoring and can_modify_species admit ordinary Wilderness while retaining Natural Design and other native restrictions. Static source evidence only; no game launch."
 }

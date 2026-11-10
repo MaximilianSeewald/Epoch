@@ -5,7 +5,23 @@ decision_epoch_c_symbiotic_world = {
  resources = { category = decisions cost = { energy = 3000 alloys = 1000 epoch_protocol_cores = 100 } }
  potential = { is_colony = yes owner = { epoch_c_organic = yes has_ascension_perk = ap_epoch_living } OR = { has_deposit = d_epoch_iv_matrix has_deposit = d_epoch_iv_fold has_deposit = d_epoch_iv_archive } NOT = { has_modifier = epoch_c_symbiotic_world } }
  allow = { owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_harmonization } }
- effect = { if = { limit = { owner = { epoch_c_organic = yes has_ascension_perk = ap_epoch_living epoch_iv_future_research = yes } NOT = { has_modifier = epoch_c_symbiotic_world } } add_modifier = { modifier = epoch_c_symbiotic_world days = -1 } } }
+ effect = {
+  if = {
+   limit = {
+    is_colony = yes
+    exists = owner
+    owner = {
+     epoch_c_organic = yes
+     has_ascension_perk = ap_epoch_living
+     epoch_iv_future_research = yes
+     has_technology = tech_epoch_iv_harmonization
+    }
+    OR = { has_deposit = d_epoch_iv_matrix has_deposit = d_epoch_iv_fold has_deposit = d_epoch_iv_archive }
+    NOT = { has_modifier = epoch_c_symbiotic_world }
+   }
+   add_modifier = { modifier = epoch_c_symbiotic_world days = -1 }
+  }
+ }
  ai_weight = { weight = 20 }
 }
 

@@ -15,7 +15,7 @@ PASS: 73 Clausewitz files parsed; event option scopes, feature states, deposit r
 ECONOMY {"battleship":0.634,"shipCost":325,"buildingLoad":5.08,"starbase":0.26925,"factoryOutput":12,"scenarios":[{"name":"small","factories":3,"ships":20,"sets":1,"bases":3,"use":21.56775,"production":36,"surplus":14.43225},{"name":"large","factories":14,"ships":200,"sets":4,"bases":20,"use":155.505,"production":168,"surplus":12.495}]}
 PASS: 4358 Package-B counts, personal research gates, class DAG reachability, production/consumption, upgrade limits, native weapon comparisons, hull roles, DE/EN and preservation assertions. Static only.
 PASS: 73 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
-PASS: 2297 Package-C native content, class/philosophy matrices, trait/template gates, paid upgrade chains, capped capture behavior, shortage economy, DE/EN, art and B preservation assertions. Static only.
+PASS: 2451 Package-C native content, class/philosophy matrices, trait/template gates, paid upgrade chains, capped capture behavior, shortage economy, DE/EN, art and B preservation assertions. Static only.
 LOG REVIEW (pre-fix files): 1 EPOCH-related and 2239 unrelated/base-game/other-mod error lines in error.log.
   game.log: 0 EPOCH event-choice records in the existing run.
   Other-mod/base-game log lines are classified separately and do not count as EPOCH failures.
