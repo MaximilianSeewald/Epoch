@@ -242,3 +242,7 @@
 
  epoch_iii.contain.tt:0 "Stops local escalation and transmission."
  epoch_iii.buffer.requirement:0 "During the crisis: requires Listening Stations or Counterharmonics."
+
+ epoch_iii.22.name:0 "Preparations complete"
+
+ epoch_iii.22.desc:0 "Our listening network and response plans are ready. The preparation effort is complete; the watch continues while normal operations resume. No hostile arrival has yet been detected."

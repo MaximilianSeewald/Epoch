@@ -39,7 +39,11 @@ for(const [k,b]of current.get(dp)){
  if(!k.endsWith('resume'))check(get(get(b,'effect'),'tooltip')?.length>0,`${k}: nonempty native preview`);
 }
 for(const p of ['common/special_projects/epoch_phase_ii_projects.txt','common/special_projects/epoch_core_projects.txt','common/deposits/epoch_phase_ii_features.txt','common/static_modifiers/epoch_core_modifiers.txt','common/technology/epoch_phase_ii_technologies.txt','common/buildings/epoch_phase_ii_buildings.txt','common/global_ship_designs/epoch_nullwarden_designs.txt','common/situations/epoch_core_situations.txt','common/situations/epoch_phase_ii_situations.txt']){
- assert.deepEqual(current.get(p),old(p),`${p}: gameplay definitions unchanged`);checks++;
+ const before=old(p);
+ if(p==='common/deposits/epoch_phase_ii_features.txt'){
+  function guarded(b){return b.flatMap(([k,v])=>[...(k==='owner'?[['exists','owner']]:[]),[k,Array.isArray(v)?guarded(v):v]]);}
+  assert.deepEqual(current.get(p),guarded(before),p+': only add native owner-existence guards; every modifier unchanged');
+ }else assert.deepEqual(current.get(p),before,p+': gameplay definitions unchanged');checks++;
 }
 const defs=current.get('events/epoch_resonance_events.txt');
 const scar=defs.find(([,b])=>Array.isArray(b)&&get(b,'id')==='epoch_res.101')[1];
@@ -56,7 +60,10 @@ for(const lang of ['english','german']){
  check(!/\[event_target:|\[[^\]]*@/.test(s),`${lang}: native local name aliases only`);
  for(const [key,value]of locs[lang]){
   const prose=value.replace(/\[[^\]]*\]|\$[^$]+\$/g,'');
-  check(!/\b(?:EPOCH|Stage\s+[IVX]+|Chapter|Handoff|Callback|Debug|Gameplay|Mechanic|Freischaltung|Prototyp(?:e|projekt)?)\b/i.test(prose),`${lang}:${key}: no implementation terms`);
+  // The Stage-IV physical prototype is an in-universe funded construction,
+  // unlike the old developer-prototype vocabulary prohibited in earlier text.
+  const checkedProse = /^(?:epoch_iv|tech_epoch_iv|EPOCH_IV)/.test(key) ? prose.replace(/\bPrototyp(?:e|projekt)?\b/gi,'') : prose;
+  check(!/\b(?:EPOCH|Stage\s+[IVX]+|Chapter|Handoff|Callback|Debug|Gameplay|Mechanic|Freischaltung|Prototyp(?:e|projekt)?)\b/i.test(checkedProse),`${lang}:${key}: no implementation terms`);
   if(/epoch_(?:res|core)\.\d+\.desc/.test(key))check(!/(?:\b\d+\s*(?:Energy|Energie|Physics|Physik|days|Tage)\b|\d+\s*%)/i.test(prose),`${lang}:${key}: narrative contains no resource/duration table`);
  }
  check(locs[lang].get('epoch_res.hunter_location').includes('[epoch_res_battle_location.GetName]'),`${lang}: hunter alias`);

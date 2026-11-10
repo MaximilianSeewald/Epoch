@@ -1,0 +1,1 @@
+epoch_iv_judge_chain = { picture = GFX_evt_black_hole }

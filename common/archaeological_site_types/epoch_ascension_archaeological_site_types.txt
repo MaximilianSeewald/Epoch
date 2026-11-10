@@ -1,0 +1,17 @@
+epoch_iv_archive = {
+ desc = epoch_iv_archive_desc picture = GFX_evt_relic_world stages = 4 weight = 0 max_instances = 999
+ situation_log_category = empire_concerns
+ allow = {
+  is_ship_class = shipclass_science_ship exists = leader leader = { leader_class = scientist }
+  from = { exists = planet is_same_value = event_target:epoch_iv_site@root.owner
+   planet = { solar_system = { has_access_fleet = root.owner OR = { NOT = { exists = owner } is_owned_by = root.owner } } }
+  }
+  owner = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 2 } }
+ }
+ visible = { has_country_flag = epoch_iv_site_created }
+ stage = { difficulty = 2 icon = GFX_archaeology_runes_D1 event = epoch_iv.21 }
+ stage = { difficulty = 3 icon = GFX_archaeology_runes_D2 event = epoch_iv.22 }
+ stage = { difficulty = 4 icon = GFX_archaeology_runes_D3 event = epoch_iv.23 }
+ stage = { difficulty = 5 icon = GFX_archaeology_runes_D4 event = epoch_iv.24 }
+ on_roll_failed = { from = { standard_archaeological_site_on_roll_failed = { RANDOM_EVENTS = no_events } } }
+}

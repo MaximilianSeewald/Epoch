@@ -1,0 +1,16 @@
+# Source: ancrel.14, explicit add_hyperlane; only the central star is a planet object.
+epoch_iv_arena_init = {
+ class = sc_g usage = misc_system_init usage_odds = 0
+ planet = { class = star orbit_distance = 0 size = 25 }
+ init_effect = { set_star_flag = epoch_iv_arena }
+}
+# Separate research recovery site, never the combat arena.
+epoch_iv_archive_init = {
+ class = sc_k usage = misc_system_init usage_odds = 0
+ planet = { class = star orbit_distance = 0 size = 20 }
+ planet = { class = pc_barren orbit_distance = 50 size = 15 init_effect = { prevent_anomaly = yes } }
+}
+epoch_iv_signal_init = {
+ class = sc_g usage = misc_system_init usage_odds = 0
+ planet = { class = star orbit_distance = 0 size = 20 }
+}

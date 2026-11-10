@@ -75,7 +75,7 @@ check(!JSON.stringify(effects.get('epoch_ii_clear_site_state')).includes('epoch_
 check(JSON.stringify(E(59)).includes('epoch_res_interrupted_complete'),'All three station results gate handoff');
 const handoffWriters = [...eventDefs].filter(([,{b}])=>JSON.stringify(b).includes('"set_country_flag","epoch_res_stage_iii_ready"'));
 check(handoffWriters.length===1&&handoffWriters[0][0]==='epoch_res.60','Only final validated event writes Stage-III handoff');
-const personalSources = [...source].filter(([p]) => !p.includes('convergence')).map(([,s]) => s).join('\n');
+const personalSources = [...source].filter(([p]) => !p.includes('convergence') && !p.includes('ascension')).map(([,s]) => s).join('\n');
 check(!/epoch_(?:iii|iv)\.\d/.test(personalSources),'Stage I/II never dispatch the independent galactic crisis');
 const nodeSource=source.get('common/scripted_effects/epoch_resonance_effects.txt');
 check(nodeSource.includes('epoch_res_reflection_system@root')&&nodeSource.includes('epoch_res_silence_system@root')&&nodeSource.includes('epoch_res_interrupted_system@root'),'Three owner-keyed system targets');

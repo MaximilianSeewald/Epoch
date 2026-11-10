@@ -1,0 +1,373 @@
+epoch_iv_eligible = {
+ epoch_iii_preparation_eligible = yes
+ has_country_flag = epoch_core_phase_ii_ready
+ has_global_flag = epoch_iii_first_repulsed
+}
+epoch_iv_active = {
+ epoch_iv_eligible = yes
+ has_country_flag = epoch_iv_started
+ NOT = {
+  has_country_flag = epoch_iv_complete
+ }
+}
+epoch_iv_future_research = {
+ epoch_iv_eligible = yes
+ has_country_flag = epoch_iv_protocol_key
+ has_country_flag = epoch_iv_complete
+}
+epoch_iv_research_system = {
+ has_access_fleet = root
+ OR = {
+  NOT = {
+   exists = owner
+  }
+  is_owned_by = root
+ }
+ NOT = {
+  has_star_flag = epoch_iv_arena
+ }
+ NOT = {
+  any_fleet_in_system = {
+   owner = {
+    is_hostile = root
+   }
+  }
+ }
+ root = {
+  any_owned_fleet = {
+   can_access_system = prevprev
+  }
+ }
+}
+epoch_iv_empty_arena = {
+ epoch_iv_research_system = yes
+ NOT = {
+  exists = owner
+ }
+ NOT = {
+  exists = starbase
+ }
+ NOT = {
+  has_star_flag = epoch_iv_reserved
+ }
+ NOT = {
+  any_system_planet = {
+   is_star = no
+  }
+ }
+ NOT = {
+  any_fleet_in_system = {
+   always = yes
+  }
+ }
+ NOT = {
+  any_system_megastructure = {
+   always = yes
+  }
+ }
+}
+epoch_iv_contamination = {
+ NOR = {
+  has_planet_flag = epoch_iv_converted_contamination
+  has_deposit = d_epoch_iv_matrix
+ }
+ OR = {
+  has_deposit = d_epoch_resonance_contamination_active
+  has_deposit = d_epoch_resonance_contamination_worsened
+  has_deposit = d_epoch_resonance_contamination_studied
+  has_deposit = d_epoch_resonance_contamination_contained
+  has_deposit = d_epoch_resonance_contamination_latent
+  has_deposit = d_epoch_resonance_contamination_resonant
+  has_deposit = d_epoch_resonance_contamination_unstable
+  has_deposit = d_epoch_resonance_contamination_controlled
+ }
+}
+epoch_iv_scar = {
+ NOR = {
+  has_planet_flag = epoch_iv_converted_scar
+  has_deposit = d_epoch_iv_fold
+ }
+ OR = {
+  has_deposit = d_epoch_resonance_scar
+  has_deposit = d_epoch_resonance_scar_altered
+  has_deposit = d_epoch_resonance_scar_healed
+ }
+}
+epoch_iv_structure = {
+ NOR = {
+  has_planet_flag = epoch_iv_converted_structure
+  has_deposit = d_epoch_iv_archive
+ }
+ OR = {
+  has_deposit = d_epoch_silent_structure_unsecured
+  has_deposit = d_epoch_silent_structure_secured
+  has_deposit = d_epoch_silent_structure_investigated
+ }
+}
+epoch_iv_diagnosis_matches = {
+ OR = {
+  AND = {
+   has_planet_flag = epoch_iv_diagnosed_contamination@owner
+   epoch_iv_contamination = yes
+  }
+  AND = {
+   has_planet_flag = epoch_iv_diagnosed_scar@owner
+   epoch_iv_scar = yes
+  }
+  AND = {
+   has_planet_flag = epoch_iv_diagnosed_structure@owner
+   epoch_iv_structure = yes
+  }
+ }
+}
+epoch_iv_safe_world = {
+ is_colony = yes
+ exists = owner
+ owner = {
+  epoch_iv_eligible = yes
+ }
+ NOT = {
+  any_country = {
+   OR = {
+    has_country_flag = epoch_core_campaign_active
+    has_country_flag = epoch_res_active
+    has_country_flag = epoch_ii_active
+   }
+   OR = {
+    AND = {
+     exists = event_target:epoch_core_world@this
+     event_target:epoch_core_world@this = {
+      OR = {
+       is_same_value = prevprev
+       AND = {
+        exists = planet
+        planet = {
+         is_same_value = prevprevprev.planet
+        }
+       }
+      }
+     }
+    }
+    AND = {
+     exists = event_target:epoch_ii_target_planet@this
+     event_target:epoch_ii_target_planet@this = {
+      OR = {
+       is_same_value = prevprev
+       AND = {
+        exists = planet
+        planet = {
+         is_same_value = prevprevprev.planet
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+ OR = {
+  epoch_iv_contamination = yes
+  epoch_iv_scar = yes
+  epoch_iv_structure = yes
+ }
+}
+epoch_iv_authorized_combatant = {
+ OR = {
+  is_same_value = event_target:epoch_iv_claimant@root
+  is_in_federation_with = event_target:epoch_iv_claimant@root
+  has_defensive_pact = event_target:epoch_iv_claimant@root
+  AND = {
+   exists = overlord
+   overlord = {
+    is_same_value = event_target:epoch_iv_claimant@root
+   }
+  }
+  event_target:epoch_iv_claimant@root = {
+   exists = overlord
+   overlord = {
+    is_same_value = prevprev
+   }
+  }
+ }
+}
+epoch_iv_judge_missing = {
+ epoch_iv_active = yes
+ check_variable = {
+  which = epoch_iv_chapter
+  value = 5
+ }
+ has_country_flag = epoch_iv_judge_created
+ NOR = {
+  has_country_flag = epoch_iv_protocol_key
+  has_country_flag = epoch_iv_combat_proven
+ }
+ OR = {
+  NOT = { is_variable_set = epoch_iv_recoveries }
+  AND = {
+   is_variable_set = epoch_iv_recoveries
+   check_variable = {
+    which = epoch_iv_recoveries
+    value < 2
+   }
+  }
+ }
+ NOT = {
+  exists = event_target:epoch_iv_ship@this
+ }
+ NOT = { any_country = { any_owned_ship = { has_ship_flag = epoch_iv_principal_for@prevprev } } }
+ NOT = {
+  any_country = {
+   has_country_flag = epoch_iv_judge_identity
+   exists = event_target:epoch_iv_claimant@this
+   event_target:epoch_iv_claimant@this = {
+    is_same_value = prevprev
+   }
+   OR = {
+    has_country_flag = epoch_iv_victory_recorded
+    exists = event_target:epoch_iv_principal@this
+    any_owned_ship = {
+     has_ship_flag = epoch_iv_principal
+    }
+   }
+  }
+ }
+}
+epoch_iv_ai_action_available = {
+ OR = {
+
+  AND = {
+   check_variable = {
+    which = epoch_iv_chapter
+    value = 2
+   }
+   resource_stockpile_compare = {
+    resource = energy
+    value >= 1000
+   }
+   resource_stockpile_compare = {
+    resource = alloys
+    value >= 300
+   }
+   OR = {
+    NOT = {
+     exists = event_target:epoch_iv_site@root
+    }
+    NOT = {
+     exists = event_target:epoch_iv_site_world@root
+    }
+    event_target:epoch_iv_site_world@root = {
+     solar_system = {
+      NOT = {
+       epoch_iv_research_system = yes
+      }
+     }
+    }
+   }
+  }
+  AND = {
+   check_variable = {
+    which = epoch_iv_chapter
+    value = 3
+   }
+   has_technology = tech_epoch_iv_diagnostics
+   has_technology = tech_epoch_iv_inversion
+   NOT = {
+    any_owned_planet = {
+     epoch_iv_safe_world = yes
+    }
+   }
+   NOT = {
+    has_special_project = EPOCH_IV_RECOVERY
+   }
+   resource_stockpile_compare = {
+    resource = energy
+    value >= 6000
+   }
+   resource_stockpile_compare = {
+    resource = alloys
+    value >= 2500
+   }
+  }
+
+  AND = {
+   check_variable = {
+    which = epoch_iv_chapter
+    value = 5
+   }
+   has_country_flag = epoch_iv_prototype_done
+   NOT = {
+    has_country_flag = epoch_iv_judge_created
+   }
+  }
+  AND = {
+   check_variable = {
+    which = epoch_iv_chapter
+    value = 5
+   }
+   has_technology = tech_epoch_iv_telemetry
+   has_country_flag = epoch_iv_judge_created
+   NOT = {
+    has_country_flag = epoch_iv_counter_done
+   }
+   NOT = {
+    has_special_project = EPOCH_IV_COUNTER
+   }
+   resource_stockpile_compare = {
+    resource = energy
+    value >= 2000
+   }
+   resource_stockpile_compare = {
+    resource = alloys
+    value >= 800
+   }
+  }
+  AND = {
+   epoch_iv_judge_missing = yes
+   resource_stockpile_compare = {
+    resource = energy
+    value >= 2000
+   }
+   resource_stockpile_compare = {
+    resource = alloys
+    value >= 4000
+   }
+  }
+  AND = {
+   check_variable = {
+    which = epoch_iv_chapter
+    value = 1
+   }
+   NOT = {
+    has_special_project = EPOCH_IV_SIGNAL_A
+   }
+   NOT = {
+    has_special_project = EPOCH_IV_SIGNAL_B
+   }
+   resource_stockpile_compare = {
+    resource = energy
+    value >= 300
+   }
+  }
+ }
+}
+
+# Country scope: personal principal death completes the trial, regardless of
+# attacker, damage source or diplomacy. FROMFROM is the native destroyed ship.
+epoch_iv_valid_military_death = {
+ is_country_type = epoch_adjudicator
+ has_country_flag = epoch_iv_judge_identity
+ NOT = { has_country_flag = epoch_iv_retired }
+ NOT = { has_country_flag = epoch_iv_victory_recorded }
+ exists = fromfrom
+ exists = event_target:epoch_iv_claimant@root
+ fromfrom = {
+  has_ship_flag = epoch_iv_principal
+  NOT = { has_ship_flag = epoch_iv_death_recorded }
+ }
+ event_target:epoch_iv_claimant@root = {
+  epoch_iv_active = yes has_country_flag = epoch_iv_judge_created
+  check_variable = { which = epoch_iv_chapter value = 5 }
+  NOT = { has_country_flag = epoch_iv_protocol_key }
+  fromfrom = { has_ship_flag = epoch_iv_principal_for@prev }
+ }
+}

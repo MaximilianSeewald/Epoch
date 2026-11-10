@@ -264,7 +264,10 @@ for(const p of oldFiles.filter(p=>/^(common|events|localisation)\//.test(p))) {
  const prior=cp.execFileSync('git',['show',`${baseline}:${p}`],{cwd:root,maxBuffer:4*1024*1024});
  const compatible = s => s.replaceAll('\r\n','\n').replace(/[\u2018\u2019\u201a\u201b\u201c\u201d\u201e\u201f]/g,"'").replace(/[\u2013\u2014]/g,' - ').replace(/\u2026/g,'...').replace(/[\u00a0\u202f]/g,' ').replace(/[\u2010\u2011]/g,'-');
  const normalize = p.startsWith('localisation/') ? compatible : s=>s.replaceAll('\r\n','\n');
- check(normalize(prior.toString('utf8'))===normalize(text(p)),`${p}: Stage I/II unchanged apart from display punctuation`);
+ const expected=prior.toString('utf8');
+ if(p==='common/deposits/epoch_phase_ii_features.txt'){
+  check(normalize(expected.replaceAll('owner = {','exists = owner owner = {'))===normalize(text(p)),p+': only native owner-existence guard added, all old modifier values preserved');
+ }else check(normalize(expected)===normalize(text(p)),p+': Stage I/II unchanged apart from display punctuation');
 }
 // Target-installed definitions, not web/guessed interfaces.
 const native=p=>fs.readFileSync(path.join(vanilla,p),'utf8');
@@ -300,7 +303,7 @@ for(const lang of ['english','german']) {
    for(const [stage]of get(def,'stages'))localized(key+'_'+stage);
    for(const [field,approach]of def)if(field==='approach') {
     const name=get(approach,'name');localized(name);localized(name+'_desc');
-    if(['epoch_iii_listen','epoch_iii_watch'].includes(name))check(!get(approach,'on_select'),`${name}: no redundant tooltip for observation`);
+    if(['epoch_iii_listen','epoch_iii_watch'].includes(name))check(!!get(get(approach,'on_select'),'custom_tooltip'),`${name}: native observation tooltip prevents empty-effects warning`);
     else check(get(approach,'on_select')?.length>0,`${key}/${name}: useful selection effect`);
    }
   }
@@ -773,4 +776,21 @@ for(const lang of ['english','german']){
 }
 for(const id of [10,11,50,51,52])for(const [,option]of E(id).filter(([k])=>k==='option'))if(get(option,'name')==='epoch_iii.acknowledge')check(!get(option,'custom_tooltip'),'Acknowledgment '+id+' has no instructional tooltip');
 for(const key of ['investigate','treat','buffer','contain'])check(get(get(decisions.get('decision_epoch_iii_'+key),'effect'),'tooltip')?.length>0,'Native planetary preview: '+key);
+// Successful native preparation callback ends only its own preparation situation.
+{
+ const c=structuredClone(eligible);c.flags.delete('epoch_iii_prepared');
+ const preparation={...make('epoch_iii_preparations'),owner:c};
+ const unrelated={...make('unrelated_situation'),owner:c};c.situations=[preparation,unrelated];
+ globalFlags=flags('epoch_iii_schema_v1');notices=[];offset=-1;
+ check(test(get(E(20),'trigger'),ctx(c)),'preparation callback accepts real completion before midgame');
+ run(get(E(20),'immediate'),ctx(c));
+ check(c.flags.has('epoch_iii_prepared')&&c.situations.length===1&&c.situations[0]===unrelated,'completion removes exactly the preparation situation');
+ check(notices.length===1&&notices[0][1]==='epoch_iii.22','one clear completion notice');
+ check(globalFlags.size===1&&!globalFlags.has('epoch_iii_active')&&!globalFlags.has('epoch_iii_reserved'),'preparation does not start or reserve the crisis');
+ check(!test(get(E(20),'trigger'),ctx(c)),'duplicate completion cannot repeat the notice');
+ const prep=new Map(normalized('common/situations/epoch_convergence_situations.txt')).get('epoch_iii_preparations');
+ check(test(get(prep,'abort_trigger'),scope({...make('epoch_iii_preparations'),owner:c},ctx(c))),'already-prepared legacy save closes preparation');
+ for(const approach of prep.filter(([k])=>k==='approach').map(([,v])=>v))check(!!get(get(approach,'on_select'),'custom_tooltip'),'each preparation approach has a nonempty native tooltip');
+ check(!JSON.stringify(E(22)).includes('epoch_iii_start')&&!JSON.stringify(E(20)).includes('epoch_iii_start'),'completion report has no outbreak call');
+}
 console.log(`PASS: ${checks} Stage-III source/guard/isolation assertions. Static only; no engine, AI, save/load or MP validation.`);

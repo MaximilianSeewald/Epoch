@@ -1,0 +1,85 @@
+special_project = {
+ key = "EPOCH_IV_SIGNAL_A" cost = 0 days_to_research = 180
+ picture = GFX_evt_physics_research event_scope = ship_event location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { NOT = { epoch_iv_active = yes } }
+ on_start = { if = { limit = { exists = owner exists = event_target:epoch_iv_signal_a@owner }
+  event_target:epoch_iv_signal_a@owner = { save_global_event_target_as = epoch_iv_assignment_signal_a@prev }
+ } }
+ on_success = { if = { limit = { exists = owner exists = event_target:epoch_iv_assignment_signal_a@this }
+  ship_event = { id = epoch_iv.101 scopes = { from = from fromfrom = event_target:epoch_iv_assignment_signal_a@this } }
+ } }
+ on_fail = { } on_cancel = { }
+}
+
+special_project = {
+ key = "EPOCH_IV_SIGNAL_B" cost = 0 days_to_research = 210
+ picture = GFX_evt_physics_research event_scope = ship_event location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { NOT = { epoch_iv_active = yes } }
+ on_start = { if = { limit = { exists = owner exists = event_target:epoch_iv_signal_b@owner }
+  event_target:epoch_iv_signal_b@owner = { save_global_event_target_as = epoch_iv_assignment_signal_b@prev }
+ } }
+ on_success = { if = { limit = { exists = owner exists = event_target:epoch_iv_assignment_signal_b@this }
+  ship_event = { id = epoch_iv.102 scopes = { from = from fromfrom = event_target:epoch_iv_assignment_signal_b@this } }
+ } }
+ on_fail = { } on_cancel = { }
+}
+
+special_project = {
+ key = "EPOCH_IV_RECOVERY" cost = 0 days_to_research = 540
+ picture = GFX_evt_physics_research event_scope = ship_event location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { NOT = { epoch_iv_active = yes } }
+ on_start = { if = { limit = { exists = owner exists = event_target:epoch_iv_work@owner }
+  event_target:epoch_iv_work@owner = { save_global_event_target_as = epoch_iv_assignment_recovery@prev }
+ } }
+ on_success = { if = { limit = { exists = owner exists = event_target:epoch_iv_assignment_recovery@this }
+  ship_event = { id = epoch_iv.103 scopes = { from = from fromfrom = event_target:epoch_iv_assignment_recovery@this } }
+ } }
+ on_fail = { } on_cancel = { }
+}
+
+# Legacy saves: retire the former ship project without granting completion.
+special_project = {
+ key = "EPOCH_IV_PROTOTYPE" cost = 0 days_to_research = 1
+ picture = GFX_evt_physics_research event_scope = country_event location = no
+ abort_trigger = { always = yes }
+ on_success = { } on_fail = { } on_cancel = { }
+}
+
+# Native COLOSSUS_PROJECT pattern: empire-wide Engineering research, no fleet.
+special_project = {
+ key = "EPOCH_IV_DEMONSTRATOR" cost = 18000
+ tech_department = engineering_technology
+ picture = GFX_evt_relic_world event_scope = country_event location = no
+ requirements = { }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = {
+  OR = {
+   NOT = { epoch_iv_active = yes }
+   NOT = { check_variable = { which = epoch_iv_chapter value = 4 } }
+   has_country_flag = epoch_iv_prototype_done
+  }
+ }
+ on_success = { country_event = { id = epoch_iv.43 } }
+ on_fail = { } on_cancel = { }
+}
+
+special_project = {
+ key = "EPOCH_IV_COUNTER" cost = 0 days_to_research = 300
+ picture = GFX_evt_physics_research event_scope = ship_event location = yes
+ requirements = { shipclass_science_ship = 1 leader = scientist }
+ AI_wait_days = { weight = 5 }
+ abort_trigger = { NOT = { epoch_iv_active = yes } }
+ on_start = { if = { limit = { exists = owner exists = event_target:epoch_iv_work@owner }
+  event_target:epoch_iv_work@owner = { save_global_event_target_as = epoch_iv_assignment_counter@prev }
+ } }
+ on_success = { if = { limit = { exists = owner exists = event_target:epoch_iv_assignment_counter@this }
+  ship_event = { id = epoch_iv.105 scopes = { from = from fromfrom = event_target:epoch_iv_assignment_counter@this } }
+ } }
+ on_fail = { } on_cancel = { }
+}

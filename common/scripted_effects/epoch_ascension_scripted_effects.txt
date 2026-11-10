@@ -1,0 +1,722 @@
+epoch_iv_find_anchor = {
+ if = { limit = { exists = event_target:epoch_iv_anchor@root } clear_global_event_target = epoch_iv_anchor@root }
+ random_owned_planet = {
+  limit = {
+   is_colony = yes
+  }
+  solar_system = {
+   save_global_event_target_as = epoch_iv_anchor@root
+  }
+ }
+ if = {
+  limit = {
+   NOT = {
+    exists = event_target:epoch_iv_anchor@root
+   }
+  }
+  random_owned_fleet = {
+   limit = {
+    exists = solar_system
+   }
+   solar_system = {
+    save_global_event_target_as = epoch_iv_anchor@root
+   }
+  }
+ }
+}
+epoch_iv_advance = {
+ change_variable = {
+  which = epoch_iv_chapter
+  value = 1
+ }
+ every_situation = {
+  limit = {
+   is_situation_type = epoch_iv_ascension
+  }
+  add_situation_progress = 16
+ }
+}
+epoch_iv_issue_signals = {
+ if = {
+  limit = {
+   NOT = {
+    has_country_flag = epoch_iv_signal_a_done
+   }
+  }
+  if = {
+   limit = {
+    NOT = {
+     exists = event_target:epoch_iv_signal_a@root
+    }
+   }
+   random_system = {
+    limit = {
+     epoch_iv_research_system = yes
+    }
+    set_star_flag = epoch_iv_signal_a@root
+    star = {
+     save_global_event_target_as = epoch_iv_signal_a@root
+    }
+   }
+  }
+  if = {
+   limit = {
+    NOT = {
+     exists = event_target:epoch_iv_signal_a@root
+    }
+    exists = event_target:epoch_iv_anchor@root
+   }
+   event_target:epoch_iv_anchor@root = {
+    spawn_system = {
+     min_distance = 10
+     max_distance = 30
+     max_jumps = 0
+     initializer = epoch_iv_signal_init
+    }
+    if = {
+     limit = { last_created_system = { NOT = { has_hyperlane_to = prev } } }
+     add_hyperlane = { from = this to = last_created_system }
+    }
+    last_created_system = {
+     set_star_flag = epoch_iv_signal_a@root
+     star = {
+      save_global_event_target_as = epoch_iv_signal_a@root
+     }
+    }
+   }
+  }
+  if = {
+   limit = {
+    exists = event_target:epoch_iv_signal_a@root
+    NOT = {
+     has_special_project = EPOCH_IV_SIGNAL_A
+    }
+   }
+   event_target:epoch_iv_signal_a@root = {
+    enable_special_project = {
+     name = EPOCH_IV_SIGNAL_A
+     location = this
+     owner = root
+    }
+   }
+  }
+ }
+ if = {
+  limit = {
+   NOT = {
+    has_country_flag = epoch_iv_signal_b_done
+   }
+  }
+  if = {
+   limit = {
+    NOT = {
+     exists = event_target:epoch_iv_signal_b@root
+    }
+   }
+   random_system = {
+    limit = {
+     epoch_iv_research_system = yes
+     NOT = {
+      has_star_flag = epoch_iv_signal_a@root
+     }
+    }
+    star = {
+     save_global_event_target_as = epoch_iv_signal_b@root
+    }
+   }
+  }
+  if = {
+   limit = {
+    NOT = {
+     exists = event_target:epoch_iv_signal_b@root
+    }
+    exists = event_target:epoch_iv_anchor@root
+   }
+   event_target:epoch_iv_anchor@root = {
+    spawn_system = {
+     min_distance = 10
+     max_distance = 30
+     max_jumps = 0
+     initializer = epoch_iv_signal_init
+    }
+    if = {
+     limit = { last_created_system = { NOT = { has_hyperlane_to = prev } } }
+     add_hyperlane = { from = this to = last_created_system }
+    }
+    last_created_system = {
+     star = {
+      save_global_event_target_as = epoch_iv_signal_b@root
+     }
+    }
+   }
+  }
+  if = {
+   limit = {
+    exists = event_target:epoch_iv_signal_b@root
+    NOT = {
+     has_special_project = EPOCH_IV_SIGNAL_B
+    }
+   }
+   event_target:epoch_iv_signal_b@root = {
+    enable_special_project = {
+     name = EPOCH_IV_SIGNAL_B
+     location = this
+     owner = root
+    }
+   }
+  }
+ }
+}
+epoch_iv_create_site = {
+ epoch_iv_find_anchor = yes
+ if = {
+  limit = {
+   exists = event_target:epoch_iv_anchor@root
+  }
+  if = { limit = { exists = event_target:epoch_iv_site_world@root } clear_global_event_target = epoch_iv_site_world@root }
+  random_system = {
+   limit = {
+    epoch_iv_research_system = yes
+    is_owned_by = root
+    any_system_planet = {
+     is_star = no
+     is_colony = no
+     NOT = {
+      exists = archaeological_site
+     }
+    }
+   }
+   random_system_planet = {
+    limit = {
+     is_star = no
+     is_colony = no
+     NOT = {
+      exists = archaeological_site
+     }
+    }
+    save_global_event_target_as = epoch_iv_site_world@root
+   }
+  }
+  if = {
+   limit = {
+    NOT = {
+     exists = event_target:epoch_iv_site_world@root
+    }
+   }
+   event_target:epoch_iv_anchor@root = {
+    spawn_system = {
+     min_distance = 10
+     max_distance = 30
+     max_jumps = 0
+     initializer = epoch_iv_archive_init
+    }
+    last_created_system = {
+     save_global_event_target_as = epoch_iv_archive_system@root
+    }
+    if = {
+     limit = { last_created_system = { NOT = { has_hyperlane_to = prev } } }
+     add_hyperlane = { from = this to = last_created_system }
+    }
+    last_created_system = {
+     random_system_planet = {
+      limit = {
+       is_star = no
+      }
+      save_global_event_target_as = epoch_iv_site_world@root
+     }
+    }
+   }
+  }
+  if = {
+   limit = {
+    exists = event_target:epoch_iv_site_world@root
+   }
+   event_target:epoch_iv_site_world@root = {
+    set_surveyed = {
+     surveyed = yes
+     surveyor = root
+    }
+    create_archaeological_site = epoch_iv_archive
+    archaeological_site = {
+     save_global_event_target_as = epoch_iv_site@root
+    }
+   }
+   set_country_flag = epoch_iv_site_created
+  }
+ }
+}
+epoch_iv_after_signals = {
+ if = {
+  limit = {
+   has_country_flag = epoch_iv_signal_a_done
+   has_country_flag = epoch_iv_signal_b_done
+   NOT = {
+    has_country_flag = epoch_iv_signals_done
+   }
+  }
+  set_country_flag = epoch_iv_signals_done
+  epoch_iv_advance = yes
+  add_research_option = tech_epoch_iv_calibration
+  add_research_option = tech_epoch_iv_materials
+  epoch_iv_create_site = yes
+  country_event = {
+   id = epoch_iv.20
+   days = 1
+  }
+ }
+}
+epoch_iv_healing_complete = {
+ if = {
+  limit = {
+   epoch_iv_active = yes
+   check_variable = {
+    which = epoch_iv_chapter
+    value = 3
+   }
+   NOT = {
+    has_country_flag = epoch_iv_healing_done
+   }
+  }
+  set_country_flag = epoch_iv_healing_done
+  epoch_iv_advance = yes
+  epoch_iv_issue_demonstrator_project = yes
+  country_event = {
+   id = epoch_iv.40
+   days = 1
+  }
+ }
+}
+epoch_iv_convert_world = {
+ if = {
+  limit = {
+   epoch_iv_safe_world = yes
+   epoch_iv_diagnosis_matches = yes
+   has_planet_flag = epoch_iv_stabilized@owner
+  }
+  if = {
+   limit = {
+    epoch_iv_contamination = yes
+    has_planet_flag = epoch_iv_diagnosed_contamination@owner
+   }
+   epoch_core_remove_contamination_effects = yes
+   remove_planet_flag = epoch_ii_latent_resonance
+   remove_planet_flag = epoch_ii_active_resonance
+   remove_planet_flag = epoch_ii_unstable_resonance
+   remove_planet_flag = epoch_ii_controlled_resonance
+   remove_modifier = epoch_ii_resonance_latent
+   remove_modifier = epoch_ii_resonance_active
+   remove_modifier = epoch_ii_resonance_unstable
+   remove_modifier = epoch_ii_resonance_controlled
+   add_deposit = d_epoch_iv_matrix
+   set_planet_flag = epoch_iv_converted_contamination
+   remove_modifier = epoch_res_quarantine
+   if = {
+    limit = {
+     has_planet_flag = epoch_iii_exposed_v1
+    }
+    remove_modifier = epoch_iii_pressure_prepared
+    remove_modifier = epoch_iii_pressure_experienced
+    remove_modifier = epoch_iii_pressure_unprepared
+    remove_modifier = epoch_iii_pressure_buffered
+   }
+   if = {
+    limit = {
+     has_planet_flag = epoch_iii_feature_added
+     has_planet_flag = epoch_iii_scar_exposed
+     NOT = {
+      epoch_iv_scar = yes
+     }
+    }
+    remove_modifier = epoch_iii_scar_pressure
+    remove_modifier = epoch_iii_scar_shielded
+    remove_modifier = epoch_iii_pressure_buffered
+   }
+   if = {
+    limit = {
+     OR = {
+      has_planet_flag = epoch_iii_exposed_v1
+      AND = {
+       has_planet_flag = epoch_iii_feature_added
+       NOT = {
+        epoch_iv_scar = yes
+       }
+      }
+     }
+    }
+    remove_modifier = epoch_iii_contamination_rising
+    remove_modifier = epoch_iii_contamination_severe
+    remove_modifier = epoch_iii_containment
+   }
+  }
+  else_if = {
+   limit = {
+    epoch_iv_scar = yes
+    has_planet_flag = epoch_iv_diagnosed_scar@owner
+   }
+   epoch_core_clear_resonance_scar = yes
+   add_deposit = d_epoch_iv_fold
+   set_planet_flag = epoch_iv_converted_scar
+   remove_modifier = epoch_core_permanent_scar_organic
+   remove_modifier = epoch_core_permanent_scar_hive
+   remove_modifier = epoch_core_permanent_scar_machine
+   remove_modifier = epoch_core_permanent_scar_exacerbated
+   remove_modifier = epoch_iii_scar_pressure
+   remove_modifier = epoch_iii_scar_shielded
+   if = {
+    limit = {
+     has_planet_flag = epoch_iii_scar_exposed
+     NOT = { has_planet_flag = epoch_iii_exposed_v1 }
+     NOT = {
+      epoch_iv_contamination = yes
+     }
+    }
+    remove_modifier = epoch_iii_pressure_buffered
+    remove_modifier = epoch_iii_contamination_rising
+    remove_modifier = epoch_iii_contamination_severe
+    remove_modifier = epoch_iii_containment
+   }
+  }
+  else_if = {
+   limit = {
+    epoch_iv_structure = yes
+    has_planet_flag = epoch_iv_diagnosed_structure@owner
+   }
+   epoch_core_clear_structure_state = yes
+   add_deposit = d_epoch_iv_archive
+   set_planet_flag = epoch_iv_converted_structure
+  }
+  owner = {
+   epoch_iv_healing_complete = yes
+  }
+  remove_planet_flag = epoch_iv_stabilized@owner
+  remove_planet_flag = epoch_iv_diagnosed@owner
+  remove_planet_flag = epoch_iv_diagnosed_contamination@owner
+  remove_planet_flag = epoch_iv_diagnosed_scar@owner
+  remove_planet_flag = epoch_iv_diagnosed_structure@owner
+ }
+}
+epoch_iv_select_work = {
+ epoch_iv_find_anchor = yes
+ if = {
+  limit = {
+   exists = event_target:epoch_iv_anchor@root
+  }
+  event_target:epoch_iv_anchor@root = {
+   star = {
+    save_global_event_target_as = epoch_iv_work@root
+   }
+  }
+ }
+}
+epoch_iv_spawn_judge = {
+ epoch_iv_find_anchor = yes
+ if = {
+  limit = {
+   NOT = {
+    has_country_flag = epoch_iv_judge_created
+   }
+   exists = event_target:epoch_iv_anchor@root
+  }
+  random_system = {
+   limit = {
+    epoch_iv_empty_arena = yes
+   }
+   save_global_event_target_as = epoch_iv_arena@root
+  }
+  if = {
+   limit = {
+    NOT = {
+     exists = event_target:epoch_iv_arena@root
+    }
+   }
+   event_target:epoch_iv_anchor@root = {
+    spawn_system = {
+     min_distance = 15
+     max_distance = 35
+     max_jumps = 0
+     initializer = epoch_iv_arena_init
+    }
+    last_created_system = {
+     save_global_event_target_as = epoch_iv_arena@root
+    }
+    if = {
+     limit = { last_created_system = { NOT = { has_hyperlane_to = prev } } }
+     add_hyperlane = { from = this to = last_created_system }
+    }
+   }
+  }
+  if = {
+   limit = {
+    exists = event_target:epoch_iv_arena@root
+    event_target:epoch_iv_arena@root = {
+     NOT = {
+      exists = owner
+     }
+     NOT = {
+      exists = starbase
+     }
+     NOT = {
+      any_system_planet = {
+       is_star = no
+      }
+     }
+     NOT = {
+      any_system_megastructure = {
+       always = yes
+      }
+     }
+     NOT = {
+      has_star_flag = epoch_iv_reserved
+     }
+    }
+   }
+   event_target:epoch_iv_arena@root = {
+    set_star_flag = epoch_iv_reserved
+    set_star_flag = epoch_iv_arena
+    set_surveyed = {
+     surveyed = yes
+     surveyor = root
+    }
+    star = {
+     save_global_event_target_as = epoch_iv_arena_star@root
+    }
+   }
+   save_global_event_target_as = epoch_iv_owner@root
+   create_species = {
+    name = NAME_EPOCH_IV_Judge
+    plural = NAME_EPOCH_IV_Judge
+    class = ROBOT
+    portrait = default_robot
+    namelist = MACHINE1
+    traits = {
+     trait = trait_machine_unit
+    }
+    effect = {
+     save_event_target_as = epoch_iv_species
+    }
+   }
+   create_country = {
+    name = NAME_EPOCH_IV_Judge
+    type = epoch_adjudicator
+    species = event_target:epoch_iv_species
+    name_list = MACHINE1
+    effect = {
+     set_country_flag = epoch_iv_judge_identity
+     save_global_event_target_as = epoch_iv_enemy@root
+     root = {
+      save_global_event_target_as = epoch_iv_claimant@prev
+     }
+     set_graphical_culture = fallen_machine_empire_01
+    }
+   }
+   set_country_flag = epoch_iv_judge_created
+   create_fleet = {
+    name = NAME_EPOCH_IV_Judge
+    settings = { is_boss = yes spawn_debris = no }
+    effect = {
+     set_owner = event_target:epoch_iv_enemy@root
+     set_fleet_flag = epoch_iv_judge
+     save_global_event_target_as = epoch_iv_fleet@root
+     create_ship = {
+      design = NAME_EPOCH_IV_Judge
+      graphical_culture = fallen_machine_empire_01
+     }
+     every_owned_ship = {
+      set_ship_flag = epoch_iv_principal
+      set_ship_flag = epoch_iv_principal_for@root
+      save_global_event_target_as = epoch_iv_ship@root
+      save_global_event_target_as = epoch_iv_principal@this.owner
+      add_modifier = {
+       modifier = epoch_iv_judge_body
+       days = -1
+      }
+      repair_ship = yes
+      if = {
+       limit = {
+        years_passed >= 150
+       }
+       add_modifier = {
+        modifier = epoch_iv_judge_late
+        days = -1
+       }
+      }
+      if = {
+       limit = {
+        OR = {
+         is_difficulty = 5
+         is_difficulty = 6
+        }
+       }
+       add_modifier = {
+        modifier = epoch_iv_judge_hard
+        days = -1
+       }
+      }
+     }
+     set_location = {
+      target = event_target:epoch_iv_arena_star@root
+      distance = 70
+      angle = random
+     }
+     set_fleet_stance = aggressive
+     set_aggro_range_measure_from = self
+     set_aggro_range = 300
+     add_modifier = {
+      modifier = epoch_iv_judge_denial
+      days = -1
+     }
+     if = {
+      limit = {
+       root = {
+        has_country_flag = epoch_iv_counter_done
+       }
+      }
+      add_modifier = {
+       modifier = epoch_iv_countermeasure
+       days = -1
+      }
+      if = {
+       limit = {
+        root = {
+         has_country_flag = epoch_iv_archive_secure
+        }
+       }
+       add_modifier = {
+        modifier = epoch_iv_secure_countermeasure
+        days = -1
+       }
+      }
+      if = {
+       limit = {
+        root = {
+         has_country_flag = epoch_iv_archive_lens
+        }
+       }
+       add_modifier = {
+        modifier = epoch_iv_archive_lens_counter
+        days = -1
+       }
+      }
+     }
+    }
+   }
+   establish_communications_no_message = event_target:epoch_iv_enemy@root
+   add_intel_report = {
+    category = military
+    level = 4
+    who = event_target:epoch_iv_enemy@root
+   }
+   begin_event_chain = {
+    event_chain = epoch_iv_judge_chain
+    target = this
+   }
+   create_point_of_interest = {
+    id = epoch_iv_arena_poi
+    name = epoch_iv_arena_poi
+    desc = epoch_iv_arena_poi_desc
+    event_chain = epoch_iv_judge_chain
+    location = event_target:epoch_iv_arena@root
+   }
+  }
+ }
+}
+epoch_iv_finish = {
+ set_country_flag = epoch_iv_complete
+ set_country_flag = epoch_iv_technology_era_eligible
+ every_situation = {
+  limit = {
+   is_situation_type = epoch_iv_ascension
+  }
+  add_situation_progress = 20
+  destroy_situation = this
+ }
+ if = {
+  limit = {
+   has_event_chain = epoch_iv_judge_chain
+  }
+  end_event_chain = epoch_iv_judge_chain
+ }
+}
+epoch_iv_restore_judge = {
+ if = {
+  limit = {
+   epoch_iv_judge_missing = yes
+   resource_stockpile_compare = {
+    resource = energy
+    value >= 2000
+   }
+   resource_stockpile_compare = {
+    resource = alloys
+    value >= 4000
+   }
+  }
+  add_resource = {
+   energy = -2000
+   alloys = -4000
+  }
+  if = {
+   limit = { NOT = { is_variable_set = epoch_iv_recoveries } }
+   set_variable = { which = epoch_iv_recoveries value = 0 }
+  }
+  change_variable = {
+   which = epoch_iv_recoveries
+   value = 1
+  }
+  every_country = {
+   limit = {
+    has_country_flag = epoch_iv_judge_identity
+    exists = event_target:epoch_iv_claimant@this
+    event_target:epoch_iv_claimant@this = {
+     is_same_value = prevprev
+    }
+   }
+   set_country_flag = epoch_iv_retired
+   every_owned_fleet = {
+    limit = {
+     has_fleet_flag = epoch_iv_escorts
+    }
+    fleet_event = {
+     id = epoch_iv.57
+    }
+   }
+   if = { limit = { exists = event_target:epoch_iv_principal@this } clear_global_event_target = epoch_iv_principal@this }
+  }
+  if = { limit = { exists = event_target:epoch_iv_ship@root } clear_global_event_target = epoch_iv_ship@root }
+  if = { limit = { exists = event_target:epoch_iv_fleet@root } clear_global_event_target = epoch_iv_fleet@root }
+  if = { limit = { exists = event_target:epoch_iv_enemy@root } clear_global_event_target = epoch_iv_enemy@root }
+  if = { limit = { exists = event_target:epoch_iv_arena@root } clear_global_event_target = epoch_iv_arena@root }
+  if = { limit = { exists = event_target:epoch_iv_arena_star@root } clear_global_event_target = epoch_iv_arena_star@root }
+  remove_country_flag = epoch_iv_recovery_presented
+  remove_country_flag = epoch_iv_judge_created
+  remove_country_flag = epoch_iv_ai_attack_ordered
+  if = { limit = { exists = event_target:epoch_iv_ai_fleet@root } clear_global_event_target = epoch_iv_ai_fleet@root }
+  if = {
+   limit = {
+    has_event_chain = epoch_iv_judge_chain
+   }
+   end_event_chain = epoch_iv_judge_chain
+  }
+  epoch_iv_spawn_judge = yes
+ }
+}
+
+# Country scope; called on chapter entry and monthly for old saves/cancellation.
+# Separate key avoids interpreting saved ship assignments as country callbacks.
+epoch_iv_issue_demonstrator_project = {
+ if = {
+  limit = { epoch_iv_active = yes check_variable = { which = epoch_iv_chapter value = 4 } }
+  if = {
+   limit = { has_special_project = EPOCH_IV_PROTOTYPE }
+   abort_special_project = { type = EPOCH_IV_PROTOTYPE }
+  }
+  if = {
+   limit = { has_country_flag = epoch_iv_prototype_done }
+   country_event = { id = epoch_iv.44 }
+  }
+  else_if = {
+   limit = { NOT = { has_special_project = EPOCH_IV_DEMONSTRATOR } }
+   set_country_flag = epoch_iv_demonstrator_issued
+   enable_special_project = { name = EPOCH_IV_DEMONSTRATOR location = this owner = this }
+  }
+ }
+}
