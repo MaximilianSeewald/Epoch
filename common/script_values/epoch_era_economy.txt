@@ -1,0 +1,10 @@
+# Paid Wilderness industrial networks: one node, then another per five colonies,
+# capped at six. The same value multiplies costs, inputs and outputs.
+epoch_era_wilderness_network_scale = {
+ base = 1
+ modifier = { add = 1 num_owned_colonies >= 5 }
+ modifier = { add = 1 num_owned_colonies >= 10 }
+ modifier = { add = 1 num_owned_colonies >= 15 }
+ modifier = { add = 1 num_owned_colonies >= 20 }
+ modifier = { add = 1 num_owned_colonies >= 25 }
+}

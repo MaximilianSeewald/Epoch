@@ -4,8 +4,8 @@ epoch_c_hive = { is_hive_empire = yes is_robot_empire = no }
 epoch_c_machine = { is_robot_empire = yes }
 epoch_c_guard = { epoch_iv_future_research = yes has_country_flag = epoch_iv_philosophy_guard NOT = { has_country_flag = epoch_iv_philosophy_free } }
 epoch_c_free = { epoch_iv_future_research = yes has_country_flag = epoch_iv_philosophy_free NOT = { has_country_flag = epoch_iv_philosophy_guard } }
-epoch_c_single_nexus = { count_owned_megastructure = { count < 2 OR = { is_megastructure_type = epoch_nexus_1 is_megastructure_type = epoch_nexus_2 is_megastructure_type = epoch_nexus_3 } } }
-epoch_c_single_uap = { count_owned_megastructure = { count < 2 OR = { is_megastructure_type = epoch_uap_1 is_megastructure_type = epoch_uap_2 is_megastructure_type = epoch_uap_3 is_megastructure_type = epoch_uap_4 } } }
+epoch_c_single_nexus = { count_owned_megastructure = { count < 2 limit = { OR = { is_megastructure_type = epoch_nexus_1 is_megastructure_type = epoch_nexus_2 is_megastructure_type = epoch_nexus_3 } } } }
+epoch_c_single_uap = { count_owned_megastructure = { count < 2 limit = { OR = { is_megastructure_type = epoch_uap_1 is_megastructure_type = epoch_uap_2 is_megastructure_type = epoch_uap_3 is_megastructure_type = epoch_uap_4 } } } }
 
 # Country-scope live infrastructure access for paid post-story planetary conversion.
 epoch_c_free_interface = {

@@ -1,5 +1,7 @@
 # Stage IV - Paket B: Neue Technologieära
 
+> 2026-11-10: The first B+C runtime test found critical failures. Current corrections, evidence limits and the sole compact follow-up smoke test: [correction report](stage-iv-b-c-corrections.md). Earlier static PASS statements do not establish runtime compatibility.
+
 Stand: 10.11.2026. Implementiert auf dem aktuellen main nach PR #17 (`e9aa03d3f59e12ab15b9aa94c6a07c90b1b59318`). **Statische Prüfung bestanden; keine Ingame-Abnahme behauptet.** Grundlage bleiben [Entwurf](stage-iv-ascension.md) und [Arbeitspakete](stage-iv-work-packages.md). Kein Submod, keine Vanilla-GUI-/Define-/CSV-Overrides, keine Gigastructures-Abhängigkeit. Paket C bleibt offen.
 
 ## Forschung und persönliche Freigabe

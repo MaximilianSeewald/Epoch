@@ -44,4 +44,24 @@ spriteTypes = {
  spriteType = { name = "GFX_ap_epoch_machine" texturefile = "gfx/interface/icons/ascension_perks/ap_synthetic_evolution.dds" }
  spriteType = { name = "GFX_ap_epoch_guard" texturefile = "gfx/interface/icons/ascension_perks/ap_defender_of_the_galaxy.dds" }
  spriteType = { name = "GFX_ap_epoch_free" texturefile = "gfx/interface/icons/ascension_perks/ap_technological_ascendancy.dds" }
+ spriteType = { name = "GFX_epoch_nexus_1_build_icon" texturefile = "gfx/interface/icons/technologies/tech_science_nexus.dds" }
+ spriteType = { name = "GFX_epoch_nexus_1_outliner_icon" texturefile = "gfx/interface/icons/megastructures/think_tank.dds" }
+ spriteType = { name = "GFX_epoch_nexus_2_build_icon" texturefile = "gfx/interface/icons/technologies/tech_science_nexus.dds" }
+ spriteType = { name = "GFX_epoch_nexus_2_outliner_icon" texturefile = "gfx/interface/icons/megastructures/think_tank.dds" }
+ spriteType = { name = "GFX_epoch_nexus_3_build_icon" texturefile = "gfx/interface/icons/technologies/tech_science_nexus.dds" }
+ spriteType = { name = "GFX_epoch_nexus_3_outliner_icon" texturefile = "gfx/interface/icons/megastructures/think_tank.dds" }
+ spriteType = { name = "GFX_epoch_forge_1_build_icon" texturefile = "gfx/interface/icons/technologies/tech_matter_decompressor.dds" }
+ spriteType = { name = "GFX_epoch_forge_1_outliner_icon" texturefile = "gfx/interface/icons/megastructures/matter_decompressor.dds" }
+ spriteType = { name = "GFX_epoch_forge_2_build_icon" texturefile = "gfx/interface/icons/technologies/tech_matter_decompressor.dds" }
+ spriteType = { name = "GFX_epoch_forge_2_outliner_icon" texturefile = "gfx/interface/icons/megastructures/matter_decompressor.dds" }
+ spriteType = { name = "GFX_epoch_forge_3_build_icon" texturefile = "gfx/interface/icons/technologies/tech_matter_decompressor.dds" }
+ spriteType = { name = "GFX_epoch_forge_3_outliner_icon" texturefile = "gfx/interface/icons/megastructures/matter_decompressor.dds" }
+ spriteType = { name = "GFX_epoch_uap_1_build_icon" texturefile = "gfx/interface/icons/technologies/tech_strategic_coordination.dds" }
+ spriteType = { name = "GFX_epoch_uap_1_outliner_icon" texturefile = "gfx/interface/icons/megastructures/strategic_coordination_center.dds" }
+ spriteType = { name = "GFX_epoch_uap_2_build_icon" texturefile = "gfx/interface/icons/technologies/tech_strategic_coordination.dds" }
+ spriteType = { name = "GFX_epoch_uap_2_outliner_icon" texturefile = "gfx/interface/icons/megastructures/strategic_coordination_center.dds" }
+ spriteType = { name = "GFX_epoch_uap_3_build_icon" texturefile = "gfx/interface/icons/technologies/tech_strategic_coordination.dds" }
+ spriteType = { name = "GFX_epoch_uap_3_outliner_icon" texturefile = "gfx/interface/icons/megastructures/strategic_coordination_center.dds" }
+ spriteType = { name = "GFX_epoch_uap_4_build_icon" texturefile = "gfx/interface/icons/technologies/tech_strategic_coordination.dds" }
+ spriteType = { name = "GFX_epoch_uap_4_outliner_icon" texturefile = "gfx/interface/icons/megastructures/strategic_coordination_center.dds" }
 }

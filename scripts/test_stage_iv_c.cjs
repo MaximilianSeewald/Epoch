@@ -34,7 +34,7 @@ function gate(b,e){return b.every(([k,v])=>{
  if(k==='can_add_genetic_traits')return e.from?.techs.has('tech_gene_tailoring')||false;
  if(k==='has_deficit')return e.deficits?.has(v)||false;
  if(k==='has_megastructure_flag'){assert.equal(v,'epoch_c_operational');return e.operational!==false;}
- if(k==='count_owned_megastructure')return (e.megas||[]).filter(type=>gate(v.filter(([k])=>k!=='count'),typeof type==='string'?{type}:type)).length<Number(get(v,'count'));
+ if(k==='count_owned_megastructure')return (e.megas||[]).filter(type=>gate(get(v,'limit'),typeof type==='string'?{type}:type)).length<Number(get(v,'count'));
  if(k==='is_megastructure_type')return e.type===v;
  if(k==='any_owned_megastructure')return (e.megas||[]).some(type=>gate(v,typeof type==='string'?{type}:type));
  if(['is_gestalt','is_robot_empire','is_hive_empire','is_wilderness_empire','is_machine_empire','is_colony'].includes(k))return !!e[k]===(v==='yes');
@@ -57,8 +57,8 @@ for(const f of manifest.trees){
 }
 // Evaluate the chosen swap's effects/name rather than merely finding its keys.
 const wildernessSwaps=[
- ['tr_epoch_convergence_drones','planet_jobs_produces_mult','0.05','megastructure_build_speed_mult','0.10'],
- ['tr_epoch_convergence_nodes','planet_stability_add','5','building_time_mult','-0.15']
+ ['tr_epoch_convergence_drones','planet_jobs_produces_mult','0.1','megastructure_build_speed_mult','0.2'],
+ ['tr_epoch_convergence_nodes','planet_stability_add','5','building_time_mult','-0.25']
 ];
 function effectiveHiveTradition(id,e){
  if(!gate(get(cats.get('tradition_epoch_convergence'),'potential'),e))return null;
@@ -166,15 +166,15 @@ for(const [name,profile]of Object.entries(profiles))for(const p of ['guard','fre
  for(const family of manifest.megastructures){
   const owned={...e,megas:['epoch_'+family.id+'_1']};
   const first=megas.get('epoch_'+family.id+'_1'),r=get(first,'resources');
-  const produces=values(r,'produces').filter(b=>gate(get(b,'trigger'),{owner:owned}));
+  const produces=values(r,'produces').filter(b=>gate(get(b,'trigger'),owned));
   check(produces.length===1,'operating stage one '+name+'/'+p+'/'+family.id);
-  check(values(r,'produces').every(b=>!gate(get(b,'trigger'),{owner:owned,operational:false})),'unfinished structures have no output '+family.id);
+  check(values(r,'produces').every(b=>!deep(get(b,'trigger'),'has_megastructure_flag').length),'production uses country scope; native engine activates completed stages '+family.id);
   if(family.id!=='forge'){
    const duplicate={...owned,megas:[...owned.megas,'epoch_'+family.id+'_2']};
-   check(values(r,'produces').every(b=>!gate(get(b,'trigger'),{owner:duplicate})),'conquered duplicates do not stack production '+family.id);
+   check(values(r,'produces').every(b=>!gate(get(b,'trigger'),duplicate)),'conquered duplicates do not stack production '+family.id);
    check(values(first,'triggered_country_modifier').every(b=>!gate(get(b,'potential'),{owner:duplicate})),'conquered duplicates do not stack modifiers '+family.id);
   }
-  for(const res of ['energy',family.id==='forge'?'minerals':'epoch_protocol_cores'])check(values(r,'produces').every(b=>!gate(get(b,'trigger'),{owner:{...owned,deficits:new Set([res])}})),'no output through input shortage '+family.id+'/'+res);
+  for(const res of ['energy',family.id==='forge'?'minerals':'epoch_protocol_cores'])check(values(r,'produces').every(b=>!gate(get(b,'trigger'),{...owned,deficits:new Set([res])})),'no output through input shortage '+family.id+'/'+res);
  }
  const inversion=defs('decisions').get('decision_epoch_c_network_inversion'),costs=values(get(inversion,'resources'),'cost');
  for(const structures of [[],['epoch_nexus_1'],['epoch_uap_1'],['epoch_nexus_1','epoch_uap_4']]){
@@ -204,7 +204,7 @@ for(const f of manifest.megastructures)for(let n=1;n<=f.stages;n++){
  else{
   const place=get(get(b,'placement_rules'),'planet_possible');
   check(get(place,'colonizable_planet')==='no'&&deep(place,'is_star').includes('yes')&&deep(place,'has_anomaly').includes('yes'),'safe nonhabitable orbital construction '+id);
-  check(get(get(b,'on_build_start'),'from')&&get(get(b,'on_build_cancel'),'from'),'construction reservation and cancel '+id);
+  check(get(b,'on_build_start').length===0&&!deep(get(b,'possible'),'has_country_flag').length,'no self-invalidating reservation flag '+id);
  }
  check(deep(get(b,'on_dismantle_complete'),'has_planet_flag').includes('epoch_c_'+f.id+'_anchor'),'dismantle touches only its anchor '+id);
  check(Number(get(get(b,'ai_weight'),'factor'))>0,'native AI weight '+id);
@@ -247,7 +247,7 @@ check(native('launcher-settings.json').includes('Cygnus v4.5.3 (4e91)'),'install
 check(/ASCENSION_PERKS_SLOTS\s*=\s*8/.test(native('common/defines/00_defines.txt'))&&/TRADITION_CATEGORIES_MAX\s*=\s*7/.test(native('common/defines/00_defines.txt')),'native slot bounds');
 const megaDoc=native('common/megastructures/99_README_MEGASTRUCTURES.txt');
 for(const field of ['upgrade_from','potential','possible','placement_rules','resources','dismantle_possible','triggered_country_modifier'])check(megaDoc.includes(field),'native megastructure contract '+field);
-check(/trigger\s*=\s*\{\s*owner\?\s*=/.test(native('common/megastructures/22_shroud_seal.txt')),'native megastructure resource owner trigger');
+check(megaDoc.includes('trigger, scope: country. Monthly output'),'native resource COUNTRY scope, confirmed by actual playtest diagnostics');
 check(native('common/traits/000_documentation_species_traits.txt').includes('this = species, from = country'),'documented species modification scopes');
 const robo=native('common/technology/00_synthetic_dawn_tech.txt');
 check(robo.includes('tech_robomodding_m =')&&robo.includes('is_individual_machine = yes'),'machine/individual machine modification tech');
@@ -276,7 +276,7 @@ const nativeOrganicRequirement=get(organicRule,'custom_tooltip').filter(([k])=>k
 check(gate(nativeOrganicRequirement,{root:{techs:new Set(['tech_gene_tailoring'])}}),'native organic modification rule accepts researched Gene Tailoring');
 check(!gate(nativeOrganicRequirement,{root:{techs:new Set()}}),'native organic modification rule still rejects missing technology/traditions');
 for(const [p]of [...parsedByPath].filter(([p])=>p.includes('/epoch_c_')))check(!/give_technology|research_technology|modify_species|change_species|add_trait_species|set_country_flag = epoch_iv_philosophy_/.test(read(p)),'no free unlock, species conversion or story rewrite '+p);
-const base='a330bfedcb362c90b5551b283935753ca99cbce7';
+const base='00eee2a';
 for(const p of cp.execFileSync('git',['ls-tree','-r','--name-only',base,'common','events','interface'],{encoding:'utf8'}).trim().split(/\r?\n/))check(read(p).replaceAll('\r\n','\n')===cp.execFileSync('git',['show',base+':'+p],{encoding:'utf8'}).replaceAll('\r\n','\n'),'Package A/B and story preserved '+p);
 check(!fs.existsSync(path.join(root,'common/defines'))&&!fs.existsSync(path.join(root,'interface/topbar_traditions_view.gui')),'no slot or vanilla GUI override');
 console.log(`PASS: ${checks} Package-C native content, class/philosophy matrices, trait/template gates, paid upgrade chains, capped capture behavior, shortage economy, DE/EN, art and B preservation assertions. Static only.`);

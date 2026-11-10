@@ -6,6 +6,7 @@ decision_epoch_c_symbiotic_world = {
  potential = { is_colony = yes owner = { epoch_c_organic = yes has_ascension_perk = ap_epoch_living } OR = { has_deposit = d_epoch_iv_matrix has_deposit = d_epoch_iv_fold has_deposit = d_epoch_iv_archive } NOT = { has_modifier = epoch_c_symbiotic_world } }
  allow = { owner = { epoch_iv_future_research = yes has_technology = tech_epoch_iv_harmonization } }
  effect = {
+  tooltip = { add_modifier = { modifier = epoch_c_symbiotic_world days = -1 } }
   if = {
    limit = {
     is_colony = yes
@@ -39,6 +40,11 @@ decision_epoch_c_network_inversion = {
  allow = { epoch_iv_diagnosis_matches = yes has_planet_flag = epoch_iv_stabilized@owner owner = { has_technology = tech_epoch_iv_inversion } }
  effect = {
   custom_tooltip = epoch_c_network_inversion_effect
+  tooltip = {
+   if = { limit = { epoch_iv_contamination = yes } add_deposit = d_epoch_iv_matrix }
+   else_if = { limit = { epoch_iv_scar = yes } add_deposit = d_epoch_iv_fold }
+   else_if = { limit = { epoch_iv_structure = yes } add_deposit = d_epoch_iv_archive }
+  }
   if = { limit = { epoch_iv_safe_world = yes epoch_iv_diagnosis_matches = yes has_planet_flag = epoch_iv_stabilized@owner owner = { epoch_c_healing_network = yes has_technology = tech_epoch_iv_inversion } } epoch_iv_convert_world = yes }
  }
  ai_weight = { weight = 150 }

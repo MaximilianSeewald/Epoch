@@ -1,5 +1,7 @@
 # Stage IV – Gemeinsame Ingame-Abnahme B + C
 
+> The first connected run found blockers. For these corrections, use only the five-step [compact smoke test](stage-iv-b-c-corrections.md#compact-combined-smoke-test); the plan below is historical coverage, not another required full run.
+
 **Ein gebündelter Lauf am fertigen B+C-Stand, kein umfangreicher manueller Zwischentest jetzt.** Die bisherigen B-Testlisten sind in diesen Plan aufgenommen; keine zweite Mod, kein isoliertes Testmodul und kein Merge sind erforderlich. Statische Quellenprüfungen gelten nicht als erledigte Ingame-Fälle. Zielversion: Stellaris **Cygnus 4.5.3 (4e91)**, EPOCH allein; optionale Fremdmods erst separat.
 
 ## Vorbereitung und gemeinsamer Hauptpfad

@@ -1,0 +1,28 @@
+PASS: 5287 parsed campaign-state checks (all research/wait gates, approaches, offsets, save-state dispatch, alternatives). Static model only.
+PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 1218 Resonance contract/interpreted-script assertions. Engine, AI, balance, save/load and MP remain unverified.
+PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 33 installed Vanilla/script-documentation evidence checks. Native UI and callbacks require in-game acceptance.
+PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 3924 narrative/UI/baseline assertions; maximum scripted-effect depth 3 (epoch_iv_after_signals). Display-only previews excluded from execution.
+PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: runtime log classifier self-test (root causes, EPOCH cascades, foreign diagnostics).
+PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 2058 Stage-III source/guard/isolation assertions. Static only; no engine, AI, save/load or MP validation.
+PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 838 Stage-IV parsed eligibility, callback, kill attribution, conversion and native-source assertions. Static only.
+PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+ECONOMY {"battleship":0.634,"shipCost":325,"buildingLoad":2.940000000000001,"starbase":0.26925,"factoryOutput":72,"scenarios":[{"name":"small","factories":1,"ships":20,"sets":1,"bases":3,"use":19.42775,"production":72,"surplus":52.57225},{"name":"large","factories":3,"ships":200,"sets":4,"bases":20,"use":146.945,"production":216,"surplus":69.055}]}
+PASS: 4380 Package-B counts, personal research gates, class DAG reachability, production/consumption, upgrade limits, native weapon comparisons, hull roles, DE/EN and preservation assertions. Static only.
+PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 610 observed-runtime regression contracts. Construction/ticks/reload above are bounded condition models, not engine evidence.
+PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 2474 Package-C native content, class/philosophy matrices, trait/template gates, paid upgrade chains, capped capture behavior, shortage economy, DE/EN, art and B preservation assertions. Static only.
+PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
+PASS: 208 C runtime-failure contracts: country/mega scopes, native count limits, own-shell placement, callbacks, implicit UI sprites and native previews. Static only.
+LOG REVIEW (pre-fix files): 198 EPOCH-related and 126 unrelated/base-game/other-mod error lines in error.log.
+  Localization: 8 lines; sample: [16:21:37][economic_category.cpp:518]: Missing economic category Localization Key: planet_epoch_lab
+  Event-target/scope: 16 lines; sample: [16:21:36][trigger.cpp:635]: Wrong scope for trigger 'has_megastructure_flag' at  file: common/megastructures/epoch_c_megastructures.txt line: 11
+  game.log: 0 EPOCH event-choice records in the existing run.
+  Other-mod/base-game log lines are classified separately and do not count as EPOCH failures.
+PASS: 713 static regression checks passed. This is not an in-game validation.
