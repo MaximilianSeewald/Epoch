@@ -24,6 +24,8 @@ The bounded condition model exercises building absence/presence/upgrade and seri
 - Both C decisions now preview native positive modifier/deposit effects while retaining guarded execution. Class, owner, diagnosis and stabilization checks remain.
 - Four trees and five perks have stronger, bounded class/philosophy roles. Class/perk gates equal the player-tested commit; no new slot limits, forced species conversion or story changes. [Nine comparisons, all 28 tradition choices, five perks and ten megastructure ledgers](../research/stage-iv-c-corrected-balance.md), [machine-readable values/source hashes](../research/stage-iv-c-corrected-balance.json).
 
+Final combined runner: 713 static checks pass (74 parsed Clausewitz files), including the existing campaign suites. The archived first-run log correctly fails the runtime gate with 169 EPOCH root diagnostics; those historical errors are not a fresh run of the correction commits.
+
 C validation: 2,474 content assertions and 208 targeted scope/count/lifecycle/UI contracts, including negative fixtures for the reported invalid resource/count patterns. Production numbers are calculated expectations after scope correction, not an assertion of native execution.
 
 ## Compact combined smoke test

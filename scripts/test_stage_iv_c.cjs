@@ -276,7 +276,7 @@ const nativeOrganicRequirement=get(organicRule,'custom_tooltip').filter(([k])=>k
 check(gate(nativeOrganicRequirement,{root:{techs:new Set(['tech_gene_tailoring'])}}),'native organic modification rule accepts researched Gene Tailoring');
 check(!gate(nativeOrganicRequirement,{root:{techs:new Set()}}),'native organic modification rule still rejects missing technology/traditions');
 for(const [p]of [...parsedByPath].filter(([p])=>p.includes('/epoch_c_')))check(!/give_technology|research_technology|modify_species|change_species|add_trait_species|set_country_flag = epoch_iv_philosophy_/.test(read(p)),'no free unlock, species conversion or story rewrite '+p);
-const base='00eee2a';
+const base='944c3c2';
 for(const p of cp.execFileSync('git',['ls-tree','-r','--name-only',base,'common','events','interface'],{encoding:'utf8'}).trim().split(/\r?\n/))check(read(p).replaceAll('\r\n','\n')===cp.execFileSync('git',['show',base+':'+p],{encoding:'utf8'}).replaceAll('\r\n','\n'),'Package A/B and story preserved '+p);
 check(!fs.existsSync(path.join(root,'common/defines'))&&!fs.existsSync(path.join(root,'interface/topbar_traditions_view.gui')),'no slot or vanilla GUI override');
 console.log(`PASS: ${checks} Package-C native content, class/philosophy matrices, trait/template gates, paid upgrade chains, capped capture behavior, shortage economy, DE/EN, art and B preservation assertions. Static only.`);

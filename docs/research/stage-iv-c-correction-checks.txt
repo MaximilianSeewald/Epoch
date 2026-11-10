@@ -4,7 +4,7 @@ PASS: 1218 Resonance contract/interpreted-script assertions. Engine, AI, balance
 PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
 PASS: 33 installed Vanilla/script-documentation evidence checks. Native UI and callbacks require in-game acceptance.
 PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
-PASS: 3924 narrative/UI/baseline assertions; maximum scripted-effect depth 3 (epoch_iv_after_signals). Display-only previews excluded from execution.
+PASS: 3852 narrative/UI/baseline assertions; maximum scripted-effect depth 3 (epoch_iv_after_signals). Display-only previews excluded from execution.
 PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
 PASS: runtime log classifier self-test (root causes, EPOCH cascades, foreign diagnostics).
 PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
@@ -15,7 +15,7 @@ PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit r
 ECONOMY {"battleship":0.634,"shipCost":325,"buildingLoad":2.940000000000001,"starbase":0.26925,"factoryOutput":72,"scenarios":[{"name":"small","factories":1,"ships":20,"sets":1,"bases":3,"use":19.42775,"production":72,"surplus":52.57225},{"name":"large","factories":3,"ships":200,"sets":4,"bases":20,"use":146.945,"production":216,"surplus":69.055}]}
 PASS: 4380 Package-B counts, personal research gates, class DAG reachability, production/consumption, upgrade limits, native weapon comparisons, hull roles, DE/EN and preservation assertions. Static only.
 PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
-PASS: 610 observed-runtime regression contracts. Construction/ticks/reload above are bounded condition models, not engine evidence.
+PASS: 634 observed-runtime regression contracts. Construction/ticks/reload above are bounded condition models, not engine evidence.
 PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
 PASS: 2474 Package-C native content, class/philosophy matrices, trait/template gates, paid upgrade chains, capped capture behavior, shortage economy, DE/EN, art and B preservation assertions. Static only.
 PASS: 74 Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.
