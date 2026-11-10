@@ -1,5 +1,7 @@
 # Stage IV – Gemeinsame Ingame-Abnahme B + C
 
+> **Current status (2026-11-11, user report):** A–C are merged; subsequent B+C tests confirmed production and essential megastructure mechanics. Earlier failure and pending-test statements below are historical. AI, all class combinations and multiplayer are not fully validated. D1 changes text only and is accepted statically, with no new in-game run. The three known megastructure scope diagnostics remain a separate technical follow-up.
+
 > Third player test confirms construction and UI progress but resource production failed. Use only the [production correction and minimal Factory I/II, Nexus I, Forge I smoke test](stage-iv-production-correction.md). Earlier recurring scope assumptions below were wrong and are superseded.
 
 > The first connected run found blockers. For these corrections, use only the five-step [compact smoke test](stage-iv-b-c-corrections.md#compact-combined-smoke-test); the plan below is historical coverage, not another required full run.
