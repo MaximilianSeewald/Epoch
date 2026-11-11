@@ -25,6 +25,7 @@ check(() => assert.equal(verify('Success. Published file update').ok, false));
 
 const categories = [
   ['login', 'Two-factor authentication code required', 'STEAM_GUARD_REQUIRED'],
+  ['login', 'Steam Guard code required', 'STEAM_GUARD_REQUIRED'],
   ['login', 'Invalid Password', 'STEAM_AUTH_FAILED'],
   ['login', 'Session expired; please log in again', 'STEAM_SESSION_EXPIRED'],
   ['login', 'Invalid Steam session', 'STEAM_SESSION_EXPIRED'],
@@ -37,10 +38,16 @@ const categories = [
 for (const [stage, output, category] of categories) {
   check(() => assert.deepEqual(classifySteamFailure({ stage, exitCode: 1, output }), { ok: false, category }));
 }
-check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Login to Steam successful' }).ok, true));
+check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: "Login to Steam successful\nSteam Guard is enabled for this account" }).ok, true));
+check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Logged in OK' }).ok, true));
+check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Logging in user \'private-user\' to Steam Public...OK\nWaiting for client config...OK\nWaiting for user info...OK' }).ok, true));
+check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Logged in OK\nWaiting for user info...FAILED' }).category, 'STEAM_UNKNOWN_ERROR'));
+check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Logging in user \'private-user\' to Steam Public...OK\nWaiting for client config...OK\nLoading Steam API...OK' }).category, 'STEAM_UNKNOWN_ERROR'));
+check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 1, output: 'Logged in OK' }).ok, false));
+check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Logged in OK\noperation timed out' }).category, 'STEAM_NETWORK_ERROR'));
 check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'opaque response' }).category, 'STEAM_UNKNOWN_ERROR'));
 check(() => assert.equal(classifySteamFailure({ stage: 'upload', exitCode: 0, output: 'opaque response' }).category, 'STEAM_UPLOAD_FAILED'));
-const secret = 'private-user Steam Guard 123456';
+const secret = 'private-user Steam Guard code required 123456';
 check(() => assert.deepEqual(diagnose({ stage: 'login', exitCode: 1, output: secret }), { ok: false, category: 'STEAM_GUARD_REQUIRED' }));
 check(() => assert.doesNotMatch(JSON.stringify(diagnose({ stage: 'login', exitCode: 1, output: secret })), /private-user|123456/));
 

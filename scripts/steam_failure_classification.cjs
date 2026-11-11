@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const { verifySteamUpload } = require('./steam_upload_result.cjs');
 
 const patterns = [
-  ['STEAM_GUARD_REQUIRED', /steam\s*guard|two[- ]factor|mobile authenticator|authenticator code|enter (?:the )?(?:steam guard|authentication) code/i],
+  ['STEAM_GUARD_REQUIRED', /steam\s*guard.{0,80}(?:code.{0,24}(?:required|needed|invalid|mismatch|denied)|(?:authentication|login).{0,24}(?:required|failed|denied))|(?:two[- ]factor|mobile authenticator|authenticator).{0,80}(?:required|code.{0,24}(?:required|needed|invalid|mismatch|denied)|failed|denied)|enter (?:the )?(?:steam guard|authentication) code/i],
   ['STEAM_SESSION_EXPIRED', /session (?:has )?expired|invalid [a-z ]{0,30}session|expired (?:login )?token|refresh token.*(?:invalid|expired)/i],
   ['STEAM_WORKSHOP_PERMISSION_DENIED', /access denied|permission denied|not authorized|insufficient privilege|not the owner|does not have permission|not allowed to (?:upload|publish|update)/i],
   ['STEAM_NETWORK_ERROR', /could not connect|failed to connect|connection (?:timed out|reset|refused)|network is unreachable|network error|http error|server unavailable|timed? out|no connection|unable to resolve/i],
@@ -14,13 +14,33 @@ const patterns = [
   ['STEAM_UPLOAD_FAILED', /upload failed|failed to upload|workshop_build_item.{0,80}(?:failed|error)|error!|workshop.{0,80}(?:failed|error)/i],
 ];
 
+function hasCompletedLogin(text) {
+  if (/\b(?:login to steam successful|logged in ok)\b/i.test(text)) return true;
+
+  const lines = text.split(/\r?\n/);
+  let loginAccepted = -1;
+  let clientConfigReady = -1;
+  let userInfoReady = -1;
+  for (let index = 0; index < lines.length; index++) {
+    const line = lines[index];
+    if (/logging in user\b.*\bto steam\b.*\.\.\.\s*ok\s*$/i.test(line)) loginAccepted = index;
+    if (/waiting for client config\s*\.\.\.\s*ok\s*$/i.test(line)) clientConfigReady = index;
+    if (/waiting for user info\s*\.\.\.\s*ok\s*$/i.test(line)) userInfoReady = index;
+  }
+  return loginAccepted >= 0 && clientConfigReady > loginAccepted && userInfoReady > clientConfigReady;
+}
+
 function classifySteamFailure({ stage, exitCode, output }) {
   const text = typeof output === 'string' ? output : '';
-  if (stage === 'login' && Number(exitCode) === 0 && /login to steam successful|logged in ok/i.test(text)) {
-    return { ok: true, category: null };
-  }
   for (const [category, pattern] of patterns) {
     if (pattern.test(text)) return { ok: false, category };
+  }
+  if (stage === 'login') {
+    if (/\b(?:failed|failure|fatal error|timed? out|timeout)\b/i.test(text)) {
+      return { ok: false, category: 'STEAM_UNKNOWN_ERROR' };
+    }
+    if (Number(exitCode) === 0 && hasCompletedLogin(text)) return { ok: true, category: null };
+    return { ok: false, category: 'STEAM_UNKNOWN_ERROR' };
   }
   if (stage === 'upload' && Number(exitCode) === 0) {
     return { ok: false, category: 'STEAM_UPLOAD_FAILED' };
