@@ -33,6 +33,9 @@ check(() => assert.equal(steamcmdConfig.resolveSteamcmdConfigPath(path.join(isol
 check(() => assert.throws(() => steamcmdConfig.resolveSteamcmdConfigPath(''), /HOME must be provided/));
 
 const workflow = fs.readFileSync(path.join(__dirname, '..', '.github', 'workflows', 'stable-release.yml'), 'utf8');
+const loginProbe = fs.readFileSync(path.join(__dirname, 'steamcmd_login_probe.sh'), 'utf8');
+const classification = fs.readFileSync(path.join(__dirname, 'steam_failure_classification.cjs'), 'utf8');
+const authWorkflow = fs.readFileSync(path.join(__dirname, '..', '.github', 'workflows', 'steamcmd-auth-probe.yml'), 'utf8');
 for (const [pattern, label] of [
 	[/runs-on:\s*ubuntu-latest/, 'GitHub-hosted Ubuntu runner'],
 	[/cancel-in-progress:\s*false/, 'serialized non-cancelling releases'],
@@ -41,25 +44,17 @@ for (const [pattern, label] of [
 	[/git push origin "refs\/tags\/\$RELEASE_TAG"/, 'remote permanent tag reservation'],
 	[/"publishedfileid"\s+"\$STEAM_WORKSHOP_ID"/, 'upload configured item ID'],
 	[/steam_failure_classification\.cjs/, 'SteamCMD success-result verification and fixed failure classification'],
-	[/stage=LOGIN category=OK/, 'Ubuntu SteamCMD login probe must succeed before upload'],
-	[/steam_home="\$RUNNER_TEMP\/steam-home"[\s\S]*export HOME="\$steam_home"/, 'SteamCMD uses an isolated HOME under RUNNER_TEMP'],
-	[/steam_dir="\$steam_home\/Steam"/, 'SteamCMD installation and HOME-based runtime root converge'],
-	[/steamcmd_config_path\.cjs" "\$HOME"/, 'SteamCMD config path uses the tested Linux runtime resolver'],
-	[/> "\$config_path"[\s\S]*chmod 600 "\$config_path"/, 'decoded session is restored with owner-only permissions at the resolved path'],
-	[/stage=CONFIG category=OK; saved config\.vdf restored and verified at the isolated Linux runtime path before login/, 'saved session restored and checked after bootstrap, before login'],
-	[/cleanup_steam\(\)[\s\S]*?rm -rf "\$steam_dir" "\$steam_home"/, 'SteamCMD install, isolated session, and working files removed after the step'],
+	[/bash scripts\/steamcmd_login_probe\.sh/, 'shared SteamCMD login probe invoked by the release workflow'],
+	[/if: steps\.steam-login\.outputs\.login == 'ok'/, 'tag reservation is gated on a verified SteamCMD login'],
+	[/if: steps\.reservation\.outputs\.reserved == 'true'/, 'Workshop upload is gated on successful tag reservation'],
+	[/if: always\(\)[\s\S]*?rm -rf "\$RUNNER_TEMP\/steam-home"/, 'SteamCMD session files are removed even when login or upload fails'],
 	[/if: steps\.steam-upload\.outputs\.uploaded == 'true'/, 'GitHub Release waits for verified upload'],
 ]) check(() => assert.match(workflow, pattern, label));
-check(() => assert.ok(workflow.indexOf('init_output="$(./steamcmd.sh +quit') < workflow.indexOf('base64 --decode'), 'SteamCMD bootstrap precedes session restoration'));
-check(() => assert.ok(workflow.indexOf('[[ ! -s "$config_path" || ! -r "$config_path" ]]') < workflow.indexOf('login_output="$(./steamcmd.sh +login'), 'restored config is checked before the login probe'));
-check(() => assert.ok(workflow.indexOf('login_output="$(./steamcmd.sh +login') < workflow.indexOf('+workshop_build_item "$vdf"'), 'login probe precedes the Workshop upload'));
-check(() => assert.match(workflow, /login_category.*upload skipped/));
-for (const marker of ['exitcode_successful', 'login_marker_recognized', 'client_config_recognized', 'user_info_recognized']) {
-	check(() => assert.match(workflow, new RegExp(marker), `failed login diagnostics include only the safe ${marker} marker`));
+for (const marker of ['exitcode_successful', 'login_marker_recognized', 'client_config_recognized', 'user_info_recognized', 'console_start_reached', 'steam_api_loaded', 'saved_credentials_indicated', 'password_interaction_requested', 'steam_guard_interaction_requested', 'authentication_error_detected', 'connection_error_detected', 'session_error_detected', 'usable_console_output_received']) {
+	check(() => assert.match(classification, new RegExp(marker), `login diagnostics include the safe ${marker} marker`));
 }
-check(() => assert.match(workflow, /login_status" --diagnostics/));
-check(() => assert.match(workflow, /unset output/));
-const reservation = workflow.slice(workflow.indexOf('- name: Reserve release version for this commit'), workflow.indexOf('- name: Install SteamCMD and upload existing Workshop item'));
+check(() => assert.match(loginProbe, /--diagnostics/, 'login probe emits safe diagnostics through the classifier'));
+const reservation = workflow.slice(workflow.indexOf('- name: Reserve release version for this commit'), workflow.indexOf('- name: Upload existing Workshop item'));
 for (const [pattern, label] of [
 	[/git config --local user\.name "github-actions\[bot\]"/, 'tag author is explicitly configured'],
 	[/git config --local user\.email "41898282\+github-actions\[bot\]@users\.noreply\.github\.com"/, 'official Actions bot email is explicitly configured'],
@@ -71,6 +66,17 @@ check(() => assert.ok(reservation.indexOf('git config --local user.name') < rese
 check(() => assert.ok(reservation.indexOf('git config --local user.email') < reservation.indexOf('git tag -a'), 'tag email is configured before tag creation'));
 check(() => assert.doesNotMatch(reservation, /git config --global/, 'tagging does not depend on global Git configuration'));
 check(() => assert.doesNotMatch(workflow, /EPOCH_VANILLA_ROOT|EPOCH_LOG_DIRECTORY|STEAM_PASSWORD|STEAM_GUARD_CODE/, 'CI has no local-game paths or stored passwords/Guard codes'));
+check(() => assert.ok(workflow.indexOf('- name: Install SteamCMD, restore session, and verify login') < workflow.indexOf('- name: Reserve release version for this commit'), 'login step precedes stable tag reservation'));
+check(() => assert.ok(workflow.indexOf('- name: Reserve release version for this commit') < workflow.indexOf('- name: Upload existing Workshop item'), 'stable tag reservation precedes upload'));
+check(() => assert.ok(workflow.indexOf('- name: Upload existing Workshop item') < workflow.indexOf('- name: Finalize GitHub stable release'), 'upload precedes GitHub Release publication'));
+check(() => assert.match(workflow, /if: steps\.steam-login\.outputs\.login == 'ok'[\s\S]*?git push origin "refs\/tags\/\$RELEASE_TAG"/, 'failed login skips the only tag-push step'));
+check(() => assert.match(loginProbe, /\+login "\$STEAM_USERNAME" \+quit/));
+check(() => assert.doesNotMatch(loginProbe, /workshop_build_item|git tag|gh release|gh pr/, 'login probe has no tag, upload, or release operation'));
+check(() => assert.match(authWorkflow, /workflow_dispatch:/, 'authentication probe is manually startable'));
+check(() => assert.match(authWorkflow, /bash scripts\/steamcmd_login_probe\.sh/));
+check(() => assert.match(authWorkflow, /if: always\(\)[\s\S]*?rm -rf/));
+check(() => assert.doesNotMatch(authWorkflow, /workshop_build_item|git tag|gh release|stable-release\.yml/,
+	'authentication-only workflow cannot reserve versions, upload content, or publish a release'));
 
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'epoch-release-'));
 try {

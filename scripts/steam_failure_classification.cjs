@@ -45,6 +45,28 @@ function loginMarkers(text) {
   };
 }
 
+function safeLoginDiagnostics({ exitCode, output }) {
+	const text = typeof output === 'string' ? output : '';
+	const normalized = text.replace(/\u001b\[[0-?]*[ -/]*[@-~]/g, '');
+	const compact = withoutKnownHarmlessLocaleWarning(normalized);
+	const markers = loginMarkers(normalized);
+	return {
+		console_start_reached: /Steam Console Client\s*\(c\)\s*Valve Corporation/i.test(normalized) ? 'yes' : 'no',
+		steam_api_loaded: /(?:\bLoading Steam API\.{0,3}\s*OK|\bSteamAPI_Init\(\).*?(?:success|OK)|\bSteam API (?:loaded|initialized) successfully)/i.test(normalized) ? 'yes' : 'no',
+		saved_credentials_indicated: /(?:using|loaded|found) (?:cached|saved) credentials|using cached login credentials/i.test(normalized) ? 'yes' : 'no',
+		password_interaction_requested: /\b(?:please )?(?:enter|input) (?:your )?(?:steam )?password\b|\bpassword(?: for login)?\s*(?:required|needed|:)|request(?:ing)? password/i.test(normalized) ? 'yes' : 'no',
+		steam_guard_interaction_requested: /steam\s*guard.{0,80}(?:code|required|enter|need|prompt|requested|authentication)|(?:two[- ]factor|mobile authenticator|authenticator).{0,80}(?:code|required|enter|need|prompt)|enter (?:the )?(?:steam guard|authentication) code/i.test(normalized) ? 'yes' : 'no',
+		authentication_error_detected: /invalid password|authentication failed|login failure|account logon denied|logged out|not logged in|login.?failed|invalid auth/i.test(normalized) ? 'yes' : 'no',
+		connection_error_detected: /could not connect|failed to connect|connection (?:timed out|reset|refused)|network is unreachable|network error|http error|server unavailable|timed? out|no connection|unable to resolve/i.test(normalized) ? 'yes' : 'no',
+		session_error_detected: /session (?:has )?expired|invalid [a-z ]{0,30}session|expired (?:login )?token|refresh token.*(?:invalid|expired)/i.test(normalized) ? 'yes' : 'no',
+		usable_console_output_received: compact.trim().length > 0 ? 'yes' : 'no',
+		exitcode_successful: Number(exitCode) === 0 ? 'yes' : 'no',
+		login_marker_recognized: markers.loginMarkerRecognized ? 'yes' : 'no',
+		client_config_recognized: markers.clientConfigRecognized ? 'yes' : 'no',
+		user_info_recognized: markers.userInfoRecognized ? 'yes' : 'no',
+	};
+}
+
 function withoutKnownHarmlessLocaleWarning(text) {
   // This exact SteamCMD warning is benign. Keep the exception narrow so other
   // occurrences of "failed" remain visible to the login failure classifier.
@@ -56,6 +78,7 @@ function classifySteamFailure({ stage, exitCode, output }) {
   for (const [category, pattern] of patterns) {
     if (pattern.test(text)) return { ok: false, category };
   }
+	if (stage === 'initialize' && Number(exitCode) === 0) return { ok: true, category: null };
   if (stage === 'login') {
     const failureText = withoutKnownHarmlessLocaleWarning(text);
     if (/\b(?:failed|failure|fatal error|timed? out|timeout)\b/i.test(failureText)) {
@@ -71,7 +94,7 @@ function classifySteamFailure({ stage, exitCode, output }) {
 }
 
 function diagnose({ stage, exitCode, output, workshopId, resultVdf }) {
-  if (stage === 'login') return classifySteamFailure({ stage, exitCode, output });
+	if (stage === 'login' || stage === 'initialize') return classifySteamFailure({ stage, exitCode, output });
   if (stage === 'upload') {
     const verified = verifySteamUpload({ exitCode: Number(exitCode), output, configuredWorkshopId: workshopId, resultVdf });
     if (verified.ok) return { ok: true, category: null };
@@ -95,14 +118,11 @@ if (require.main === module) {
     } catch {
       result = { ok: false, category: 'STEAM_UNKNOWN_ERROR' };
     }
-    if (diagnostics && stage === 'login') {
-      const markers = loginMarkers(output);
+	if (diagnostics && (stage === 'login' || stage === 'initialize')) {
+		const diagnosticsResult = safeLoginDiagnostics({ exitCode: Number(exitArg), output });
       process.stdout.write([
         `category=${result.ok ? 'OK' : result.category}`,
-        `exitcode_successful=${Number(exitArg) === 0 ? 'yes' : 'no'}`,
-        `login_marker_recognized=${markers.loginMarkerRecognized ? 'yes' : 'no'}`,
-        `client_config_recognized=${markers.clientConfigRecognized ? 'yes' : 'no'}`,
-        `user_info_recognized=${markers.userInfoRecognized ? 'yes' : 'no'}`,
+			...Object.entries(diagnosticsResult).map(([key, value]) => `${key}=${value}`),
       ].join(' ') + '\n');
     } else {
       process.stdout.write(result.ok ? 'OK\n' : `${result.category}\n`);
@@ -111,4 +131,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { classifySteamFailure, diagnose, loginMarkers };
+module.exports = { classifySteamFailure, diagnose, loginMarkers, safeLoginDiagnostics };

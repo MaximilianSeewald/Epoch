@@ -1,0 +1,35 @@
+name: EPOCH SteamCMD Authentication Probe
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: epoch-steamcmd-auth-probe-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  login:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify saved SteamCMD login
+        env:
+          STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+          STEAMCMD_CONFIG_VDF: ${{ secrets.STEAMCMD_CONFIG_VDF }}
+        run: bash scripts/steamcmd_login_probe.sh
+
+      - name: Remove SteamCMD session files
+        if: always()
+        shell: bash
+        run: rm -rf "$RUNNER_TEMP/steam-home" "$RUNNER_TEMP/steamcmd.tar.gz"

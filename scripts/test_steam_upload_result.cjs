@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 const { verifySteamUpload } = require('./steam_upload_result.cjs');
-const { classifySteamFailure, diagnose } = require('./steam_failure_classification.cjs');
+const { classifySteamFailure, diagnose, safeLoginDiagnostics } = require('./steam_failure_classification.cjs');
 const id = '1234567890123';
 const vdf = `"workshopitem"\n{\n  "publishedfileid" "${id}"\n}\n`;
 const verify = (output, options = {}) => verifySteamUpload({ exitCode: 0, output, configuredWorkshopId: id, resultVdf: vdf, ...options });
@@ -70,11 +70,39 @@ for (const output of interleavedLoginOutputs) {
   check(() => {
     const result = spawnSync(process.execPath, [parserPath, 'login', '0', '--diagnostics'], { input: `${output}\nERROR! Login failed`, encoding: 'utf8' });
     assert.equal(result.status, 1);
-    assert.equal(result.stdout, 'category=STEAM_AUTH_FAILED exitcode_successful=yes login_marker_recognized=yes client_config_recognized=yes user_info_recognized=yes\n');
+    assert.match(result.stdout, /^category=STEAM_AUTH_FAILED console_start_reached=no steam_api_loaded=no saved_credentials_indicated=yes/);
+    assert.match(result.stdout, /steam_guard_interaction_requested=no authentication_error_detected=yes/);
     assert.equal(result.stderr, '');
-    assert.doesNotMatch(result.stdout, /ACCOUNT|setlocale|Steam Public/);
+    assert.doesNotMatch(result.stdout, /ACCOUNT|setlocale|Steam Public|code required/);
   });
 }
+check(() => assert.deepEqual(safeLoginDiagnostics({ exitCode: 0, output: 'opaque output without login markers' }), {
+	console_start_reached: 'no', steam_api_loaded: 'no', saved_credentials_indicated: 'no',
+	password_interaction_requested: 'no', steam_guard_interaction_requested: 'no',
+	authentication_error_detected: 'no', connection_error_detected: 'no', session_error_detected: 'no',
+	usable_console_output_received: 'yes', exitcode_successful: 'yes', login_marker_recognized: 'no',
+	client_config_recognized: 'no', user_info_recognized: 'no',
+}));
+check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'opaque output without login markers' }).ok, false,
+	'exit code 0 without login markers remains a failure'));
+check(() => assert.equal(classifySteamFailure({ stage: 'initialize', exitCode: 0, output: 'Steam Console Client started' }).ok, true,
+	'bootstrap exit status is diagnosed separately from strict login confirmation'));
+check(() => assert.equal(classifySteamFailure({ stage: 'initialize', exitCode: 0, output: 'Failed to connect to Steam servers' }).category, 'STEAM_NETWORK_ERROR'));
+check(() => assert.equal(safeLoginDiagnostics({ exitCode: 1, output: '' }).usable_console_output_received, 'no'));
+check(() => {
+	const safe = safeLoginDiagnostics({
+		exitCode: 1,
+		output: "Steam Console Client (c) Valve Corporation\nLoading Steam API...OK\nLogging in using cached credentials\nSteam Guard code required for ACCOUNT\nConnection timed out; session expired\n",
+	});
+	assert.deepEqual(safe, {
+		console_start_reached: 'yes', steam_api_loaded: 'yes', saved_credentials_indicated: 'yes',
+		password_interaction_requested: 'no', steam_guard_interaction_requested: 'yes',
+		authentication_error_detected: 'no', connection_error_detected: 'yes', session_error_detected: 'yes',
+		usable_console_output_received: 'yes', exitcode_successful: 'no', login_marker_recognized: 'no',
+		client_config_recognized: 'no', user_info_recognized: 'no',
+	});
+	assert.doesNotMatch(JSON.stringify(safe), /ACCOUNT|Steam Guard|timed out/);
+});
 check(() => assert.equal(classifySteamFailure({
   stage: 'login',
   exitCode: 0,
@@ -95,4 +123,4 @@ const secret = 'private-user Steam Guard code required 123456';
 check(() => assert.deepEqual(diagnose({ stage: 'login', exitCode: 1, output: secret }), { ok: false, category: 'STEAM_GUARD_REQUIRED' }));
 check(() => assert.doesNotMatch(JSON.stringify(diagnose({ stage: 'login', exitCode: 1, output: secret })), /private-user|123456/));
 
-console.log(`PASS: ${checks} SteamCMD result and safe failure-classification cases; no output contents are emitted.`);
+console.log(`PASS: ${checks} SteamCMD result, strict login, and safe diagnostic cases; no output contents are emitted.`);
