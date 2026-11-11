@@ -48,7 +48,9 @@ for(const p of files.filter(p=>/^(?:common|events|gfx|interface)\//.test(p)||p==
 }
 // Include staged and unstaged additions as well as tracked changes.
 const changed=git('diff','--name-only',base).trim().split(/\r?\n/).filter(Boolean);
-for(const p of changed)check(/^(?:localisation\/(?:english|german)\/[^/]+\.yml|docs\/.*\.md|README\.md|scripts\/test_stage_(?:iii|iv_d1)\.cjs|scripts\/test_epoch_regressions\.ps1)$/.test(p),p+': D1-only scope');
+// D2 adds static audit coverage only; the executable/assets equality above
+// remains strict. Allow its test file without weakening that gameplay guard.
+for(const p of changed)check(/^(?:localisation\/(?:english|german)\/[^/]+\.yml|docs\/.*\.md|README\.md|scripts\/test_stage_(?:iii|iv_d1|iv_d2)\.cjs|scripts\/test_epoch_regressions\.ps1)$/.test(p),p+': D1/D2 text and static-test scope');
 check(git('diff','--check').trim()==='','diff whitespace');
 console.log(`PASS: ${checks} D1 localization, parity, BOM, placeholder, uniqueness, reveal and immutable-gameplay checks. Static only.`);
 

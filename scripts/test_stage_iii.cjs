@@ -622,16 +622,29 @@ const decisions=new Map(normalized('common/decisions/epoch_convergence_decisions
 for(const key of ['contain','investigate','treat'])check(+get(get(get(decisions.get('decision_epoch_iii_'+key),'resources'),'cost'),'energy')>0,key+' has real resource costs');
 check(!JSON.stringify(get(decisions.get('decision_epoch_iii_treat'),'potential')).includes('epoch_iii_active'),'Planetary treatment remains available after crisis');
 check(JSON.stringify(decisions.get('decision_epoch_iii_investigate')).includes('random_list'),'Uncontained investigation has an actual probabilistic accident');
-for(const year of [50,100,150])for(const difficulty of [0,2,4,5,6]) {
+for(const year of [0,50,99,100,101,150])for(const difficulty of [0,1,2,3,4,5,6]) {
  elapsedYears=year;gameDifficulty=difficulty;
  const formation=make();formation.flags.add('epoch_iii_anchor');formation.modifiers.add('epoch_iii_disrupted_network');authority.fleets=[formation];
  run(effects.get('epoch_iii_update_strength'),ctx(authority));
  const tier=year>=100?(difficulty>=5?'hard':'late'):'base';
  check(formation.modifiers.has('epoch_iii_force_'+tier),`Bounded force tier: year ${year}, difficulty ${difficulty}`);
+ check(['base','late','hard'].filter(t=>formation.modifiers.has('epoch_iii_force_'+t)).length===1,'Exactly one strength tier, including the year-100 boundary');
  const initial=[...formation.modifiers].sort().join();
  for(let pulse=0;pulse<24;pulse++)run(effects.get('epoch_iii_update_strength'),ctx(authority));
  check(initial===[...formation.modifiers].sort().join(),'Strength does not stack or erase science after repeated dispatch');
  check(formation.modifiers.has('epoch_iii_bastion_hull'),'Anchors gain their independent fortification boost');
+}
+// Existing saves can carry any earlier tier. Execute the real replacement
+// effect, then cross the year/difficulty boundary on that same fleet.
+for(const prior of ['base','late','hard'])for(const difficulty of [0,1,2,3,4,5,6]) {
+ const formation=make();formation.modifiers.add('epoch_iii_force_'+prior);formation.modifiers.add('epoch_iii_disrupted_network');authority.fleets=[formation];
+ for(const [year,diff]of [[99,difficulty],[100,difficulty],[101,5],[101,2]]) {
+  elapsedYears=year;gameDifficulty=diff;
+  run(effects.get('epoch_iii_update_strength'),ctx(authority));
+  const expected=year<100?'base':diff>=5?'hard':'late';
+  check(['base','late','hard'].every(t=>formation.modifiers.has('epoch_iii_force_'+t)===(t===expected)),`Saved ${prior} tier transitions exclusively to ${expected}`);
+  check(formation.modifiers.has('epoch_iii_disrupted_network'),'Tier replacement preserves independent study modifier');
+ }
 }
 const supportCreates=effects.get('epoch_iii_create_support_stations').filter(([k])=>k==='create_fleet');
 check(supportCreates.length===2,'Two support stations are separate physical fleets');
