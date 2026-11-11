@@ -123,4 +123,5 @@ const secret = 'private-user Steam Guard code required 123456';
 check(() => assert.deepEqual(diagnose({ stage: 'login', exitCode: 1, output: secret }), { ok: false, category: 'STEAM_GUARD_REQUIRED' }));
 check(() => assert.doesNotMatch(JSON.stringify(diagnose({ stage: 'login', exitCode: 1, output: secret })), /private-user|123456/));
 
+require('./test_steamcmd_login_probe_shell.cjs');
 console.log(`PASS: ${checks} SteamCMD result, strict login, and safe diagnostic cases; no output contents are emitted.`);

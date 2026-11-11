@@ -10,6 +10,11 @@ steam_home="$RUNNER_TEMP/steam-home"
 steam_dir="$steam_home/Steam"
 archive="$RUNNER_TEMP/steamcmd.tar.gz"
 config_path="$steam_dir/config/config.vdf"
+
+is_safe_diagnostics() {
+	[[ "$1" =~ ^category=(OK|STEAM_[A-Z_]+)\ console_start_reached=(yes|no)\ steam_api_loaded=(yes|no)\ saved_credentials_indicated=(yes|no)\ password_interaction_requested=(yes|no)\ steam_guard_interaction_requested=(yes|no)\ authentication_error_detected=(yes|no)\ connection_error_detected=(yes|no)\ session_error_detected=(yes|no)\ usable_console_output_received=(yes|no)\ exitcode_successful=(yes|no)\ login_marker_recognized=(yes|no)\ client_config_recognized=(yes|no)\ user_info_recognized=(yes|no)$ ]]
+}
+
 mkdir -p "$steam_dir" "$steam_home"
 export HOME="$steam_home"
 
@@ -31,7 +36,7 @@ init_diagnostics="$(printf '%s' "$init_output" | node "$GITHUB_WORKSPACE/scripts
 init_diagnose_status=$?
 set -e
 unset init_output
-if [[ $init_diagnose_status -ne 0 || -z "$init_diagnostics" ]]; then
+if ! is_safe_diagnostics "$init_diagnostics"; then
 	init_diagnostics='category=STEAM_UNKNOWN_ERROR'
 	init_diagnose_status=1
 fi
@@ -66,8 +71,9 @@ diagnose_status=$?
 set -e
 unset login_output
 
-if [[ $diagnose_status -ne 0 || -z "$login_diagnostics" ]]; then
+if ! is_safe_diagnostics "$login_diagnostics"; then
 	login_diagnostics='category=STEAM_UNKNOWN_ERROR'
+	diagnose_status=1
 fi
 printf 'SteamCMD stage=LOGIN %s\n' "$login_diagnostics"
 login_category="${login_diagnostics%% *}"
