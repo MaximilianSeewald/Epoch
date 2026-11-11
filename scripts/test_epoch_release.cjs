@@ -37,6 +37,17 @@ for (const [pattern, label] of [
 	[/steam_upload_result\.cjs/, 'SteamCMD success-result and configured-ID verification'],
 	[/if: steps\.steam-upload\.outputs\.uploaded == 'true'/, 'GitHub Release waits for verified upload'],
 ]) check(() => assert.match(workflow, pattern, label));
+const reservation = workflow.slice(workflow.indexOf('- name: Reserve release version for this commit'), workflow.indexOf('- name: Install SteamCMD and upload existing Workshop item'));
+for (const [pattern, label] of [
+	[/git config --local user\.name "github-actions\[bot\]"/, 'tag author is explicitly configured'],
+	[/git config --local user\.email "41898282\+github-actions\[bot\]@users\.noreply\.github\.com"/, 'official Actions bot email is explicitly configured'],
+	[/git config --local tag\.gpgSign false/, 'tag creation does not depend on local signing configuration'],
+	[/git tag -a .* -m /, 'annotated tag carries an explicit message'],
+]) check(() => assert.match(reservation, pattern, label));
+check(() => assert.match(workflow, /persist-credentials:\s*true/, 'checkout explicitly persists credentials for the origin tag push'));
+check(() => assert.ok(reservation.indexOf('git config --local user.name') < reservation.indexOf('git tag -a'), 'tag name is configured before tag creation'));
+check(() => assert.ok(reservation.indexOf('git config --local user.email') < reservation.indexOf('git tag -a'), 'tag email is configured before tag creation'));
+check(() => assert.doesNotMatch(reservation, /git config --global/, 'tagging does not depend on global Git configuration'));
 check(() => assert.doesNotMatch(workflow, /EPOCH_VANILLA_ROOT|EPOCH_LOG_DIRECTORY|STEAM_PASSWORD|STEAM_GUARD_CODE/, 'CI has no local-game paths or stored passwords/Guard codes'));
 
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'epoch-release-'));
