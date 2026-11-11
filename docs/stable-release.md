@@ -1,6 +1,6 @@
 # EPOCH Stable Releases
 
-`main` is the stable branch. Each current, successful push runs the game-independent CI suite, packages the mod, uploads to the one configured Steam Workshop item, and publishes a normal GitHub Stable Release with the same version. The workflow uses `ubuntu-latest`; it does not install or require Stellaris, Vanilla files, the engine, local game logs, or save files.
+`main` is the stable branch. Each current, successful push to `main` runs the game-independent CI suite, packages the mod, uploads to the one configured Steam Workshop item, and publishes a normal GitHub Stable Release with the same version. The workflow uses `ubuntu-latest`; it does not install or require Stellaris, Vanilla files, the engine, local game logs, or save files.
 
 ## CI test selection
 
