@@ -6,6 +6,7 @@ const assert = require('node:assert/strict');
 
 const root = process.argv[2] || path.resolve(__dirname, '..');
 const vanillaRoot = process.argv[3] || 'G:/Steam/steamapps/common/Stellaris';
+const sourceOnly = process.argv.includes('--source-only');
 const files = [];
 for (const folder of ['common', 'events', 'test-mods']) {
   const visit = dir => {
@@ -170,8 +171,10 @@ for (const [rel, roots] of parsedByPath) if (rel.startsWith('events/')) validate
 
 const damagedOptionExample = parse(`country_event = { id = epoch_ii.15 option = { name = epoch_ii.15.evacuate } add_resource = { alloys = -100 energy = -200 } }`, 'damaged epoch_ii.15 regression fixture');
 assert.throws(() => validateEventOptions(damagedOptionExample, 'damaged epoch_ii.15 regression fixture'), /event-level effect add_resource|add_resource outside option/, 'The damaged epoch_ii.15 resource-after-option example must be rejected');
-const vanillaEventSample = fs.readFileSync(path.join(vanillaRoot,'events/advisor_events.txt'),'utf8');
-assert.match(vanillaEventSample, /option\s*=\s*\{\s*name\s*=\s*advisor\.1\.c[\s\S]{0,500}hidden_effect\s*=\s*\{\s*add_resource\s*=\s*\{\s*minerals\s*=\s*2\s*\}/, 'Installed Vanilla event advisor.1.c demonstrates effect fields nested under the option block');
+if (!sourceOnly) {
+  const vanillaEventSample = fs.readFileSync(path.join(vanillaRoot,'events/advisor_events.txt'),'utf8');
+  assert.match(vanillaEventSample, /option\s*=\s*\{\s*name\s*=\s*advisor\.1\.c[\s\S]{0,500}hidden_effect\s*=\s*\{\s*add_resource\s*=\s*\{\s*minerals\s*=\s*2\s*\}/, 'Installed Vanilla event advisor.1.c demonstrates effect fields nested under the option block');
+}
 
 for (const name of ['epoch_core_apply_contamination_active','epoch_core_apply_contamination_worsened','epoch_core_apply_contamination_studied','epoch_ii_set_site_latent','epoch_ii_set_site_active','epoch_ii_set_site_unstable','epoch_ii_set_site_controlled']) {
   const body = effectDefs.get(name);
@@ -219,9 +222,11 @@ const refs = new Set([...allSource.matchAll(/\b(?:add_deposit|remove_deposit|has
 const deposits = new Set();
 for (const [rel,pairs] of parsedByPath) if (rel.startsWith('common/deposits/')) for (const [name] of pairs) if (name.startsWith('d_')) deposits.add(name);
 assert.deepEqual([...refs].filter(name => !deposits.has(name)), [], 'All referenced EPOCH deposits must have definitions');
-const eventSprites = fs.readFileSync(path.join(vanillaRoot,'interface/eventpictures.gfx'),'utf8');
-const referencedEventSprites = new Set([...allSource.matchAll(/\b(GFX_evt_[A-Za-z0-9_]+)/g)].map(m => m[1]));
-for (const sprite of referencedEventSprites) assert.ok(eventSprites.includes(`name = "${sprite}"`), `Vanilla event picture sprite is missing: ${sprite}`);
+if (!sourceOnly) {
+  const eventSprites = fs.readFileSync(path.join(vanillaRoot,'interface/eventpictures.gfx'),'utf8');
+  const referencedEventSprites = new Set([...allSource.matchAll(/\b(GFX_evt_[A-Za-z0-9_]+)/g)].map(m => m[1]));
+  for (const sprite of referencedEventSprites) assert.ok(eventSprites.includes(`name = "${sprite}"`), `Vanilla event picture sprite is missing: ${sprite}`);
+}
 
 // Immediate option resources must be visible to the event UI. Any resource
 // that remains below hidden_effect must sit in a conditional branch.
@@ -299,19 +304,21 @@ for (const key of ['epoch_resonance_protocol','epoch_resonance_protocol_type','e
   assert.match(germanLoc, new RegExp(`^\\s*${key}:\\d+\\s`, 'm'), `German situation localization missing ${key}`);
 }
 
-const vanillaBlockers = parse(fs.readFileSync(path.join(vanillaRoot,'common/deposits/01_blocker_deposits.txt'),'utf8'),'Vanilla 4.5.3 blocker deposits');
-const vanillaCategories = parse(fs.readFileSync(path.join(vanillaRoot,'common/deposit_categories/00_deposit_categories.txt'),'utf8'),'Vanilla 4.5.3 deposit categories');
-const blockerCategory = get(vanillaCategories,'deposit_cat_blockers');
-assert.equal(get(blockerCategory,'blocker'),'yes','Vanilla category must mark deposit_cat_blockers as a Blocker category');
-assert.ok(vanillaBlockers.some(([,body]) => Array.isArray(body) && get(body,'category') === 'deposit_cat_blockers' && get(body,'triggered_planet_modifier')), 'Installed Vanilla must demonstrate triggered_planet_modifier in the requested blocker category');
-const vanillaGraphics = fs.readFileSync(path.join(vanillaRoot,'common/graphical_culture/00_graphical_culture.txt'),'utf8');
-assert.match(vanillaGraphics, /(?:^|\n)\s*fallen_machine_empire_01\s*=\s*\{/,'Installed Vanilla must define the selected Nullwarden graphical culture');
-const vanillaComponents = fs.readFileSync(path.join(vanillaRoot,'common/component_templates/00_utilities_roles.txt'),'utf8');
-assert.ok(vanillaComponents.includes('key = "COMBAT_COMPUTER_LINE_DEFAULT"'),'Installed Vanilla must define the selected Nullwarden combat computer');
-const vanillaBuildingDoc = fs.readFileSync(path.join(vanillaRoot,'common/buildings/00_example.txt'),'utf8');
-assert.match(vanillaBuildingDoc, /#\s*building_sets\s*=\s*\{/,'Installed Vanilla building example must document building_sets');
-assert.match(vanillaBuildingDoc, /#\s*resources\s*=\s*\{[\s\S]*?#\s*category\s*=\s*planet_buildings[\s\S]*?#\s*upkeep\s*=\s*\{[\s\S]*?#\s*cost\s*=\s*\{/,'Installed Vanilla building example must place cost/upkeep under resources');
+if (!sourceOnly) {
+  const vanillaBlockers = parse(fs.readFileSync(path.join(vanillaRoot,'common/deposits/01_blocker_deposits.txt'),'utf8'),'Vanilla 4.5.3 blocker deposits');
+  const vanillaCategories = parse(fs.readFileSync(path.join(vanillaRoot,'common/deposit_categories/00_deposit_categories.txt'),'utf8'),'Vanilla 4.5.3 deposit categories');
+  const blockerCategory = get(vanillaCategories,'deposit_cat_blockers');
+  assert.equal(get(blockerCategory,'blocker'),'yes','Vanilla category must mark deposit_cat_blockers as a Blocker category');
+  assert.ok(vanillaBlockers.some(([,body]) => Array.isArray(body) && get(body,'category') === 'deposit_cat_blockers' && get(body,'triggered_planet_modifier')), 'Installed Vanilla must demonstrate triggered_planet_modifier in the requested blocker category');
+  const vanillaGraphics = fs.readFileSync(path.join(vanillaRoot,'common/graphical_culture/00_graphical_culture.txt'),'utf8');
+  assert.match(vanillaGraphics, /(?:^|\n)\s*fallen_machine_empire_01\s*=\s*\{/,'Installed Vanilla must define the selected Nullwarden graphical culture');
+  const vanillaComponents = fs.readFileSync(path.join(vanillaRoot,'common/component_templates/00_utilities_roles.txt'),'utf8');
+  assert.ok(vanillaComponents.includes('key = "COMBAT_COMPUTER_LINE_DEFAULT"'),'Installed Vanilla must define the selected Nullwarden combat computer');
+  const vanillaBuildingDoc = fs.readFileSync(path.join(vanillaRoot,'common/buildings/00_example.txt'),'utf8');
+  assert.match(vanillaBuildingDoc, /#\s*building_sets\s*=\s*\{/,'Installed Vanilla building example must document building_sets');
+  assert.match(vanillaBuildingDoc, /#\s*resources\s*=\s*\{[\s\S]*?#\s*category\s*=\s*planet_buildings[\s\S]*?#\s*upkeep\s*=\s*\{[\s\S]*?#\s*cost\s*=\s*\{/,'Installed Vanilla building example must place cost/upkeep under resources');
+}
 
-console.log(`PASS: ${files.length} Clausewitz files parsed; event option scopes, feature states, deposit references, visible option resources, event sprites, stage/feature DE/EN keys, and installed Vanilla syntax validated.`);
+console.log(`PASS: ${files.length} Clausewitz files parsed; event option scopes, feature states, mod references, visible option resources, and stage/feature DE/EN keys validated${sourceOnly ? '; native Vanilla evidence explicitly skipped.' : ', including installed Vanilla syntax.'}`);
 
 module.exports = { parse, get, parsedByPath, sourceByPath, countDeep };

@@ -1,70 +1,66 @@
 # EPOCH Stable Releases
 
-`main` is the only release branch. Every successful push to `main` runs the Windows regression suite, creates a clean Stellaris package, and selects a stable version. Development branches and release candidates are outside this workflow.
+`main` is the stable branch. Each current, successful push runs the game-independent CI suite, packages the mod, uploads to the one configured Steam Workshop item, and publishes a normal GitHub Stable Release with the same version. The workflow uses `ubuntu-latest`; it does not install or require Stellaris, Vanilla files, the engine, local game logs, or save files.
 
-## Version selection and recovery
+## CI test selection
 
-The release tag format is `stable-vMAJOR.MINOR.PATCH`. If the current commit already has a matching stable tag, a retry reuses its version. Otherwise, the next patch after the greatest semantic version found among Git tags and GitHub Releases is selected. With no release tags/releases, the descriptor version (`0.1.0`) is used. Release tags point at the commit being packaged. GitHub Releases created by this workflow are published, non-draft, non-prerelease releases.
+The named CI entry point is `node scripts/test_release_ci.cjs`. It runs these checks in order and stops on the first failure:
 
-The version is substituted in a temporary copy of `descriptor.mod`; the source tree is never version-committed. The ZIP and Steam upload use the same staged tree and version. A serial GitHub Actions concurrency group prevents overlapping uploads. The ZIP contains `descriptor.mod` and the mod's `common/`, `events/`, `localisation/`, `gfx/`, `interface/`, and `compatibility/` directories when present. It excludes documentation, scripts, tests, Git data, and other development files.
+| Test | CI coverage |
+| --- | --- |
+| `test_phase_i_flow.cjs` | Parses EPOCH campaign scripts and checks flow gates and state dispatch. |
+| `test_clausewitz_structure.cjs --source-only` | Parses repository Clausewitz files and checks braces/scopes, mod deposit references, localization references, option-resource presentation rules, and bilingual keys. It prints that native Vanilla checks were skipped. |
+| `test_resonance.cjs --source-only` | Static checks and a bounded interpreter over EPOCH source. |
+| `test_tech_dependencies.cjs` | Checks all 44 EPOCH technologies for valid areas/tiers, defined internal prerequisites, duplicate definitions, and dependency cycles. External Vanilla prerequisite IDs are left to the local native test. |
+| `test_stellaris_runtime_log.cjs --self-test` | Exercises the diagnostic classifier using its embedded fixtures; it does not read a user's game logs. |
+| `test_stage_iv_d1.cjs` | Checks localization format, English/German parity, references, disclosure wording, and unchanged gameplay files against the fixed Git baseline. |
+| `test_stage_iv_d2.cjs --source-only` | Static numeric ledger, dependency/source audit, and gameplay immutability checks. It does not simulate engine behavior or AI. |
+| `test_epoch_release.cjs` | Version selection/reuse, package contents and exclusions, descriptor/version consistency, Workshop ID, and incomplete-configuration failures. |
 
-The run summary distinguishes a prepared package from a complete release. When no Workshop ID and no Steam credentials are configured, the workflow completes as package-only and retains a 14-day ZIP artifact; it creates neither a Workshop update nor a GitHub Release. A partial Steam configuration fails closed. A SteamCMD error prevents GitHub Release finalization. If Steam reports success but GitHub release creation fails, rerun the same workflow on the same commit: the version calculation is deterministic, the same Workshop item is updated, and the same release tag is recovered or created. If a tag already points at a different commit, the workflow stops for manual recovery.
+`test_clausewitz_structure.cjs` remains a full native-reference test by default. Its explicit `--source-only` mode skips only the assertions that open Vanilla files: the advisor event example, Vanilla event-picture sprite definitions, blocker/category/modifier definitions, graphical-culture and combat-computer definitions, and the Vanilla building example. The parser and all mod-source structural/reference assertions still run. No Vanilla fixtures are supplied to CI.
+
+The workflow does not run the full `scripts/test_epoch_regressions.ps1` because that suite includes local Stellaris dependencies. In particular, it omits `test_resonance_vanilla.cjs`, `test_narrative_ui.cjs`, native modes of `test_clausewitz_structure.cjs`, `test_stage_iii.cjs`, `test_stage_iv.cjs`, `test_stage_iv_b.cjs`, `test_epoch_core_production.cjs`, `test_epoch_core_icon.cjs`, `test_stage_iv_runtime_contracts.cjs`, `test_stage_iv_c.cjs`, and `test_stage_iv_c_runtime_contracts.cjs`. Those compare with installed game definitions, assets, generated script documentation, or local logs. The runtime-log test runs only its self-test mode. The full local regression suite and all connected gameplay/save-load/AI/multiplayer acceptance remain manual/local Stellaris work. A green CI run is not an Ingame-Abnahme.
+
+## Versioning, tags, and retries
+
+Tags use `stable-vMAJOR.MINOR.PATCH`. The workflow reads semantic versions from Git tags and GitHub Releases. With no previous release, it uses `0.1.0` from `descriptor.mod`; after that it increments the greatest existing patch version. A commit with an existing stable tag reuses that version on rerun.
+
+After the package and test suite pass, the workflow verifies that the event commit is still the current `main` head, then pushes an annotated stable tag for that commit before attempting Steam upload. That tag permanently reserves the version, including when Steam upload fails. A retry of the same commit reuses the reservation. Tags are never force-updated. The workflow serializes releases and checks freshness again before reserving; an old queued/manual run cannot start uploading after a newer commit is current on `main`. If `main` advances during an active upload, the current upload finishes first and the next serialized run publishes the new head.
+
+The descriptor version is changed only in a temporary staging copy. The ZIP and Steam upload use that same staged directory. GitHub Releases are created only after SteamCMD reports an upload success for the configured Workshop ID and the build VDF still names that ID. Steam failure or ambiguous Steam output fails the workflow and does not create/finalize the GitHub Release. If Steam succeeded but GitHub release creation failed, rerun the same current commit: its reserved tag fixes the version and the same existing Workshop item is updated again.
+
+The ZIP contains root `descriptor.mod` plus existing `common/`, `events/`, `localisation/`, `gfx/`, `interface/`, and `compatibility/` content. It excludes `docs/`, `scripts/`, `test-mods/`, `.github/`, hidden files, Git files, tests, and development material. Every prepared ZIP is retained as a 14-day Actions artifact, including package-only dry runs.
 
 ## GitHub Actions configuration
 
-Set these repository variables under **Settings → Secrets and variables → Actions → Variables**:
+Set this repository variable:
 
-| Name | Required | Value |
+| Name | Required | Meaning |
 | --- | --- | --- |
-| `EPOCH_VANILLA_ROOT` | Yes | Path on the Windows runner to the Stellaris 4.5.3 installation or its native script documentation. The existing regression suite uses it to compare against engine definitions. |
-| `EPOCH_LOG_DIRECTORY` | No | Existing Stellaris log directory to include in the regression report. If omitted, the workflow uses an empty temporary directory. |
-| `STEAM_WORKSHOP_ID` | For upload | Numeric ID of the single official EPOCH Workshop item. |
-| `STEAMCMD_EXE` | For upload | Absolute path to `steamcmd.exe` on the dedicated runner. |
+| `STEAM_WORKSHOP_ID` | For upload | Numeric ID of the one official EPOCH Workshop item. |
 
-Set these repository secrets after preparing Steam Guard:
+Set these repository secrets:
 
-| Name | Required | Value |
+| Name | Required | Meaning |
 | --- | --- | --- |
-| `STEAM_USERNAME` | For upload | Dedicated Steam publishing account username. |
+| `STEAM_USERNAME` | For upload | Steam account name authorized to update the EPOCH Workshop item. |
+| `STEAMCMD_CONFIG_VDF` | For upload | Base64 encoding of the `config/config.vdf` written by SteamCMD after a successful, Steam-Guard-authorized login. This file contains reusable Steam authentication state; protect and rotate it like a password. |
 
-For a package-only check, leave `STEAM_USERNAME` and the Workshop ID unset. For a forced dry run even after configuration, run **Actions → EPOCH Stable Release → Run workflow** and set `dry_run` to `true`. A workflow dispatch on a branch other than `main` is ignored.
+If all three are absent, a run builds and tests the package, saves the artifact, and reports **prepared only** without creating a tag, Steam upload, or GitHub Release. A partial configuration fails closed. A manual workflow run on `main` with `dry_run=true` always stops after preparation, even when Steam secrets exist. A dispatch from any other branch is ignored.
 
-### Runner and native test prerequisites
+## One-time Workshop and SteamCMD setup
 
-The workflow uses a dedicated Windows self-hosted runner labeled `epoch-steam`, PowerShell, Node 22, and GitHub CLI (`gh`). This is required because the existing regression suite compares against native Stellaris files and Steam Guard authorization must be established once on a persistent, controlled machine. Configure `EPOCH_VANILLA_ROOT` and `STEAMCMD_EXE` to paths available to the runner's service account. GitHub-hosted runners are ephemeral and cannot retain a trusted SteamCMD session between pushes. Do not use a self-hosted runner for untrusted pull request workflows.
+Use the existing official EPOCH Workshop item and its ID. If there is no item yet, create one regular public stable item once through the Stellaris mod publishing flow, set its visibility and description/images manually, and then save its numeric ID as `STEAM_WORKSHOP_ID`. The workflow always supplies this nonzero ID as `publishedfileid`; Steamworks documents that nonzero IDs update an existing item, while unset/zero IDs create one. The workflow omits description, preview, and visibility fields so it does not replace those settings. [Steamworks Workshop upload documentation](https://partner.steamgames.com/doc/features/workshop/implementation).
 
-## One-time Workshop setup
+Create a SteamCMD session for the authorized publishing account on a trusted machine. Install SteamCMD, log in interactively, enter the password only at its prompt, then complete the current Steam Guard challenge using the official Steam Mobile app/email method Steam requests. After a successful login, take the `config/config.vdf` created in that SteamCMD installation, base64-encode its bytes, and store the result as the GitHub Actions secret `STEAMCMD_CONFIG_VDF`. Do not copy a normal Steam client/browser session, print this file or encoded value, or put it in the repository, workflow artifacts, or logs. Steamworks advises preserving SteamCMD's `config.vdf` between runs; Steam Guard may still reject a fresh hosted-runner login, in which case this workflow aborts without a GitHub Release. [Steamworks SteamCMD login guidance](https://partner.steamgames.com/doc/sdk/uploading), [Steam Guard guidance](https://help.steampowered.com/en/faqs/view/06B0-26E6-2CF8-254C).
 
-If an official EPOCH item already exists, use its published Workshop ID and do not create another item. If none exists:
+On each hosted run, the secret is restored only into a temporary SteamCMD config file with owner-only permissions. SteamCMD output is captured and suppressed from logs; the workflow accepts only a recognized success message carrying the configured Workshop ID, a zero command exit, and a matching post-run VDF. If Steam Guard requires new authorization, refresh the session on a trusted machine through a normal interactive SteamCMD login and replace the secret. Do not disable or bypass Steam Guard.
 
-1. In Stellaris, create one regular Workshop mod item for EPOCH through the game's mod publishing flow. Publish it once with the normal EPOCH title, description, and artwork.
-2. In the item's Steam Workshop page, choose the intended public visibility and save the description and images. The workflow does not set visibility and omits description and preview fields from update metadata to preserve the page's existing presentation.
-3. Copy the numeric ID from that item's Workshop URL into the `STEAM_WORKSHOP_ID` repository variable.
-4. Do not change the ID later. Subsequent runs always set the existing `publishedfileid` in the SteamCMD VDF and never issue a create-item operation.
-5. Verify that the item's current description, preview image, visibility, and EPOCH content are correct before enabling the secrets.
+## First automatic upload checklist
 
-The initial item creation is a one-time manual step because the automated workflow must never create or select a second item. The actual upload verification must be run once after the ID and authentication are configured; it updates this same item.
-
-## Steam Guard setup
-
-Use a Steam account authorized to publish the mod and protect it with Steam Guard Mobile Authenticator. Steam Guard codes change every 30 seconds; Steam's documented login options are a mobile approval or a current code from the mobile app ([Steam Guard setup](https://help.steampowered.com/en/faqs/view/6891-E071-C9D9-0134), [Steam Guard details](https://help.steampowered.com/en/faqs/view/7EFD-3CAE-64D3-1C31)). Since this pipeline uses SteamCMD without bypassing the challenge or storing an authenticator secret in GitHub, prepare a dedicated self-hosted runner and authorize its SteamCMD login once:
-
-1. Install the Windows GitHub Actions runner as a dedicated Windows service account. Restrict the runner group to this repository and keep it off workflows that run code from forks or pull requests.
-2. Install SteamCMD in a persistent location accessible to that service account. Install/locate the licensed Stellaris 4.5.3 game files and configure the Actions variables `EPOCH_VANILLA_ROOT` and `STEAMCMD_EXE`.
-3. Start SteamCMD interactively as the runner service account. Run `login <SteamUsername>` and follow SteamCMD's password prompt; then enter the current Steam Guard code from the official Steam Mobile app or approve the login if Steam requests it. Complete any new-device confirmation and wait for SteamCMD to report successful login. Do not put the password or Guard code in shell history or command-line arguments.
-4. Exit SteamCMD normally so it can retain the trusted login state it created under that service account. Do not copy an existing browser cookie, `loginusers.vdf`, `config.vdf`, or Steam session from a developer PC. Keep the runner machine access restricted, encrypted, and dedicated to this repository; never include SteamCMD state in artifacts, logs, or the Git repository.
-5. Add `STEAM_USERNAME` as a GitHub Actions secret and `STEAM_WORKSHOP_ID` as a repository variable. The workflow invokes `steamcmd +login <username>` using the runner's own previously authorized SteamCMD session. It does not retrieve or print the session data. If Steam expires/revokes the session or requests Guard again, the upload fails closed; sign in interactively on that runner with a fresh Guard approval, then retry the same commit.
-
-This setup preserves Steam Guard authorization on a controlled runner instead of attempting an unattended code-generation or email challenge on disposable hosted runners. Do not disable Steam Guard. GitHub Secrets should be restricted to repository administrators.
-
-## First automatic release checklist
-
-1. Merge this draft PR to `main` only after review; the PR itself must not be merged by this task.
-2. Confirm the dedicated self-hosted runner is online, `EPOCH_VANILLA_ROOT` resolves to Stellaris 4.5.3/native definitions, and run the workflow once with `dry_run=true`.
-3. Confirm the output artifact has a root `descriptor.mod`, identical version in its manifest, and only required game content.
-4. Identify the existing official EPOCH item or manually create the single public stable item, then set `STEAM_WORKSHOP_ID`.
-5. Complete the interactive SteamCMD login and Steam Guard authorization on the dedicated runner, then configure `STEAM_USERNAME` as a repository secret. Confirm the account can publish Stellaris Workshop content.
-6. Run one controlled workflow dispatch on `main` with `dry_run=false`. Confirm the configured Workshop ID is returned by SteamCMD and the matching non-prerelease GitHub Release is created.
-7. Once that succeeds, future successful pushes to `main` perform the stable release automatically.
-
-No in-game gameplay test is run as part of the upload check. A failed regression, Steam Guard/authentication failure, or SteamCMD upload error blocks release finalization. A prepared ZIP remains available as a workflow artifact for investigation and retry.
+1. Review and merge PR #22; this task will not merge it.
+2. Run **Actions → EPOCH Stable Release → Run workflow** on `main` with `dry_run=true`. Confirm the 8 game-independent test commands pass and inspect the package artifact.
+3. Confirm or manually create the single official public Workshop entry; preserve its description and images, then set `STEAM_WORKSHOP_ID`.
+4. Perform an interactive SteamCMD login and Steam Guard authorization for an account that can update that item. Store the resulting SteamCMD `config/config.vdf` as the `STEAMCMD_CONFIG_VDF` secret and set `STEAM_USERNAME` as a secret.
+5. Dispatch once on `main` with `dry_run=false`. Verify the reported Workshop ID and matching GitHub release/tag/version. This real upload check is a publishing-function test, not a gameplay test.
+6. After the first successful setup, each current `main` push that passes the CI suite triggers the stable publication automatically.

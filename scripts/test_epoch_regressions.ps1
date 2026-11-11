@@ -494,6 +494,8 @@ Assert-Check ($LASTEXITCODE -eq 0) 'D1 bilingual text, BOM, references, reveal b
 Assert-Check ($LASTEXITCODE -eq 0) 'D2 arithmetic and bounded AI audit must pass (static only; unresolved retry behavior is not certified)'
 & node (Join-Path $PSScriptRoot 'test_epoch_release.cjs')
 Assert-Check ($LASTEXITCODE -eq 0) 'Stable release versioning, package exclusions, version consistency, Workshop ID and configuration checks must pass'
+& node (Join-Path $PSScriptRoot 'test_tech_dependencies.cjs') $Root --source-only
+Assert-Check ($LASTEXITCODE -eq 0) 'EPOCH technology prerequisite identifiers and dependency graph must be valid (source-only)'
 
 # Summarize existing test logs by source. Old EPOCH failures are reported as
 # evidence from the pre-fix run; unrelated-mod/base-game errors are separated.

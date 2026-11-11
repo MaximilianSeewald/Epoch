@@ -93,12 +93,17 @@ function validatePackage(root, version) {
 	return files.sort();
 }
 
-function validateWorkshopConfig({ workshopId, username }) {
+function validateWorkshopConfig({ workshopId, username, session }) {
 	const id = String(workshopId || '').trim();
 	const account = String(username || '').trim();
-	if (!id && !account) return { enabled: false, reason: 'Steam account and Workshop ID are not configured; package-only dry run' };
-	if (!id || !account) throw new Error('Steam upload configuration is incomplete; set both STEAM_WORKSHOP_ID and STEAM_USERNAME');
-	if (!/^\d{6,20}$/.test(id)) throw new Error('STEAM_WORKSHOP_ID must be a numeric Workshop item ID');
+	const authenticatedSession = String(session || '').trim();
+	if (!id && !account && !authenticatedSession) return { enabled: false, reason: 'Steam session and Workshop ID are not configured; package-only dry run' };
+	if (!id || !account || !authenticatedSession) throw new Error('Steam upload configuration is incomplete; set STEAM_WORKSHOP_ID, STEAM_USERNAME, and STEAMCMD_CONFIG_VDF');
+	if (!/^[1-9]\d{5,19}$/.test(id)) throw new Error('STEAM_WORKSHOP_ID must be a nonzero numeric Workshop item ID');
+	const base64 = authenticatedSession.replace(/\s+/g, '');
+	if (!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(base64) || !base64) {
+		throw new Error('STEAMCMD_CONFIG_VDF must be a base64-encoded SteamCMD config.vdf');
+	}
 	return { enabled: true, workshopId: id };
 }
 
