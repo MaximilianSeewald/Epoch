@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const release = require('./epoch_release.cjs');
+const steamcmdConfig = require('./steamcmd_config_path.cjs');
 
 let checks = 0;
 function check(fn) { fn(); checks++; }
@@ -26,6 +27,10 @@ check(() => assert.throws(() => release.validateWorkshopConfig({ username: 'u' }
 check(() => assert.throws(() => release.validateWorkshopConfig({ workshopId: '123456789', username: 'u' }), /incomplete/));
 check(() => assert.throws(() => release.validateWorkshopConfig({ workshopId: '123456789', username: 'u', session: 'not base64' }), /base64-encoded/));
 check(() => assert.equal(release.validateWorkshopConfig({ workshopId: '123456789', username: 'u', session: 'dGVzdA==' }).enabled, true));
+const isolatedHome = path.join(os.tmpdir(), 'epoch-steam-home');
+check(() => assert.equal(steamcmdConfig.resolveSteamcmdConfigPath(isolatedHome), path.join(isolatedHome, 'Steam', 'config', 'config.vdf')));
+check(() => assert.equal(steamcmdConfig.resolveSteamcmdConfigPath(path.join(isolatedHome, '..', 'epoch-steam-home')), path.join(isolatedHome, 'Steam', 'config', 'config.vdf')));
+check(() => assert.throws(() => steamcmdConfig.resolveSteamcmdConfigPath(''), /HOME must be provided/));
 
 const workflow = fs.readFileSync(path.join(__dirname, '..', '.github', 'workflows', 'stable-release.yml'), 'utf8');
 for (const [pattern, label] of [
@@ -37,11 +42,16 @@ for (const [pattern, label] of [
 	[/"publishedfileid"\s+"\$STEAM_WORKSHOP_ID"/, 'upload configured item ID'],
 	[/steam_failure_classification\.cjs/, 'SteamCMD success-result verification and fixed failure classification'],
 	[/stage=LOGIN category=OK/, 'Ubuntu SteamCMD login probe must succeed before upload'],
-	[/stage=CONFIG category=OK; saved config\.vdf restored after initialization/, 'saved session restored only after SteamCMD initialization'],
-	[/cleanup_steam\(\)[\s\S]*?rm -rf "\$steam_dir"/, 'SteamCMD session and working files removed after the step'],
+	[/steam_home="\$RUNNER_TEMP\/steam-home"[\s\S]*export HOME="\$steam_home"/, 'SteamCMD uses an isolated HOME under RUNNER_TEMP'],
+	[/steam_dir="\$steam_home\/Steam"/, 'SteamCMD installation and HOME-based runtime root converge'],
+	[/steamcmd_config_path\.cjs" "\$HOME"/, 'SteamCMD config path uses the tested Linux runtime resolver'],
+	[/> "\$config_path"[\s\S]*chmod 600 "\$config_path"/, 'decoded session is restored with owner-only permissions at the resolved path'],
+	[/stage=CONFIG category=OK; saved config\.vdf restored and verified at the isolated Linux runtime path before login/, 'saved session restored and checked after bootstrap, before login'],
+	[/cleanup_steam\(\)[\s\S]*?rm -rf "\$steam_dir" "\$steam_home"/, 'SteamCMD install, isolated session, and working files removed after the step'],
 	[/if: steps\.steam-upload\.outputs\.uploaded == 'true'/, 'GitHub Release waits for verified upload'],
 ]) check(() => assert.match(workflow, pattern, label));
 check(() => assert.ok(workflow.indexOf('init_output="$(./steamcmd.sh +quit') < workflow.indexOf('base64 --decode'), 'SteamCMD bootstrap precedes session restoration'));
+check(() => assert.ok(workflow.indexOf('[[ ! -s "$config_path" || ! -r "$config_path" ]]') < workflow.indexOf('login_output="$(./steamcmd.sh +login'), 'restored config is checked before the login probe'));
 check(() => assert.ok(workflow.indexOf('login_output="$(./steamcmd.sh +login') < workflow.indexOf('+workshop_build_item "$vdf"'), 'login probe precedes the Workshop upload'));
 check(() => assert.match(workflow, /login_category.*upload skipped/));
 check(() => assert.match(workflow, /unset output/));
