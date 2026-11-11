@@ -224,14 +224,25 @@ jobs:
           login_status=$?
           set -e
           set +e
-          login_category="$(printf '%s' "$login_output" | node "$GITHUB_WORKSPACE/scripts/steam_failure_classification.cjs" login "$login_status" 2>/dev/null)"
+          login_diagnostics="$(printf '%s' "$login_output" | node "$GITHUB_WORKSPACE/scripts/steam_failure_classification.cjs" login "$login_status" --diagnostics 2>/dev/null)"
           diagnose_status=$?
           set -e
           unset login_output
+          IFS=' ' read -r login_category login_exitcode_successful login_marker_recognized client_config_recognized user_info_recognized <<< "$login_diagnostics"
+          login_category="${login_category#category=}"
+          login_exitcode_successful="${login_exitcode_successful#exitcode_successful=}"
+          login_marker_recognized="${login_marker_recognized#login_marker_recognized=}"
+          client_config_recognized="${client_config_recognized#client_config_recognized=}"
+          user_info_recognized="${user_info_recognized#user_info_recognized=}"
+          unset login_diagnostics
           if [[ $diagnose_status -ne 0 || "$login_category" != OK ]]; then
             [[ -n "$login_category" ]] || login_category=STEAM_UNKNOWN_ERROR
-            echo "SteamCMD stage=LOGIN category=$login_category; upload skipped and output suppressed." >> "$GITHUB_STEP_SUMMARY"
-            echo "SteamCMD login probe failed (category=$login_category); upload skipped and output suppressed." >&2
+            [[ "$login_exitcode_successful" == yes ]] || login_exitcode_successful=no
+            [[ "$login_marker_recognized" == yes ]] || login_marker_recognized=no
+            [[ "$client_config_recognized" == yes ]] || client_config_recognized=no
+            [[ "$user_info_recognized" == yes ]] || user_info_recognized=no
+            echo "SteamCMD stage=LOGIN category=$login_category exitcode_successful=$login_exitcode_successful login_marker_recognized=$login_marker_recognized client_config_recognized=$client_config_recognized user_info_recognized=$user_info_recognized; output suppressed." >> "$GITHUB_STEP_SUMMARY"
+            echo "SteamCMD login probe failed (category=$login_category exitcode_successful=$login_exitcode_successful login_marker_recognized=$login_marker_recognized client_config_recognized=$client_config_recognized user_info_recognized=$user_info_recognized); upload skipped and output suppressed." >&2
             exit 1
           fi
           echo 'SteamCMD stage=LOGIN category=OK; Ubuntu login probe succeeded; output suppressed.' >> "$GITHUB_STEP_SUMMARY"

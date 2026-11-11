@@ -1,6 +1,8 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { spawnSync } = require('node:child_process');
+const path = require('node:path');
 const { verifySteamUpload } = require('./steam_upload_result.cjs');
 const { classifySteamFailure, diagnose } = require('./steam_failure_classification.cjs');
 const id = '1234567890123';
@@ -42,15 +44,36 @@ check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, out
 check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Logged in OK' }).ok, true));
 check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Logging in user \'private-user\' to Steam Public...OK\nWaiting for client config...OK\nWaiting for user info...OK' }).ok, true));
 const interleavedLoginOutputs = [
-  "Logging in user 'ACCOUNT' to Steam Public...OK\nWaiting for client config...Waiting for compat in post-logon took: 0.065615sOK\nWaiting for user info...OK",
-  "Logging in user 'ACCOUNT' to Steam Public...OK\nWaiting for client config...OK\nWaiting for user info...Waiting for compat in post-logon took: 0.066187sOK",
+  "WARNING: setlocale('en_US.UTF-8') failed, using locale: 'C'.\nLogging in using cached credentials.\nLogging in user 'ACCOUNT' to Steam Public...OK\nWaiting for client config...Waiting for compat in post-logon took: 0.065615sOK\nWaiting for user info...OK\nUnloading Steam API...OK",
+  "WARNING: setlocale('en_US.UTF-8') failed, using locale: 'C'.\nLogging in using cached credentials.\nLogging in user 'ACCOUNT' to Steam Public...OK\nWaiting for client config...OK\nWaiting for user info...Waiting for compat in post-logon took: 0.066187sOK\nUnloading Steam API...OK",
 ];
+const parserPath = path.join(__dirname, 'steam_failure_classification.cjs');
 for (const output of interleavedLoginOutputs) {
   check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output }).ok, true));
+  // Exercise the actual stdin CLI used in GitHub Actions, not only module helpers.
+  check(() => {
+    const result = spawnSync(process.execPath, [parserPath, 'login', '0'], { input: output, encoding: 'utf8' });
+    assert.equal(result.status, 0);
+    assert.equal(result.stdout, 'OK\n');
+    assert.equal(result.stderr, '');
+  });
   check(() => assert.deepEqual(
     classifySteamFailure({ stage: 'login', exitCode: 0, output: `${output}\nERROR! Login failed` }),
     { ok: false, category: 'STEAM_AUTH_FAILED' },
   ));
+  check(() => {
+    const result = spawnSync(process.execPath, [parserPath, 'login', '0'], { input: `${output}\nERROR! Login failed`, encoding: 'utf8' });
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, 'STEAM_AUTH_FAILED\n');
+    assert.equal(result.stderr, '');
+  });
+  check(() => {
+    const result = spawnSync(process.execPath, [parserPath, 'login', '0', '--diagnostics'], { input: `${output}\nERROR! Login failed`, encoding: 'utf8' });
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, 'category=STEAM_AUTH_FAILED exitcode_successful=yes login_marker_recognized=yes client_config_recognized=yes user_info_recognized=yes\n');
+    assert.equal(result.stderr, '');
+    assert.doesNotMatch(result.stdout, /ACCOUNT|setlocale|Steam Public/);
+  });
 }
 check(() => assert.equal(classifySteamFailure({
   stage: 'login',
@@ -62,6 +85,11 @@ check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, out
 check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 1, output: 'Logged in OK' }).ok, false));
 check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Logged in OK\noperation timed out' }).category, 'STEAM_NETWORK_ERROR'));
 check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'opaque response' }).category, 'STEAM_UNKNOWN_ERROR'));
+check(() => assert.equal(classifySteamFailure({
+  stage: 'login',
+  exitCode: 0,
+  output: "WARNING: setlocale('de_DE.UTF-8') failed, using locale: 'C'.\nLogged in OK",
+}).category, 'STEAM_UNKNOWN_ERROR'));
 check(() => assert.equal(classifySteamFailure({ stage: 'upload', exitCode: 0, output: 'opaque response' }).category, 'STEAM_UPLOAD_FAILED'));
 const secret = 'private-user Steam Guard code required 123456';
 check(() => assert.deepEqual(diagnose({ stage: 'login', exitCode: 1, output: secret }), { ok: false, category: 'STEAM_GUARD_REQUIRED' }));

@@ -54,6 +54,10 @@ check(() => assert.ok(workflow.indexOf('init_output="$(./steamcmd.sh +quit') < w
 check(() => assert.ok(workflow.indexOf('[[ ! -s "$config_path" || ! -r "$config_path" ]]') < workflow.indexOf('login_output="$(./steamcmd.sh +login'), 'restored config is checked before the login probe'));
 check(() => assert.ok(workflow.indexOf('login_output="$(./steamcmd.sh +login') < workflow.indexOf('+workshop_build_item "$vdf"'), 'login probe precedes the Workshop upload'));
 check(() => assert.match(workflow, /login_category.*upload skipped/));
+for (const marker of ['exitcode_successful', 'login_marker_recognized', 'client_config_recognized', 'user_info_recognized']) {
+	check(() => assert.match(workflow, new RegExp(marker), `failed login diagnostics include only the safe ${marker} marker`));
+}
+check(() => assert.match(workflow, /login_status" --diagnostics/));
 check(() => assert.match(workflow, /unset output/));
 const reservation = workflow.slice(workflow.indexOf('- name: Reserve release version for this commit'), workflow.indexOf('- name: Install SteamCMD and upload existing Workshop item'));
 for (const [pattern, label] of [
