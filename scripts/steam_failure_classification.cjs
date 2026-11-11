@@ -17,7 +17,11 @@ const patterns = [
 function hasCompletedLogin(text) {
   if (/\b(?:login to steam successful|logged in ok)\b/i.test(text)) return true;
 
-  const lines = text.split(/\r?\n/);
+  // SteamCMD can interleave this known timing status into either readiness
+  // marker. Remove only that exact message shape before checking the ordered
+  // login sequence; unrelated text remains subject to the strict parser.
+  const normalized = text.replace(/Waiting for compat in post-logon took: \d+(?:\.\d+)?s(?=OK|\s|$)/gi, '');
+  const lines = normalized.split(/\r?\n/);
   let loginAccepted = -1;
   let clientConfigReady = -1;
   let userInfoReady = -1;

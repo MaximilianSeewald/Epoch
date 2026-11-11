@@ -41,6 +41,22 @@ for (const [stage, output, category] of categories) {
 check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: "Login to Steam successful\nSteam Guard is enabled for this account" }).ok, true));
 check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Logged in OK' }).ok, true));
 check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Logging in user \'private-user\' to Steam Public...OK\nWaiting for client config...OK\nWaiting for user info...OK' }).ok, true));
+const interleavedLoginOutputs = [
+  "Logging in user 'ACCOUNT' to Steam Public...OK\nWaiting for client config...Waiting for compat in post-logon took: 0.065615sOK\nWaiting for user info...OK",
+  "Logging in user 'ACCOUNT' to Steam Public...OK\nWaiting for client config...OK\nWaiting for user info...Waiting for compat in post-logon took: 0.066187sOK",
+];
+for (const output of interleavedLoginOutputs) {
+  check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output }).ok, true));
+  check(() => assert.deepEqual(
+    classifySteamFailure({ stage: 'login', exitCode: 0, output: `${output}\nERROR! Login failed` }),
+    { ok: false, category: 'STEAM_AUTH_FAILED' },
+  ));
+}
+check(() => assert.equal(classifySteamFailure({
+  stage: 'login',
+  exitCode: 0,
+  output: "Logging in user 'ACCOUNT' to Steam Public...OK\nWaiting for client config...unrecognized textOK\nWaiting for user info...OK",
+}).category, 'STEAM_UNKNOWN_ERROR'));
 check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Logged in OK\nWaiting for user info...FAILED' }).category, 'STEAM_UNKNOWN_ERROR'));
 check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Logging in user \'private-user\' to Steam Public...OK\nWaiting for client config...OK\nLoading Steam API...OK' }).category, 'STEAM_UNKNOWN_ERROR'));
 check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 1, output: 'Logged in OK' }).ok, false));
