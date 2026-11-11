@@ -34,13 +34,31 @@ function hasCompletedLogin(text) {
   return loginAccepted >= 0 && clientConfigReady > loginAccepted && userInfoReady > clientConfigReady;
 }
 
+function loginMarkers(text) {
+  const normalized = text.replace(/Waiting for compat in post-logon took: \d+(?:\.\d+)?s(?=OK|\s|$)/gi, '');
+  const lines = normalized.split(/\r?\n/);
+  return {
+    loginMarkerRecognized: /\b(?:login to steam successful|logged in ok)\b/i.test(text)
+      || lines.some(line => /logging in user\b.*\bto steam\b.*\.\.\.\s*ok\s*$/i.test(line)),
+    clientConfigRecognized: lines.some(line => /waiting for client config\s*\.\.\.\s*ok\s*$/i.test(line)),
+    userInfoRecognized: lines.some(line => /waiting for user info\s*\.\.\.\s*ok\s*$/i.test(line)),
+  };
+}
+
+function withoutKnownHarmlessLocaleWarning(text) {
+  // This exact SteamCMD warning is benign. Keep the exception narrow so other
+  // occurrences of "failed" remain visible to the login failure classifier.
+  return text.replace(/^WARNING: setlocale\('en_US\.UTF-8'\) failed, using locale: 'C'\.\s*\r?\n?/gim, '');
+}
+
 function classifySteamFailure({ stage, exitCode, output }) {
   const text = typeof output === 'string' ? output : '';
   for (const [category, pattern] of patterns) {
     if (pattern.test(text)) return { ok: false, category };
   }
   if (stage === 'login') {
-    if (/\b(?:failed|failure|fatal error|timed? out|timeout)\b/i.test(text)) {
+    const failureText = withoutKnownHarmlessLocaleWarning(text);
+    if (/\b(?:failed|failure|fatal error|timed? out|timeout)\b/i.test(failureText)) {
       return { ok: false, category: 'STEAM_UNKNOWN_ERROR' };
     }
     if (Number(exitCode) === 0 && hasCompletedLogin(text)) return { ok: true, category: null };
@@ -62,7 +80,10 @@ function diagnose({ stage, exitCode, output, workshopId, resultVdf }) {
 }
 
 if (require.main === module) {
-  const [stage, exitArg, workshopId, vdfPath] = process.argv.slice(2);
+  const [stage, exitArg, ...args] = process.argv.slice(2);
+  const diagnostics = args.includes('--diagnostics');
+  const positional = args.filter(arg => arg !== '--diagnostics');
+  const [workshopId, vdfPath] = positional;
   let output = '';
   process.stdin.setEncoding('utf8');
   process.stdin.on('data', chunk => { output += chunk; });
@@ -74,9 +95,20 @@ if (require.main === module) {
     } catch {
       result = { ok: false, category: 'STEAM_UNKNOWN_ERROR' };
     }
-    process.stdout.write(result.ok ? 'OK\n' : `${result.category}\n`);
+    if (diagnostics && stage === 'login') {
+      const markers = loginMarkers(output);
+      process.stdout.write([
+        `category=${result.ok ? 'OK' : result.category}`,
+        `exitcode_successful=${Number(exitArg) === 0 ? 'yes' : 'no'}`,
+        `login_marker_recognized=${markers.loginMarkerRecognized ? 'yes' : 'no'}`,
+        `client_config_recognized=${markers.clientConfigRecognized ? 'yes' : 'no'}`,
+        `user_info_recognized=${markers.userInfoRecognized ? 'yes' : 'no'}`,
+      ].join(' ') + '\n');
+    } else {
+      process.stdout.write(result.ok ? 'OK\n' : `${result.category}\n`);
+    }
     if (!result.ok) process.exitCode = 1;
   });
 }
 
-module.exports = { classifySteamFailure, diagnose };
+module.exports = { classifySteamFailure, diagnose, loginMarkers };
