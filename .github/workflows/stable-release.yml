@@ -176,13 +176,16 @@ jobs:
           sudo dpkg --add-architecture i386
           sudo apt-get update
           sudo apt-get install -y lib32gcc-s1 lib32stdc++6
-          steam_dir="$RUNNER_TEMP/steamcmd"
+          steam_home="$RUNNER_TEMP/steam-home"
+          steam_dir="$steam_home/Steam"
           vdf="$RUNNER_TEMP/epoch-workshop.vdf"
           cleanup_steam() {
-            rm -rf "$steam_dir" "$RUNNER_TEMP/steamcmd.tar.gz" "$vdf"
+            rm -rf "$steam_dir" "$steam_home" "$RUNNER_TEMP/steamcmd.tar.gz" "$vdf"
           }
           trap cleanup_steam EXIT
-          mkdir -p "$steam_dir"
+          mkdir -p "$steam_dir" "$steam_home"
+          export HOME="$steam_home"
+          config_path="$(node "$GITHUB_WORKSPACE/scripts/steamcmd_config_path.cjs" "$HOME")"
           curl --fail --silent --show-error --location https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz -o "$RUNNER_TEMP/steamcmd.tar.gz"
           tar -xzf "$RUNNER_TEMP/steamcmd.tar.gz" -C "$steam_dir"
 
@@ -202,14 +205,19 @@ jobs:
           fi
           unset init_output
 
-          mkdir -p "$steam_dir/config"
-          if ! printf '%s' "$STEAMCMD_CONFIG_VDF" | base64 --decode 2>/dev/null > "$steam_dir/config/config.vdf" || [[ ! -s "$steam_dir/config/config.vdf" ]]; then
+          mkdir -p "$(dirname "$config_path")"
+          if ! printf '%s' "$STEAMCMD_CONFIG_VDF" | base64 --decode 2>/dev/null > "$config_path" || [[ ! -s "$config_path" ]]; then
             echo 'SteamCMD stage=CONFIG category=STEAM_UNKNOWN_ERROR; saved session could not be restored; output suppressed.' >> "$GITHUB_STEP_SUMMARY"
             echo 'SteamCMD saved session could not be restored (category=STEAM_UNKNOWN_ERROR).' >&2
             exit 1
           fi
-          chmod 600 "$steam_dir/config/config.vdf"
-          echo 'SteamCMD stage=CONFIG category=OK; saved config.vdf restored after initialization at the Linux SteamCMD config path.' >> "$GITHUB_STEP_SUMMARY"
+          chmod 600 "$config_path"
+          if [[ ! -s "$config_path" || ! -r "$config_path" ]]; then
+            echo 'SteamCMD stage=CONFIG category=STEAM_UNKNOWN_ERROR; restored config.vdf is missing or unreadable at the expected runtime path; output suppressed.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'SteamCMD config.vdf is missing or unreadable at the expected runtime path.' >&2
+            exit 1
+          fi
+          echo 'SteamCMD stage=CONFIG category=OK; saved config.vdf restored and verified at the isolated Linux runtime path before login.' >> "$GITHUB_STEP_SUMMARY"
 
           set +e
           login_output="$(./steamcmd.sh +login "$STEAM_USERNAME" +quit 2>&1)"
