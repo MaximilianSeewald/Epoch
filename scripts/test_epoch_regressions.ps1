@@ -492,6 +492,18 @@ Assert-Check ($LASTEXITCODE -eq 0) 'Reported C engine scope/count/implicit-asset
 Assert-Check ($LASTEXITCODE -eq 0) 'D1 bilingual text, BOM, references, reveal boundaries and unchanged gameplay must pass'
 & node (Join-Path $PSScriptRoot 'test_stage_iv_d2.cjs') $Root $VanillaRoot
 Assert-Check ($LASTEXITCODE -eq 0) 'D2 arithmetic and bounded AI audit must pass (static only; unresolved retry behavior is not certified)'
+& node (Join-Path $PSScriptRoot 'test_epoch_release.cjs')
+Assert-Check ($LASTEXITCODE -eq 0) 'Stable release versioning, package exclusions, version consistency, Workshop ID and configuration checks must pass'
+& node (Join-Path $PSScriptRoot 'test_tech_dependencies.cjs') $Root --source-only
+Assert-Check ($LASTEXITCODE -eq 0) 'EPOCH technology prerequisite identifiers and dependency graph must be valid (source-only)'
+& node (Join-Path $PSScriptRoot 'test_localization_consistency.cjs') $Root
+Assert-Check ($LASTEXITCODE -eq 0) 'General bilingual localization integrity must pass; new matched keys are permitted'
+& node (Join-Path $PSScriptRoot 'test_epoch_economy_consistency.cjs') $Root
+Assert-Check ($LASTEXITCODE -eq 0) 'Source-derived economy accounting identities must remain consistent'
+& node (Join-Path $PSScriptRoot 'test_steam_upload_result.cjs')
+Assert-Check ($LASTEXITCODE -eq 0) 'SteamCMD result parser positive and negative fixtures must pass'
+& node (Join-Path $PSScriptRoot 'test_release_ci_regression.cjs')
+Assert-Check ($LASTEXITCODE -eq 0) 'Release CI must accept valid post-baseline gameplay and bilingual localization additions'
 
 # Summarize existing test logs by source. Old EPOCH failures are reported as
 # evidence from the pre-fix run; unrelated-mod/base-game errors are separated.

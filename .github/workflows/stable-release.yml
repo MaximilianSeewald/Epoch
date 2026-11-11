@@ -1,0 +1,239 @@
+name: EPOCH Stable Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Build and validate the package without uploading or creating a release
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: epoch-stable-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run game-independent CI tests
+        run: node scripts/test_release_ci.cjs
+
+      - name: Check current main commit
+        id: freshness
+        shell: bash
+        run: |
+          git fetch --no-tags origin main
+          current_main="$(git rev-parse FETCH_HEAD)"
+          if [[ "$current_main" != "$GITHUB_SHA" ]]; then
+            echo 'current=false' >> "$GITHUB_OUTPUT"
+            echo "Skipped stale commit $GITHUB_SHA; current main is $current_main. No version was reserved or published." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Select stable version
+        id: version
+        if: steps.freshness.outputs.current == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          tags=()
+          while read -r name _; do
+            [[ -z "$name" ]] && continue
+            commit="$(git rev-list -n 1 "$name")"
+            tags+=("$name=$commit")
+          done < <(git for-each-ref --format='%(refname:short) %(objectname)' refs/tags)
+
+          while read -r name; do
+            [[ -z "$name" ]] && continue
+            present=false
+            for tag in "${tags[@]}"; do [[ "${tag%%=*}" == "$name" ]] && present=true && break; done
+            [[ "$present" == true ]] || tags+=("$name=")
+          done < <(gh release list --limit 1000 --json tagName --jq '.[].tagName')
+
+          result="$(node scripts/epoch_release.cjs version "$GITHUB_WORKSPACE" "$GITHUB_SHA" "${tags[@]}")"
+          version="$(node -e 'process.stdout.write(JSON.parse(process.argv[1]).version)' "$result")"
+          tag="$(node -e 'process.stdout.write(JSON.parse(process.argv[1]).tag)' "$result")"
+          reused="$(node -e 'process.stdout.write(String(JSON.parse(process.argv[1]).reused))' "$result")"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "reused=$reused" >> "$GITHUB_OUTPUT"
+          echo "Selected EPOCH $version ($tag); existing commit tag reused: $reused." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build and validate package
+        id: package
+        if: steps.freshness.outputs.current == 'true'
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        shell: bash
+        run: |
+          stage="$RUNNER_TEMP/epoch-mod-package"
+          zipfile="$RUNNER_TEMP/EPOCH-$RELEASE_VERSION.zip"
+          rm -rf "$stage"
+          rm -f "$zipfile"
+          node scripts/epoch_release.cjs package "$GITHUB_WORKSPACE" "$stage" "$RELEASE_VERSION"
+          mkdir -p "$stage"
+          (cd "$stage" && zip -qr "$zipfile" .)
+          test -s "$zipfile"
+          echo "package=$stage" >> "$GITHUB_OUTPUT"
+          echo "zip=$zipfile" >> "$GITHUB_OUTPUT"
+          echo "Prepared validated package and ZIP for EPOCH $RELEASE_VERSION ($(stat -c%s "$zipfile") bytes)." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Preserve prepared package for recovery
+        if: steps.freshness.outputs.current == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: EPOCH-${{ steps.version.outputs.version }}-${{ github.sha }}
+          path: ${{ runner.temp }}/EPOCH-${{ steps.version.outputs.version }}.zip
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Check Steam upload configuration
+        id: steam-config
+        if: steps.freshness.outputs.current == 'true'
+        env:
+          STEAM_WORKSHOP_ID: ${{ vars.STEAM_WORKSHOP_ID }}
+          STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+          STEAMCMD_CONFIG_VDF: ${{ secrets.STEAMCMD_CONFIG_VDF }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        shell: bash
+        run: |
+          if [[ "$DRY_RUN" == true ]]; then
+            echo 'upload=false' >> "$GITHUB_OUTPUT"
+            echo 'Prepared-only result: dry run requested; no Steam upload or GitHub Release was published.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          result="$(node -e 'const r=require("./scripts/epoch_release.cjs");console.log(JSON.stringify(r.validateWorkshopConfig({workshopId:process.env.STEAM_WORKSHOP_ID,username:process.env.STEAM_USERNAME,session:process.env.STEAMCMD_CONFIG_VDF})))')"
+          enabled="$(node -e 'process.stdout.write(String(JSON.parse(process.argv[1]).enabled))' "$result")"
+          if [[ "$enabled" != true ]]; then
+            echo 'upload=false' >> "$GITHUB_OUTPUT"
+            echo 'Prepared-only result: Steam session and Workshop ID are not configured; no upload or GitHub Release was published.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'upload=true' >> "$GITHUB_OUTPUT"
+            echo "Steam upload configured for the existing Workshop item $STEAM_WORKSHOP_ID." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Reserve release version for this commit
+        id: reservation
+        if: steps.steam-config.outputs.upload == 'true'
+        env:
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+        shell: bash
+        run: |
+          git fetch --no-tags origin main
+          current_main="$(git rev-parse FETCH_HEAD)"
+          if [[ "$current_main" != "$GITHUB_SHA" ]]; then
+            echo "The workflow commit $GITHUB_SHA is stale; current main is $current_main. Refusing to upload or create a release." >&2
+            exit 1
+          fi
+          existing="$(git rev-parse -q --verify "refs/tags/$RELEASE_TAG^{commit}" || true)"
+          if [[ -n "$existing" ]]; then
+            [[ "$existing" == "$GITHUB_SHA" ]] || { echo "Tag $RELEASE_TAG belongs to another commit; refusing to continue." >&2; exit 1; }
+          else
+            git config --local user.name "github-actions[bot]"
+            git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git config --local tag.gpgSign false
+            git tag -a "$RELEASE_TAG" "$GITHUB_SHA" -m "Reserve EPOCH stable ${{ steps.version.outputs.version }} for $GITHUB_SHA"
+            git push origin "refs/tags/$RELEASE_TAG"
+          fi
+          echo 'reserved=true' >> "$GITHUB_OUTPUT"
+          echo "Version ${{ steps.version.outputs.version }} is permanently reserved by tag $RELEASE_TAG for commit $GITHUB_SHA." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install SteamCMD and upload existing Workshop item
+        id: steam-upload
+        if: steps.reservation.outputs.reserved == 'true'
+        env:
+          STEAM_WORKSHOP_ID: ${{ vars.STEAM_WORKSHOP_ID }}
+          STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+          STEAMCMD_CONFIG_VDF: ${{ secrets.STEAMCMD_CONFIG_VDF }}
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+          COMMIT_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y lib32gcc-s1 lib32stdc++6
+          steam_dir="$RUNNER_TEMP/steamcmd"
+          mkdir -p "$steam_dir/config"
+          curl --fail --silent --show-error --location https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz -o "$RUNNER_TEMP/steamcmd.tar.gz"
+          tar -xzf "$RUNNER_TEMP/steamcmd.tar.gz" -C "$steam_dir"
+          printf '%s' "$STEAMCMD_CONFIG_VDF" | base64 --decode > "$steam_dir/config/config.vdf"
+          chmod 600 "$steam_dir/config/config.vdf"
+
+          package="$RUNNER_TEMP/epoch-mod-package"
+          vdf="$RUNNER_TEMP/epoch-workshop.vdf"
+          cat > "$vdf" <<EOF
+          "workshopitem"
+          {
+            "appid" "281990"
+            "publishedfileid" "$STEAM_WORKSHOP_ID"
+            "contentfolder" "$package"
+            "changenote" "EPOCH $RELEASE_VERSION | commit $COMMIT_SHA"
+          }
+          EOF
+          chmod 600 "$vdf"
+
+          cd "$steam_dir"
+          set +e
+          output="$(./steamcmd.sh +login "$STEAM_USERNAME" +workshop_build_item "$vdf" +quit 2>&1)"
+          status=$?
+          set -e
+          if [[ $status -ne 0 ]]; then
+            echo "SteamCMD authentication/upload failed (exit $status); output was suppressed to protect account/session data." >> "$GITHUB_STEP_SUMMARY"
+            echo 'SteamCMD failed; GitHub Release was not created.' >&2
+            exit 1
+          fi
+          if ! printf '%s' "$output" | node "$GITHUB_WORKSPACE/scripts/steam_upload_result.cjs" "$status" "$STEAM_WORKSHOP_ID" "$vdf" >/dev/null; then
+            echo 'SteamCMD upload result was not positively verified for the configured Workshop item; GitHub Release was not created. Raw output was suppressed.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'SteamCMD upload result could not be verified; output suppressed and GitHub Release was not created.' >&2
+            exit 1
+          fi
+          echo 'uploaded=true' >> "$GITHUB_OUTPUT"
+          echo "SteamCMD confirmed an update to existing Workshop item $STEAM_WORKSHOP_ID for EPOCH $RELEASE_VERSION ($COMMIT_SHA)." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Finalize GitHub stable release
+        if: steps.steam-upload.outputs.uploaded == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+          RELEASE_ZIP: ${{ steps.package.outputs.zip }}
+          COMMIT_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag_commit="$(git rev-parse "$RELEASE_TAG^{commit}")"
+          [[ "$tag_commit" == "$COMMIT_SHA" ]] || { echo 'Release tag does not resolve to this commit.' >&2; exit 1; }
+          if gh release view "$RELEASE_TAG" --json tagName,isDraft,isPrerelease > "$RUNNER_TEMP/release.json" 2>/dev/null; then
+            draft="$(jq -r '.isDraft' "$RUNNER_TEMP/release.json")"
+            prerelease="$(jq -r '.isPrerelease' "$RUNNER_TEMP/release.json")"
+            [[ "$draft" == false && "$prerelease" == false ]] || { echo 'Existing GitHub release is not a published stable release.' >&2; exit 1; }
+            gh release upload "$RELEASE_TAG" "$RELEASE_ZIP" --clobber
+          else
+            printf 'EPOCH Stable %s\n\nCommit: `%s`\n\nValidated package and Steam Workshop update completed.\n' "$RELEASE_VERSION" "$COMMIT_SHA" > "$RUNNER_TEMP/release-notes.md"
+            gh release create "$RELEASE_TAG" "$RELEASE_ZIP" --verify-tag --title "EPOCH $RELEASE_VERSION" --notes-file "$RUNNER_TEMP/release-notes.md"
+          fi
+          echo "Complete stable release: EPOCH $RELEASE_VERSION, tag $RELEASE_TAG, commit $COMMIT_SHA. Steam Workshop and GitHub release succeeded." >> "$GITHUB_STEP_SUMMARY"
