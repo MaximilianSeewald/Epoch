@@ -2,6 +2,7 @@
 
 const assert = require('node:assert/strict');
 const { verifySteamUpload } = require('./steam_upload_result.cjs');
+const { classifySteamFailure, diagnose } = require('./steam_failure_classification.cjs');
 const id = '1234567890123';
 const vdf = `"workshopitem"\n{\n  "publishedfileid" "${id}"\n}\n`;
 const verify = (output, options = {}) => verifySteamUpload({ exitCode: 0, output, configuredWorkshopId: id, resultVdf: vdf, ...options });
@@ -22,4 +23,25 @@ check(() => assert.equal(verify('Success. Published file update: 1234567890123\n
 check(() => assert.equal(verify('Success. Published file update: 1234567890123', { configuredWorkshopId: '0' }).ok, false));
 check(() => assert.equal(verify('Success. Published file update').ok, false));
 
-console.log(`PASS: ${checks} SteamCMD output and ID verification cases; no output contents are emitted.`);
+const categories = [
+  ['login', 'Two-factor authentication code required', 'STEAM_GUARD_REQUIRED'],
+  ['login', 'Invalid Password', 'STEAM_AUTH_FAILED'],
+  ['login', 'Session expired; please log in again', 'STEAM_SESSION_EXPIRED'],
+  ['login', 'Invalid Steam session', 'STEAM_SESSION_EXPIRED'],
+  ['upload', 'Access Denied while updating workshop item', 'STEAM_WORKSHOP_PERMISSION_DENIED'],
+  ['upload', 'You are not allowed to update this workshop item', 'STEAM_WORKSHOP_PERMISSION_DENIED'],
+  ['upload', 'ERROR! Upload failed', 'STEAM_UPLOAD_FAILED'],
+  ['upload', 'Failed to connect to Steam servers', 'STEAM_NETWORK_ERROR'],
+  ['upload', 'opaque account-specific response', 'STEAM_UNKNOWN_ERROR'],
+];
+for (const [stage, output, category] of categories) {
+  check(() => assert.deepEqual(classifySteamFailure({ stage, exitCode: 1, output }), { ok: false, category }));
+}
+check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'Login to Steam successful' }).ok, true));
+check(() => assert.equal(classifySteamFailure({ stage: 'login', exitCode: 0, output: 'opaque response' }).category, 'STEAM_UNKNOWN_ERROR'));
+check(() => assert.equal(classifySteamFailure({ stage: 'upload', exitCode: 0, output: 'opaque response' }).category, 'STEAM_UPLOAD_FAILED'));
+const secret = 'private-user Steam Guard 123456';
+check(() => assert.deepEqual(diagnose({ stage: 'login', exitCode: 1, output: secret }), { ok: false, category: 'STEAM_GUARD_REQUIRED' }));
+check(() => assert.doesNotMatch(JSON.stringify(diagnose({ stage: 'login', exitCode: 1, output: secret })), /private-user|123456/));
+
+console.log(`PASS: ${checks} SteamCMD result and safe failure-classification cases; no output contents are emitted.`);

@@ -177,14 +177,58 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y lib32gcc-s1 lib32stdc++6
           steam_dir="$RUNNER_TEMP/steamcmd"
-          mkdir -p "$steam_dir/config"
+          vdf="$RUNNER_TEMP/epoch-workshop.vdf"
+          cleanup_steam() {
+            rm -rf "$steam_dir" "$RUNNER_TEMP/steamcmd.tar.gz" "$vdf"
+          }
+          trap cleanup_steam EXIT
+          mkdir -p "$steam_dir"
           curl --fail --silent --show-error --location https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz -o "$RUNNER_TEMP/steamcmd.tar.gz"
           tar -xzf "$RUNNER_TEMP/steamcmd.tar.gz" -C "$steam_dir"
-          printf '%s' "$STEAMCMD_CONFIG_VDF" | base64 --decode > "$steam_dir/config/config.vdf"
+
+          # First bootstrap SteamCMD without the saved session so self-update
+          # cannot replace or reinterpret the restored config.vdf.
+          cd "$steam_dir"
+          set +e
+          init_output="$(./steamcmd.sh +quit 2>&1)"
+          init_status=$?
+          set -e
+          if [[ $init_status -ne 0 ]]; then
+            category="$(printf '%s' "$init_output" | node "$GITHUB_WORKSPACE/scripts/steam_failure_classification.cjs" initialize "$init_status" 2>/dev/null || true)"
+            [[ -n "$category" ]] || category=STEAM_UNKNOWN_ERROR
+            echo "SteamCMD stage=INITIALIZE category=$category; output suppressed." >> "$GITHUB_STEP_SUMMARY"
+            echo "SteamCMD initialization failed (category=$category); output suppressed." >&2
+            exit 1
+          fi
+          unset init_output
+
+          mkdir -p "$steam_dir/config"
+          if ! printf '%s' "$STEAMCMD_CONFIG_VDF" | base64 --decode 2>/dev/null > "$steam_dir/config/config.vdf" || [[ ! -s "$steam_dir/config/config.vdf" ]]; then
+            echo 'SteamCMD stage=CONFIG category=STEAM_UNKNOWN_ERROR; saved session could not be restored; output suppressed.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'SteamCMD saved session could not be restored (category=STEAM_UNKNOWN_ERROR).' >&2
+            exit 1
+          fi
           chmod 600 "$steam_dir/config/config.vdf"
+          echo 'SteamCMD stage=CONFIG category=OK; saved config.vdf restored after initialization at the Linux SteamCMD config path.' >> "$GITHUB_STEP_SUMMARY"
+
+          set +e
+          login_output="$(./steamcmd.sh +login "$STEAM_USERNAME" +quit 2>&1)"
+          login_status=$?
+          set -e
+          set +e
+          login_category="$(printf '%s' "$login_output" | node "$GITHUB_WORKSPACE/scripts/steam_failure_classification.cjs" login "$login_status" 2>/dev/null)"
+          diagnose_status=$?
+          set -e
+          unset login_output
+          if [[ $diagnose_status -ne 0 || "$login_category" != OK ]]; then
+            [[ -n "$login_category" ]] || login_category=STEAM_UNKNOWN_ERROR
+            echo "SteamCMD stage=LOGIN category=$login_category; upload skipped and output suppressed." >> "$GITHUB_STEP_SUMMARY"
+            echo "SteamCMD login probe failed (category=$login_category); upload skipped and output suppressed." >&2
+            exit 1
+          fi
+          echo 'SteamCMD stage=LOGIN category=OK; Ubuntu login probe succeeded; output suppressed.' >> "$GITHUB_STEP_SUMMARY"
 
           package="$RUNNER_TEMP/epoch-mod-package"
-          vdf="$RUNNER_TEMP/epoch-workshop.vdf"
           cat > "$vdf" <<EOF
           "workshopitem"
           {
@@ -196,19 +240,19 @@ jobs:
           EOF
           chmod 600 "$vdf"
 
-          cd "$steam_dir"
           set +e
           output="$(./steamcmd.sh +login "$STEAM_USERNAME" +workshop_build_item "$vdf" +quit 2>&1)"
           status=$?
           set -e
-          if [[ $status -ne 0 ]]; then
-            echo "SteamCMD authentication/upload failed (exit $status); output was suppressed to protect account/session data." >> "$GITHUB_STEP_SUMMARY"
-            echo 'SteamCMD failed; GitHub Release was not created.' >&2
-            exit 1
-          fi
-          if ! printf '%s' "$output" | node "$GITHUB_WORKSPACE/scripts/steam_upload_result.cjs" "$status" "$STEAM_WORKSHOP_ID" "$vdf" >/dev/null; then
-            echo 'SteamCMD upload result was not positively verified for the configured Workshop item; GitHub Release was not created. Raw output was suppressed.' >> "$GITHUB_STEP_SUMMARY"
-            echo 'SteamCMD upload result could not be verified; output suppressed and GitHub Release was not created.' >&2
+          set +e
+          category="$(printf '%s' "$output" | node "$GITHUB_WORKSPACE/scripts/steam_failure_classification.cjs" upload "$status" "$STEAM_WORKSHOP_ID" "$vdf" 2>/dev/null)"
+          diagnose_status=$?
+          set -e
+          unset output
+          if [[ $diagnose_status -ne 0 || "$category" != OK ]]; then
+            [[ -n "$category" ]] || category=STEAM_UNKNOWN_ERROR
+            echo "SteamCMD stage=UPLOAD category=$category; GitHub Release was not created; output suppressed." >> "$GITHUB_STEP_SUMMARY"
+            echo "SteamCMD upload failed (category=$category); output suppressed and GitHub Release was not created." >&2
             exit 1
           fi
           echo 'uploaded=true' >> "$GITHUB_OUTPUT"

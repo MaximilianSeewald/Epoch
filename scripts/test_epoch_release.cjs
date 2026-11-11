@@ -13,6 +13,7 @@ check(() => assert.deepEqual(release.parseVersion('name="EPOCH"\nversion="0.1.0"
 check(() => assert.equal(release.selectVersion({ tags: [], commit: 'abc', baseVersion: [0, 1, 0] }).version, '0.1.0'));
 check(() => assert.deepEqual(release.parseStableTag('0.1.0'), [0, 1, 0]));
 check(() => assert.equal(release.selectVersion({ tags: [{ name: 'stable-v0.1.1', commit: 'old' }], commit: 'new' }).version, '0.1.2'));
+check(() => assert.equal(release.selectVersion({ tags: [{ name: 'stable-v0.1.0', commit: 'reserved' }], commit: 'new' }).version, '0.1.1'));
 check(() => assert.deepEqual(release.selectVersion({ tags: [{ name: 'stable-v0.1.3', commit: 'same' }], commit: 'same' }), { version: '0.1.3', tag: 'stable-v0.1.3', reused: true }));
 check(() => assert.equal(release.selectVersion({ tags: [{ name: 'stable-v0.1.3', commit: 'same' }, { name: 'stable-v0.1.2', commit: 'same' }], commit: 'same' }).version, '0.1.3'));
 check(() => assert.throws(() => release.parseVersion('version="latest"'), /semantic version/));
@@ -34,9 +35,16 @@ for (const [pattern, label] of [
 	[/git tag -a/, 'per-commit annotated version reservation'],
 	[/git push origin "refs\/tags\/\$RELEASE_TAG"/, 'remote permanent tag reservation'],
 	[/"publishedfileid"\s+"\$STEAM_WORKSHOP_ID"/, 'upload configured item ID'],
-	[/steam_upload_result\.cjs/, 'SteamCMD success-result and configured-ID verification'],
+	[/steam_failure_classification\.cjs/, 'SteamCMD success-result verification and fixed failure classification'],
+	[/stage=LOGIN category=OK/, 'Ubuntu SteamCMD login probe must succeed before upload'],
+	[/stage=CONFIG category=OK; saved config\.vdf restored after initialization/, 'saved session restored only after SteamCMD initialization'],
+	[/cleanup_steam\(\)[\s\S]*?rm -rf "\$steam_dir"/, 'SteamCMD session and working files removed after the step'],
 	[/if: steps\.steam-upload\.outputs\.uploaded == 'true'/, 'GitHub Release waits for verified upload'],
 ]) check(() => assert.match(workflow, pattern, label));
+check(() => assert.ok(workflow.indexOf('init_output="$(./steamcmd.sh +quit') < workflow.indexOf('base64 --decode'), 'SteamCMD bootstrap precedes session restoration'));
+check(() => assert.ok(workflow.indexOf('login_output="$(./steamcmd.sh +login') < workflow.indexOf('+workshop_build_item "$vdf"'), 'login probe precedes the Workshop upload'));
+check(() => assert.match(workflow, /login_category.*upload skipped/));
+check(() => assert.match(workflow, /unset output/));
 const reservation = workflow.slice(workflow.indexOf('- name: Reserve release version for this commit'), workflow.indexOf('- name: Install SteamCMD and upload existing Workshop item'));
 for (const [pattern, label] of [
 	[/git config --local user\.name "github-actions\[bot\]"/, 'tag author is explicitly configured'],
