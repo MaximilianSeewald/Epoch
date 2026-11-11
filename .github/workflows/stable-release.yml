@@ -202,13 +202,9 @@ jobs:
             echo 'SteamCMD failed; GitHub Release was not created.' >&2
             exit 1
           fi
-          if ! grep -Eiq "Success\..*(Published File ID|Published file update):[[:space:]]*$STEAM_WORKSHOP_ID|Success\..*Workshop.*$STEAM_WORKSHOP_ID" <<< "$output"; then
-            echo 'SteamCMD returned without a recognized success result for the configured Workshop item; GitHub Release was not created.' >> "$GITHUB_STEP_SUMMARY"
-            echo 'SteamCMD upload result could not be verified; GitHub Release was not created.' >&2
-            exit 1
-          fi
-          if ! grep -Eiq "^[[:space:]]*\"publishedfileid\"[[:space:]]+\"$STEAM_WORKSHOP_ID\"[[:space:]]*$" "$vdf"; then
-            echo 'SteamCMD result VDF does not match the configured Workshop item; GitHub Release was not created.' >&2
+          if ! printf '%s' "$output" | node "$GITHUB_WORKSPACE/scripts/steam_upload_result.cjs" "$status" "$STEAM_WORKSHOP_ID" "$vdf" >/dev/null; then
+            echo 'SteamCMD upload result was not positively verified for the configured Workshop item; GitHub Release was not created. Raw output was suppressed.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'SteamCMD upload result could not be verified; output suppressed and GitHub Release was not created.' >&2
             exit 1
           fi
           echo 'uploaded=true' >> "$GITHUB_OUTPUT"

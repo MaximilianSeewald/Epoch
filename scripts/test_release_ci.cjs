@@ -1,34 +1,42 @@
 'use strict';
 
-// Deliberately game-independent CI test set. Native/Vanilla integration
-// assertions remain in the existing full regression suite and are not mocked.
+// Deliberately game-independent CI test set. Historical D1/D2 immutability
+// checks remain locally runnable but are not a permanent release gate.
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
-const root = path.resolve(__dirname, '..');
+const defaultRoot = path.resolve(__dirname, '..');
 const cases = [
-	['test_phase_i_flow.cjs', [root]],
-	['test_clausewitz_structure.cjs', [root, '--source-only']],
-	['test_resonance.cjs', [root, '--source-only']],
-	['test_tech_dependencies.cjs', [root, '--source-only']],
-	['test_stellaris_runtime_log.cjs', ['--self-test']],
-	['test_stage_iv_d1.cjs', []],
-	['test_stage_iv_d2.cjs', [root, '--source-only']],
-	['test_epoch_release.cjs', []],
+  ['test_phase_i_flow.cjs', root => [root]],
+  ['test_clausewitz_structure.cjs', root => [root, '--source-only']],
+  ['test_resonance.cjs', root => [root, '--source-only']],
+  ['test_tech_dependencies.cjs', root => [root, '--source-only']],
+  ['test_localization_consistency.cjs', root => [root]],
+  ['test_epoch_economy_consistency.cjs', root => [root]],
+  ['test_stellaris_runtime_log.cjs', () => ['--self-test']],
+  ['test_steam_upload_result.cjs', () => []],
+  ['test_release_ci_regression.cjs', () => []],
+  ['test_epoch_release.cjs', () => []],
 ];
 
-for (const [name, args] of cases) {
-	process.stdout.write(`\n=== ${name} ===\n`);
-	const result = spawnSync(process.execPath, [path.join(__dirname, name), ...args], {
-		cwd: root,
-		stdio: 'inherit',
-		env: process.env,
-	});
-	if (result.error) throw result.error;
-	if (result.status !== 0) {
-		process.stderr.write(`FAIL: game-independent CI test ${name} exited ${result.status}\n`);
-		process.exit(result.status || 1);
-	}
+function runCiTests(root = defaultRoot, { includeRegression = true } = {}) {
+  const selected = includeRegression ? cases : cases.filter(([name]) => name !== 'test_release_ci_regression.cjs');
+  for (const [name, argsForRoot] of selected) {
+    process.stdout.write(`\n=== ${name} ===\n`);
+    const result = spawnSync(process.execPath, [path.join(root, 'scripts', name), ...argsForRoot(root)], {
+      cwd: root,
+      stdio: 'inherit',
+      env: process.env,
+    });
+    if (result.error) throw result.error;
+    if (result.status !== 0) {
+      process.stderr.write(`FAIL: game-independent CI test ${name} exited ${result.status}\n`);
+      return result.status || 1;
+    }
+  }
+  process.stdout.write(`\nPASS: all ${selected.length} game-independent CI test commands passed. This does not establish in-game acceptance.\n`);
+  return 0;
 }
 
-process.stdout.write(`\nPASS: all ${cases.length} game-independent CI test commands passed. This does not establish in-game acceptance.\n`);
+if (require.main === module) process.exit(runCiTests(process.env.EPOCH_CI_ROOT || defaultRoot));
+module.exports = { runCiTests };

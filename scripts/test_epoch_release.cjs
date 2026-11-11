@@ -34,7 +34,7 @@ for (const [pattern, label] of [
 	[/git tag -a/, 'per-commit annotated version reservation'],
 	[/git push origin "refs\/tags\/\$RELEASE_TAG"/, 'remote permanent tag reservation'],
 	[/"publishedfileid"\s+"\$STEAM_WORKSHOP_ID"/, 'upload configured item ID'],
-	[/Success\\\..*Published file update/, 'SteamCMD success-result verification'],
+	[/steam_upload_result\.cjs/, 'SteamCMD success-result and configured-ID verification'],
 	[/if: steps\.steam-upload\.outputs\.uploaded == 'true'/, 'GitHub Release waits for verified upload'],
 ]) check(() => assert.match(workflow, pattern, label));
 check(() => assert.doesNotMatch(workflow, /EPOCH_VANILLA_ROOT|EPOCH_LOG_DIRECTORY|STEAM_PASSWORD|STEAM_GUARD_CODE/, 'CI has no local-game paths or stored passwords/Guard codes'));
