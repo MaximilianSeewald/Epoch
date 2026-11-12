@@ -65,18 +65,21 @@ set +e
 output="$(timeout --kill-after=15s 300s ./steamcmd.sh +login "$STEAM_USERNAME" +workshop_build_item "$vdf" +quit 2>&1)"
 status=$?
 set -e
+# Verify the actual SteamCMD result first. If its console grammar is not
+# recognized, independently check the newest public Workshop change note for
+# the exact intended version and commit. No raw SteamCMD output is logged.
 set +e
-category="$(printf '%s' "$output" | node "$GITHUB_WORKSPACE/scripts/steam_failure_classification.cjs" upload "$status" "$STEAM_WORKSHOP_ID" "$vdf" 2>/dev/null)"
-diagnose_status=$?
+verification="$(printf '%s' "$output" | node "$GITHUB_WORKSPACE/scripts/steam_workshop_confirmation.cjs" "$status" "$STEAM_WORKSHOP_ID" "$RELEASE_VERSION" "$COMMIT_SHA" "$vdf")"
+verification_status=$?
 set -e
 unset output
-if [[ "$diagnose_status" -ne 0 || "$category" != OK ]]; then
-  [[ -n "$category" ]] || category=STEAM_UNKNOWN_ERROR
-  echo "SteamCMD stage=UPLOAD category=$category; no tag or GitHub Release created. Raw output suppressed." >&2
+if [[ -n "$verification" ]]; then
+  printf '%s\n' "$verification"
+fi
+if [[ "$verification_status" -ne 0 || "$verification" != *'category=OK'* ]]; then
+  printf 'SteamCMD Workshop confirmation failed; no Stable tag or GitHub Release created. Raw output suppressed.\n' >&2
   exit 1
 fi
-
-printf 'SteamCMD stage=UPLOAD category=OK; committed Workshop item %s.\n' "$STEAM_WORKSHOP_ID"
 if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
   printf 'uploaded=true\n' >> "$GITHUB_OUTPUT"
 fi

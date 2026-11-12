@@ -55,7 +55,7 @@ for (const marker of ['exitcode_successful', 'login_marker_recognized', 'client_
 check(() => assert.match(uploadScript, /"publishedfileid" "\$STEAM_WORKSHOP_ID"/));
 check(() => assert.match(uploadScript, /\+login "\$STEAM_USERNAME" \+workshop_build_item "\$vdf" \+quit/));
 check(() => assert.doesNotMatch(uploadScript, /\+login "\$STEAM_USERNAME" \+quit/, 'no standalone login-text gate'));
-check(() => assert.match(uploadScript, /steam_failure_classification\.cjs" upload/));
+check(() => assert.match(uploadScript, /steam_workshop_confirmation\.cjs/));
 check(() => assert.match(uploadScript, /status=\$\?/));
 check(() => assert.match(uploadScript, /trap cleanup EXIT/));
 check(() => assert.match(uploadScript, /uploaded=true/));
