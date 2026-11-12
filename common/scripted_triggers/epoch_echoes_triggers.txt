@@ -1,0 +1,41 @@
+# Optional discoveries remain personal and only appear during the active early
+# EPOCH inquiry. They never alter the Stage-III global crisis entry condition.
+epoch_echoes_early_campaign = {
+	epoch_core_eligible_empire = yes
+	NOT = { has_country_flag = epoch_core_campaign_opted_out }
+	OR = {
+		has_country_flag = epoch_core_campaign_active
+		has_country_flag = epoch_res_active
+	}
+	OR = {
+		NOT = { has_country_flag = epoch_res_active }
+		check_variable = { which = epoch_res_chapter value <= 6 }
+	}
+	OR = {
+		NOT = { has_country_flag = epoch_core_campaign_active }
+		check_variable = { which = epoch_core_current_phase value <= 2 }
+	}
+}
+
+epoch_echoes_safe_colony = {
+	is_colony = yes
+	NOT = { has_planet_flag = epoch_echoes_unquiet_closed }
+	NOT = { has_planet_flag = epoch_core_contamination_contained_state }
+	NOT = { has_planet_flag = epoch_core_contamination_studied_state }
+	NOT = { has_planet_flag = epoch_core_contamination_worsened_state }
+	NOT = { has_planet_flag = epoch_core_contamination_active_state }
+	NOT = { has_planet_flag = epoch_core_contamination_spread }
+	NOT = { has_planet_flag = epoch_core_resonance_scar }
+	NOT = { has_planet_flag = epoch_core_resonance_scar_altered }
+	NOT = { has_planet_flag = epoch_core_resonance_scar_healed }
+	NOT = { has_planet_flag = epoch_ii_latent_resonance }
+	NOT = { has_planet_flag = epoch_ii_active_resonance }
+	NOT = { has_planet_flag = epoch_ii_unstable_resonance }
+	NOT = { has_planet_flag = epoch_ii_controlled_resonance }
+	NOT = { has_planet_flag = epoch_res_quarantine }
+	NOT = { has_planet_flag = epoch_res_infected }
+	NOT = { has_modifier = epoch_core_silent_structure }
+	NOT = { has_modifier = epoch_core_structure_secured }
+	NOT = { has_modifier = epoch_core_structure_investigated }
+	NOT = { has_modifier = epoch_core_structure_ruins }
+}

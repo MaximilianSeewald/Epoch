@@ -1,0 +1,86 @@
+decision_epoch_echoes_containment = {
+	icon = decision_resources
+	owned_planets_only = yes
+	enactment_time = 60
+	resources = { category = decisions cost = { energy = 250 minerals = 150 } }
+	potential = { has_planet_flag = epoch_echoes_unquiet_active owner = { is_country_type = default has_country_flag = epoch_echoes_unquiet_started NOT = { has_country_flag = epoch_core_campaign_opted_out } } }
+	allow = { NOT = { has_planet_flag = epoch_echoes_unquiet_closed } }
+	effect = {
+		tooltip = { remove_modifier = epoch_echoes_unquiet_organic remove_modifier = epoch_echoes_unquiet_hive remove_modifier = epoch_echoes_unquiet_machine }
+		if = { limit = { has_planet_flag = epoch_echoes_unquiet_active NOT = { has_planet_flag = epoch_echoes_unquiet_closed } }
+			remove_modifier = epoch_echoes_unquiet_organic
+			remove_modifier = epoch_echoes_unquiet_hive
+			remove_modifier = epoch_echoes_unquiet_machine
+			remove_planet_flag = epoch_echoes_unquiet_active
+			set_planet_flag = epoch_echoes_unquiet_closed
+			owner = { set_country_flag = epoch_echoes_unquiet_resolved set_country_flag = epoch_echoes_unquiet_contained }
+		}
+	}
+	ai_weight = { weight = 40 }
+}
+
+decision_epoch_echoes_research = {
+	icon = decision_resources
+	owned_planets_only = yes
+	enactment_time = 120
+	resources = { category = decisions cost = { energy = 200 alloys = 100 } }
+	potential = { has_planet_flag = epoch_echoes_unquiet_active owner = { is_country_type = default has_country_flag = epoch_echoes_unquiet_started NOT = { has_country_flag = epoch_core_campaign_opted_out } } }
+	allow = { NOT = { has_planet_flag = epoch_echoes_unquiet_closed } }
+	effect = {
+		tooltip = { remove_modifier = epoch_echoes_unquiet_organic remove_modifier = epoch_echoes_unquiet_hive remove_modifier = epoch_echoes_unquiet_machine add_modifier = { modifier = epoch_echoes_unquiet_research days = 3600 } }
+		if = { limit = { has_planet_flag = epoch_echoes_unquiet_active NOT = { has_planet_flag = epoch_echoes_unquiet_closed } }
+			remove_modifier = epoch_echoes_unquiet_organic
+			remove_modifier = epoch_echoes_unquiet_hive
+			remove_modifier = epoch_echoes_unquiet_machine
+			remove_planet_flag = epoch_echoes_unquiet_active
+			set_planet_flag = epoch_echoes_unquiet_closed
+			add_modifier = { modifier = epoch_echoes_unquiet_research days = 3600 }
+			owner = { add_resource = { physics_research = 180 society_research = 180 } set_country_flag = epoch_echoes_unquiet_resolved set_country_flag = epoch_echoes_unquiet_researched }
+		}
+	}
+	ai_weight = { weight = 30 modifier = { factor = 0.5 owner = { has_monthly_income = { resource = energy value < 0 } } } }
+}
+
+decision_epoch_echoes_exploit = {
+	icon = decision_resources
+	owned_planets_only = yes
+	enactment_time = 45
+	resources = { category = decisions cost = { energy = 100 alloys = 50 } }
+	potential = { has_planet_flag = epoch_echoes_unquiet_active owner = { is_country_type = default has_country_flag = epoch_echoes_unquiet_started NOT = { has_country_flag = epoch_core_campaign_opted_out } } }
+	allow = { NOT = { has_planet_flag = epoch_echoes_unquiet_closed } }
+	effect = {
+		tooltip = { remove_modifier = epoch_echoes_unquiet_organic remove_modifier = epoch_echoes_unquiet_hive remove_modifier = epoch_echoes_unquiet_machine }
+		if = { limit = { has_planet_flag = epoch_echoes_unquiet_active NOT = { has_planet_flag = epoch_echoes_unquiet_closed } }
+			remove_modifier = epoch_echoes_unquiet_organic
+			remove_modifier = epoch_echoes_unquiet_hive
+			remove_modifier = epoch_echoes_unquiet_machine
+			remove_planet_flag = epoch_echoes_unquiet_active
+			set_planet_flag = epoch_echoes_unquiet_closed
+			owner = { set_country_flag = epoch_echoes_unquiet_resolved set_country_flag = epoch_echoes_unquiet_exploited }
+			random_list = {
+				65 = { add_modifier = { modifier = epoch_echoes_unquiet_surge days = 1800 } owner = { add_resource = { alloys = 150 energy = 150 } set_country_flag = epoch_echoes_unquiet_surge } }
+				35 = { add_modifier = { modifier = epoch_echoes_unquiet_backlash days = 360 } set_planet_flag = epoch_echoes_unquiet_backlash owner = { set_country_flag = epoch_echoes_unquiet_failed } }
+			}
+		}
+	}
+	ai_weight = { weight = 15 modifier = { factor = 0 owner = { has_monthly_income = { resource = energy value < 0 } } } }
+}
+
+decision_epoch_echoes_recover = {
+	icon = decision_resources
+	owned_planets_only = yes
+	enactment_time = 60
+	resources = { category = decisions cost = { energy = 200 minerals = 100 } }
+	potential = { has_planet_flag = epoch_echoes_unquiet_closed has_planet_flag = epoch_echoes_unquiet_backlash owner = { has_country_flag = epoch_echoes_unquiet_failed } }
+	allow = { has_planet_flag = epoch_echoes_unquiet_backlash }
+	effect = {
+		tooltip = { remove_modifier = epoch_echoes_unquiet_backlash }
+		if = { limit = { has_planet_flag = epoch_echoes_unquiet_backlash }
+			remove_modifier = epoch_echoes_unquiet_backlash
+			remove_planet_flag = epoch_echoes_unquiet_backlash
+			owner = { remove_country_flag = epoch_echoes_unquiet_failed }
+		}
+	}
+	ai_weight = { weight = 20 }
+}
+

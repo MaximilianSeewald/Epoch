@@ -1,0 +1,106 @@
+# Optional early-campaign side stories. Every project uses a staffed native
+# Science Ship and persists at a surveyed, reachable map location.
+special_project = {
+	key = EPOCH_ECHOES_GHOST_TRACE
+	days_to_research = 90
+	tech_department = society_technology
+	picture = GFX_evt_unknown_ships
+	event_scope = ship_event
+	location = yes
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	AI_wait_days = { weight = 5 }
+	on_start = { if = { limit = { exists = owner exists = event_target:epoch_echoes_story_site@owner } event_target:epoch_echoes_story_site@owner = { save_global_event_target_as = epoch_echoes_ghost_trace_target@prev } } }
+on_success = { if = { limit = { exists = owner exists = event_target:epoch_echoes_ghost_trace_target@this } ship_event = { id = epoch_echoes.40 scopes = { from = from fromfrom = event_target:epoch_echoes_ghost_trace_target@this } } } else = { country_event = { id = epoch_echoes.21 } } }
+	on_fail = { country_event = { id = epoch_echoes.21 } }
+	on_cancel = { country_event = { id = epoch_echoes.21 } }
+}
+
+special_project = {
+	key = EPOCH_ECHOES_GHOST_CAUTIOUS
+	days_to_research = 180
+	tech_department = society_technology
+	picture = GFX_evt_physics_research
+	event_scope = ship_event
+	location = yes
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	AI_wait_days = { weight = 5 }
+	on_start = { if = { limit = { exists = owner exists = event_target:epoch_echoes_story_site@owner } event_target:epoch_echoes_story_site@owner = { save_global_event_target_as = epoch_echoes_ghost_cautious_target@prev } } }
+on_success = { if = { limit = { exists = owner exists = event_target:epoch_echoes_ghost_cautious_target@this } ship_event = { id = epoch_echoes.41 scopes = { from = from fromfrom = event_target:epoch_echoes_ghost_cautious_target@this } } } else = { country_event = { id = epoch_echoes.21 } } }
+	on_fail = { country_event = { id = epoch_echoes.21 } }
+	on_cancel = { country_event = { id = epoch_echoes.21 } }
+}
+
+special_project = {
+	key = EPOCH_ECHOES_GHOST_FORCED
+	days_to_research = 60
+	tech_department = engineering_technology
+	picture = GFX_evt_space_debris
+	event_scope = ship_event
+	location = yes
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	AI_wait_days = { weight = 5 }
+	on_start = { if = { limit = { exists = owner exists = event_target:epoch_echoes_story_site@owner } event_target:epoch_echoes_story_site@owner = { save_global_event_target_as = epoch_echoes_ghost_forced_target@prev } } }
+on_success = { if = { limit = { exists = owner exists = event_target:epoch_echoes_ghost_forced_target@this } ship_event = { id = epoch_echoes.42 scopes = { from = from fromfrom = event_target:epoch_echoes_ghost_forced_target@this } } } else = { country_event = { id = epoch_echoes.21 } } }
+	on_fail = { country_event = { id = epoch_echoes.21 } }
+	on_cancel = { country_event = { id = epoch_echoes.21 } }
+}
+
+special_project = {
+	key = EPOCH_ECHOES_GHOST_STABILIZE
+	days_to_research = 90
+	tech_department = physics_technology
+	picture = GFX_evt_physics_research
+	event_scope = ship_event
+	location = yes
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	AI_wait_days = { weight = 5 }
+	on_start = { if = { limit = { exists = owner exists = event_target:epoch_echoes_story_site@owner } event_target:epoch_echoes_story_site@owner = { save_global_event_target_as = epoch_echoes_ghost_stabilize_target@prev } } }
+on_success = { if = { limit = { exists = owner exists = event_target:epoch_echoes_ghost_stabilize_target@this } ship_event = { id = epoch_echoes.43 scopes = { from = from fromfrom = event_target:epoch_echoes_ghost_stabilize_target@this } } } else = { country_event = { id = epoch_echoes.21 } } }
+	on_fail = { country_event = { id = epoch_echoes.21 } }
+	on_cancel = { country_event = { id = epoch_echoes.21 } }
+}
+
+special_project = {
+	key = EPOCH_ECHOES_RELAY_SURVEY
+	days_to_research = 90
+	tech_department = physics_technology
+	picture = GFX_evt_space_debris
+	event_scope = ship_event
+	location = yes
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	AI_wait_days = { weight = 5 }
+	on_start = { if = { limit = { exists = owner exists = event_target:epoch_echoes_story_site@owner } event_target:epoch_echoes_story_site@owner = { save_global_event_target_as = epoch_echoes_relay_survey_target@prev } } }
+on_success = { if = { limit = { exists = owner exists = event_target:epoch_echoes_relay_survey_target@this } ship_event = { id = epoch_echoes.44 scopes = { from = from fromfrom = event_target:epoch_echoes_relay_survey_target@this } } } else = { country_event = { id = epoch_echoes.21 } } }
+	on_fail = { country_event = { id = epoch_echoes.21 } }
+	on_cancel = { country_event = { id = epoch_echoes.21 } }
+}
+
+special_project = {
+	key = EPOCH_ECHOES_RELAY_DEFUSE
+	days_to_research = 180
+	tech_department = physics_technology
+	picture = GFX_evt_physics_research
+	event_scope = ship_event
+	location = yes
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	AI_wait_days = { weight = 5 }
+	on_start = { if = { limit = { exists = owner exists = event_target:epoch_echoes_story_site@owner } event_target:epoch_echoes_story_site@owner = { save_global_event_target_as = epoch_echoes_relay_defuse_target@prev } } }
+on_success = { if = { limit = { exists = owner exists = event_target:epoch_echoes_relay_defuse_target@this } ship_event = { id = epoch_echoes.45 scopes = { from = from fromfrom = event_target:epoch_echoes_relay_defuse_target@this } } } else = { country_event = { id = epoch_echoes.21 } } }
+	on_fail = { country_event = { id = epoch_echoes.21 } }
+	on_cancel = { country_event = { id = epoch_echoes.21 } }
+}
+
+special_project = {
+	key = EPOCH_ECHOES_RELAY_DEFUSE_AIDED
+	days_to_research = 90
+	tech_department = physics_technology
+	picture = GFX_evt_physics_research
+	event_scope = ship_event
+	location = yes
+	requirements = { shipclass_science_ship = 1 leader = scientist }
+	AI_wait_days = { weight = 5 }
+	on_start = { if = { limit = { exists = owner exists = event_target:epoch_echoes_story_site@owner } event_target:epoch_echoes_story_site@owner = { save_global_event_target_as = epoch_echoes_relay_defuse_target@prev } } }
+	on_success = { if = { limit = { exists = owner exists = event_target:epoch_echoes_relay_defuse_target@this } ship_event = { id = epoch_echoes.45 scopes = { from = from fromfrom = event_target:epoch_echoes_relay_defuse_target@this } } } else = { country_event = { id = epoch_echoes.21 } } }
+	on_fail = { country_event = { id = epoch_echoes.21 } }
+	on_cancel = { country_event = { id = epoch_echoes.21 } }
+}
