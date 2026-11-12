@@ -49,6 +49,8 @@ if (!bash) {
     'if [ "$1" = "+quit" ]; then echo "SteamCMD initialized"; exit 0; fi',
     'if [ "$1" = "+login" ]; then',
     '  [ "$3" = "+workshop_build_item" ] || exit 44',
+    '  [ -f "$4" ] || exit 45',
+    '  grep -F "\\"previewfile\\" \\"$RUNNER_TEMP/epoch-mod-package/thumbnail.png\\"" "$4" >/dev/null || exit 46',
     '  case "$FAKE_UPLOAD_MODE" in',
     '    failed) echo "ERROR! Upload failed for TEST_ACCOUNT"; exit 1 ;;',
     '    *) echo "arbitrary output, including ERROR! Upload failed for TEST_ACCOUNT"; exit 0 ;;',
@@ -60,11 +62,12 @@ if (!bash) {
     '',
   ].join('\n'));
 
-  function probe(mode, { workshopId = '1234567890123', packagePresent = true } = {}) {
+  function probe(mode, { workshopId = '1234567890123', packagePresent = true, thumbnailPresent = true, thumbnailSize = 64 } = {}) {
     const runnerTemp = fs.mkdtempSync(path.join(temp, 'runner-'));
     const stage = path.join(runnerTemp, 'epoch-mod-package');
     fs.mkdirSync(stage);
     if (packagePresent) fs.writeFileSync(path.join(stage, 'descriptor.mod'), 'version="0.1.5"\n');
+    if (thumbnailPresent) fs.writeFileSync(path.join(stage, 'thumbnail.png'), Buffer.alloc(thumbnailSize));
     const result = spawnSync(bash, [path.join(root, 'scripts', 'steamcmd_workshop_upload.sh')], {
       cwd: root,
       encoding: 'utf8',
@@ -100,6 +103,8 @@ if (!bash) {
       ['failed', {}],
       ['timeout', {}],
       ['success', { packagePresent: false }],
+      ['success', { thumbnailPresent: false }],
+      ['success', { thumbnailSize: 921600 }],
       ['success', { workshopId: 'not-an-id' }],
     ]) {
       const attempt = probe(mode, options);

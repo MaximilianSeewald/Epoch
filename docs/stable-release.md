@@ -32,7 +32,7 @@ After tests and package validation, the workflow verifies that the commit is cur
 
 The ZIP and Steam update use the same staged mod directory and the VDF sets game App ID `281990` plus the configured existing Workshop ID. Nonzero exits and timeouts fail the upload step. Raw SteamCMD logs and temporary session files are removed in a cleanup trap and the workflow cleanup step.
 
-The ZIP contains root `descriptor.mod` plus existing `common/`, `events/`, `localisation/`, `gfx/`, `interface/`, and `compatibility/` content. It excludes `docs/`, `scripts/`, `test-mods/`, `.github/`, hidden files, Git files, tests, and development material. Every prepared ZIP is retained as a 14-day Actions artifact, including package-only dry runs.
+The ZIP contains root `descriptor.mod` and `thumbnail.png` plus existing `common/`, `events/`, `localisation/`, `gfx/`, `interface/`, and `compatibility/` content. The Workshop preview is updated automatically from `thumbnail.png`, referenced by the descriptor and the SteamCMD VDF `previewfile` field. It excludes `docs/`, `scripts/`, `test-mods/`, `.github/`, hidden files, Git files, tests, and development material. Every prepared ZIP is retained as a 14-day Actions artifact, including package-only dry runs.
 
 ## GitHub Actions configuration
 
