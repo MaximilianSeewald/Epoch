@@ -71,3 +71,7 @@ For a local WSL reproduction with an authorized session, run `bash scripts/test_
 4. Perform an interactive SteamCMD login and Steam Guard authorization for an account that can update that item. Store the resulting SteamCMD `config/config.vdf` as the `STEAMCMD_CONFIG_VDF` secret and set `STEAM_USERNAME` as a secret.
 5. Dispatch once on `main` with `dry_run=false`. Verify the reported Workshop ID and matching GitHub release/tag/version. This real upload check is a publishing-function test, not a gameplay test.
 6. After the first successful setup, each current `main` push that passes the CI suite triggers the stable publication automatically.
+
+## Independent confirmation for ambiguous SteamCMD output
+
+When SteamCMD exits successfully but the console-output grammar is not recognized, the release helper checks the **newest** public Steam Workshop Change Notes entry for the exact staged version and commit SHA. The lookup uses the preconfigured `publishedfileid` and cannot alter the Workshop item. It does not print raw SteamCMD logs, HTML, account details, or credentials. A nonzero SteamCMD exit code, an explicit Steam authentication/upload error, a wrong Workshop ID, or a changed VDF cannot be overridden by the public lookup. If the public page is inaccessible or ambiguous, the workflow still fails closed without reserving a stable tag. GitHub Actions does not run a second Workshop upload. The change-note lookup is a fallback, not proof that the hosted Steam endpoint is always reachable; real-run verification remains required.

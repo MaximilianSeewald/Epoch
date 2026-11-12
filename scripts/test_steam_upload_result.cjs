@@ -148,4 +148,5 @@ check(() => assert.equal(verify(realCommittedUpload + '\nSteam Guard code requir
 
 require('./test_steamcmd_login_probe_shell.cjs');
 require('./test_steamcmd_workshop_upload_shell.cjs');
+require('./test_steam_workshop_confirmation.cjs');
 console.log(`PASS: ${checks} SteamCMD result, strict login, and safe diagnostic cases; no output contents are emitted.`);
