@@ -500,8 +500,8 @@ Assert-Check ($LASTEXITCODE -eq 0) 'EPOCH technology prerequisite identifiers an
 Assert-Check ($LASTEXITCODE -eq 0) 'General bilingual localization integrity must pass; new matched keys are permitted'
 & node (Join-Path $PSScriptRoot 'test_epoch_economy_consistency.cjs') $Root
 Assert-Check ($LASTEXITCODE -eq 0) 'Source-derived economy accounting identities must remain consistent'
-& node (Join-Path $PSScriptRoot 'test_steam_upload_result.cjs')
-Assert-Check ($LASTEXITCODE -eq 0) 'SteamCMD result parser positive and negative fixtures must pass'
+& node (Join-Path $PSScriptRoot 'test_steamcmd_workshop_upload_shell.cjs')
+Assert-Check ($LASTEXITCODE -eq 0) 'SteamCMD upload process behavior must pass'
 & node (Join-Path $PSScriptRoot 'test_release_ci_regression.cjs')
 Assert-Check ($LASTEXITCODE -eq 0) 'Release CI must accept valid post-baseline gameplay and bilingual localization additions'
 

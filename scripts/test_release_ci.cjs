@@ -14,7 +14,7 @@ const cases = [
   ['test_localization_consistency.cjs', root => [root]],
   ['test_epoch_economy_consistency.cjs', root => [root]],
   ['test_stellaris_runtime_log.cjs', () => ['--self-test']],
-  ['test_steam_upload_result.cjs', () => []],
+  ['test_steamcmd_workshop_upload_shell.cjs', () => []],
   ['test_release_ci_regression.cjs', () => []],
   ['test_epoch_release.cjs', () => []],
 ];
