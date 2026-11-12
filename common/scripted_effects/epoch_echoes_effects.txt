@@ -1,0 +1,15 @@
+# Country scope. A single owner-local journal marker points at the surveyed
+# system; the POI is removed when the relay is secured or the inquiry is left.
+epoch_echoes_register_relay_poi = {
+	if = {
+		limit = { exists = event_target:epoch_echoes_story_system@root NOT = { has_point_of_interest = { poi = epoch_echoes_relay_site } } }
+		if = { limit = { NOT = { has_event_chain = epoch_echoes_side_stories } } begin_event_chain = { event_chain = epoch_echoes_side_stories target = this } }
+		create_point_of_interest = { id = epoch_echoes_relay_site name = epoch_echoes.poi_relay desc = epoch_echoes.poi_relay.desc event_chain = epoch_echoes_side_stories location = event_target:epoch_echoes_story_system@root }
+	}
+}
+
+epoch_echoes_finalize_relay = {
+	set_country_flag = epoch_echoes_relay_resolved
+	if = { limit = { has_point_of_interest = { poi = epoch_echoes_relay_site } } remove_point_of_interest = epoch_echoes_relay_site }
+	if = { limit = { has_event_chain = epoch_echoes_side_stories } end_event_chain = epoch_echoes_side_stories }
+}

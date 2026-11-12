@@ -8,6 +8,7 @@ const { spawnSync } = require('node:child_process');
 const defaultRoot = path.resolve(__dirname, '..');
 const cases = [
   ['test_phase_i_flow.cjs', root => [root]],
+  ['test_epoch_echoes.cjs', () => []],
   ['test_clausewitz_structure.cjs', root => [root, '--source-only']],
   ['test_resonance.cjs', root => [root, '--source-only']],
   ['test_tech_dependencies.cjs', root => [root, '--source-only']],

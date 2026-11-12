@@ -21,19 +21,20 @@ on_country_type_changed = {
 
 # Owner-local, guarded recovery/migration for continuing Phase-I saves.
 on_yearly_pulse_country = {
-	events = { epoch_core.51 epoch_ii.0 epoch_res.81 }
+	events = { epoch_core.51 epoch_ii.0 epoch_res.81 epoch_echoes.20 epoch_echoes.22 epoch_echoes.23 }
 }
 
 # The signal is attached to the system a Science Ship actually surveys.
 on_survey_planet = {
 	events = {
 		epoch_core.15
+		epoch_echoes.1
 	}
 }
 
 # Native destruction callback: This=victim country, From=killer country,
 # FromFrom=destroyed fleet. Participation hooks are fleet-scoped.
-on_fleet_destroyed_victim = { events = { epoch_res.201 epoch_res.202 } }
+on_fleet_destroyed_victim = { events = { epoch_res.201 epoch_res.202 epoch_echoes.900 } }
 on_fleet_combat_joined_attacker = { events = { epoch_res.200 } }
 on_fleet_combat_joined_defender = { events = { epoch_res.200 } }
 # This = each fleet leaving battle, whether it won, fled, or was destroyed.
