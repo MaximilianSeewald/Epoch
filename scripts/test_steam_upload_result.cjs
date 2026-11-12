@@ -123,4 +123,29 @@ const secret = 'private-user Steam Guard code required 123456';
 check(() => assert.deepEqual(diagnose({ stage: 'login', exitCode: 1, output: secret }), { ok: false, category: 'STEAM_GUARD_REQUIRED' }));
 check(() => assert.doesNotMatch(JSON.stringify(diagnose({ stage: 'login', exitCode: 1, output: secret })), /private-user|123456/));
 
+const realCommittedUpload = [
+  "WARNING: setlocale('en_US.UTF-8') failed, using locale: 'C'. International characters may not work.",
+  'Loading Steam API...OK',
+  'Logging in using cached credentials.',
+  "Logging in user 'ACCOUNT' to Steam Public...OK",
+  'Waiting for client config...OK',
+  'Waiting for user info...OK',
+  'Preparing update...',
+  'Preparing content....',
+  'Uploading content....',
+  'Committing update...Success.Unloading Steam API...OK',
+].join('\n');
+check(() => assert.equal(verify(realCommittedUpload).ok, true));
+check(() => assert.equal(diagnose({ stage: 'upload', exitCode: 0, output: realCommittedUpload, workshopId: id, resultVdf: vdf }).ok, true));
+check(() => assert.equal(verify(realCommittedUpload, {exitCode: 1}).ok, false));
+check(() => assert.equal(verify(realCommittedUpload.replace('Uploading content....', 'No content upload')).ok, false));
+check(() => assert.equal(verify(realCommittedUpload.replace('Committing update...Success.', 'Committing update...FAILED.')).ok, false));
+check(() => assert.equal(verify(realCommittedUpload, {resultVdf: vdf.replace(id, '9999999999999')}).ok, false));
+check(() => assert.equal(verify(realCommittedUpload + '\nERROR! Upload failed').ok, false));
+check(() => assert.equal(verify(realCommittedUpload + '\nSuccess. Published File ID: 9999999999999').ok, false));
+check(() => assert.equal(verify('Preparing update...\nUploading content....\nSuccess.').ok, false));
+check(() => assert.equal(verify(realCommittedUpload + '\nSteam Guard code required').ok, false));
+
+require('./test_steamcmd_login_probe_shell.cjs');
+require('./test_steamcmd_workshop_upload_shell.cjs');
 console.log(`PASS: ${checks} SteamCMD result, strict login, and safe diagnostic cases; no output contents are emitted.`);

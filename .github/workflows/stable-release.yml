@@ -134,17 +134,26 @@ jobs:
             echo "Steam upload configured for the existing Workshop item $STEAM_WORKSHOP_ID." >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Install SteamCMD, restore session, and verify login
-        id: steam-login
+      - name: Upload existing Workshop item
+        id: steam-upload
         if: steps.steam-config.outputs.upload == 'true'
         env:
+          STEAM_WORKSHOP_ID: ${{ vars.STEAM_WORKSHOP_ID }}
           STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
           STEAMCMD_CONFIG_VDF: ${{ secrets.STEAMCMD_CONFIG_VDF }}
-        run: bash scripts/steamcmd_login_probe.sh
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+          COMMIT_SHA: ${{ github.sha }}
+        shell: bash
+        run: bash scripts/steamcmd_workshop_upload.sh
+
+      - name: Remove SteamCMD session files
+        if: always()
+        shell: bash
+        run: rm -rf "$RUNNER_TEMP/steam-home" "$RUNNER_TEMP/steamcmd.tar.gz" "$RUNNER_TEMP/epoch-workshop.vdf"
 
       - name: Reserve release version for this commit
         id: reservation
-        if: steps.steam-login.outputs.login == 'ok'
+        if: steps.steam-upload.outputs.uploaded == 'true'
         env:
           RELEASE_TAG: ${{ steps.version.outputs.tag }}
         shell: bash
@@ -168,59 +177,8 @@ jobs:
           echo 'reserved=true' >> "$GITHUB_OUTPUT"
           echo "Version ${{ steps.version.outputs.version }} is permanently reserved by tag $RELEASE_TAG for commit $GITHUB_SHA." >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload existing Workshop item
-        id: steam-upload
-        if: steps.reservation.outputs.reserved == 'true'
-        env:
-          STEAM_WORKSHOP_ID: ${{ vars.STEAM_WORKSHOP_ID }}
-          STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
-          RELEASE_VERSION: ${{ steps.version.outputs.version }}
-          COMMIT_SHA: ${{ github.sha }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          steam_home="$RUNNER_TEMP/steam-home"
-          steam_dir="$steam_home/Steam"
-          vdf="$RUNNER_TEMP/epoch-workshop.vdf"
-          export HOME="$steam_home"
-          package="$RUNNER_TEMP/epoch-mod-package"
-          cat > "$vdf" <<EOF
-          "workshopitem"
-          {
-            "appid" "281990"
-            "publishedfileid" "$STEAM_WORKSHOP_ID"
-            "contentfolder" "$package"
-            "changenote" "EPOCH $RELEASE_VERSION | commit $COMMIT_SHA"
-          }
-          EOF
-          chmod 600 "$vdf"
-
-          cd "$steam_dir"
-          set +e
-          output="$(./steamcmd.sh +login "$STEAM_USERNAME" +workshop_build_item "$vdf" +quit 2>&1)"
-          status=$?
-          set -e
-          set +e
-          category="$(printf '%s' "$output" | node "$GITHUB_WORKSPACE/scripts/steam_failure_classification.cjs" upload "$status" "$STEAM_WORKSHOP_ID" "$vdf" 2>/dev/null)"
-          diagnose_status=$?
-          set -e
-          unset output
-          if [[ $diagnose_status -ne 0 || "$category" != OK ]]; then
-            [[ -n "$category" ]] || category=STEAM_UNKNOWN_ERROR
-            echo "SteamCMD stage=UPLOAD category=$category; GitHub Release was not created; output suppressed." >> "$GITHUB_STEP_SUMMARY"
-            echo "SteamCMD upload failed (category=$category); output suppressed and GitHub Release was not created." >&2
-            exit 1
-          fi
-          echo 'uploaded=true' >> "$GITHUB_OUTPUT"
-          echo "SteamCMD confirmed an update to existing Workshop item $STEAM_WORKSHOP_ID for EPOCH $RELEASE_VERSION ($COMMIT_SHA)." >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Remove SteamCMD session files
-        if: always()
-        shell: bash
-        run: rm -rf "$RUNNER_TEMP/steam-home" "$RUNNER_TEMP/steamcmd.tar.gz" "$RUNNER_TEMP/epoch-workshop.vdf"
-
       - name: Finalize GitHub stable release
-        if: steps.steam-upload.outputs.uploaded == 'true'
+        if: steps.reservation.outputs.reserved == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_VERSION: ${{ steps.version.outputs.version }}
