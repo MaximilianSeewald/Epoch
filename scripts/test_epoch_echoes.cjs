@@ -5,7 +5,11 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
+// The shared parser has an optional installed-Vanilla audit. This regression
+// is intentionally game-independent, so import it in its source-only mode.
+process.argv.push(path.resolve(__dirname, '..'), '--source-only');
 const { parse, get, parsedByPath } = require('./test_clausewitz_structure.cjs');
+process.argv.splice(-2, 2);
 
 const root = path.resolve(__dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8').replace(/^\uFEFF/, '');
