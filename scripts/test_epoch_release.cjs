@@ -34,6 +34,8 @@ check(() => assert.throws(() => steamcmdConfig.resolveSteamcmdConfigPath(''), /H
 
 const workflow = fs.readFileSync(path.join(__dirname, '..', '.github', 'workflows', 'stable-release.yml'), 'utf8');
 const uploadScript = fs.readFileSync(path.join(__dirname, 'steamcmd_workshop_upload.sh'), 'utf8');
+const descriptorSource = fs.readFileSync(path.join(__dirname, '..', 'descriptor.mod'), 'utf8');
+const thumbnailSource = path.join(__dirname, '..', 'thumbnail.png');
 for (const [pattern, label] of [
   [/runs-on:\s*ubuntu-latest/, 'GitHub-hosted Ubuntu runner'],
   [/cancel-in-progress:\s*false/, 'serialized non-cancelling releases'],
@@ -47,6 +49,13 @@ for (const [pattern, label] of [
   [/if: always\(\)[\s\S]*?rm -rf "\$RUNNER_TEMP\/steam-home"/, 'session cleanup'],
 ]) check(() => assert.match(workflow, pattern, label));
 check(() => assert.match(uploadScript, /"publishedfileid" "\$STEAM_WORKSHOP_ID"/));
+check(() => assert.match(uploadScript, /"previewfile" "\$thumbnail"/));
+check(() => assert.match(uploadScript, /thumbnail_size.*-lt 921600/));
+check(() => assert.match(descriptorSource, /^picture="thumbnail\.png"$/m));
+check(() => release.validateThumbnail(thumbnailSource));
+const thumbnailBytes = fs.readFileSync(thumbnailSource);
+check(() => assert.ok(thumbnailBytes.length < 900 * 1024));
+check(() => assert.deepEqual([thumbnailBytes.readUInt32BE(16), thumbnailBytes.readUInt32BE(20)], [512, 512]));
 check(() => assert.match(uploadScript, /\+login "\$STEAM_USERNAME" \+workshop_build_item "\$vdf" \+quit/));
 check(() => assert.doesNotMatch(uploadScript, /steam_workshop_confirmation|steam_upload_result|steam_failure_classification|steamcmd_login_probe|curl .*steamcommunity/i));
 check(() => assert.match(uploadScript, /timeout --kill-after=15s 300s[\s\S]*?status=\$\?/));
@@ -80,7 +89,8 @@ try {
 	const source = path.join(temp, 'source');
 	const output = path.join(temp, 'package');
 	fs.mkdirSync(source);
-	fs.writeFileSync(path.join(source, 'descriptor.mod'), 'name="EPOCH"\nversion="0.1.0"\nsupported_version="4.5.*"\n');
+	fs.writeFileSync(path.join(source, 'descriptor.mod'), 'name="EPOCH"\nversion="0.1.0"\nsupported_version="4.5.*"\npicture="thumbnail.png"\n');
+	fs.copyFileSync(thumbnailSource, path.join(source, 'thumbnail.png'));
 	for (const dir of ['common', 'events', 'localisation', 'gfx', 'interface', 'compatibility', 'docs', 'scripts', 'test-mods', '.github']) {
 		fs.mkdirSync(path.join(source, dir), { recursive: true });
 		fs.writeFileSync(path.join(source, dir, 'payload.txt'), 'payload');
@@ -88,13 +98,25 @@ try {
 	release.walkPackage(source, output, '0.1.0');
 	const files = release.validatePackage(output, '0.1.0');
 	check(() => assert(files.includes('descriptor.mod')));
+	check(() => assert(files.includes('thumbnail.png')));
+	check(() => assert.deepEqual(fs.readFileSync(path.join(output, 'thumbnail.png')), fs.readFileSync(thumbnailSource)));
 	check(() => assert(files.includes('common/payload.txt')));
 	check(() => assert(files.includes('compatibility/payload.txt')));
 	check(() => assert(!files.some(file => /^(docs|scripts|test-mods|\.github)\//.test(file))));
 	check(() => assert.equal(release.formatVersion(release.parseVersion(fs.readFileSync(path.join(output, 'descriptor.mod'), 'utf8'))), '0.1.0'));
+	const brokenThumbnail = path.join(output, 'thumbnail.png');
+	const validBytes = fs.readFileSync(brokenThumbnail);
+	fs.writeFileSync(brokenThumbnail, Buffer.from('not a png'));
+	check(() => assert.throws(() => release.validatePackage(output, '0.1.0'), /valid PNG/));
+	fs.writeFileSync(brokenThumbnail, validBytes);
+	fs.writeFileSync(brokenThumbnail, Buffer.alloc(release.MAX_THUMBNAIL_BYTES));
+	check(() => assert.throws(() => release.validatePackage(output, '0.1.0'), /smaller than 900 KB/));
+	fs.writeFileSync(brokenThumbnail, validBytes);
 	fs.mkdirSync(path.join(output, 'docs'), { recursive: true });
 	fs.writeFileSync(path.join(output, 'docs', 'leak.txt'), 'forbidden');
 	check(() => assert.throws(() => release.validatePackage(output, '0.1.0'), /Development file/));
+	fs.rmSync(path.join(source, 'thumbnail.png'));
+	check(() => assert.throws(() => release.walkPackage(source, path.join(temp, 'missing-thumbnail'), '0.1.0'), /thumbnail.png is missing/));
 } finally {
 	fs.rmSync(temp, { recursive: true, force: true });
 }

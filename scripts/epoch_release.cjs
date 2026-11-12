@@ -3,9 +3,66 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const zlib = require('node:zlib');
 
 const PACKAGE_DIRS = ['common', 'events', 'localisation', 'gfx', 'interface', 'compatibility'];
 const EXCLUDED_NAMES = new Set(['.git', '.github', '.codex', '.codegraph', 'docs', 'scripts', 'test-mods', 'tests', 'node_modules']);
+const THUMBNAIL_NAME = 'thumbnail.png';
+const MAX_THUMBNAIL_BYTES = 900 * 1024;
+
+function validateThumbnail(file) {
+	const stat = fs.lstatSync(file);
+	if (!stat.isFile() || stat.isSymbolicLink()) throw new Error('thumbnail.png must be a regular file');
+	if (stat.size >= MAX_THUMBNAIL_BYTES) throw new Error('thumbnail.png must be smaller than 900 KB');
+	const data = fs.readFileSync(file);
+	const signature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+	if (data.length < 45 || !data.subarray(0, 8).equals(signature)) throw new Error('thumbnail.png is not a valid PNG file');
+	const width = data.readUInt32BE(16);
+	const height = data.readUInt32BE(20);
+	if (width !== 512 || height !== 512) throw new Error('thumbnail.png must be 512 x 512 pixels');
+	let offset = 8;
+	let sawHeader = false;
+	let sawData = false;
+	let sawEnd = false;
+	const imageData = [];
+	function crc32(buffer) {
+		let crc = 0xffffffff;
+		for (const byte of buffer) {
+			crc ^= byte;
+			for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+		}
+		return (crc ^ 0xffffffff) >>> 0;
+	}
+	while (offset + 12 <= data.length) {
+		const length = data.readUInt32BE(offset);
+		const end = offset + 12 + length;
+		if (end > data.length) throw new Error('thumbnail.png contains a truncated PNG chunk');
+		const type = data.toString('ascii', offset + 4, offset + 8);
+		const chunk = data.subarray(offset + 4, offset + 8 + length);
+		if (crc32(chunk) !== data.readUInt32BE(offset + 8 + length)) throw new Error('thumbnail.png contains a damaged PNG chunk');
+		if (!sawHeader && type !== 'IHDR') throw new Error('thumbnail.png has no PNG header');
+		if (type === 'IHDR') {
+			if (sawHeader || length !== 13) throw new Error('thumbnail.png has an invalid PNG header');
+			sawHeader = true;
+		}
+		if (type === 'IDAT') {
+			sawData = true;
+			imageData.push(data.subarray(offset + 8, offset + 8 + length));
+		}
+		if (type === 'IEND') {
+			if (length !== 0 || end !== data.length) throw new Error('thumbnail.png has an invalid PNG end chunk');
+			sawEnd = true;
+			break;
+		}
+		offset = end;
+	}
+	if (!sawHeader || !sawData || !sawEnd) throw new Error('thumbnail.png is incomplete or damaged');
+	try {
+		if (!zlib.inflateSync(Buffer.concat(imageData)).length) throw new Error('empty image data');
+	} catch {
+		throw new Error('thumbnail.png image data is damaged');
+	}
+}
 
 function parseVersion(text) {
 	const match = text.match(/^version\s*=\s*"(\d+)\.(\d+)\.(\d+)"\s*$/m);
@@ -49,6 +106,10 @@ function walkPackage(root, destination, version) {
 	parseVersion(fs.readFileSync(descriptorPath, 'utf8'));
 	fs.mkdirSync(destination, { recursive: true });
 	fs.writeFileSync(path.join(destination, 'descriptor.mod'), rewriteDescriptor(fs.readFileSync(descriptorPath, 'utf8'), version));
+	const thumbnailPath = path.join(root, THUMBNAIL_NAME);
+	if (!fs.existsSync(thumbnailPath)) throw new Error('thumbnail.png is missing');
+	validateThumbnail(thumbnailPath);
+	fs.copyFileSync(thumbnailPath, path.join(destination, THUMBNAIL_NAME));
 	const copied = ['descriptor.mod'];
 	for (const name of PACKAGE_DIRS) {
 		const source = path.join(root, name);
@@ -75,6 +136,8 @@ function validatePackage(root, version) {
 	if (!fs.existsSync(descriptorPath)) throw new Error('Packaged descriptor.mod is missing');
 	const descriptor = fs.readFileSync(descriptorPath, 'utf8');
 	if (formatVersion(parseVersion(descriptor)) !== version) throw new Error('Package descriptor version does not match release version');
+	if (!/^picture\s*=\s*"thumbnail\.png"\s*$/m.test(descriptor)) throw new Error('Packaged descriptor.mod must reference thumbnail.png');
+	validateThumbnail(path.join(root, THUMBNAIL_NAME));
 	const files = [];
 	function visit(dir) {
 		for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -90,6 +153,7 @@ function validatePackage(root, version) {
 	}
 	visit(root);
 	if (!files.includes('descriptor.mod')) throw new Error('descriptor.mod must be at the package root');
+	if (!files.includes(THUMBNAIL_NAME)) throw new Error('thumbnail.png must be at the package root');
 	return files.sort();
 }
 
@@ -107,7 +171,7 @@ function validateWorkshopConfig({ workshopId, username, session }) {
 	return { enabled: true, workshopId: id };
 }
 
-module.exports = { PACKAGE_DIRS, parseVersion, compareVersions, formatVersion, parseStableTag, selectVersion, rewriteDescriptor, walkPackage, validatePackage, validateWorkshopConfig };
+module.exports = { PACKAGE_DIRS, MAX_THUMBNAIL_BYTES, parseVersion, compareVersions, formatVersion, parseStableTag, selectVersion, rewriteDescriptor, validateThumbnail, walkPackage, validatePackage, validateWorkshopConfig };
 
 if (require.main === module) {
 	const [command, ...args] = process.argv.slice(2);

@@ -24,6 +24,10 @@ mkdir -p "$steam_dir"
 export HOME="$steam_home"
 [[ "$STEAM_WORKSHOP_ID" =~ ^[1-9][0-9]{5,19}$ ]] || { echo 'Steam Workshop ID is invalid.' >&2; exit 1; }
 test -s "$package/descriptor.mod" || { echo 'Validated mod package is missing.' >&2; exit 1; }
+thumbnail="$package/thumbnail.png"
+test -f "$thumbnail" || { echo 'Validated mod package thumbnail is missing.' >&2; exit 1; }
+thumbnail_size="$(wc -c < "$thumbnail")"
+[[ "$thumbnail_size" -lt 921600 ]] || { echo 'Workshop thumbnail must be smaller than 900 KB.' >&2; exit 1; }
 
 sudo dpkg --add-architecture i386
 sudo apt-get update
@@ -57,6 +61,7 @@ cat > "$vdf" <<VDF
   "appid" "281990"
   "publishedfileid" "$STEAM_WORKSHOP_ID"
   "contentfolder" "$package"
+  "previewfile" "$thumbnail"
   "changenote" "EPOCH $RELEASE_VERSION | commit $COMMIT_SHA"
 }
 VDF
