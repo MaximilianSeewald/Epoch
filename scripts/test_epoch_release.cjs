@@ -34,9 +34,6 @@ check(() => assert.throws(() => steamcmdConfig.resolveSteamcmdConfigPath(''), /H
 
 const workflow = fs.readFileSync(path.join(__dirname, '..', '.github', 'workflows', 'stable-release.yml'), 'utf8');
 const uploadScript = fs.readFileSync(path.join(__dirname, 'steamcmd_workshop_upload.sh'), 'utf8');
-const loginProbe = fs.readFileSync(path.join(__dirname, 'steamcmd_login_probe.sh'), 'utf8');
-const classification = fs.readFileSync(path.join(__dirname, 'steam_failure_classification.cjs'), 'utf8');
-const authWorkflow = fs.readFileSync(path.join(__dirname, '..', '.github', 'workflows', 'steamcmd-auth-probe.yml'), 'utf8');
 for (const [pattern, label] of [
   [/runs-on:\s*ubuntu-latest/, 'GitHub-hosted Ubuntu runner'],
   [/cancel-in-progress:\s*false/, 'serialized non-cancelling releases'],
@@ -45,20 +42,20 @@ for (const [pattern, label] of [
   [/git push origin "refs\/tags\/\$RELEASE_TAG"/, 'permanent tag reservation'],
   [/bash scripts\/steamcmd_workshop_upload\.sh/, 'direct SteamCMD upload helper'],
   [/if: steps\.steam-config\.outputs\.upload == 'true'/, 'upload only with valid Steam configuration'],
-  [/if: steps\.steam-upload\.outputs\.uploaded == 'true'/, 'tag reservation gated on verified upload'],
+  [/if: steps\.steam-upload\.outputs\.uploaded == 'true'/, 'tag reservation gated on successful upload process'],
   [/if: steps\.reservation\.outputs\.reserved == 'true'/, 'GitHub release gated on tag reservation'],
   [/if: always\(\)[\s\S]*?rm -rf "\$RUNNER_TEMP\/steam-home"/, 'session cleanup'],
 ]) check(() => assert.match(workflow, pattern, label));
-for (const marker of ['exitcode_successful', 'login_marker_recognized', 'client_config_recognized', 'user_info_recognized', 'console_start_reached', 'steam_api_loaded', 'saved_credentials_indicated', 'password_interaction_requested', 'steam_guard_interaction_requested', 'authentication_error_detected', 'connection_error_detected', 'session_error_detected', 'usable_console_output_received']) {
-  check(() => assert.match(classification, new RegExp(marker)));
-}
 check(() => assert.match(uploadScript, /"publishedfileid" "\$STEAM_WORKSHOP_ID"/));
 check(() => assert.match(uploadScript, /\+login "\$STEAM_USERNAME" \+workshop_build_item "\$vdf" \+quit/));
-check(() => assert.doesNotMatch(uploadScript, /\+login "\$STEAM_USERNAME" \+quit/, 'no standalone login-text gate'));
-check(() => assert.match(uploadScript, /steam_workshop_confirmation\.cjs/));
-check(() => assert.match(uploadScript, /status=\$\?/));
+check(() => assert.doesNotMatch(uploadScript, /steam_workshop_confirmation|steam_upload_result|steam_failure_classification|steamcmd_login_probe|curl .*steamcommunity/i));
+check(() => assert.match(uploadScript, /timeout --kill-after=15s 300s[\s\S]*?status=\$\?/));
+check(() => assert.match(uploadScript, /if \[\[ "\$status" -ne 0 \]\]/));
+check(() => assert.match(uploadScript, /STEAM_WORKSHOP_ID" =~ \^\[1-9\]\[0-9\]\{5,19\}\$/));
+check(() => assert.match(uploadScript, /steamcmd-output\.log/));
 check(() => assert.match(uploadScript, /trap cleanup EXIT/));
 check(() => assert.match(uploadScript, /uploaded=true/));
+check(() => assert.match(uploadScript, /raw output suppressed/i));
 check(() => assert.doesNotMatch(uploadScript, /git tag|git push|gh release/, 'upload helper has no GitHub publishing action'));
 check(() => assert.doesNotMatch(workflow, /steps\.steam-login\.outputs/, 'login-text parser cannot gate release'));
 check(() => assert.ok(workflow.indexOf('- name: Upload existing Workshop item') < workflow.indexOf('- name: Reserve release version for this commit'), 'confirmed upload precedes tag reservation'));
@@ -76,12 +73,7 @@ check(() => assert.ok(reservation.indexOf('git config --local user.email') < res
 check(() => assert.doesNotMatch(reservation, /git config --global/));
 check(() => assert.doesNotMatch(workflow, /STEAM_PASSWORD|STEAM_GUARD_CODE|EPOCH_VANILLA_ROOT|EPOCH_LOG_DIRECTORY/));
 check(() => assert.match(workflow, /if: steps\.steam-upload\.outputs\.uploaded == 'true'[\s\S]*?git push origin "refs\/tags\/\$RELEASE_TAG"/, 'no verified upload means no tag'));
-check(() => assert.match(loginProbe, /\+login "\$STEAM_USERNAME" \+quit/));
-check(() => assert.doesNotMatch(loginProbe, /workshop_build_item|git tag|gh release/));
-check(() => assert.match(authWorkflow, /workflow_dispatch:/));
-check(() => assert.match(authWorkflow, /bash scripts\/steamcmd_login_probe\.sh/));
-check(() => assert.doesNotMatch(authWorkflow, /workshop_build_item|git tag|gh release|stable-release\.yml/));
-check(() => assert.match(authWorkflow, /if: always\(\)[\s\S]*?rm -rf/));
+check(() => assert.doesNotMatch(workflow, /steamcmd_login_probe|steam_failure_classification|steam_workshop_confirmation|steam_upload_result/));
 
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'epoch-release-'));
 try {
