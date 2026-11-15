@@ -688,8 +688,7 @@ epoch_iv_restore_judge = {
   if = { limit = { exists = event_target:epoch_iv_arena_star@root } clear_global_event_target = epoch_iv_arena_star@root }
   remove_country_flag = epoch_iv_recovery_presented
   remove_country_flag = epoch_iv_judge_created
-  remove_country_flag = epoch_iv_ai_attack_ordered
-  if = { limit = { exists = event_target:epoch_iv_ai_fleet@root } clear_global_event_target = epoch_iv_ai_fleet@root }
+  if = { limit = { is_ai = yes } epoch_iv_ai_end_attack = yes }
   if = {
    limit = {
     has_event_chain = epoch_iv_judge_chain
@@ -698,6 +697,16 @@ epoch_iv_restore_judge = {
   }
   epoch_iv_spawn_judge = yes
  }
+}
+
+# Country scope (THIS, also called from a fleet callback's owner).
+# Tracking only: never cancel another AI order or award trial progress.
+epoch_iv_ai_end_attack = {
+ remove_country_flag = epoch_iv_ai_attack_ordered
+ remove_country_flag = epoch_iv_ai_attack_engaged
+ remove_country_flag = epoch_iv_ai_attack_tracks_combat
+ if = { limit = { exists = event_target:epoch_iv_ai_fleet@this } clear_global_event_target = epoch_iv_ai_fleet@this }
+ set_timed_country_flag = { flag = epoch_iv_ai_attack_cooldown days = 180 }
 }
 
 # Country scope; called on chapter entry and monthly for old saves/cancellation.

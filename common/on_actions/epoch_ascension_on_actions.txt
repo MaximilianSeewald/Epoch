@@ -4,3 +4,7 @@
 on_monthly_pulse = { events = { epoch_iv.1 } }
 on_ship_destroyed_victim = { events = { epoch_iv.50 } }
 on_entering_battle = { events = { epoch_iv.51 epoch_iv.55 } }
+# Fleet callbacks; these only maintain the claimant's AI assignment.
+on_fleet_combat_joined_attacker = { events = { epoch_iv.84 } }
+on_fleet_combat_joined_defender = { events = { epoch_iv.84 } }
+on_fleet_exit_battle = { events = { epoch_iv.85 } }

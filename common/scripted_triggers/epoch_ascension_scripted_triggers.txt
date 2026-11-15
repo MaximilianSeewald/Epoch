@@ -10,6 +10,37 @@ epoch_iv_active = {
   has_country_flag = epoch_iv_complete
  }
 }
+
+# Country scope: only the live principal belonging to this claimant, in its arena.
+epoch_iv_ai_personal_target = {
+ epoch_iv_active = yes
+ check_variable = { which = epoch_iv_chapter value = 5 }
+ NOR = {
+  has_country_flag = epoch_iv_combat_proven
+  has_country_flag = epoch_iv_protocol_key
+ }
+ exists = event_target:epoch_iv_arena@this
+ exists = event_target:epoch_iv_fleet@this
+ exists = event_target:epoch_iv_ship@this
+ exists = event_target:epoch_iv_enemy@this
+ event_target:epoch_iv_enemy@this = {
+  is_country_type = epoch_adjudicator
+  has_country_flag = epoch_iv_judge_identity
+  NOT = { has_country_flag = epoch_iv_retired }
+  exists = event_target:epoch_iv_claimant@this
+  event_target:epoch_iv_claimant@this = { is_same_value = prevprev }
+ }
+ event_target:epoch_iv_fleet@this = {
+  has_fleet_flag = epoch_iv_judge
+  is_owned_by = event_target:epoch_iv_enemy@prev
+  exists = solar_system
+  solar_system = { is_same_value = event_target:epoch_iv_arena@prevprev }
+  any_owned_ship = {
+   has_ship_flag = epoch_iv_principal_for@prevprev
+   is_same_value = event_target:epoch_iv_ship@prevprev
+  }
+ }
+}
 epoch_iv_future_research = {
  epoch_iv_eligible = yes
  has_country_flag = epoch_iv_protocol_key
