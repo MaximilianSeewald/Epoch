@@ -46,6 +46,7 @@ function test(b,c) {
     if(k==='is_in_federation_with')return c.obj.federation.has(resolve(v,c));
     if(k==='has_defensive_pact')return c.obj.pacts.has(resolve(v,c));
     if(k==='is_in_combat')return !!c.obj.combat===(v==='yes');
+    if(k==='is_ai')return !!c.obj.ai===(v==='yes');
     if(k==='has_hp_percentage')return cmp(c.obj.hp/(c.obj.maxHp||240000),op,+v);
     if(k==='has_hp')return cmp(c.obj.hp,op,+v);
     if(k==='has_technology')return c.obj.techs.has(v);
@@ -78,6 +79,7 @@ function run(b,c) {
     if(k==='epoch_iv_spawn_judge'&&nativeSpawn){nativeSpawn(c);continue;}
     if(effects.has(k)){run(effects.get(k),c);continue;}
     if(/^set_(country|planet|ship|fleet)_flag$/.test(k)){c.obj.flags.add(flagKey(v,c));continue;}
+    if(k==='set_timed_country_flag'){c.obj.flags.add(get(v,'flag'));c.obj.flagDays=get(v,'days');continue;}
     if(/^remove_(country|planet|ship|fleet)_flag$/.test(k)){c.obj.flags.delete(flagKey(v,c));continue;}
     if(k==='clear_global_event_target'){delete targets[flagKey(v,c)];continue;}
     if(k==='add_resource'){for(const [r,n]of v)c.obj.resources[r]=(c.obj.resources[r]||0)+Number(n);continue;}
@@ -354,9 +356,14 @@ for(const scenario of ['missing','target-only-lost','enemy-reference','victory-r
  check(test(triggers.get('epoch_iv_judge_missing'),context(a))===['missing','foreign-principal'].includes(scenario),'recovery guard: '+scenario);
 }
 {const {a,enemy}=setup();delete targets['epoch_iv_ship@A'];delete targets['epoch_iv_principal@EA'];let requests=0;
+ a.ai=true;a.flags.add('epoch_iv_ai_attack_ordered');a.flags.add('epoch_iv_ai_attack_engaged');
+ targets['epoch_iv_ai_fleet@A']=make('old-attack-fleet');
  // Stop at the native spawn boundary; verify the real recovery script retires
  // authority and pays first. Placement itself remains a runtime requirement.
- nativeSpawn=()=>{requests++;check(enemy.flags.has('epoch_iv_retired'),'old authority retired before spawn');targets['epoch_iv_ship@A']=make('replacement');a.flags.add('epoch_iv_judge_created');};
+ nativeSpawn=()=>{requests++;check(enemy.flags.has('epoch_iv_retired'),'old authority retired before spawn');
+  check(!a.flags.has('epoch_iv_ai_attack_ordered')&&!a.flags.has('epoch_iv_ai_attack_engaged')&&!targets['epoch_iv_ai_fleet@A'],'AI assignment fully reset before guardian rebuild');
+  check(a.flags.has('epoch_iv_ai_attack_cooldown')&&a.flagDays==='180','rebuild respects AI retry cooldown');
+  targets['epoch_iv_ship@A']=make('replacement');a.flags.add('epoch_iv_judge_created');};
  run(effects.get('epoch_iv_restore_judge'),context(a));run(effects.get('epoch_iv_restore_judge'),context(a));nativeSpawn=null;
  check(requests===1&&a.vars.epoch_iv_recoveries===1,'stale recovery cannot create duplicate');
  check(a.resources.energy===8000&&a.resources.alloys===6000&&!a.flags.has('epoch_iv_protocol_key'),'recovery pays and never grants a key');
@@ -430,6 +437,8 @@ const initializers=new Map(parsedByPath.get(file('solar_system_initializers')));
 check(initializers.get('epoch_iv_arena_init').filter(([k])=>k==='planet').every(([,b])=>get(b,'class')==='star'),'arena has only central star');
 check(!/research_technology|give_technology/.test(combined),'no fabricated bulk research rewards');
 // Native interface source checks, with installed primary-source evidence.
+// Source-only runs retain the parsed campaign/kill/recovery scenarios above.
+if (!process.argv.includes('--source-only')) {
 const vanilla=process.argv[3]||'G:/Steam/steamapps/common/Stellaris';
 const native=p=>fs.readFileSync(path.join(vanilla,p),'utf8');
 check(native('launcher-settings.json').includes('Cygnus v4.5.3'),'target version present');
@@ -510,4 +519,5 @@ const oldTriggers=new Map(parse(cp.execFileSync('git',['show',baseline+':'+file(
 const oldDeath=parse(cp.execFileSync('git',['show',baseline+':events/epoch_ascension_events.txt'],{encoding:'utf8'}),'Final Trial event baseline').find(([,v])=>Array.isArray(v)&&get(v,'id')==='epoch_iv.50')[1];
 assert.deepEqual(new Map(parseFile(file('scripted_triggers'))).get('epoch_iv_valid_military_death'),oldTriggers.get('epoch_iv_valid_military_death'),'Final-Trial validator unchanged');checks++;
 assert.deepEqual(E(50),oldDeath,'Final-Trial callback unchanged');checks++;
-console.log(`PASS: ${checks} Stage-IV parsed eligibility, callback, kill attribution, conversion and native-source assertions. Static only.`);
+}
+console.log(`PASS: ${checks} Stage-IV parsed eligibility, callback, kill attribution and conversion assertions${process.argv.includes('--source-only') ? '; native-dependent section explicitly skipped' : ', including native sources'}. Static only.`);

@@ -4,6 +4,18 @@ event = {
  hide_window = yes
  is_triggered_only = yes
  immediate = {
+  # Reconcile before selecting again, including ineligible/completed old saves.
+  every_country = {
+   limit = {
+    is_ai = yes
+    OR = {
+     has_country_flag = epoch_iv_ai_attack_ordered
+     has_country_flag = epoch_iv_ai_attack_engaged
+     exists = event_target:epoch_iv_ai_fleet@this
+    }
+   }
+   country_event = { id = epoch_iv.83 }
+  }
   every_country = {
    limit = {
     epoch_iv_eligible = yes
@@ -83,16 +95,6 @@ event = {
     country_event = {
      id = epoch_iv.82
     }
-   }
-   if = {
-    limit = {
-     is_ai = yes
-     has_country_flag = epoch_iv_ai_attack_ordered
-     NOT = {
-      exists = event_target:epoch_iv_ai_fleet@this
-     }
-    }
-    remove_country_flag = epoch_iv_ai_attack_ordered
    }
   }
  }
@@ -1726,12 +1728,11 @@ country_event = {
  is_triggered_only = yes
  hide_window = yes
  trigger = {
-  epoch_iv_active = yes
   is_ai = yes
-  exists = event_target:epoch_iv_fleet@root
-  exists = event_target:epoch_iv_arena@root
-  NOT = {
+  epoch_iv_ai_personal_target = yes
+  NOR = {
    has_country_flag = epoch_iv_ai_attack_ordered
+   has_country_flag = epoch_iv_ai_attack_cooldown
   }
  }
  immediate = {
@@ -1739,7 +1740,12 @@ country_event = {
    limit = {
     is_ship_class = shipclass_military
     is_in_combat = no
+    is_fleet_idle = yes
+    exists = solar_system
     fleet_power > 30000
+    # Native numeric trigger reference (aquatics.180); no guessed boss rating.
+    fleet_power > event_target:epoch_iv_fleet@root.trigger:fleet_power
+    NOT = { any_owned_ship = { has_hp_percentage < 0.75 } }
     can_access_system = event_target:epoch_iv_arena@root
    }
    save_global_event_target_as = epoch_iv_ai_fleet@root
@@ -1752,6 +1758,102 @@ country_event = {
    }
   }
  }
+}
+
+# Country-scope reconciliation; no deadline can expire a moving attack.
+country_event = {
+ id = epoch_iv.83
+ is_triggered_only = yes
+ hide_window = yes
+ trigger = { is_ai = yes }
+ immediate = {
+  if = {
+   limit = {
+    OR = {
+     NOT = { has_country_flag = epoch_iv_ai_attack_ordered }
+     NOT = { epoch_iv_ai_personal_target = yes }
+     NOT = { exists = event_target:epoch_iv_ai_fleet@root }
+     AND = {
+      exists = event_target:epoch_iv_ai_fleet@root
+      event_target:epoch_iv_ai_fleet@root = { NOT = { is_owned_by = root } }
+     }
+    }
+   }
+   epoch_iv_ai_end_attack = yes
+  }
+  else_if = {
+   limit = { event_target:epoch_iv_ai_fleet@root = { is_in_combat = yes } }
+   # Also adopts legacy saves loaded during the personal battle.
+   if = {
+    limit = {
+     exists = event_target:epoch_iv_ai_fleet@root.solar_system
+     event_target:epoch_iv_ai_fleet@root.solar_system = { is_same_value = event_target:epoch_iv_arena@root }
+    }
+    set_country_flag = epoch_iv_ai_attack_engaged
+   }
+  }
+  else_if = {
+   limit = {
+    OR = {
+     has_country_flag = epoch_iv_ai_attack_engaged
+     event_target:epoch_iv_ai_fleet@root = {
+      OR = {
+       is_fleet_idle = yes
+       has_fleet_order = return_fleet_order
+       has_fleet_order = repair_fleet_order
+       has_fleet_order = evade_hostiles_order
+      }
+     }
+    }
+   }
+   epoch_iv_ai_end_attack = yes
+  }
+ }
+}
+
+# Native fleet combat-entry scopes: ROOT is this fleet, FROM its opponent.
+fleet_event = {
+ id = epoch_iv.84
+ is_triggered_only = yes
+ hide_window = yes
+ trigger = {
+  exists = owner
+  exists = from
+  owner = {
+   is_ai = yes
+   has_country_flag = epoch_iv_ai_attack_ordered
+   exists = event_target:epoch_iv_ai_fleet@this
+   event_target:epoch_iv_ai_fleet@this = { is_same_value = root }
+   exists = event_target:epoch_iv_fleet@this
+   from = { is_same_value = event_target:epoch_iv_fleet@prev }
+  }
+ }
+ immediate = { owner = { set_country_flag = epoch_iv_ai_attack_engaged } }
+}
+
+# Fires for every fleet leaving combat, including a surviving retreat.
+fleet_event = {
+ id = epoch_iv.85
+ is_triggered_only = yes
+ hide_window = yes
+ trigger = {
+  exists = owner
+  owner = {
+   is_ai = yes
+   has_country_flag = epoch_iv_ai_attack_ordered
+   exists = event_target:epoch_iv_ai_fleet@this
+   event_target:epoch_iv_ai_fleet@this = { is_same_value = root }
+   OR = {
+    has_country_flag = epoch_iv_ai_attack_engaged
+    # Legacy save: entry callback may predate this implementation.
+    AND = {
+     exists = root.solar_system
+     root.solar_system = { is_same_value = event_target:epoch_iv_arena@prev }
+    }
+   }
+  }
+ }
+ immediate = { owner = { epoch_iv_ai_end_attack = yes } }
 }
 
 
