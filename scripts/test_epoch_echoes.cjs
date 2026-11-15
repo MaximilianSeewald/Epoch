@@ -40,7 +40,7 @@ for(const [hook,b] of tree('common/on_actions/epoch_core_on_actions.txt')){
 }
 assert.deepEqual(preservedHooks,originalHooks,'Every pre-existing campaign hook and callback order is preserved');checks++;
 for(const id of [31,33])check(get(E(id),'option')&&get(E(id),'trigger'),`${id}: full relay event rather than a scheduling stub`);
-const actor=()=>({flags:new Set(),mods:new Set(),resources:{},targets:new Set(),draws:0,trace:[]});
+const actor=()=>({flags:new Set(),mods:new Set(),resources:{},variables:{},targets:new Set(),draws:0,trace:[]});
 function test(b,a){return b.every(([k,v])=>{
  if(k==='NOT')return !test(v,a);
  if(k==='OR')return v.some(p=>test([p],a));
@@ -49,6 +49,7 @@ function test(b,a){return b.every(([k,v])=>{
  if(k==='always')return v==='yes';
  if(['has_country_flag','has_planet_flag'].includes(k))return a.flags.has(v);
  if(k==='has_modifier')return a.mods.has(v);
+ if(k==='check_variable')return a.variables[get(v,'which')]===Number(get(v,'value'));
  if(k==='exists')return v==='owner'?!!a.owner:a.targets.has(v);
  if(k==='owner')return !!a.owner&&test(v,a.owner);
  if(triggers.has(k))return test(triggers.get(k),a)===(v==='yes');
@@ -120,19 +121,64 @@ for(const [s,other,id]of [['ghost','relay',60],['relay','ghost',61]]){
  check(has(E(90),`epoch_echoes_${s}_age`)&&has(E(90),'"12"'),`${s}: bounded lifetime`);
 }
 assert.deepEqual([...decisions.keys()].sort(),['decision_epoch_echoes_investigate','decision_epoch_echoes_recover']);checks++;
+const campaignTriggers=tree('common/scripted_triggers/epoch_convergence_triggers.txt');
+triggers.set('epoch_iii_affected_world',get(campaignTriggers,'epoch_iii_affected_world'));
+const visibleDecisions = colony => [...decisions].filter(([, decision]) => test(get(decision,'potential'), colony)).map(([key]) => key);
 for(let mask=0;mask<32;mask++){
  const a=actor();a.owner=actor();
  ['epoch_echoes_unquiet_active','epoch_echoes_unquiet_closed','epoch_echoes_unquiet_treating','epoch_echoes_unquiet_menu','epoch_echoes_unquiet_backlash'].forEach((f,i)=>{if(mask&(1<<i))a.flags.add(f);});
  a.flags.add('epoch_echoes_unquiet_for@owner');a.mods.add('epoch_echoes_unquiet_organic');if(mask&16)a.mods.add('epoch_echoes_unquiet_backlash');
- const visible=[...decisions.values()].filter(b=>test(get(b,'potential'),a)).length;
- check(visible<=1,`${mask}: at most one visible colony decision, including inconsistent flag combinations`);
+ check(visibleDecisions(a).length<=1,`${mask}: at most one visible colony decision, including inconsistent flag combinations`);
+}
+for(const recovery of [false,true]){
+ const colony=actor();
+ colony.owner=actor();
+ colony.flags.add('epoch_echoes_unquiet_for@owner');
+ if(recovery){
+  colony.flags.add('epoch_echoes_unquiet_closed');
+  colony.flags.add('epoch_echoes_unquiet_backlash');
+  colony.mods.add('epoch_echoes_unquiet_backlash');
+ }else{
+  colony.flags.add('epoch_echoes_unquiet_active');
+  colony.mods.add('epoch_echoes_unquiet_organic');
+ }
+ const expected=recovery?'decision_epoch_echoes_recover':'decision_epoch_echoes_investigate';
+ check(visibleDecisions(colony).includes(expected),`${expected}: visible on the affected Echoes colony`);
+ colony.owner.flags.add('epoch_res_active');
+ colony.owner.variables.epoch_res_chapter=4;
+ colony.flags.add('epoch_res_infected');
+ check(visibleDecisions(colony).includes(expected),`${expected}: unrelated Stage II target does not suppress Echoes`);
+ colony.flags.add('epoch_res_infected_for@owner');
+ check(visibleDecisions(colony).length===0,`${expected}: hidden if Stage II later targets the colony`);
+ if(!recovery)check(!test(get(E(11),'trigger'),colony),'Stage II also blocks the AI strategy event on this colony');
+ colony.owner.variables.epoch_res_chapter=5;
+ check(visibleDecisions(colony).includes(expected),`${expected}: returns after the Stage II decision window`);
+ colony.flags.add('epoch_iii_exposed_v1');
+ check(visibleDecisions(colony).length===0,`${expected}: hidden if Stage III later exposes the colony`);
+ colony.flags.add('epoch_iii_treated');
+ check(visibleDecisions(colony).length===0,`${expected}: still hidden while Stage III buffering is relevant`);
+ colony.flags.add('epoch_iii_buffered');
+ check(visibleDecisions(colony).includes(expected),`${expected}: returns after Stage III treatment and buffering`);
 }
 check(has(get(decisions.get('decision_epoch_echoes_recover'),'potential'),'has_modifier'),'No repair for an expired penalty');
+const repairing = actor();
+repairing.owner = actor();
+repairing.flags = new Set(['epoch_echoes_unquiet_for@owner','epoch_echoes_unquiet_closed','epoch_echoes_unquiet_backlash','epoch_iii_exposed_v1']);
+repairing.mods.add('epoch_echoes_unquiet_backlash');
+apply(get(get(decisions.get('decision_epoch_echoes_recover'),'effect'),'hidden_effect'),repairing);
+check(!repairing.mods.has('epoch_echoes_unquiet_backlash')&&repairing.flags.has('epoch_iii_exposed_v1'),'Already paid repair clears only Echoes backlash after Stage III intervenes');
 check(has(E(20),'days","-1')&&has(E(12),'days","-1'),'Disturbance and backlash persist until treated');
 for(const s of ['containment','research','exploit'])check(has(E(11),`epoch_echoes_treatment_${s}`)&&has(E(12),`epoch_echoes_treatment_${s}`),`${s}: paid timed treatment reaches own result`);
 const a=actor();a.owner=actor();a.flags=new Set(['epoch_echoes_unquiet_active','epoch_echoes_unquiet_treating','epoch_echoes_treatment_containment','epoch_echoes_unquiet_for@owner']);a.mods.add('epoch_echoes_unquiet_organic');
+a.flags.add('epoch_iii_exposed_v1');
 check(test(get(E(12),'trigger'),a),'Treatment finishes after its temporary modifier expires');apply(get(E(12),'immediate'),a);
 check(!test(get(E(12),'trigger'),a)&&!a.mods.has('epoch_echoes_unquiet_organic')&&a.owner.flags.has('epoch_echoes_unquiet_contained'),'Containment removes actual penalty exactly once');
+check(a.flags.has('epoch_iii_exposed_v1'),'Already paid treatment finishes without changing the new main-campaign state');
+for(const [key, option] of E(11))if(key==='option'&&get(option,'tooltip')){
+ const commit=get(get(option,'hidden_effect'),'if');
+ assert.deepEqual(get(commit,'limit'),get(option,'trigger'),'A stale strategy choice rechecks colony priority and affordability before charging');
+ checks++;
+}
 check(has(E(13),'epoch_echoes_clear_disturbance')&&!has(E(13),'add_resource'),'Colony loss cleans this story without rewards');
 check(!/set_(?:planet|country)_flag = epoch_(?:core|res|ii|iii|iv)_/.test(source),'No writes to Stage I-IV state');
 for(const k of ['epoch_res_infected','epoch_ii_controlled_resonance','epoch_core_resonance_scar_healed'])check(has(triggers.get('epoch_echoes_safe_colony'),k),`Protected state ${k}`);
@@ -148,7 +194,15 @@ check(has(get(outputTrigger,'owner?'),'count_owned_megastructure'),'Captured dup
 const sprites=new Map(get(tree('interface/epoch_echoes.gfx'),'spriteTypes').map(([,b])=>[get(b,'name').replaceAll('"',''),b]));
 for(const id of megas.keys())for(const suffix of ['build_icon','outliner_icon'])check(sprites.has(`GFX_${id}_${suffix}`),`${id}: implicit ${suffix} defined`);
 check(!has(mods.get('epoch_echoes_relay_active'),'research')&&!has(mods.get('epoch_echoes_relay_active'),'sensor'),'No country buff masquerades as infrastructure');
-for(const s of ['active','disabled','salvaged'])check(has(effects.get(`epoch_echoes_replace_relay_${s}`),'spawn_megastructure')&&has(effects.get(`epoch_echoes_replace_relay_${s}`),'remove_megastructure'),`${s}: persistent map object`);
+const replaceRelay=get(effects.get('epoch_echoes_replace_relay'),'if');
+const relaySystem=get(replaceRelay,'event_target:epoch_echoes_relay_system@root');
+const replacement=get(relaySystem,'random_system_megastructure');
+const replacementLimit=get(replacement,'limit');
+const relayObject='event_target:epoch_echoes_relay_object@root';
+check(get(get(relaySystem,'spawn_megastructure'),'type')==='$RELAY_TYPE$','Replacement requests the selected structure type');
+check(get(replacementLimit,'is_megastructure_type')==='$RELAY_TYPE$'&&get(replacementLimit,'is_owned_by')==='root'&&get(get(replacementLimit,'planet'),'is_same_value')==='event_target:epoch_echoes_relay_site@root','Replacement must match the type, owner and anchor');
+check(get(get(replacement,'root'),'remove_megastructure')===relayObject&&get(replacement,'save_global_event_target_as')===relayObject.split(':')[1],'Only a confirmed replacement retires the old relay and updates its saved location');
+check(!get(relaySystem,'remove_megastructure')&&!get(replaceRelay,'remove_megastructure'),'Missing replacement leaves the old structure in place');
 check(get(get(megas.get('epoch_echoes_relay_disabled'),'potential'),'always')==='yes'&&has(megas.get('epoch_echoes_relay_disabled'),'has_monthly_income'),'AI can select native shutdown during deficits');
 check(has(E(33),'create_fleet')&&has(E(33),'create_ship')&&has(E(33),'fleet_power'),'Military route has defenders and AI strength check');
 check(has(get(E(900),'trigger'),'fromfromfrom')&&has(E(900),'epoch_echoes_relay_guard_destroyed'),'Military success requires destroyed guard and combatant');
@@ -156,15 +210,22 @@ check(!has(E(90),'set_country_flag","epoch_echoes_relay_military_ready'),'Missin
 for(const f of ['epoch_echoes_ghost_signal_insight','epoch_echoes_unquiet_contained','epoch_echoes_unquiet_researched'])check(has(E(33),f),`${f}: technical aid`);
 check(Number(get(projects.get('EPOCH_ECHOES_RELAY_DEFUSE_AIDED'),'days_to_research'))<Number(get(projects.get('EPOCH_ECHOES_RELAY_DEFUSE'),'days_to_research')),'Previous stories shorten actual work');
 check(get(projects.get('EPOCH_ECHOES_RELAY_DEFUSE_LINKED'),'days_to_research')==='45'&&has(E(33),'epoch_echoes_relay_linked'),'Both discoveries together provide a further advantage');
+const relayOutcomes = {'epoch_echoes.9.a':'active','epoch_echoes.9.b':'salvaged','epoch_echoes.9.c':'disabled'};
 for(const [k,v] of E(35))if(k==='option'){
  check(has(get(v,'trigger'),'epoch_echoes_relay_open'),'Stale relay choice is unavailable');
  const body=get(get(v,'hidden_effect'),'if');
  check(has(get(body,'limit'),'epoch_echoes_relay_open'),'Relay action revalidates before execution');
- const claim=body.findIndex(([k])=>k==='epoch_echoes_finalize_relay');
- const grant=body.findIndex(([k])=>k==='add_resource');
- check(claim>=0&&(grant<0||claim<grant),'Relay claims completion before charging or paying');
+ const type = `epoch_echoes_relay_${relayOutcomes[get(v,'name')]}`;
+ const settled = get(body,'if');
+ check(get(get(body,'epoch_echoes_replace_relay'),'RELAY_TYPE')===type,'Relay requests the correct replacement');
+ check(get(get(get(settled,'limit'),relayObject),'is_megastructure_type')===type,'Settlement requires the confirmed replacement');
+ check(!get(body,'epoch_echoes_finalize_relay')&&!get(body,'add_resource')&&get(settled,'epoch_echoes_finalize_relay')==='yes','Failed replacement leaves the secured relay open without charging or granting resources');
+ check(type.endsWith('_disabled')||get(settled,'add_resource'),'Successful activation or salvage settles the resources once');
 }
+check(get(get(triggers.get('epoch_echoes_relay_open'), 'event_target:epoch_echoes_relay_object@this'),'is_megastructure_type')==='epoch_echoes_relay_dormant','A replaced relay rejects stale final choices');
 check(has(E(91),'days","1')&&has(E(92),'epoch_echoes_relay_for@root')&&has(E(92),'epoch_echoes_relay_disabled'),'Captured relay becomes an inert object without overwriting the conqueror’s personal targets');
+const captureSystem = get(get(get(E(92),'immediate'),'from'),'solar_system');
+check(get(get(get(captureSystem,'random_system_megastructure'),'root'),'remove_megastructure')==='from'&&!get(get(get(E(92),'immediate'),'from'),'remove_megastructure'),'Capture also preserves the old relay if the replacement is missing');
 check(has(E(11),'resource_stockpile_compare')&&has(E(90),'is_ai')&&has(E(35),'has_monthly_income'),'AI actions account for economy');
 check(!/on_monthly_pulse[^\n]*epoch_echoes/.test(read('common/on_actions/epoch_core_on_actions.txt'))&&!/every_(?:planet|country|fleet)|every_system/.test(source),'No monthly/galaxy-wide scans');
 check(has(E(22),'epoch_echoes_disable_relay')&&has(E(22),'epoch_echoes_close_ghost'),'Permanent refusal cleans active work');

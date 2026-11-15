@@ -4,18 +4,14 @@ decision_epoch_echoes_investigate = {
  owned_planets_only = yes
  enactment_time = 1
  potential = {
-  epoch_echoes_colony_owned = yes
-  has_planet_flag = epoch_echoes_unquiet_active
-  NOT = { has_planet_flag = epoch_echoes_unquiet_closed }
-  epoch_echoes_disturbance_present = yes
-  NOT = { has_planet_flag = epoch_echoes_unquiet_treating }
+  epoch_echoes_colony_strategy_available = yes
   NOT = { has_planet_flag = epoch_echoes_unquiet_menu }
  }
  allow = { NOT = { has_planet_flag = epoch_echoes_unquiet_closed } }
  effect = {
   custom_tooltip = epoch_echoes.investigate.tt
   hidden_effect = {
-   if = { limit = { epoch_echoes_colony_owned = yes has_planet_flag = epoch_echoes_unquiet_active NOT = { has_planet_flag = epoch_echoes_unquiet_treating } }
+   if = { limit = { epoch_echoes_colony_strategy_available = yes NOT = { has_planet_flag = epoch_echoes_unquiet_menu } }
     set_planet_flag = epoch_echoes_unquiet_menu
     carrier_event = { id = epoch_echoes.11 }
    }
@@ -30,11 +26,23 @@ decision_epoch_echoes_recover = {
  owned_planets_only = yes
  enactment_time = 60
  resources = { category = decisions cost = { energy = 200 minerals = 100 } }
- potential = { epoch_echoes_colony_owned = yes has_planet_flag = epoch_echoes_unquiet_closed has_planet_flag = epoch_echoes_unquiet_backlash has_modifier = epoch_echoes_unquiet_backlash }
+ potential = {
+  epoch_echoes_colony_owned = yes
+  epoch_echoes_colony_campaign_priority = no
+  has_planet_flag = epoch_echoes_unquiet_closed
+  has_planet_flag = epoch_echoes_unquiet_backlash
+  has_modifier = epoch_echoes_unquiet_backlash
+ }
  allow = { has_modifier = epoch_echoes_unquiet_backlash }
  effect = {
-  remove_modifier = epoch_echoes_unquiet_backlash
-  hidden_effect = { remove_planet_flag = epoch_echoes_unquiet_backlash }
+  tooltip = { remove_modifier = epoch_echoes_unquiet_backlash }
+  hidden_effect = {
+   # A repair already commissioned can finish even if the main story arrives.
+   if = { limit = { epoch_echoes_colony_owned = yes has_planet_flag = epoch_echoes_unquiet_backlash has_modifier = epoch_echoes_unquiet_backlash }
+    remove_modifier = epoch_echoes_unquiet_backlash
+    remove_planet_flag = epoch_echoes_unquiet_backlash
+   }
+  }
  }
  ai_weight = { weight = 100 }
 }

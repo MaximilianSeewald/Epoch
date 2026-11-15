@@ -32,6 +32,7 @@ epoch_echoes_pending_discovery = {
 
 epoch_echoes_safe_colony = {
 	is_colony = yes
+	epoch_echoes_colony_campaign_priority = no
 	NOT = { has_planet_flag = epoch_echoes_unquiet_active }
 	NOT = { has_planet_flag = epoch_echoes_unquiet_closed }
 	NOT = { has_planet_flag = epoch_core_contamination_contained_state }
@@ -71,6 +72,38 @@ epoch_echoes_colony_owned = {
  owner = { NOT = { has_country_flag = epoch_core_campaign_opted_out } }
 }
 
+# Only main-campaign decisions tied to this colony take priority. Their
+# visibility conditions still apply when an individual option is unaffordable.
+epoch_echoes_colony_campaign_priority = {
+ OR = {
+  AND = {
+   has_planet_flag = epoch_res_infected
+   has_planet_flag = epoch_res_infected_for@owner
+   owner = {
+    has_country_flag = epoch_res_active
+    NOT = { has_country_flag = epoch_core_campaign_opted_out }
+    check_variable = { which = epoch_res_chapter value = 4 }
+   }
+  }
+  AND = {
+   epoch_iii_affected_world = yes
+   OR = {
+    NOT = { has_planet_flag = epoch_iii_buffered }
+    NOT = { has_planet_flag = epoch_iii_treated }
+   }
+  }
+ }
+}
+
+epoch_echoes_colony_strategy_available = {
+ epoch_echoes_colony_owned = yes
+ epoch_echoes_colony_campaign_priority = no
+ has_planet_flag = epoch_echoes_unquiet_active
+ NOT = { has_planet_flag = epoch_echoes_unquiet_closed }
+ epoch_echoes_disturbance_present = yes
+ NOT = { has_planet_flag = epoch_echoes_unquiet_treating }
+}
+
 epoch_echoes_disturbance_present = {
  OR = {
   has_modifier = epoch_echoes_unquiet_organic
@@ -92,6 +125,10 @@ epoch_echoes_relay_open = {
  NOT = { has_country_flag = epoch_core_campaign_opted_out }
  exists = event_target:epoch_echoes_relay_object@this
  exists = event_target:epoch_echoes_relay_site@this
- event_target:epoch_echoes_relay_object@this = { is_owned_by = prev has_megastructure_flag = epoch_echoes_relay_for@prev }
+ event_target:epoch_echoes_relay_object@this = {
+  is_megastructure_type = epoch_echoes_relay_dormant
+  is_owned_by = prev
+  has_megastructure_flag = epoch_echoes_relay_for@prev
+ }
  event_target:epoch_echoes_relay_system@this = { is_inside_border = prev }
 }

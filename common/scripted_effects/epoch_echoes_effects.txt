@@ -77,7 +77,7 @@ epoch_echoes_close_ghost = {
 }
 
 epoch_echoes_close_relay = {
- if = { limit = { exists = event_target:epoch_echoes_relay_object@root event_target:epoch_echoes_relay_object@root = { is_owned_by = root } } epoch_echoes_replace_relay_disabled = yes }
+ epoch_echoes_replace_relay = { RELAY_TYPE = epoch_echoes_relay_disabled }
  set_country_flag = epoch_echoes_relay_failed
  epoch_echoes_finalize_relay = yes
  abort_special_project = { type = EPOCH_ECHOES_RELAY_SURVEY }
@@ -91,7 +91,7 @@ epoch_echoes_close_relay = {
 # No search outside the saved personal system and no replacement if it is lost.
 epoch_echoes_disable_relay = {
  if = { limit = { exists = event_target:epoch_echoes_relay_object@root event_target:epoch_echoes_relay_object@root = { is_megastructure_type = epoch_echoes_relay_active is_owned_by = root } }
-  epoch_echoes_replace_relay_disabled = yes
+  epoch_echoes_replace_relay = { RELAY_TYPE = epoch_echoes_relay_disabled }
  }
 }
 
@@ -128,48 +128,33 @@ epoch_echoes_reissue_relay = {
  }
 }
 
-epoch_echoes_replace_relay_active = {
- if = { limit = { exists = event_target:epoch_echoes_relay_object@root }
-  event_target:epoch_echoes_relay_system@root = {
-   spawn_megastructure = { type = epoch_echoes_relay_active owner = root planet = event_target:epoch_echoes_relay_site@root }
-   random_system_megastructure = { limit = { is_megastructure_type = epoch_echoes_relay_active NOT = { has_megastructure_flag = epoch_echoes_claimed } }
-    set_megastructure_flag = epoch_echoes_claimed
-    set_megastructure_flag = epoch_echoes_relay_for@root
-    save_global_event_target_as = epoch_echoes_relay_replacement@root
+# Country root. Only an identified replacement of the requested type at the
+# assigned body can retire the old relay and replace the saved reference.
+epoch_echoes_replace_relay = {
+ if = { limit = {
+   exists = event_target:epoch_echoes_relay_site@root
+   exists = event_target:epoch_echoes_relay_system@root
+   exists = event_target:epoch_echoes_relay_object@root
+   event_target:epoch_echoes_relay_object@root = {
+    is_owned_by = root
+    has_megastructure_flag = epoch_echoes_relay_for@root
+    NOT = { is_megastructure_type = $RELAY_TYPE$ }
    }
   }
-  remove_megastructure = event_target:epoch_echoes_relay_object@root
-  event_target:epoch_echoes_relay_replacement@root = { save_global_event_target_as = epoch_echoes_relay_object@root }
- }
-}
-
-epoch_echoes_replace_relay_disabled = {
- if = { limit = { exists = event_target:epoch_echoes_relay_object@root }
   event_target:epoch_echoes_relay_system@root = {
-   spawn_megastructure = { type = epoch_echoes_relay_disabled owner = root planet = event_target:epoch_echoes_relay_site@root }
-   random_system_megastructure = { limit = { is_megastructure_type = epoch_echoes_relay_disabled NOT = { has_megastructure_flag = epoch_echoes_claimed } }
+   spawn_megastructure = { type = $RELAY_TYPE$ owner = root planet = event_target:epoch_echoes_relay_site@root }
+   random_system_megastructure = { limit = {
+     is_megastructure_type = $RELAY_TYPE$
+     is_owned_by = root
+     planet = { is_same_value = event_target:epoch_echoes_relay_site@root }
+     NOT = { has_megastructure_flag = epoch_echoes_claimed }
+    }
     set_megastructure_flag = epoch_echoes_claimed
     set_megastructure_flag = epoch_echoes_relay_for@root
-    save_global_event_target_as = epoch_echoes_relay_replacement@root
+    root = { remove_megastructure = event_target:epoch_echoes_relay_object@root }
+    save_global_event_target_as = epoch_echoes_relay_object@root
    }
   }
-  remove_megastructure = event_target:epoch_echoes_relay_object@root
-  event_target:epoch_echoes_relay_replacement@root = { save_global_event_target_as = epoch_echoes_relay_object@root }
- }
-}
-
-epoch_echoes_replace_relay_salvaged = {
- if = { limit = { exists = event_target:epoch_echoes_relay_object@root }
-  event_target:epoch_echoes_relay_system@root = {
-   spawn_megastructure = { type = epoch_echoes_relay_salvaged owner = root planet = event_target:epoch_echoes_relay_site@root }
-   random_system_megastructure = { limit = { is_megastructure_type = epoch_echoes_relay_salvaged NOT = { has_megastructure_flag = epoch_echoes_claimed } }
-    set_megastructure_flag = epoch_echoes_claimed
-    set_megastructure_flag = epoch_echoes_relay_for@root
-    save_global_event_target_as = epoch_echoes_relay_replacement@root
-   }
-  }
-  remove_megastructure = event_target:epoch_echoes_relay_object@root
-  event_target:epoch_echoes_relay_replacement@root = { save_global_event_target_as = epoch_echoes_relay_object@root }
  }
 }
 

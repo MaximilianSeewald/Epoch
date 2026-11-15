@@ -214,46 +214,55 @@ carrier_event = {
  desc = epoch_echoes.11.desc
  picture = GFX_evt_contingency_planet
  is_triggered_only = yes
- trigger = { epoch_echoes_colony_owned = yes has_planet_flag = epoch_echoes_unquiet_active epoch_echoes_disturbance_present = yes NOT = { has_planet_flag = epoch_echoes_unquiet_treating } }
+ trigger = { epoch_echoes_colony_strategy_available = yes }
 
  option = { name = epoch_echoes.11.containment
-  trigger = { epoch_echoes_colony_owned = yes has_planet_flag = epoch_echoes_unquiet_active NOT = { has_planet_flag = epoch_echoes_unquiet_treating } owner = { resource_stockpile_compare = { resource = energy value >= 250 } resource_stockpile_compare = { resource = minerals value >= 150 } } }
-  owner = { add_resource = { energy = -250 minerals = -150 } }
+  trigger = { epoch_echoes_colony_strategy_available = yes owner = { resource_stockpile_compare = { resource = energy value >= 250 } resource_stockpile_compare = { resource = minerals value >= 150 } } }
+  tooltip = { owner = { add_resource = { energy = -250 minerals = -150 } } }
   custom_tooltip = epoch_echoes.containment.tt
   hidden_effect = {
-   remove_planet_flag = epoch_echoes_unquiet_menu
-   set_planet_flag = epoch_echoes_unquiet_treating
-   set_planet_flag = epoch_echoes_treatment_containment
-   add_modifier = { modifier = epoch_echoes_unquiet_treatment days = 60 }
-   carrier_event = { id = epoch_echoes.12 days = 60 }
+   if = { limit = { epoch_echoes_colony_strategy_available = yes owner = { resource_stockpile_compare = { resource = energy value >= 250 } resource_stockpile_compare = { resource = minerals value >= 150 } } }
+    owner = { add_resource = { energy = -250 minerals = -150 } }
+    remove_planet_flag = epoch_echoes_unquiet_menu
+    set_planet_flag = epoch_echoes_unquiet_treating
+    set_planet_flag = epoch_echoes_treatment_containment
+    add_modifier = { modifier = epoch_echoes_unquiet_treatment days = 60 }
+    carrier_event = { id = epoch_echoes.12 days = 60 }
+   }
   }
   ai_chance = { factor = 60  }
  }
 
  option = { name = epoch_echoes.11.research
-  trigger = { epoch_echoes_colony_owned = yes has_planet_flag = epoch_echoes_unquiet_active NOT = { has_planet_flag = epoch_echoes_unquiet_treating } owner = { resource_stockpile_compare = { resource = energy value >= 200 } resource_stockpile_compare = { resource = alloys value >= 100 } } }
-  owner = { add_resource = { energy = -200 alloys = -100 } }
+  trigger = { epoch_echoes_colony_strategy_available = yes owner = { resource_stockpile_compare = { resource = energy value >= 200 } resource_stockpile_compare = { resource = alloys value >= 100 } } }
+  tooltip = { owner = { add_resource = { energy = -200 alloys = -100 } } }
   custom_tooltip = epoch_echoes.research.tt
   hidden_effect = {
-   remove_planet_flag = epoch_echoes_unquiet_menu
-   set_planet_flag = epoch_echoes_unquiet_treating
-   set_planet_flag = epoch_echoes_treatment_research
-   add_modifier = { modifier = epoch_echoes_unquiet_treatment days = 120 }
-   carrier_event = { id = epoch_echoes.12 days = 120 }
+   if = { limit = { epoch_echoes_colony_strategy_available = yes owner = { resource_stockpile_compare = { resource = energy value >= 200 } resource_stockpile_compare = { resource = alloys value >= 100 } } }
+    owner = { add_resource = { energy = -200 alloys = -100 } }
+    remove_planet_flag = epoch_echoes_unquiet_menu
+    set_planet_flag = epoch_echoes_unquiet_treating
+    set_planet_flag = epoch_echoes_treatment_research
+    add_modifier = { modifier = epoch_echoes_unquiet_treatment days = 120 }
+    carrier_event = { id = epoch_echoes.12 days = 120 }
+   }
   }
   ai_chance = { factor = 30 modifier = { factor = 0 owner = { has_monthly_income = { resource = energy value < 0 } } } }
  }
 
  option = { name = epoch_echoes.11.exploit
-  trigger = { epoch_echoes_colony_owned = yes has_planet_flag = epoch_echoes_unquiet_active NOT = { has_planet_flag = epoch_echoes_unquiet_treating } owner = { resource_stockpile_compare = { resource = energy value >= 100 } resource_stockpile_compare = { resource = alloys value >= 50 } } }
-  owner = { add_resource = { energy = -100 alloys = -50 } }
+  trigger = { epoch_echoes_colony_strategy_available = yes owner = { resource_stockpile_compare = { resource = energy value >= 100 } resource_stockpile_compare = { resource = alloys value >= 50 } } }
+  tooltip = { owner = { add_resource = { energy = -100 alloys = -50 } } }
   custom_tooltip = epoch_echoes.exploit.tt
   hidden_effect = {
-   remove_planet_flag = epoch_echoes_unquiet_menu
-   set_planet_flag = epoch_echoes_unquiet_treating
-   set_planet_flag = epoch_echoes_treatment_exploit
-   add_modifier = { modifier = epoch_echoes_unquiet_treatment days = 45 }
-   carrier_event = { id = epoch_echoes.12 days = 45 }
+   if = { limit = { epoch_echoes_colony_strategy_available = yes owner = { resource_stockpile_compare = { resource = energy value >= 100 } resource_stockpile_compare = { resource = alloys value >= 50 } } }
+    owner = { add_resource = { energy = -100 alloys = -50 } }
+    remove_planet_flag = epoch_echoes_unquiet_menu
+    set_planet_flag = epoch_echoes_unquiet_treating
+    set_planet_flag = epoch_echoes_treatment_exploit
+    add_modifier = { modifier = epoch_echoes_unquiet_treatment days = 45 }
+    carrier_event = { id = epoch_echoes.12 days = 45 }
+   }
   }
   ai_chance = { factor = 10 modifier = { factor = 0 owner = { has_monthly_income = { resource = energy value < 0 } } } }
  }
@@ -261,6 +270,7 @@ carrier_event = {
  option = { name = epoch_echoes.11.wait hidden_effect = { remove_planet_flag = epoch_echoes_unquiet_menu } ai_chance = { factor = 1 modifier = { factor = 0 owner = { resource_stockpile_compare = { resource = energy value >= 250 } resource_stockpile_compare = { resource = minerals value >= 150 } } } } }
 }
 
+# Already paid work resolves normally if the main campaign takes priority.
 carrier_event = {
  id = epoch_echoes.12
  hide_window = yes
@@ -411,10 +421,12 @@ country_event = {
   custom_tooltip = epoch_echoes.activate.tt
   hidden_effect = {
    if = { limit = { epoch_echoes_relay_open = yes resource_stockpile_compare = { resource = energy value >= 300 } resource_stockpile_compare = { resource = alloys value >= 150 } }
-    epoch_echoes_finalize_relay = yes
-    add_resource = { energy = -300 alloys = -150 }
-    epoch_echoes_replace_relay_active = yes
-    set_country_flag = epoch_echoes_relay_operational
+    epoch_echoes_replace_relay = { RELAY_TYPE = epoch_echoes_relay_active }
+    if = { limit = { event_target:epoch_echoes_relay_object@root = { is_megastructure_type = epoch_echoes_relay_active } }
+     add_resource = { energy = -300 alloys = -150 }
+     set_country_flag = epoch_echoes_relay_operational
+     epoch_echoes_finalize_relay = yes
+    }
    }
   }
   ai_chance = { factor = 55 modifier = { factor = 0 NOT = { has_monthly_income = { resource = energy value > 6 } } } modifier = { factor = 0 has_deficit = energy } }
@@ -425,10 +437,12 @@ country_event = {
   custom_tooltip = epoch_echoes.salvage.tt
   hidden_effect = {
    if = { limit = { epoch_echoes_relay_open = yes }
-    epoch_echoes_finalize_relay = yes
-    add_resource = { alloys = 150 }
-    epoch_echoes_replace_relay_salvaged = yes
-    set_country_flag = epoch_echoes_relay_salvaged
+    epoch_echoes_replace_relay = { RELAY_TYPE = epoch_echoes_relay_salvaged }
+    if = { limit = { event_target:epoch_echoes_relay_object@root = { is_megastructure_type = epoch_echoes_relay_salvaged } }
+     add_resource = { alloys = 150 }
+     set_country_flag = epoch_echoes_relay_salvaged
+     epoch_echoes_finalize_relay = yes
+    }
    }
   }
   ai_chance = { factor = 25 }
@@ -438,9 +452,11 @@ country_event = {
   custom_tooltip = epoch_echoes.disable.tt
   hidden_effect = {
    if = { limit = { epoch_echoes_relay_open = yes }
-    epoch_echoes_finalize_relay = yes
-    epoch_echoes_replace_relay_disabled = yes
-    set_country_flag = epoch_echoes_relay_disabled
+    epoch_echoes_replace_relay = { RELAY_TYPE = epoch_echoes_relay_disabled }
+    if = { limit = { event_target:epoch_echoes_relay_object@root = { is_megastructure_type = epoch_echoes_relay_disabled } }
+     set_country_flag = epoch_echoes_relay_disabled
+     epoch_echoes_finalize_relay = yes
+    }
    }
   }
   ai_chance = { factor = 20 }
@@ -650,7 +666,7 @@ country_event = {
      # Imported saves with an expired baseline close freely; no phantom repair bill.
      if = { limit = { epoch_echoes_disturbance_present = no } epoch_echoes_clear_disturbance = yes owner = { set_country_flag = epoch_echoes_unquiet_lost } }
      else_if = { limit = { has_planet_flag = epoch_echoes_unquiet_treating NOT = { has_modifier = epoch_echoes_unquiet_treatment } } carrier_event = { id = epoch_echoes.12 } }
-     else_if = { limit = { owner = { is_ai = yes } NOT = { has_planet_flag = epoch_echoes_unquiet_treating } }
+      else_if = { limit = { owner = { is_ai = yes } epoch_echoes_colony_strategy_available = yes }
       carrier_event = { id = epoch_echoes.11 }
      }
     }
@@ -721,7 +737,7 @@ country_event = {
    }
    if = { limit = { has_country_flag = epoch_echoes_relay_operational NOT = { has_country_flag = epoch_core_campaign_opted_out } }
     remove_modifier = epoch_echoes_relay_active
-    epoch_echoes_replace_relay_active = yes
+     epoch_echoes_replace_relay = { RELAY_TYPE = epoch_echoes_relay_active }
    }
   }
   if = { limit = { exists = event_target:epoch_echoes_unquiet_world@root }
@@ -770,11 +786,15 @@ country_event = {
   from = {
    solar_system = {
     spawn_megastructure = { type = epoch_echoes_relay_disabled owner = root coords_from = from }
-    random_system_megastructure = { limit = { is_megastructure_type = epoch_echoes_relay_disabled NOT = { has_megastructure_flag = epoch_echoes_claimed } }
+    random_system_megastructure = { limit = {
+      is_megastructure_type = epoch_echoes_relay_disabled
+      is_owned_by = root
+      NOT = { has_megastructure_flag = epoch_echoes_claimed }
+     }
      set_megastructure_flag = epoch_echoes_claimed
+     root = { remove_megastructure = from }
     }
    }
-   remove_megastructure = this
   }
  }
 }
