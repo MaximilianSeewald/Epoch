@@ -4,6 +4,11 @@ on:
   pull_request:
     paths:
       - '.github/workflows/**'
+      - 'common/**'
+      - 'events/**'
+      - 'localisation/**'
+      - 'gfx/**'
+      - 'interface/**'
       - 'scripts/**'
       - 'docs/stable-release.md'
 
@@ -19,5 +24,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Run all 10 game-independent CI commands
+      - name: Run all 11 game-independent CI commands
         run: node scripts/test_release_ci.cjs

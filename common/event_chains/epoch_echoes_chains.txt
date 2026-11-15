@@ -1,0 +1,5 @@
+epoch_echoes_side_stories = {
+	icon = "gfx/interface/icons/situation_log/situation_log_main_quest.dds"
+	picture = GFX_evt_unknown_ships
+	situation_log_category = developments
+}

@@ -1,0 +1,32 @@
+# Owner-local one-shot relay defenders. Fleet destruction is still resolved by
+# native combat; this country has no pulse events or autonomous AI economy.
+epoch_echoes_sentinels = {
+	playable = no
+	has_pulse_events = no
+	has_deficits = no
+	needs_survey = no
+	has_complete_sensor = no
+	has_capital = no
+	enforces_borders = no
+	diplomatic_wars = no
+	orbital_bombardment = no
+	attack_unarmed_orbital_stations = no
+	ship_disengagement = no
+	show_in_contacts_list = no
+	government = no
+	faction = {
+		hostile = no
+		neutral = no
+		auto_delete = no
+		needs_border_access = no
+		generate_borders = no
+		needs_colony = no
+		hostile_when_attacked = no
+	}
+	ai = { enabled = no }
+	modules = {
+		exclusive_diplomacy_module = { contact_rule = on_action_only }
+		basic_technology_module = { }
+		standard_event_module = { }
+	}
+}

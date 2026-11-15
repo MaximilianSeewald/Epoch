@@ -1,0 +1,11 @@
+spriteTypes = {
+ # Implicit native megastructure UI names; reuse the correctly sized Vanilla art.
+ spriteType = { name = "GFX_epoch_echoes_relay_dormant_build_icon" texturefile = "gfx/interface/icons/technologies/tech_sensors_4.dds" }
+ spriteType = { name = "GFX_epoch_echoes_relay_dormant_outliner_icon" texturefile = "gfx/interface/icons/megastructures/spy_orb_ruined.dds" }
+ spriteType = { name = "GFX_epoch_echoes_relay_active_build_icon" texturefile = "gfx/interface/icons/technologies/tech_sensors_4.dds" }
+ spriteType = { name = "GFX_epoch_echoes_relay_active_outliner_icon" texturefile = "gfx/interface/icons/megastructures/spy_orb.dds" }
+ spriteType = { name = "GFX_epoch_echoes_relay_disabled_build_icon" texturefile = "gfx/interface/icons/technologies/tech_sensors_4.dds" }
+ spriteType = { name = "GFX_epoch_echoes_relay_disabled_outliner_icon" texturefile = "gfx/interface/icons/megastructures/spy_orb_ruined.dds" }
+ spriteType = { name = "GFX_epoch_echoes_relay_salvaged_build_icon" texturefile = "gfx/interface/icons/technologies/tech_sensors_4.dds" }
+ spriteType = { name = "GFX_epoch_echoes_relay_salvaged_outliner_icon" texturefile = "gfx/interface/icons/megastructures/spy_orb_ruined.dds" }
+}

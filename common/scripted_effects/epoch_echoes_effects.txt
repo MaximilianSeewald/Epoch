@@ -1,0 +1,187 @@
+# Country scope: independent Bernoulli trials, persisted BEFORE each draw.
+# Opportunities only place winners; they never reroll a losing story.
+epoch_echoes_select_stories = {
+
+ if = {
+  limit = { NOT = { has_country_flag = epoch_echoes_ghost_rolled } }
+  set_country_flag = epoch_echoes_ghost_rolled
+  if = { limit = { NOT = { has_country_flag = epoch_echoes_ghost_started } }
+   random = { chance = 35
+    set_country_flag = epoch_echoes_ghost_selected
+    set_timed_country_flag = { flag = epoch_echoes_ghost_delay days = 180 }
+   }
+  }
+ }
+
+ if = {
+  limit = { NOT = { has_country_flag = epoch_echoes_unquiet_rolled } }
+  set_country_flag = epoch_echoes_unquiet_rolled
+  if = { limit = { NOT = { has_country_flag = epoch_echoes_unquiet_started } }
+   random = { chance = 30
+    set_country_flag = epoch_echoes_unquiet_selected
+    set_timed_country_flag = { flag = epoch_echoes_unquiet_delay days = 540 }
+   }
+  }
+ }
+
+ if = {
+  limit = { NOT = { has_country_flag = epoch_echoes_relay_rolled } }
+  set_country_flag = epoch_echoes_relay_rolled
+  if = { limit = { NOT = { has_country_flag = epoch_echoes_relay_started } }
+   random = { chance = 20
+    set_country_flag = epoch_echoes_relay_selected
+    set_timed_country_flag = { flag = epoch_echoes_relay_delay days = 1080 }
+   }
+  }
+ }
+
+}
+
+epoch_echoes_register_relay_poi = {
+ if = {
+  limit = { exists = event_target:epoch_echoes_relay_system@root NOT = { has_point_of_interest = { poi = epoch_echoes_relay_site } } }
+  if = { limit = { NOT = { has_event_chain = epoch_echoes_side_stories } } begin_event_chain = { event_chain = epoch_echoes_side_stories target = this } }
+  create_point_of_interest = { id = epoch_echoes_relay_site name = epoch_echoes.poi_relay desc = epoch_echoes.poi_relay.desc event_chain = epoch_echoes_side_stories location = event_target:epoch_echoes_relay_system@root }
+ }
+}
+
+epoch_echoes_finalize_relay = {
+ set_country_flag = epoch_echoes_relay_resolved
+ remove_country_flag = epoch_echoes_relay_combat_pending
+ if = { limit = { has_point_of_interest = { poi = epoch_echoes_relay_site } } remove_point_of_interest = epoch_echoes_relay_site }
+ if = { limit = { has_event_chain = epoch_echoes_side_stories } end_event_chain = epoch_echoes_side_stories }
+}
+
+# Colony scope: remove only the side story's own states.
+epoch_echoes_clear_disturbance = {
+ remove_modifier = epoch_echoes_unquiet_organic
+ remove_modifier = epoch_echoes_unquiet_hive
+ remove_modifier = epoch_echoes_unquiet_machine
+ remove_modifier = epoch_echoes_unquiet_treatment
+ remove_planet_flag = epoch_echoes_unquiet_active
+ remove_planet_flag = epoch_echoes_unquiet_treating
+ remove_planet_flag = epoch_echoes_unquiet_menu
+ set_planet_flag = epoch_echoes_unquiet_closed
+}
+
+# Country scope. No rewards and no writes to another independent story.
+epoch_echoes_close_ghost = {
+ set_country_flag = epoch_echoes_ghost_closed
+ remove_country_flag = epoch_echoes_ghost_complication
+ abort_special_project = { type = EPOCH_ECHOES_GHOST_TRACE }
+ abort_special_project = { type = EPOCH_ECHOES_GHOST_CAUTIOUS }
+ abort_special_project = { type = EPOCH_ECHOES_GHOST_FORCED }
+ abort_special_project = { type = EPOCH_ECHOES_GHOST_STABILIZE }
+ abort_special_project = { type = EPOCH_ECHOES_GHOST_CACHE }
+ if = { limit = { exists = event_target:epoch_echoes_ghost_wreck@root } destroy_ambient_object = event_target:epoch_echoes_ghost_wreck@root }
+}
+
+epoch_echoes_close_relay = {
+ epoch_echoes_replace_relay = { RELAY_TYPE = epoch_echoes_relay_disabled }
+ set_country_flag = epoch_echoes_relay_failed
+ epoch_echoes_finalize_relay = yes
+ abort_special_project = { type = EPOCH_ECHOES_RELAY_SURVEY }
+ abort_special_project = { type = EPOCH_ECHOES_RELAY_DEFUSE }
+ abort_special_project = { type = EPOCH_ECHOES_RELAY_DEFUSE_AIDED }
+ abort_special_project = { type = EPOCH_ECHOES_RELAY_DEFUSE_LINKED }
+ if = { limit = { exists = event_target:epoch_echoes_relay_guard@root } destroy_fleet = event_target:epoch_echoes_relay_guard@root }
+}
+
+# Called only with the original country root; replacement keeps the same anchor.
+# No search outside the saved personal system and no replacement if it is lost.
+epoch_echoes_disable_relay = {
+ if = { limit = { exists = event_target:epoch_echoes_relay_object@root event_target:epoch_echoes_relay_object@root = { is_megastructure_type = epoch_echoes_relay_active is_owned_by = root } }
+  epoch_echoes_replace_relay = { RELAY_TYPE = epoch_echoes_relay_disabled }
+ }
+}
+
+epoch_echoes_reissue_ghost = {
+ if = { limit = { has_country_flag = epoch_echoes_ghost_trace_complete exists = event_target:epoch_echoes_ghost_cache@root }
+  event_target:epoch_echoes_ghost_cache@root = { enable_special_project = { name = EPOCH_ECHOES_GHOST_CACHE location = this owner = root } }
+ }
+ else_if = { limit = { has_country_flag = epoch_echoes_ghost_complication exists = event_target:epoch_echoes_ghost_site@root }
+  event_target:epoch_echoes_ghost_site@root = { enable_special_project = { name = EPOCH_ECHOES_GHOST_STABILIZE location = this owner = root } }
+ }
+ else_if = { limit = { has_country_flag = epoch_echoes_ghost_forced exists = event_target:epoch_echoes_ghost_site@root }
+  event_target:epoch_echoes_ghost_site@root = { enable_special_project = { name = EPOCH_ECHOES_GHOST_FORCED location = this owner = root } }
+ }
+ else_if = { limit = { has_country_flag = epoch_echoes_ghost_cautious exists = event_target:epoch_echoes_ghost_site@root }
+  event_target:epoch_echoes_ghost_site@root = { enable_special_project = { name = EPOCH_ECHOES_GHOST_CAUTIOUS location = this owner = root } }
+ }
+ else_if = { limit = { exists = event_target:epoch_echoes_ghost_site@root }
+  event_target:epoch_echoes_ghost_site@root = { enable_special_project = { name = EPOCH_ECHOES_GHOST_TRACE location = this owner = root } }
+ }
+}
+
+epoch_echoes_reissue_relay = {
+ if = { limit = { has_country_flag = epoch_echoes_relay_linked exists = event_target:epoch_echoes_relay_site@root }
+  event_target:epoch_echoes_relay_site@root = { enable_special_project = { name = EPOCH_ECHOES_RELAY_DEFUSE_LINKED location = this owner = root } }
+ }
+ else_if = { limit = { has_country_flag = epoch_echoes_relay_aided exists = event_target:epoch_echoes_relay_site@root }
+  event_target:epoch_echoes_relay_site@root = { enable_special_project = { name = EPOCH_ECHOES_RELAY_DEFUSE_AIDED location = this owner = root } }
+ }
+ else_if = { limit = { has_country_flag = epoch_echoes_relay_technical_started exists = event_target:epoch_echoes_relay_site@root }
+  event_target:epoch_echoes_relay_site@root = { enable_special_project = { name = EPOCH_ECHOES_RELAY_DEFUSE location = this owner = root } }
+ }
+ else_if = { limit = { exists = event_target:epoch_echoes_relay_site@root }
+  event_target:epoch_echoes_relay_site@root = { enable_special_project = { name = EPOCH_ECHOES_RELAY_SURVEY location = this owner = root } }
+ }
+}
+
+# Country root. Only an identified replacement of the requested type at the
+# assigned body can retire the old relay and replace the saved reference.
+epoch_echoes_replace_relay = {
+ if = { limit = {
+   exists = event_target:epoch_echoes_relay_site@root
+   exists = event_target:epoch_echoes_relay_system@root
+   exists = event_target:epoch_echoes_relay_object@root
+   event_target:epoch_echoes_relay_object@root = {
+    is_owned_by = root
+    has_megastructure_flag = epoch_echoes_relay_for@root
+    NOT = { is_megastructure_type = $RELAY_TYPE$ }
+   }
+  }
+  event_target:epoch_echoes_relay_system@root = {
+   spawn_megastructure = { type = $RELAY_TYPE$ owner = root planet = event_target:epoch_echoes_relay_site@root }
+   random_system_megastructure = { limit = {
+     is_megastructure_type = $RELAY_TYPE$
+     is_owned_by = root
+     planet = { is_same_value = event_target:epoch_echoes_relay_site@root }
+     NOT = { has_megastructure_flag = epoch_echoes_claimed }
+    }
+    set_megastructure_flag = epoch_echoes_claimed
+    set_megastructure_flag = epoch_echoes_relay_for@root
+    root = { remove_megastructure = event_target:epoch_echoes_relay_object@root }
+    save_global_event_target_as = epoch_echoes_relay_object@root
+   }
+  }
+ }
+}
+
+epoch_echoes_prepare_cache = {
+   if = { limit = { NOT = { has_country_flag = epoch_echoes_cache_located } }
+    event_target:epoch_echoes_ghost_system@root = {
+     random_neighbor_system = {
+      limit = { any_system_planet = { epoch_echoes_space_site = yes is_surveyed = { who = root status = yes } } }
+      random_system_planet = { limit = { epoch_echoes_space_site = yes is_surveyed = { who = root status = yes } }
+       save_global_event_target_as = epoch_echoes_ghost_cache@root
+      }
+     }
+     # Bounded local fallback: a different surveyed body, never the wreck itself.
+     if = { limit = { NOT = { exists = event_target:epoch_echoes_ghost_cache@root } }
+      random_system_planet = { limit = { epoch_echoes_space_site = yes is_surveyed = { who = root status = yes } NOT = { is_same_value = event_target:epoch_echoes_ghost_site@root } }
+       save_global_event_target_as = epoch_echoes_ghost_cache@root
+      }
+     }
+    }
+    set_country_flag = epoch_echoes_cache_located
+   }
+   if = { limit = { exists = event_target:epoch_echoes_ghost_cache@root }
+    epoch_echoes_reissue_ghost = yes
+   }
+   # If there is no second surveyed body, recover the cargo at the wreck instead.
+   else = {
+    event_target:epoch_echoes_ghost_site@root = { save_global_event_target_as = epoch_echoes_ghost_cache@root }
+    epoch_echoes_reissue_ghost = yes
+   }
+}
