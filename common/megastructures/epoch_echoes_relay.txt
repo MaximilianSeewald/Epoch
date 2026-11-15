@@ -1,0 +1,85 @@
+# Script-spawned minor relay infrastructure. No build menu or Vanilla override.
+# Reuses base-game entities; output and upkeep use the native economic engine.
+
+epoch_echoes_relay_dormant = {
+ entity = "spy_orb_destroyed_entity"
+ portrait = "GFX_megastructure_spy_orb_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -15 y = -15 }
+ show_galactic_map_icon = yes
+ show_in_outliner = no
+ construction_blocks_and_blocked_by = none
+ build_time = 30
+ potential = { always = no }
+ resources = { category = megastructures }
+ ai_weight = { factor = 0 }
+}
+
+epoch_echoes_relay_active = {
+ entity = "spyorb_phase_01_entity"
+ portrait = "GFX_megastructure_spy_orb_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -15 y = -15 }
+ show_galactic_map_icon = yes
+ show_in_outliner = yes
+ construction_blocks_and_blocked_by = none
+ build_time = 30
+ potential = { always = no }
+ resources = {
+  category = megastructures
+  upkeep = { energy = 4 }
+  produces = {
+   trigger = {
+    # Native recurring/UI economic queries can also arrive in country scope.
+    # Follow the optional-owner pattern used by Stage IV and Vanilla Shroud Seal.
+    # All instance predicates therefore live under an owned-megastructure scope.
+    owner? = {
+     NOT = { has_country_flag = epoch_core_campaign_opted_out }
+     NOT = { has_deficit = energy }
+     resource_stockpile_compare = { resource = energy value >= 4 }
+     count_owned_megastructure = { count < 2 limit = { is_megastructure_type = epoch_echoes_relay_active } }
+     any_owned_megastructure = {
+      is_megastructure_type = epoch_echoes_relay_active
+      has_megastructure_flag = epoch_echoes_relay_for@prev
+      solar_system = { is_inside_border = prevprev }
+     }
+    }
+   }
+   physics_research = 6
+  }
+ }
+ ai_weight = { factor = 0 }
+}
+
+epoch_echoes_relay_disabled = {
+ entity = "spy_orb_destroyed_entity"
+ portrait = "GFX_megastructure_spy_orb_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -15 y = -15 }
+ show_galactic_map_icon = yes
+ show_in_outliner = no
+ construction_blocks_and_blocked_by = none
+ build_time = 30
+ potential = { always = yes }
+ resources = { category = megastructures }
+ # Native permanent shutdown upgrade, also available to an insolvent AI.
+ upgrade_from = { epoch_echoes_relay_active }
+ build_menu_potential = { always = yes }
+ possible = { is_inside_border = from }
+ on_build_complete = { fromfrom = { set_megastructure_flag = epoch_echoes_shutdown set_megastructure_flag = epoch_echoes_claimed } }
+ ai_weight = { factor = 0 modifier = { add = 100 from = { OR = { has_deficit = energy has_monthly_income = { resource = energy value < 0 } } } } }
+}
+
+epoch_echoes_relay_salvaged = {
+ entity = "spy_orb_destroyed_entity"
+ portrait = "GFX_megastructure_spy_orb_background"
+ place_entity_on_planet_plane = no
+ entity_offset = { x = -15 y = -15 }
+ show_galactic_map_icon = yes
+ show_in_outliner = no
+ construction_blocks_and_blocked_by = none
+ build_time = 30
+ potential = { always = no }
+ resources = { category = megastructures }
+ ai_weight = { factor = 0 }
+}

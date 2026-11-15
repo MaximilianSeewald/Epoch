@@ -17,8 +17,22 @@ epoch_echoes_early_campaign = {
 	}
 }
 
+# Cheap guard: once all draws are negative or placed, opportunity handlers stop.
+# Pending selection is independent for each story; no started-story exclusion.
+epoch_echoes_pending_discovery = {
+ OR = {
+  NOT = { has_country_flag = epoch_echoes_ghost_rolled }
+  NOT = { has_country_flag = epoch_echoes_unquiet_rolled }
+  NOT = { has_country_flag = epoch_echoes_relay_rolled }
+  AND = { has_country_flag = epoch_echoes_ghost_selected NOT = { has_country_flag = epoch_echoes_ghost_started } }
+  AND = { has_country_flag = epoch_echoes_unquiet_selected NOT = { has_country_flag = epoch_echoes_unquiet_started } }
+  AND = { has_country_flag = epoch_echoes_relay_selected NOT = { has_country_flag = epoch_echoes_relay_started } }
+ }
+}
+
 epoch_echoes_safe_colony = {
 	is_colony = yes
+	NOT = { has_planet_flag = epoch_echoes_unquiet_active }
 	NOT = { has_planet_flag = epoch_echoes_unquiet_closed }
 	NOT = { has_planet_flag = epoch_core_contamination_contained_state }
 	NOT = { has_planet_flag = epoch_core_contamination_studied_state }
@@ -38,4 +52,46 @@ epoch_echoes_safe_colony = {
 	NOT = { has_modifier = epoch_core_structure_secured }
 	NOT = { has_modifier = epoch_core_structure_investigated }
 	NOT = { has_modifier = epoch_core_structure_ruins }
+}
+
+# Planet scope; never reserve inhabited or protected campaign worlds.
+epoch_echoes_space_site = {
+ colonizable_planet = no
+ is_star = no
+ has_anomaly = no
+ has_any_megastructure = no
+ NOT = { has_planet_flag = has_megastructure }
+ NOT = { has_planet_flag = epoch_echoes_reserved }
+}
+
+# Colony scope. The identity flag prevents conquest from transferring a story.
+epoch_echoes_colony_owned = {
+ exists = owner
+ has_planet_flag = epoch_echoes_unquiet_for@owner
+ owner = { NOT = { has_country_flag = epoch_core_campaign_opted_out } }
+}
+
+epoch_echoes_disturbance_present = {
+ OR = {
+  has_modifier = epoch_echoes_unquiet_organic
+  has_modifier = epoch_echoes_unquiet_hive
+  has_modifier = epoch_echoes_unquiet_machine
+ }
+}
+
+
+epoch_echoes_ghost_open = {
+ has_country_flag = epoch_echoes_ghost_started
+ NOT = { has_country_flag = epoch_echoes_ghost_closed }
+ NOT = { has_country_flag = epoch_core_campaign_opted_out }
+ exists = event_target:epoch_echoes_ghost_site@this
+}
+epoch_echoes_relay_open = {
+ has_country_flag = epoch_echoes_relay_started
+ NOT = { has_country_flag = epoch_echoes_relay_resolved }
+ NOT = { has_country_flag = epoch_core_campaign_opted_out }
+ exists = event_target:epoch_echoes_relay_object@this
+ exists = event_target:epoch_echoes_relay_site@this
+ event_target:epoch_echoes_relay_object@this = { is_owned_by = prev has_megastructure_flag = epoch_echoes_relay_for@prev }
+ event_target:epoch_echoes_relay_system@this = { is_inside_border = prev }
 }

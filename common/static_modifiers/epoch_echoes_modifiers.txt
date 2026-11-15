@@ -9,7 +9,7 @@ epoch_echoes_unquiet_machine = { icon = "gfx/interface/icons/planet_modifiers/pm
 
 epoch_echoes_unquiet_research = {
 	icon = "gfx/interface/icons/planet_modifiers/pm_lush.dds"
-	planet_jobs_society_research_produces_mult = 0.05
+	planet_jobs_physics_research_produces_mult = 0.05
 }
 
 epoch_echoes_unquiet_surge = {
@@ -23,9 +23,11 @@ epoch_echoes_unquiet_backlash = {
 	planet_stability_add = -5
 }
 
-epoch_echoes_relay_active = {
-	icon = "gfx/interface/icons/planet_modifiers/pm_satellite_in_orbit.dds"
-	ship_sensor_range_add = 1
-	country_physics_research_produces_mult = 0.02
+epoch_echoes_unquiet_treatment = {
+ icon = "gfx/interface/icons/planet_modifiers/pm_city_ruins.dds"
+ planet_jobs_produces_mult = -0.02
 }
 
+# Inert compatibility key for old saves; epoch_echoes.89 removes the former buff.
+# All new relay benefits and upkeep belong to the physical megastructure.
+epoch_echoes_relay_active = { icon = "gfx/interface/icons/planet_modifiers/pm_satellite_in_orbit.dds" }
