@@ -356,12 +356,12 @@ for(const scenario of ['missing','target-only-lost','enemy-reference','victory-r
  check(test(triggers.get('epoch_iv_judge_missing'),context(a))===['missing','foreign-principal'].includes(scenario),'recovery guard: '+scenario);
 }
 {const {a,enemy}=setup();delete targets['epoch_iv_ship@A'];delete targets['epoch_iv_principal@EA'];let requests=0;
- a.ai=true;a.flags.add('epoch_iv_ai_attack_ordered');a.flags.add('epoch_iv_ai_attack_engaged');
+ a.ai=true;a.flags.add('epoch_iv_ai_attack_ordered');a.flags.add('epoch_iv_ai_attack_engaged');a.flags.add('epoch_iv_ai_attack_tracks_combat');
  targets['epoch_iv_ai_fleet@A']=make('old-attack-fleet');
  // Stop at the native spawn boundary; verify the real recovery script retires
  // authority and pays first. Placement itself remains a runtime requirement.
  nativeSpawn=()=>{requests++;check(enemy.flags.has('epoch_iv_retired'),'old authority retired before spawn');
-  check(!a.flags.has('epoch_iv_ai_attack_ordered')&&!a.flags.has('epoch_iv_ai_attack_engaged')&&!targets['epoch_iv_ai_fleet@A'],'AI assignment fully reset before guardian rebuild');
+  check(!a.flags.has('epoch_iv_ai_attack_ordered')&&!a.flags.has('epoch_iv_ai_attack_engaged')&&!a.flags.has('epoch_iv_ai_attack_tracks_combat')&&!targets['epoch_iv_ai_fleet@A'],'AI assignment fully reset before guardian rebuild');
   check(a.flags.has('epoch_iv_ai_attack_cooldown')&&a.flagDays==='180','rebuild respects AI retry cooldown');
   targets['epoch_iv_ship@A']=make('replacement');a.flags.add('epoch_iv_judge_created');};
  run(effects.get('epoch_iv_restore_judge'),context(a));run(effects.get('epoch_iv_restore_judge'),context(a));nativeSpawn=null;

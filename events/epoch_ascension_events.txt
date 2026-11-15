@@ -11,6 +11,7 @@ event = {
     OR = {
      has_country_flag = epoch_iv_ai_attack_ordered
      has_country_flag = epoch_iv_ai_attack_engaged
+     has_country_flag = epoch_iv_ai_attack_tracks_combat
      exists = event_target:epoch_iv_ai_fleet@this
     }
    }
@@ -1755,6 +1756,7 @@ country_event = {
    }
    root = {
     set_country_flag = epoch_iv_ai_attack_ordered
+    set_country_flag = epoch_iv_ai_attack_tracks_combat
    }
   }
  }
@@ -1783,12 +1785,10 @@ country_event = {
   }
   else_if = {
    limit = { event_target:epoch_iv_ai_fleet@root = { is_in_combat = yes } }
-   # Also adopts legacy saves loaded during the personal battle.
+   # A live combat can be inspected directly, even on an older save.
+   set_country_flag = epoch_iv_ai_attack_tracks_combat
    if = {
-    limit = {
-     exists = event_target:epoch_iv_ai_fleet@root.solar_system
-     event_target:epoch_iv_ai_fleet@root.solar_system = { is_same_value = event_target:epoch_iv_arena@root }
-    }
+    limit = { event_target:epoch_iv_ai_fleet@root = { any_combatant_fleet = { is_same_value = event_target:epoch_iv_fleet@root } } }
     set_country_flag = epoch_iv_ai_attack_engaged
    }
   }
@@ -1808,27 +1808,45 @@ country_event = {
    }
    epoch_iv_ai_end_attack = yes
   }
+  else = {
+   # A legacy fleet observed outside combat can use the new join callbacks.
+   set_country_flag = epoch_iv_ai_attack_tracks_combat
+  }
  }
 }
 
-# Native fleet combat-entry scopes: ROOT is this fleet, FROM its opponent.
+# Native fleet combat-entry scopes: ROOT is this fleet, FROM the primary opponent.
 fleet_event = {
  id = epoch_iv.84
  is_triggered_only = yes
  hide_window = yes
  trigger = {
   exists = owner
-  exists = from
   owner = {
    is_ai = yes
    has_country_flag = epoch_iv_ai_attack_ordered
    exists = event_target:epoch_iv_ai_fleet@this
    event_target:epoch_iv_ai_fleet@this = { is_same_value = root }
    exists = event_target:epoch_iv_fleet@this
-   from = { is_same_value = event_target:epoch_iv_fleet@prev }
   }
  }
- immediate = { owner = { set_country_flag = epoch_iv_ai_attack_engaged } }
+ immediate = {
+  owner = {
+   set_country_flag = epoch_iv_ai_attack_tracks_combat
+   if = {
+    limit = {
+     OR = {
+      AND = {
+       exists = from
+       from = { is_same_value = event_target:epoch_iv_fleet@prev }
+      }
+      root = { any_combatant_fleet = { is_same_value = event_target:epoch_iv_fleet@prevprev } }
+     }
+    }
+    set_country_flag = epoch_iv_ai_attack_engaged
+   }
+  }
+ }
 }
 
 # Fires for every fleet leaving combat, including a surviving retreat.
@@ -1845,8 +1863,9 @@ fleet_event = {
    event_target:epoch_iv_ai_fleet@this = { is_same_value = root }
    OR = {
     has_country_flag = epoch_iv_ai_attack_engaged
-    # Legacy save: entry callback may predate this implementation.
+    # Legacy order exiting before an observed join or monthly reconciliation.
     AND = {
+     NOT = { has_country_flag = epoch_iv_ai_attack_tracks_combat }
      exists = root.solar_system
      root.solar_system = { is_same_value = event_target:epoch_iv_arena@prev }
     }

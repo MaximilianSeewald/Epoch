@@ -12,7 +12,7 @@ const triggers = new Map(tree('common/scripted_triggers/epoch_ascension_scripted
 const effects = new Map(tree('common/scripted_effects/epoch_ascension_scripted_effects.txt'));
 const events = new Map(tree('events/epoch_ascension_events.txt').filter(([, b]) => Array.isArray(b)).map(([, b]) => [get(b, 'id'), b]));
 const onActions = new Map(tree('common/on_actions/epoch_ascension_on_actions.txt'));
-const obj = id => ({ id, flags:new Set(), fleets:[], ships:[], orders:new Set(), vars:{ epoch_iv_chapter:5 }, power:0, hp:1 });
+const obj = id => ({ id, flags:new Set(), fleets:[], ships:[], combatants:[], orders:new Set(), vars:{ epoch_iv_chapter:5 }, power:0, hp:1 });
 let targets, countries, checks = 0;
 const check = (v, m) => { checks++; assert.ok(v, m); };
 const context = o => ({ o, root:o });
@@ -60,6 +60,7 @@ function test(b,c) {
     if (k==='has_hp_percentage') return compare(c.o.hp,op,+v);
     if (k==='check_variable') return c.o.vars[get(v,'which')]===+get(v,'value');
     if (k==='any_owned_ship') return c.o.ships.some(o=>test(v,scope(o,c)));
+    if (k==='any_combatant_fleet') return c.o.combatants.some(o=>test(v,scope(o,c)));
     if (Array.isArray(v)) { const o=resolve(k,c); return !!o&&test(v,scope(o,c)); }
     throw Error('Unmodelled AI trigger '+k);
   });
@@ -87,6 +88,8 @@ function run(b,c) {
 }
 function fire(id,o) { const b=events.get('epoch_iv.'+id), c=context(o); if(test(get(b,'trigger'),c)) run(get(b,'immediate'),c); }
 const ordered = c => c.flags.has('epoch_iv_ai_attack_ordered');
+const engaged = c => c.flags.has('epoch_iv_ai_attack_engaged');
+const tracksCombat = 'epoch_iv_ai_attack_tracks_combat';
 function setup() {
   targets={}; countries=['A','B'].map(obj);
   for(const c of countries) {
@@ -104,7 +107,8 @@ function setup() {
 }
 function end(c,label) {
   check(!ordered(c)&&!targets['epoch_iv_ai_fleet@'+c.id],label+': assignment cleared');
-  check(c.cooldown===180,label+': six-month cooldown');
+  check(!engaged(c)&&!c.flags.has(tracksCombat),label+': combat tracking cleared');
+  check(c.flags.has('epoch_iv_ai_attack_cooldown')&&c.cooldown===180,label+': six-month cooldown');
   check(!c.flags.has('epoch_iv_protocol_key')&&!c.flags.has('epoch_iv_combat_proven'),label+': no victory');
   fire(82,c); check(!ordered(c),label+': no immediate replacement order');
 }
@@ -145,7 +149,8 @@ for(const scenario of ['destroyed','transferred','idle','return','repair','evade
   if(['return','repair','evade'].includes(scenario)) f.orders.add({return:'return_fleet_order',repair:'repair_fleet_order',evade:'evade_hostiles_order'}[scenario]);
   if(scenario==='transit') delete f.solar_system;
   if(scenario==='battle-ended') c.flags.add('epoch_iv_ai_attack_engaged');
-  if(scenario==='legacy-combat') { f.combat=true; f.solar_system=c.arena; }
+  if(scenario.startsWith('legacy-')) c.flags.delete(tracksCombat);
+  if(scenario==='legacy-combat') { f.combat=true; f.solar_system=c.arena; f.combatants=[c.boss]; }
   if(scenario==='orphan-target') c.flags.delete('epoch_iv_ai_attack_ordered');
   if(scenario==='optout') c.eligible=false;
   if(scenario==='complete') c.flags.add('epoch_iv_complete');
@@ -167,17 +172,34 @@ for(const scenario of ['destroyed','transferred','idle','return','repair','evade
   c.flags.delete('epoch_iv_ai_attack_cooldown'); fire(82,c);
   check(targets['epoch_iv_ai_fleet@A']===replacement&&replacement.commands===1,'replacement selected only after cooldown');
 }
-{
-  const [c]=setup(), f=c.fleets[0]; fire(82,c);
-  f.from=obj('unrelated'); fire(84,f); fire(85,f);
-  check(ordered(c)&&!c.flags.has('epoch_iv_ai_attack_engaged'),'unrelated skirmish does not end approach');
-  // Legacy battle exits before the first monthly reconciliation.
-  f.solar_system=c.arena; fire(85,f); end(c,'legacy personal battle exit');
+for(const scenario of ['outside-arena','arena-before-pulse','arena-at-pulse','legacy-arena-before-pulse','legacy-arena-at-pulse','legacy-arena-after-pulse']) {
+  const [c,other]=setup(), f=c.fleets[0]; fire(82,c);
+  if(scenario.startsWith('legacy-')) c.flags.delete(tracksCombat);
+  if(scenario==='legacy-arena-after-pulse') fire(83,c);
+  if(scenario!=='outside-arena') f.solar_system=c.arena;
+  f.combat=true; f.from=other.boss; f.combatants=[other.boss];
+  if(!['legacy-arena-at-pulse','legacy-arena-after-pulse'].includes(scenario)) fire(84,f);
+  if(scenario.endsWith('-at-pulse')) fire(83,c);
+  check(!engaged(c),scenario+': another claimant’s guardian is not the personal opponent');
+  f.combat=false; f.combatants=[]; fire(85,f); fire(83,c); fire(82,c);
+  check(ordered(c)&&targets['epoch_iv_ai_fleet@A']===f&&f.commands===1,scenario+': original pursuit is retained');
+  check(!c.flags.has('epoch_iv_ai_attack_cooldown'),scenario+': no retry cooldown');
+}
+for(const scenario of ['join-primary','join-additional','monthly-combatants','legacy-monthly-combatants','legacy-exit-before-pulse']) {
+  const [c,other]=setup(), f=c.fleets[0]; fire(82,c);
+  if(scenario.startsWith('legacy-')) c.flags.delete(tracksCombat);
+  f.combat=true; f.solar_system=c.arena;
+  f.from=scenario==='join-primary'?c.boss:other.boss;
+  f.combatants=scenario==='join-primary'?[]:[other.boss,c.boss];
+  if(scenario.startsWith('join-')) fire(84,f);
+  if(scenario.endsWith('monthly-combatants')) fire(83,c);
+  check(engaged(c)===(scenario!=='legacy-exit-before-pulse'),scenario+': personal combat proof recorded when observable');
+  f.combat=false; f.combatants=[]; fire(85,f); end(c,scenario);
 }
 {
-  const [c]=setup(); c.flags.add('epoch_iv_ai_attack_engaged'); c.eligible=false;
+  const [c]=setup(); c.flags.add(tracksCombat); c.eligible=false;
   run([get(events.get('epoch_iv.1'),'immediate')[0]],context(obj('pulse')));
-  check(!c.flags.has('epoch_iv_ai_attack_engaged'),'monthly reconciliation clears orphan state even after opt-out');
+  check(!c.flags.has(tracksCombat),'monthly reconciliation clears orphan state even after opt-out');
 }
 for(const target of ['arena','fleet','ship','enemy']) {
   const [c]=setup(); delete targets['epoch_iv_'+target+'@A']; fire(82,c);

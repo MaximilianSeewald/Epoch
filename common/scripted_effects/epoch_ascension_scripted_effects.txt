@@ -704,6 +704,7 @@ epoch_iv_restore_judge = {
 epoch_iv_ai_end_attack = {
  remove_country_flag = epoch_iv_ai_attack_ordered
  remove_country_flag = epoch_iv_ai_attack_engaged
+ remove_country_flag = epoch_iv_ai_attack_tracks_combat
  if = { limit = { exists = event_target:epoch_iv_ai_fleet@this } clear_global_event_target = epoch_iv_ai_fleet@this }
  set_timed_country_flag = { flag = epoch_iv_ai_attack_cooldown days = 180 }
 }
