@@ -1,0 +1,88 @@
+﻿{
+    "schemaVersion":  1,
+    "harnessVersion":  "stage-iv-startup-gate-v1",
+    "scenarioVersion":  null,
+    "runnerSha256":  "a8b1e25b7395186df7f8d5f3f873df7fee5a096198e0e9a22e1e4ae350fb1cd7",
+    "powershellVersion":  "5.1.26100.9818",
+    "runId":  "20261116T075911524Z-7cf1f350",
+    "status":  "blocked",
+    "reason":  "Stellaris exited before a verified scenario load. See startup.exitCode and crashEvents.",
+    "startedUtc":  "2026-11-16T07:59:11.5434041Z",
+    "finishedUtc":  "2026-11-16T07:59:15.6413799Z",
+    "candidate":  {
+                      "commit":  "c0a1c73a4eba08a8d2bff6995f2b3390a474d31a",
+                      "loadedInEngine":  false,
+                      "snapshotSha256":  "644f58eeee87f423814c258297eb86e010163a577f4e497d9b1adb684684d922"
+                  },
+    "installation":  {
+                         "version":  "v4.5.4",
+                         "launcherVersion":  "Cygnus v4.5.4 (1b4f)",
+                         "checksumFromLauncher":  "1b4f",
+                         "checksumObservedInEngine":  null,
+                         "steamBuildId":  "26557690",
+                         "exeSha256":  "10d2613a392fe8ac7982701899dc2e43ebf4c1c721ea1baeba6c3fb25db36eb1"
+                     },
+    "startup":  {
+                    "profile":  "G:\\EPOCH-Stellaris-Test\\runs\\20261116T075911524Z-7cf1f350\\profile",
+                    "arguments":  [
+                                      "-userdir=\"G:/EPOCH-Stellaris-Test/runs/20261116T075911524Z-7cf1f350/profile\"",
+                                      "-debug_mode"
+                                  ],
+                    "processId":  2316,
+                    "startedUtc":  "2026-11-16T07:59:11.8245304Z",
+                    "exitCode":  -1073741819,
+                    "timedOut":  false,
+                    "timeoutSeconds":  15,
+                    "freshEngineFiles":  [
+
+                                         ],
+                    "crashEvents":  [
+                                        {
+                                            "eventId":  1000,
+                                            "recordId":  121565,
+                                            "timeUtc":  "2026-11-16T07:59:12.6057707Z",
+                                            "processId":  2316,
+                                            "application":  "stellaris.exe",
+                                            "module":  "stellaris.exe",
+                                            "exceptionCode":  "c0000005",
+                                            "faultingOffset":  "0000000001caed25"
+                                        }
+                                    ]
+                },
+    "regularProfileUnchanged":  true,
+    "diagnostics":  [
+
+                    ],
+    "artifacts":  [
+                      {
+                          "file":  "candidate.zip",
+                          "sha256":  "644f58eeee87f423814c258297eb86e010163a577f4e497d9b1adb684684d922"
+                      },
+                      {
+                          "file":  "launcher-settings.json",
+                          "sha256":  "1988971d4afbd456c29cfa626cb62702ef937978c6f872334d1f0b593c4db632"
+                      },
+                      {
+                          "file":  "regular-after.json",
+                          "sha256":  "5c68289e42d51df7d14c28a6bab74bca59f01c0d789ffb674badb97a1e3b7d11"
+                      },
+                      {
+                          "file":  "regular-before.json",
+                          "sha256":  "5c68289e42d51df7d14c28a6bab74bca59f01c0d789ffb674badb97a1e3b7d11"
+                      }
+                  ],
+    "checks":  {
+                   "isolatedProfile":  "not_observed",
+                   "modLoaded":  "not_attempted",
+                   "scenarioLoaded":  "not_attempted",
+                   "continueLastSave":  "not_attempted",
+                   "observe":  "not_attempted",
+                   "fastForward":  "not_attempted",
+                   "attackAndCombat":  "not_attempted",
+                   "survivingRetreat":  "not_attempted",
+                   "noOrderFor180Days":  "not_attempted",
+                   "monthlyReattack":  "not_attempted",
+                   "brokenBaseline":  "not_attempted",
+                   "fixedRepeat":  "not_attempted"
+               }
+}

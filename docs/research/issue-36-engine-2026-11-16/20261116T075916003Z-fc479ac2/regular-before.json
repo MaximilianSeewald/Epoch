@@ -1,0 +1,37 @@
+﻿[
+    {
+        "file":  "settings.txt",
+        "length":  2206,
+        "writtenUtc":  "2026-11-13T00:59:50.4690011Z"
+    },
+    {
+        "file":  "dlc_load.json",
+        "length":  187,
+        "writtenUtc":  "2026-11-12T19:19:05.9210641Z"
+    },
+    {
+        "file":  "logs\\system.log",
+        "length":  4032,
+        "writtenUtc":  "2026-11-12T19:19:13.1947540Z"
+    },
+    {
+        "file":  "logs\\setup.log",
+        "length":  1327798,
+        "writtenUtc":  "2026-11-12T19:49:35.6865412Z"
+    },
+    {
+        "file":  "logs\\error.log",
+        "length":  5113261,
+        "writtenUtc":  "2026-11-13T00:54:45.4756239Z"
+    },
+    {
+        "file":  "logs\\game.log",
+        "length":  173739,
+        "writtenUtc":  "2026-11-13T00:57:11.7755445Z"
+    },
+    {
+        "file":  "logs\\debug.log",
+        "length":  571,
+        "writtenUtc":  "2026-11-12T19:49:39.1364101Z"
+    }
+]

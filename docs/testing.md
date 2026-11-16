@@ -1,5 +1,7 @@
 # Acceptance and Verification
 
+Issue #36: [bounded Windows startup gate and archived engine blocker](research/issue-36-engine-2026-11-16/README.md). Stellaris 4.5.4 / Build 26557690 crashes before profile initialization; Stage-IV combat, retreat and reattack remain unverified.
+
 > 2026-11-10: The first B+C runtime test found critical failures. Current corrections, evidence limits and the sole compact follow-up smoke test: [correction report](phases/stage-iv-b-c-corrections.md). Earlier static PASS statements do not establish runtime compatibility.
 
 Stage III's next connected run follows the [second-playtest changes and focused acceptance sequence](phases/stage-iii-second-playtest.md). Earlier foundational matrices remain coverage references; they do not require repeated player signoffs for already confirmed opening mechanics.

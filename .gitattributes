@@ -1,2 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Preserve the exact bytes hashed by the local engine-run evidence.
+scripts/test_stage_iv_engine*.ps1 text eol=lf
+docs/research/issue-36-engine-2026-11-16/*/*.json -text -whitespace
