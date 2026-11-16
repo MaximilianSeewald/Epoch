@@ -27,7 +27,7 @@ country_event = {
   set_global_flag = epoch_iii_first_repulsed
   set_country_flag = epoch_iv_started
   set_variable = { which = epoch_iv_chapter value = 5 }
-  add_resource = { energy = 1000000 alloys = 1000000 minerals = 1000000 }
+  __ECONOMY_SETUP__
   epoch_iv_spawn_judge = yes
   if = {
    limit = { epoch_iv_ai_personal_target = yes }
@@ -46,8 +46,7 @@ country_event = {
    }
   }
   log = "EPOCH36|run=__RUN_ID__|state=ai-prepared|country=[This.GetName]"
-  set_variable = { which = epoch36_observed_days value = 0 }
-  country_event = { id = epoch36.12 days = 1 }
+  __OBSERVATION_START__
  }
 }
 country_event = {

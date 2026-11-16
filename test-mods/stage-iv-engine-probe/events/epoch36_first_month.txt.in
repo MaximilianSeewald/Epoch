@@ -1,0 +1,178 @@
+namespace = epoch36
+
+# Load exactly one AI claimant and start from an unassigned Stage IV state.
+event = {
+ id = epoch36.15
+ hide_window = yes
+ is_triggered_only = yes
+ immediate = {
+  if = {
+   limit = {
+    any_country = {
+     is_ai = no
+     has_country_flag = epoch36_seed_v1
+     has_country_flag = epoch36_run___RUN_FLAG__
+    }
+    count_country = { count = 1 limit = { is_ai = yes is_country_type = default } }
+    NOT = {
+     any_country = {
+      is_ai = yes
+      is_country_type = default
+      OR = {
+       has_country_flag = epoch36_ai_setup
+       has_country_flag = epoch_iv_ai_attack_ordered
+       has_country_flag = epoch_iv_ai_attack_cooldown
+       exists = event_target:epoch_iv_ai_fleet@this
+      }
+     }
+    }
+   }
+   every_country = {
+    limit = { is_ai = yes is_country_type = default }
+    country_event = { id = epoch36.11 }
+   }
+  }
+  else = { log = "EPOCH36|run=__RUN_ID__|state=first-month-invalid-start" }
+ }
+}
+
+# The native monthly pulse also runs the production selector. Its position
+# relative to this observer depends on callback ordering.
+event = {
+ id = epoch36.20
+ hide_window = yes
+ is_triggered_only = yes
+ immediate = {
+  every_country = {
+   limit = { has_country_flag = epoch36_first_month_pending }
+   country_event = { id = epoch36.21 }
+  }
+ }
+}
+
+country_event = {
+ id = epoch36.21
+ hide_window = yes
+ is_triggered_only = yes
+ immediate = {
+  remove_country_flag = epoch36_first_month_pending
+  log = "EPOCH36|run=__RUN_ID__|state=first-month-pulse"
+  if = {
+   limit = { NOT = { is_ai = yes } }
+   log = "EPOCH36|run=__RUN_ID__|state=missing-ai-control"
+  }
+  if = {
+   limit = { NOT = { epoch_iv_ai_personal_target = yes } }
+   log = "EPOCH36|run=__RUN_ID__|state=missing-active-chapter-five-and-personal-guardian"
+  }
+  if = {
+   limit = { has_country_flag = epoch_iv_ai_attack_cooldown }
+   log = "EPOCH36|run=__RUN_ID__|state=missing-expired-cooldown"
+  }
+  if = {
+   limit = {
+    OR = {
+     has_deficit = energy
+     has_deficit = alloys
+     has_deficit = minerals
+     has_deficit = food
+     has_deficit = consumer_goods
+    }
+   }
+   log = "EPOCH36|run=__RUN_ID__|state=missing-funded-economy"
+  }
+  country_event = { id = epoch36.23 }
+  if = {
+   limit = { NOT = { has_country_flag = epoch_iv_ai_attack_ordered } }
+   if = {
+    limit = { NOT = { any_owned_fleet = { has_fleet_flag = epoch36_candidate } } }
+    log = "EPOCH36|run=__RUN_ID__|state=missing-owned-candidate"
+   }
+   else = {
+    every_owned_fleet = {
+     limit = { has_fleet_flag = epoch36_candidate }
+     if = {
+      limit = { NOT = { is_ship_class = shipclass_military } }
+      log = "EPOCH36|run=__RUN_ID__|state=missing-military-fleet"
+     }
+     if = {
+      limit = { is_in_combat = yes }
+      log = "EPOCH36|run=__RUN_ID__|state=missing-out-of-combat"
+     }
+     if = {
+      limit = { NOT = { is_fleet_idle = yes } }
+      log = "EPOCH36|run=__RUN_ID__|state=missing-idle-fleet"
+     }
+     if = {
+      limit = { NOT = { exists = solar_system } }
+      log = "EPOCH36|run=__RUN_ID__|state=missing-fleet-system"
+     }
+     if = {
+      limit = { NOT = { fleet_power > 30000 } }
+      log = "EPOCH36|run=__RUN_ID__|state=missing-power-above-30000"
+     }
+     if = {
+      limit = {
+       OR = {
+        NOT = { exists = event_target:epoch_iv_fleet@root }
+        NOT = { fleet_power > event_target:epoch_iv_fleet@root.trigger:fleet_power }
+       }
+      }
+      log = "EPOCH36|run=__RUN_ID__|state=missing-power-above-guardian"
+     }
+     if = {
+      limit = { any_owned_ship = { has_hp_percentage < 0.75 } }
+      log = "EPOCH36|run=__RUN_ID__|state=missing-ship-health"
+     }
+     if = {
+      limit = {
+       OR = {
+        NOT = { exists = event_target:epoch_iv_arena@root }
+        NOT = { can_access_system = event_target:epoch_iv_arena@root }
+       }
+      }
+      log = "EPOCH36|run=__RUN_ID__|state=missing-arena-access"
+     }
+    }
+   }
+   log = "EPOCH36|run=__RUN_ID__|state=first-month-fleet-checked"
+  }
+  country_event = { id = epoch36.22 days = 1 }
+ }
+}
+
+country_event = {
+ id = epoch36.22
+ hide_window = yes
+ is_triggered_only = yes
+ immediate = {
+  # Also observe after the pulse in case this callback ran before EPOCH's.
+  country_event = { id = epoch36.23 }
+  log = "EPOCH36|run=__RUN_ID__|state=first-month-ended"
+ }
+}
+
+country_event = {
+ id = epoch36.23
+ hide_window = yes
+ is_triggered_only = yes
+ immediate = {
+  if = {
+   limit = {
+    has_country_flag = epoch_iv_ai_attack_ordered
+    has_country_flag = epoch_iv_ai_attack_tracks_combat
+    epoch_iv_ai_personal_target = yes
+    exists = event_target:epoch_iv_ai_fleet@root
+    event_target:epoch_iv_ai_fleet@root = {
+     is_owned_by = root
+     has_fleet_flag = epoch36_candidate
+    }
+   }
+   log = "EPOCH36|run=__RUN_ID__|state=first-month-order-observed"
+  }
+  else_if = {
+   limit = { has_country_flag = epoch_iv_ai_attack_ordered }
+   log = "EPOCH36|run=__RUN_ID__|state=first-month-unverified-order"
+  }
+ }
+}

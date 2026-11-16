@@ -1,0 +1,6 @@
+# Test fleet operating budget. No combat or movement modifiers.
+epoch36_first_month_budget = {
+ country_naval_cap_add = 4000
+ country_resource_max_add = 1000000
+ ships_upkeep_mult = -0.75
+}

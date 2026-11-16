@@ -32,4 +32,30 @@ actual combat. The 1000-ship trial exceeded the power threshold but did not yiel
 an observed attack; the native AI defaulted economically. A stable, fully
 eligible fleet at monthly reconciliation and a survived retreat remain missing.
 
-Neither the runner nor this overlay can report the requested regression PASS.
+## First monthly AI order (#33)
+
+```powershell
+powershell.exe -NoProfile -File .\scripts\test_stage_iv_engine.ps1 -SeedFixtureDirectory 'G:\EPOCH-Stellaris-Test\fixtures\seed-save-load-v1' -FirstMonthOrder -DebugMode -TimeoutSeconds 300
+```
+
+Use the already verified local UI load path for this fixture and unpause. A
+local desktop agent can perform those actions. The runner has no integrated UI
+driver. After the next native monthly pulse and one in-game day, the runner
+stops its own process and writes the compact `firstMonthOrder` result in
+`report.json`. Do not invoke the production attack event from the console.
+
+The fixture uses the previously observed 1000 Enforcers by default, plus a
+temporary naval-capacity, storage and upkeep budget with initial supplies. The
+probe reads missing country, ownership, fleet, access, health, strength and
+deficit conditions at the pulse when the order flag is still clear. The
+observer and the production selector share the same pulse, so the observer
+can run before or after selection. The extra day catches an order issued
+after the pulse observer ran. Economic support is part of the fixture and
+still needs confirmation in Stellaris.
+
+Exit 0 for this option means the first monthly order is evidenced for the
+owned candidate and its personal guardian, with the marked save and isolated
+run verified. Exit 3 reports a blocked probe and its available evidence,
+including any missing prerequisites. The top-level report status still
+tracks the full combat regression. Combat, retreat, the cooldown and the
+next order are tracked in #36.

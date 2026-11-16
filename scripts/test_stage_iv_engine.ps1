@@ -13,6 +13,7 @@ param(
     [switch]$SeedProbe,
     [string]$SeedFixtureDirectory,
     [switch]$BattleAttempt,
+    [switch]$FirstMonthOrder,
     [ValidateRange(1, 2000)][int]$CandidateShips = 200,
     [switch]$StopAfterSeedLoad,
     [ValidateRange(5, 1800)][int]$TimeoutSeconds = 180
@@ -34,6 +35,7 @@ $report = [ordered]@{
     startedUtc = [DateTime]::UtcNow.ToString('o'); finishedUtc = $null
     candidate = $null; installation = $null; startup = $null
     regularProfileUnchanged = $null; diagnostics = @(); artifacts = @()
+    firstMonthOrder = $null
     checks = [ordered]@{
         isolatedProfile = 'not_observed'; modLoaded = 'not_attempted'
         scenarioLoaded = 'not_attempted'; continueLastSave = 'not_attempted'
@@ -84,8 +86,18 @@ function Read-OwnCrash([int]$ProcessId, [datetime]$SinceUtc) {
     return $result
 }
 
+function Read-FirstMonthOrder([string]$LogPath, [string]$RunId) {
+    if (-not (Test-Path -LiteralPath $LogPath -PathType Leaf)) { return }
+    $pattern = 'EPOCH36\|run=' + [regex]::Escape($RunId) + '\|state=([a-z0-9-]+)(?=\||\s|$)'
+    foreach ($line in Select-String -LiteralPath $LogPath -Pattern $pattern) {
+        $line.Matches[0].Groups[1].Value
+    }
+}
+
 try {
     if ($BattleAttempt -and -not $SeedFixtureDirectory) { throw 'BattleAttempt requires SeedFixtureDirectory.' }
+    if ($FirstMonthOrder -and -not $SeedFixtureDirectory) { throw 'FirstMonthOrder requires SeedFixtureDirectory.' }
+    if ($FirstMonthOrder -and ($BattleAttempt -or $StopAfterSeedLoad)) { throw 'FirstMonthOrder must run separately from BattleAttempt and StopAfterSeedLoad.' }
     if ($StopAfterSeedLoad -and -not $SeedFixtureDirectory) { throw 'StopAfterSeedLoad requires SeedFixtureDirectory.' }
     if ($SeedFixtureDirectory -and ($LoadCandidate -or $SeedProbe)) { throw 'SeedFixtureDirectory already stages candidate and probe; do not combine staging switches.' }
     $fullRoot = [IO.Path]::GetFullPath($TestRoot).TrimEnd('\', '/')
@@ -148,8 +160,7 @@ try {
         if (-not ($LoadCandidate -or $fixture)) { throw 'SeedProbe requires LoadCandidate.' }
         $probeDirectory = Join-Path $testProfile 'mod\epoch36-probe'
         Copy-Item -LiteralPath (Join-Path $repo 'test-mods\stage-iv-engine-probe') -Destination $probeDirectory -Recurse
-        $unusedBattleTemplate = Join-Path $probeDirectory 'events\epoch36_battle_attempt.txt.in'
-        if (Test-Path -LiteralPath $unusedBattleTemplate) { Remove-Item -LiteralPath $unusedBattleTemplate }
+        Get-ChildItem -LiteralPath (Join-Path $probeDirectory 'events') -Filter '*.txt.in' | Remove-Item
         $probeEvents = Join-Path $probeDirectory 'events\epoch36_events.txt'
         $markerRunId = if ($fixture) { $fixture.runId } else { $runId }
         [IO.File]::WriteAllText($probeEvents, ([IO.File]::ReadAllText($probeEvents).Replace('__RUN_ID__', $markerRunId).Replace('__RUN_FLAG__', $markerRunId.Replace('-', '_'))), [Text.UTF8Encoding]::new($false))
@@ -169,16 +180,33 @@ try {
         $report.scenarioVersion = $fixture.scenarioVersion
         $report.candidate.seedSourceRunId = $fixture.runId
         $report.candidate.seedSaveSha256 = $fixture.saveSha256
-        $report.startup.arguments += '-continuelastsave'
-        if ($BattleAttempt) {
-            $battleFile = Join-Path $testProfile 'mod\epoch36-probe\events\epoch36_battle_attempt.txt'
-            $battleText = [IO.File]::ReadAllText((Join-Path $repo 'test-mods\stage-iv-engine-probe\events\epoch36_battle_attempt.txt.in'))
+        if (-not $FirstMonthOrder) { $report.startup.arguments += '-continuelastsave' }
+        if ($BattleAttempt -or $FirstMonthOrder) {
+            $templates = Join-Path $repo 'test-mods\stage-iv-engine-probe\events'
+            $probeActions = Join-Path $probeDirectory 'common\on_actions\epoch36_on_actions.txt'
+            $battleFile = Join-Path $probeDirectory 'events\epoch36_battle_attempt.txt'
+            $battleText = [IO.File]::ReadAllText((Join-Path $templates 'epoch36_battle_attempt.txt.in'))
+            $economy = 'add_resource = { energy = 1000000 alloys = 1000000 minerals = 1000000 }'
+            $observation = "set_variable = { which = epoch36_observed_days value = 0 }`n  country_event = { id = epoch36.12 days = 1 }"
             $report.candidate.battleProbe = 'stage-iv-setup-probe-v2'
+            if ($FirstMonthOrder) {
+                $report.candidate.battleProbe = 'stage-iv-first-month-order-v1'
+                if (-not $PSBoundParameters.ContainsKey('CandidateShips')) { $CandidateShips = 1000 }
+                $economy = "add_modifier = { modifier = epoch36_first_month_budget days = 60 }`n  add_resource = { energy = 50000 alloys = 50000 minerals = 50000 food = 50000 consumer_goods = 50000 }"
+                $observation = 'set_country_flag = epoch36_first_month_pending'
+                $monthText = [IO.File]::ReadAllText((Join-Path $templates 'epoch36_first_month.txt.in'))
+                $monthText = $monthText.Replace('__RUN_ID__', $runId).Replace('__RUN_FLAG__', $fixture.runId.Replace('-', '_'))
+                [IO.File]::WriteAllText((Join-Path $probeDirectory 'events\epoch36_first_month.txt'), $monthText, [Text.UTF8Encoding]::new($false))
+                Add-Content -LiteralPath $probeActions -Value 'on_single_player_save_game_load = { events = { epoch36.15 } } on_monthly_pulse = { events = { epoch36.20 } }' -Encoding ASCII
+            } else {
+                Add-Content -LiteralPath $probeActions -Value 'on_single_player_save_game_load = { events = { epoch36.10 } }' -Encoding ASCII
+                Add-Content -LiteralPath $probeActions -Value 'on_fleet_combat_joined_attacker = { events = { epoch36.13 } } on_fleet_combat_joined_defender = { events = { epoch36.13 } } on_fleet_exit_battle = { events = { epoch36.14 } }' -Encoding ASCII
+            }
             $report.candidate.candidateShips = $CandidateShips
             $ships = (1..$CandidateShips | ForEach-Object { 'create_ship = { design = "NAME_EPOCH_III_Enforcer" graphical_culture = mammalian_01 }' }) -join "`n"
-            [IO.File]::WriteAllText($battleFile, $battleText.Replace('__RUN_ID__', $runId).Replace('__CANDIDATE_SHIPS__', $ships), [Text.UTF8Encoding]::new($false))
-            Add-Content -LiteralPath (Join-Path $testProfile 'mod\epoch36-probe\common\on_actions\epoch36_on_actions.txt') -Value 'on_single_player_save_game_load = { events = { epoch36.10 } }' -Encoding ASCII
-            Add-Content -LiteralPath (Join-Path $testProfile 'mod\epoch36-probe\common\on_actions\epoch36_on_actions.txt') -Value 'on_fleet_combat_joined_attacker = { events = { epoch36.13 } } on_fleet_combat_joined_defender = { events = { epoch36.13 } } on_fleet_exit_battle = { events = { epoch36.14 } }' -Encoding ASCII
+            $battleText = $battleText.Replace('__RUN_ID__', $runId).Replace('__CANDIDATE_SHIPS__', $ships)
+            $battleText = $battleText.Replace('__ECONOMY_SETUP__', $economy).Replace('__OBSERVATION_START__', $observation)
+            [IO.File]::WriteAllText($battleFile, $battleText, [Text.UTF8Encoding]::new($false))
         }
     }
 
@@ -227,16 +255,23 @@ try {
         $report.startup.commandLineObserved = (Get-CimInstance Win32_Process -Filter ('ProcessId=' + $testProcess.Id) -ErrorAction Stop).CommandLine
     } catch { $report.diagnostics += 'Actual process command line unavailable.' }
     $deadline = $launchUtc.AddSeconds($TimeoutSeconds)
+    $liveLog = Join-Path $testProfile 'logs\game.log'
     while (-not $testProcess.WaitForExit(250)) {
-        if ($fixture -and $StopAfterSeedLoad) {
-            $liveLog = Join-Path $testProfile 'logs\game.log'
+        if ($FirstMonthOrder) {
+            $states = @(Read-FirstMonthOrder $liveLog $runId)
+            if ($states -contains 'first-month-ended' -or $states -contains 'first-month-invalid-start') {
+                $report.startup.stopReason = 'first_month_probe_finished'
+            }
+        } elseif ($fixture -and $StopAfterSeedLoad) {
             $loadMarker = 'EPOCH36|run=' + $fixture.runId + '|state=marker-present'
             if ((Test-Path -LiteralPath $liveLog) -and (Select-String -LiteralPath $liveLog -SimpleMatch $loadMarker -Quiet)) {
                 $report.startup.stopReason = 'seed_marker_observed'
-                Stop-Process -Id $testProcess.Id
-                $testProcess.WaitForExit(5000) | Out-Null
-                break
             }
+        }
+        if ($report.startup.stopReason) {
+            if (-not $testProcess.HasExited) { Stop-Process -Id $testProcess.Id }
+            if (-not $testProcess.WaitForExit(5000)) { throw 'Test process could not be confirmed stopped after the observation.' }
+            break
         }
         if ([DateTime]::UtcNow -ge $deadline) {
             $report.startup.timedOut = $true
@@ -274,7 +309,7 @@ try {
             $report.checks.scenarioLoaded = 'persisted_seed_marker_observed'
             # A UI Load or launcher Resume can produce this same native hook.
             # The marker proves save identity, never the route used to load it.
-            $report.checks.continueLastSave = 'argument_passed_route_requires_observation'
+            if (-not $FirstMonthOrder) { $report.checks.continueLastSave = 'argument_passed_route_requires_observation' }
         }
     }
     $errorLog = Join-Path $testProfile 'logs\error.log'
@@ -288,6 +323,30 @@ try {
     else { $report.reason = 'Process ended; scenario identity, loading and combat remain unverified.' }
     if ($report.checks.scenarioLoaded -eq 'persisted_seed_marker_observed') {
         $report.reason = 'Persisted seed marker observed; load route requires observation. Combat/retreat/180-day regression remains unverified.'
+    }
+    if ($FirstMonthOrder) {
+        $states = @(Read-FirstMonthOrder $liveLog $runId)
+        $result = [ordered]@{
+            status = 'blocked'; reason = 'Missing verified fixture load or complete first monthly observation.'
+            observedOrder = ($states -contains 'first-month-order-observed')
+            missing = @($states | Where-Object { $_ -like 'missing-*' } | Sort-Object -Unique)
+            markers = $states
+        }
+        if ($states -contains 'first-month-invalid-start') {
+            $result.reason = 'Expected the marked fixture with one unassigned, unprepared default AI empire.'
+        } elseif ($report.candidate.loadedInEngine -and $report.checks.scenarioLoaded -eq 'persisted_seed_marker_observed' -and
+            $states -contains 'first-month-pulse' -and $states -contains 'first-month-ended') {
+            if ($result.missing.Count) { $result.reason = 'Scenario prerequisites missing: ' + ($result.missing -join ', ') }
+            elseif ($result.observedOrder) {
+                $result.status = 'passed'
+                $result.reason = 'Production assigned the marked AI fleet to the personal guardian at the first monthly pulse.'
+            } elseif ($states -contains 'first-month-unverified-order') {
+                $result.reason = 'An attack flag appeared without verified ownership and candidate identity.'
+            } elseif ($states -contains 'first-month-fleet-checked') {
+                $result.reason = 'No order observed although the pulse observer found no missing prerequisite.'
+            }
+        }
+        $report.firstMonthOrder = $result
     }
 } catch {
     $report.reason = $_.Exception.Message
@@ -307,14 +366,26 @@ try {
         $report.regularProfileUnchanged = (($before | ConvertTo-Json -Depth 5 -Compress) -ceq ($after | ConvertTo-Json -Depth 5 -Compress))
         $after | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $runDirectory 'regular-after.json') -Encoding UTF8
         if (-not $report.regularProfileUnchanged) { $report.reason += ' Regular profile metadata changed; isolation is not established.' }
+        if ($report.firstMonthOrder) {
+            if ($report.firstMonthOrder.status -eq 'passed' -and
+                (-not $report.regularProfileUnchanged -or $report.startup.temporaryRedirectRemoved -ne $true -or
+                 $report.checks.isolatedProfile -ne 'fresh_system_and_setup_logs' -or $report.startup.timedOut -or
+                 $report.startup.crashEvents.Count)) {
+                $report.firstMonthOrder.status = 'blocked'
+                $report.firstMonthOrder.reason = 'Order observed, but the run did not establish clean isolation, completion and cleanup.'
+            }
+            Write-Output "First monthly order: $($report.firstMonthOrder.status). $($report.firstMonthOrder.reason)"
+        }
         $report.finishedUtc = [DateTime]::UtcNow.ToString('o')
         $report.artifacts = @(Get-ChildItem -LiteralPath $runDirectory -File | ForEach-Object { [ordered]@{ file = $_.Name; sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() } })
         $report | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath $reportPath -Encoding UTF8
-        Write-Output "BLOCKED: $($report.reason)"
+        if ($report.firstMonthOrder) { Write-Output "Full combat regression BLOCKED: $($report.reason)" }
+        else { Write-Output "BLOCKED: $($report.reason)" }
         Write-Output "Report: $reportPath"
     } else {
         Write-Output "BLOCKED: $($report.reason)"
     }
 }
 # A successful preflight must never masquerade as the requested regression.
+if ($report.firstMonthOrder -and $report.firstMonthOrder.status -eq 'passed') { exit 0 }
 exit 3
