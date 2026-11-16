@@ -12,24 +12,89 @@ epoch_frontiers_bulwark = {
    has_starbase_size >= starbase_starport
    epoch_frontiers_station_operational = yes
   }
-  solar_system = {
-   count_starbase_buildings = { type = epoch_frontiers_bulwark count < 1 include_being_constructed = yes }
+  custom_tooltip = {
+   fail_text = epoch_frontiers.exclusive
+   epoch_frontiers_capacity_available = yes
   }
  }
  abort_construction_trigger = {
-  solar_system = {
-   count_starbase_buildings = { type = epoch_frontiers_bulwark count > 1 include_being_constructed = yes }
-  }
+  epoch_frontiers_conflicting_construction = yes
  }
  resources = {
   category = starbase_buildings
   cost = { alloys = 200 }
   upkeep = { energy = 2 }
  }
- station_modifier = { starbase_defense_platform_capacity_add = 6 }
+ triggered_station_modifier = {
+  potential = {
+   epoch_frontiers_station_operational = yes
+   solar_system = { NOT = { has_star_flag = epoch_frontiers_damaged } }
+   NOT = { has_starbase_building = epoch_frontiers_salvage_relay }
+  }
+  modifiers = { starbase_defense_platform_capacity_add = 6 }
+ }
  ai_weight = {
   weight = 20
-  modifier = { factor = 5 epoch_frontiers_border = yes }
+  modifier = { factor = 2 epoch_frontiers_border = yes }
+  modifier = { factor = 3 epoch_frontiers_hostile_border = yes }
   modifier = { factor = 0 owner = { has_deficit = energy } }
+ }
+}
+
+epoch_frontiers_salvage_relay = {
+ icon = sb_deep_space_black_site
+ construction_days = 360
+ category = sm_economy_cat
+ potential = {
+  is_normal_starbase = yes
+  solar_system = { has_star_flag = epoch_frontiers_surveyed }
+ }
+ possible = {
+  custom_tooltip = {
+   fail_text = epoch_frontiers.requires_operational_starport
+   has_starbase_size >= starbase_starport
+   epoch_frontiers_station_operational = yes
+  }
+  custom_tooltip = {
+   fail_text = epoch_frontiers.exclusive
+   epoch_frontiers_capacity_available = yes
+  }
+  custom_tooltip = {
+   fail_text = epoch_frontiers.wrecks_exhausted
+   solar_system = { NOT = { has_star_flag = epoch_frontiers_wreck_two_spent } }
+  }
+ }
+ abort_construction_trigger = {
+  OR = {
+   epoch_frontiers_conflicting_construction = yes
+   solar_system = { has_star_flag = epoch_frontiers_wreck_two_spent }
+  }
+ }
+ resources = {
+  category = starbase_buildings
+  cost = { alloys = 150 }
+  upkeep = {
+   trigger = {
+    epoch_frontiers_station_operational = yes
+    solar_system = {
+     NOR = { has_star_flag = epoch_frontiers_damaged has_star_flag = epoch_frontiers_wreck_two_spent }
+    }
+   }
+   energy = 3
+  }
+ }
+ ai_weight = {
+  weight = 60
+  modifier = { factor = 0.7 epoch_frontiers_border = yes }
+  modifier = { factor = 0.2 epoch_frontiers_hostile_border = yes }
+  modifier = {
+   factor = 0
+   owner = {
+    OR = {
+     has_deficit = energy
+     NOT = { has_monthly_income = { resource = energy value > 3 } }
+    }
+   }
+  }
  }
 }

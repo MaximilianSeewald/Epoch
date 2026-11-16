@@ -7,7 +7,7 @@ epoch_frontiers_station_operational = {
  controller = { is_same_value = prev.owner }
 }
 
-# Country scope in the project abort trigger and in the completing ship's owner.
+# Country scope in the project abort trigger.
 epoch_frontiers_can_survey = {
  has_global_flag = epoch_iii_first_repulsed
  exists = event_target:epoch_iii_front_$FRONT$
@@ -22,7 +22,87 @@ epoch_frontiers_can_survey = {
  }
 }
 
-# Starbase scope. Use existing borders as a proxy for a threatened location.
+# Starbase scope. Installed frontier buildings share one slot per system.
+epoch_frontiers_installed = {
+ OR = {
+  has_starbase_building = epoch_frontiers_bulwark
+  has_starbase_building = epoch_frontiers_salvage_relay
+ }
+}
+
+epoch_frontiers_capacity_available = {
+ solar_system = {
+  count_starbase_buildings = { type = epoch_frontiers_bulwark count < 1 include_being_constructed = yes }
+  count_starbase_buildings = { type = epoch_frontiers_salvage_relay count < 1 include_being_constructed = yes }
+ }
+}
+
+epoch_frontiers_conflicting_construction = {
+ solar_system = {
+  OR = {
+   count_starbase_buildings = { type = epoch_frontiers_bulwark count > 1 include_being_constructed = yes }
+   count_starbase_buildings = { type = epoch_frontiers_salvage_relay count > 1 include_being_constructed = yes }
+   AND = {
+    count_starbase_buildings = { type = epoch_frontiers_bulwark count > 0 include_being_constructed = yes }
+    count_starbase_buildings = { type = epoch_frontiers_salvage_relay count > 0 include_being_constructed = yes }
+   }
+  }
+ }
+}
+
+# System scope. This predicate is shared by dispatch, projects and rewards.
+epoch_frontiers_salvage_site = {
+ has_star_flag = epoch_frontiers_surveyed
+ NOR = {
+  has_star_flag = epoch_frontiers_damaged
+  has_star_flag = epoch_frontiers_wreck_two_spent
+ }
+ exists = starbase
+ starbase = {
+  epoch_frontiers_station_operational = yes
+  has_starbase_building = epoch_frontiers_salvage_relay
+  NOT = { has_starbase_building = epoch_frontiers_bulwark }
+  owner = { NOT = { has_deficit = energy } }
+ }
+}
+
+epoch_frontiers_can_salvage = {
+ has_global_flag = epoch_iii_first_repulsed
+ exists = event_target:epoch_iii_front_$FRONT$
+ event_target:epoch_iii_front_$FRONT$ = {
+  epoch_frontiers_salvage_site = yes
+  NOT = { has_star_flag = epoch_frontiers_recovery_ready }
+  starbase = { owner = { is_same_value = root } }
+ }
+}
+
+# Country choice scopes: FROM is the system that offered this report.
+epoch_frontiers_can_collect = {
+ exists = from
+ from = {
+  epoch_frontiers_salvage_site = yes
+  has_star_flag = epoch_frontiers_recovery_ready
+  has_star_flag = epoch_frontiers_recovered_for@root
+  has_star_flag = $WRECK$
+  starbase = { owner = { is_same_value = root } }
+ }
+}
+
+epoch_frontiers_can_repair = {
+ exists = from
+ from = {
+  has_star_flag = epoch_frontiers_damaged
+  exists = starbase
+  starbase = {
+   epoch_frontiers_station_operational = yes
+   epoch_frontiers_installed = yes
+   owner = { is_same_value = root }
+  }
+ }
+ resource_stockpile_compare = { resource = alloys value >= 100 }
+}
+
+# Starbase scope. Borders matter most when the neighbor is actually hostile.
 epoch_frontiers_border = {
  solar_system = {
   any_neighbor_system = {
@@ -31,6 +111,15 @@ epoch_frontiers_border = {
     epoch_iii_public_empire = yes
     NOT = { is_same_value = prevprev.owner }
    }
+  }
+ }
+}
+
+epoch_frontiers_hostile_border = {
+ solar_system = {
+  any_neighbor_system = {
+   exists = owner
+   owner = { is_hostile = prevprev.owner }
   }
  }
 }

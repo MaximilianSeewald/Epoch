@@ -6,10 +6,35 @@ event = {
  is_triggered_only = yes
  trigger = { has_global_flag = epoch_iii_first_repulsed }
  immediate = {
-  epoch_frontiers_reconcile_ruin = { FRONT = 1 PROJECT = EPOCH_FRONTIERS_SURVEY_1 }
-  epoch_frontiers_reconcile_ruin = { FRONT = 2 PROJECT = EPOCH_FRONTIERS_SURVEY_2 }
-  epoch_frontiers_reconcile_ruin = { FRONT = 3 PROJECT = EPOCH_FRONTIERS_SURVEY_3 }
-  epoch_frontiers_reconcile_ruin = { FRONT = 4 PROJECT = EPOCH_FRONTIERS_SURVEY_4 }
+  epoch_frontiers_reconcile_ruin = { FRONT = 1 PROJECT = EPOCH_FRONTIERS_SURVEY_1 SALVAGE = EPOCH_FRONTIERS_SALVAGE_1 }
+  epoch_frontiers_reconcile_ruin = { FRONT = 2 PROJECT = EPOCH_FRONTIERS_SURVEY_2 SALVAGE = EPOCH_FRONTIERS_SALVAGE_2 }
+  epoch_frontiers_reconcile_ruin = { FRONT = 3 PROJECT = EPOCH_FRONTIERS_SURVEY_3 SALVAGE = EPOCH_FRONTIERS_SALVAGE_3 }
+  epoch_frontiers_reconcile_ruin = { FRONT = 4 PROJECT = EPOCH_FRONTIERS_SURVEY_4 SALVAGE = EPOCH_FRONTIERS_SALVAGE_4 }
+ }
+}
+
+# Native loss of title, including cession. Occupation changes control only.
+country_event = {
+ id = epoch_frontiers.2
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = {
+  exists = from
+  from = { has_star_flag = epoch_frontiers_surveyed }
+ }
+ immediate = {
+  from = {
+   remove_star_flag = epoch_frontiers_recovery_ready
+   remove_star_flag = epoch_frontiers_wreck_one_ready
+   remove_star_flag = epoch_frontiers_wreck_two_ready
+   remove_star_flag = epoch_frontiers_recovered_for@root
+   remove_star_flag = epoch_frontiers_recovery_notice
+   remove_star_flag = epoch_frontiers_repair_notice
+   if = {
+    limit = { exists = starbase starbase = { epoch_frontiers_capacity_available = no } }
+    set_star_flag = epoch_frontiers_damaged
+   }
+  }
  }
 }
 
@@ -49,5 +74,130 @@ ship_event = {
  immediate = {
   solar_system = { set_star_flag = epoch_frontiers_surveyed }
   owner = { country_event = { id = epoch_frontiers.10 } }
+ }
+}
+
+ship_event = {
+ id = epoch_frontiers.20
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = {
+  exists = owner
+  exists = leader
+  exists = from
+  from = { is_scope_type = country is_same_value = root.owner }
+  exists = fromfrom
+  solar_system = {
+   is_same_value = fromfrom
+   epoch_frontiers_salvage_site = yes
+   NOT = { has_star_flag = epoch_frontiers_recovery_ready }
+   starbase = { owner = { is_same_value = root.owner } }
+  }
+ }
+ immediate = {
+  solar_system = {
+   if = {
+    limit = { has_star_flag = epoch_frontiers_wreck_one_spent }
+    set_star_flag = epoch_frontiers_wreck_two_ready
+   }
+   else = { set_star_flag = epoch_frontiers_wreck_one_ready }
+   set_star_flag = epoch_frontiers_recovery_ready
+   set_star_flag = epoch_frontiers_recovered_for@root.owner
+   epoch_frontiers_offer_recovery = yes
+  }
+ }
+}
+
+country_event = {
+ id = epoch_frontiers.30
+ title = epoch_frontiers.30.name
+ desc = epoch_frontiers.30.desc
+ picture = GFX_evt_space_debris
+ is_triggered_only = yes
+ trigger = { exists = from from = { has_star_flag = epoch_frontiers_damaged } }
+ option = {
+  name = epoch_frontiers.30.repair
+  trigger = { epoch_frontiers_can_repair = yes }
+  tooltip = { add_resource = { alloys = -100 } }
+  hidden_effect = {
+   if = {
+    limit = { epoch_frontiers_can_repair = yes }
+    add_resource = { alloys = -100 }
+    from = { remove_star_flag = epoch_frontiers_damaged }
+   }
+  }
+  ai_chance = { factor = 100 }
+ }
+ option = {
+  name = epoch_frontiers.30.defer
+  ai_chance = { factor = 1 modifier = { factor = 0 epoch_frontiers_can_repair = yes } }
+ }
+}
+
+country_event = {
+ id = epoch_frontiers.21
+ title = epoch_frontiers.21.name
+ desc = epoch_frontiers.21.desc
+ picture = GFX_evt_space_debris
+ is_triggered_only = yes
+ trigger = { epoch_frontiers_can_collect = { WRECK = epoch_frontiers_wreck_one_ready } }
+ option = {
+  name = epoch_frontiers.take_alloys
+  trigger = { epoch_frontiers_can_collect = { WRECK = epoch_frontiers_wreck_one_ready } }
+  tooltip = { add_resource = { alloys = 400 } }
+  hidden_effect = {
+   epoch_frontiers_claim_recovery = { WRECK = epoch_frontiers_wreck_one_ready SPENT = epoch_frontiers_wreck_one_spent RESOURCE = alloys AMOUNT = 400 }
+  }
+  ai_chance = {
+   factor = 10
+   modifier = { factor = 3 NOT = { resource_stockpile_compare = { resource = alloys value >= 1000 } } }
+  }
+ }
+ option = {
+  name = epoch_frontiers.take_research
+  trigger = { epoch_frontiers_can_collect = { WRECK = epoch_frontiers_wreck_one_ready } }
+  tooltip = { add_resource = { engineering_research = 1000 } }
+  hidden_effect = {
+   epoch_frontiers_claim_recovery = { WRECK = epoch_frontiers_wreck_one_ready SPENT = epoch_frontiers_wreck_one_spent RESOURCE = engineering_research AMOUNT = 1000 }
+  }
+  ai_chance = { factor = 15 }
+ }
+ option = {
+  name = epoch_frontiers.leave_report
+  ai_chance = { factor = 1 modifier = { factor = 0 epoch_frontiers_can_collect = { WRECK = epoch_frontiers_wreck_one_ready } } }
+ }
+}
+
+country_event = {
+ id = epoch_frontiers.22
+ title = epoch_frontiers.22.name
+ desc = epoch_frontiers.22.desc
+ picture = GFX_evt_space_debris
+ is_triggered_only = yes
+ trigger = { epoch_frontiers_can_collect = { WRECK = epoch_frontiers_wreck_two_ready } }
+ option = {
+  name = epoch_frontiers.take_alloys
+  trigger = { epoch_frontiers_can_collect = { WRECK = epoch_frontiers_wreck_two_ready } }
+  tooltip = { add_resource = { alloys = 400 } }
+  hidden_effect = {
+   epoch_frontiers_claim_recovery = { WRECK = epoch_frontiers_wreck_two_ready SPENT = epoch_frontiers_wreck_two_spent RESOURCE = alloys AMOUNT = 400 }
+  }
+  ai_chance = {
+   factor = 10
+   modifier = { factor = 3 NOT = { resource_stockpile_compare = { resource = alloys value >= 1000 } } }
+  }
+ }
+ option = {
+  name = epoch_frontiers.take_research
+  trigger = { epoch_frontiers_can_collect = { WRECK = epoch_frontiers_wreck_two_ready } }
+  tooltip = { add_resource = { engineering_research = 1000 } }
+  hidden_effect = {
+   epoch_frontiers_claim_recovery = { WRECK = epoch_frontiers_wreck_two_ready SPENT = epoch_frontiers_wreck_two_spent RESOURCE = engineering_research AMOUNT = 1000 }
+  }
+  ai_chance = { factor = 15 }
+ }
+ option = {
+  name = epoch_frontiers.leave_report
+  ai_chance = { factor = 1 modifier = { factor = 0 epoch_frontiers_can_collect = { WRECK = epoch_frontiers_wreck_two_ready } } }
  }
 }

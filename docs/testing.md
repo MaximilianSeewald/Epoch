@@ -12,6 +12,12 @@ Stage IV Package B has one connected acceptance run after the complete implement
 
 Record design requirements, source-verified patterns, static checks, and reproducible in-game results separately. A static pass is not in-game evidence. For each in-game run record Stellaris build, mod commit, enabled mods, empire class/player-or-AI, seed, route, saves/checkpoints, logs, and screenshots when UI behavior matters.
 
+### Contested Frontiers
+
+For the Stable candidate, load a postwar game with a recorded former front by a foreign border and another in secure space. Claim an unowned ruin using an outpost and survey both sites with staffed science ships. Verify that the starport slot offers the two exclusive upgrades, that the Bulwark adds six places for separately purchased platforms and that the Relay exposes two 120-day recoveries. Check the two payout choices and that the Relay stops using energy after its second payout.
+
+Temporarily occupy the Relay starbase during a recovery. Recoveries are suspended while control differs from ownership. An interrupted ship project is offered again after control returns and starts its 120-day run again. A completed recovery awaiting a choice and previously used wrecks remain recorded. Then transfer ownership by a peace settlement or total war and check that the former owner's pending option cannot pay. The new owner must repair the inherited structure for 100 alloys or dismantle it and buy a replacement. Check transfer during construction and during a pending report, and save/reload before the second payout. Verify that AI uses the native construction costs and that the feature does not require participation in the personal campaign.
+
 The reported 4.5.3 playthrough completed Stage-II Chapters 1â€“3, defeated the first hunters and displayed the research options; Chapter 4 opened but its Decisions were missing. It does not establish complete multiplayer, AI, or alternative-path validation. Do not claim an individual check passed without its case-specific evidence.
 
 **Evidence chronology:** The checkpoint descriptions and original failure reports below are historical, not claims that those failures remain on the current main. The Stage-III package reports successful Stage-II main-player-route acceptance on 2026-11-08 at `84aaa4cf72cdc32f6aee6c371178f5fcb8e3693e`. That report is not an independently reproduced full AI/alternative-path/MP pass; all listed edge-case acceptance remains required. See [source notes](research/stage-iii-source-notes.md).
