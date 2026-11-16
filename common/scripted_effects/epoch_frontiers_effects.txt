@@ -1,0 +1,123 @@
+# Global coordinator scope. Each call covers one recorded Stage III front.
+epoch_frontiers_reconcile_ruin = {
+ if = {
+  limit = {
+   has_global_flag = epoch_iii_front_$FRONT$_destroyed
+   exists = event_target:epoch_iii_front_$FRONT$
+  }
+  event_target:epoch_iii_front_$FRONT$ = {
+   if = {
+    limit = { exists = star NOT = { has_star_flag = epoch_frontiers_ruin } }
+    star = {
+     create_ambient_object = { type = derelict_ship_object location = this entity_offset = { min = 18 max = 18 } }
+    }
+    set_star_flag = epoch_frontiers_ruin
+   }
+   if = {
+    limit = {
+     has_star_flag = epoch_frontiers_ruin
+     NOT = { has_star_flag = epoch_frontiers_surveyed }
+     exists = starbase
+     starbase = {
+      epoch_frontiers_station_operational = yes
+      owner = { NOT = { has_special_project = $PROJECT$ } }
+     }
+    }
+    starbase = { owner = { save_event_target_as = epoch_frontiers_survey_owner } }
+    star = {
+     enable_special_project = {
+      name = $PROJECT$
+      location = this
+      owner = event_target:epoch_frontiers_survey_owner
+     }
+    }
+   }
+   if = {
+    limit = {
+     has_star_flag = epoch_frontiers_damaged
+     exists = starbase
+     starbase = { epoch_frontiers_station_operational = yes }
+    }
+    if = {
+     limit = {
+      starbase = { epoch_frontiers_capacity_available = yes }
+     }
+     # The owner demolished the inherited installation. Either type can now
+     # be rebuilt at its full native construction cost.
+     remove_star_flag = epoch_frontiers_damaged
+    }
+    else_if = {
+     limit = {
+      NOT = { has_star_flag = epoch_frontiers_repair_notice }
+      starbase = { epoch_frontiers_installed = yes }
+     }
+     epoch_frontiers_offer_repair = yes
+    }
+   }
+   if = {
+    limit = { epoch_frontiers_salvage_site = yes }
+    if = {
+     limit = { has_star_flag = epoch_frontiers_recovery_ready }
+     if = {
+      limit = { NOT = { has_star_flag = epoch_frontiers_recovery_notice } }
+      epoch_frontiers_offer_recovery = yes
+     }
+    }
+    else_if = {
+     limit = {
+      starbase = { owner = { NOT = { has_special_project = $SALVAGE$ } } }
+     }
+     starbase = { owner = { save_event_target_as = epoch_frontiers_salvage_owner } }
+     star = {
+      enable_special_project = {
+       name = $SALVAGE$
+       location = this
+       owner = event_target:epoch_frontiers_salvage_owner
+      }
+     }
+    }
+   }
+  }
+ }
+}
+
+# System scope. Pass the location directly to each event so simultaneous
+# reports for different fronts cannot overwrite each other's targets.
+epoch_frontiers_offer_repair = {
+ save_event_target_as = epoch_frontiers_report_site
+ set_timed_star_flag = { flag = epoch_frontiers_repair_notice days = 180 }
+ starbase = {
+  owner = {
+   country_event = { id = epoch_frontiers.30 scopes = { from = event_target:epoch_frontiers_report_site } }
+  }
+ }
+}
+
+epoch_frontiers_offer_recovery = {
+ save_event_target_as = epoch_frontiers_report_site
+ set_timed_star_flag = { flag = epoch_frontiers_recovery_notice days = 180 }
+ starbase = {
+  owner = {
+   if = {
+    limit = { event_target:epoch_frontiers_report_site = { has_star_flag = epoch_frontiers_wreck_one_spent } }
+    country_event = { id = epoch_frontiers.22 scopes = { from = event_target:epoch_frontiers_report_site } }
+   }
+   else = { country_event = { id = epoch_frontiers.21 scopes = { from = event_target:epoch_frontiers_report_site } } }
+  }
+ }
+}
+
+# Country option scope. Mark the wreck spent before granting resources.
+epoch_frontiers_claim_recovery = {
+ if = {
+  limit = { epoch_frontiers_can_collect = { WRECK = $WRECK$ } }
+  from = {
+   set_star_flag = $SPENT$
+   remove_star_flag = $WRECK$
+   remove_star_flag = epoch_frontiers_recovery_ready
+   remove_star_flag = epoch_frontiers_recovered_for@root
+   remove_star_flag = epoch_frontiers_recovery_notice
+  }
+  add_resource = { $RESOURCE$ = $AMOUNT$ }
+ }
+}

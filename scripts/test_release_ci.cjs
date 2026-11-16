@@ -9,6 +9,7 @@ const defaultRoot = path.resolve(__dirname, '..');
 const cases = [
   ['test_phase_i_flow.cjs', root => [root]],
   ['test_epoch_echoes.cjs', () => []],
+  ['test_epoch_frontiers.cjs', root => [root, '--source-only']],
   ['test_stage_iv.cjs', root => [root, '--source-only']],
   ['test_stage_iv_ai.cjs', root => [root, '--source-only']],
   ['test_clausewitz_structure.cjs', root => [root, '--source-only']],
