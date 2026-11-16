@@ -1,0 +1,10 @@
+# EPOCH development and review
+
+- Start from a tracked issue with concrete player actions, meaningful consequences, AI behavior, and observable acceptance criteria. Use a feature branch and target `develop` for routine integration. Use `main` for stable release PRs.
+- Follow [architecture](docs/architecture.md), the affected [stage specification](docs/phases/), and [acceptance criteria](docs/testing.md). Preserve the four-stage campaign, empire-specific state, and permanent personal opt-outs. Escalate changes to major gameplay, campaign outcomes, save compatibility, or mandatory dependencies to the project owner.
+- Use native Stellaris systems for playable actions. Target Stellaris 4.5.3 (Steam build 26325427). Keep the core mod standalone, make Gigastructures optional, and preserve existing Vanilla compatibility.
+- Match Stage I–IV presentation in German and English. Show real costs, effects and requirements in native UI where possible. Keep internal variables, flags and event IDs out of player text. Prefer contextual decisions with clear visibility.
+- Handle eligible AI empires and applicable organic, hive and machine variants. Revalidate ownership, scope, payment and completion at use time. Review save/load, target loss, simultaneous empires and multiplayer when they affect the changed path. Keep recurring work bounded.
+- Run `node scripts/test_release_ci.cjs`. Add regression coverage for a changed behavior when the existing suite misses it. Report source/model evidence separately from observed Stellaris results. For engine evidence record the mod commit, game build, scenario and actual outcome.
+- Review the issue and PR independently of the implementation. Prioritize lost progression, duplicate effects or rewards, invalid engine scopes, broken upgrades or economy, and mismatches between tooltip and behavior. An available test package can be reviewed without asking the owner to play.
+- Follow [development and release flow](docs/development-workflow.md). The repository owner decides only on material design changes or one-time account settings requiring their access.

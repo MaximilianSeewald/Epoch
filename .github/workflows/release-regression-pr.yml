@@ -2,15 +2,7 @@ name: EPOCH Release Regression (PR)
 
 on:
   pull_request:
-    paths:
-      - '.github/workflows/**'
-      - 'common/**'
-      - 'events/**'
-      - 'localisation/**'
-      - 'gfx/**'
-      - 'interface/**'
-      - 'scripts/**'
-      - 'docs/stable-release.md'
+    branches: [main, develop]
 
 permissions:
   contents: read
@@ -24,5 +16,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Run all 11 game-independent CI commands
+      - name: Run game-independent CI tests
         run: node scripts/test_release_ci.cjs

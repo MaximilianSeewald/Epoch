@@ -1,0 +1,26 @@
+name: Feature oder Erweiterung
+description: Plane einen spielbaren EPOCH-Meilenstein.
+title: "[Feature] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: player_experience
+    attributes:
+      label: Spielerlebnis
+      description: Welche konkreten Aktionen führt der Spieler aus, welche Wahl hat er und welche Folgen spürt er?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Umfang und Integration
+      description: Welche Stage, Vanilla-Mechanik, Spielstände und Reichstypen betrifft die Änderung? Wie nutzt die KI das Feature? Welche Designfrage ist gegebenenfalls noch offen?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Abnahmekriterien
+      description: Beschreibe beobachtbare Ergebnisse, DE/EN-Darstellung und relevante Fälle für KI, Save/Load, Besitzwechsel oder Mehrspieler.
+    validations:
+      required: true

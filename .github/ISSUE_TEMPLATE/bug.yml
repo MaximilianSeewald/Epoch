@@ -1,0 +1,24 @@
+name: Fehler melden
+description: Halte einen reproduzierbaren EPOCH-Fehler fest.
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Spielversion und Mod-Stand
+      description: Nenne Stellaris-Build, EPOCH-Version oder Commit, aktive Mods sowie Einzelspieler oder Mehrspieler.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Schritte, beobachtetes und erwartetes Verhalten
+      description: Nenne die betroffene Stage, den Spielzustand und die Aktionen bis zum Fehler.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Belege
+      description: Hänge bei Bedarf einen vorbereiteten Spielstand, einen Screenshot oder einen relevanten Log-Ausschnitt an. Entferne persönliche Daten.
