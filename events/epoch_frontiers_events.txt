@@ -1,0 +1,53 @@
+namespace = epoch_frontiers
+
+event = {
+ id = epoch_frontiers.1
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { has_global_flag = epoch_iii_first_repulsed }
+ immediate = {
+  epoch_frontiers_reconcile_ruin = { FRONT = 1 PROJECT = EPOCH_FRONTIERS_SURVEY_1 }
+  epoch_frontiers_reconcile_ruin = { FRONT = 2 PROJECT = EPOCH_FRONTIERS_SURVEY_2 }
+  epoch_frontiers_reconcile_ruin = { FRONT = 3 PROJECT = EPOCH_FRONTIERS_SURVEY_3 }
+  epoch_frontiers_reconcile_ruin = { FRONT = 4 PROJECT = EPOCH_FRONTIERS_SURVEY_4 }
+ }
+}
+
+country_event = {
+ id = epoch_frontiers.10
+ title = epoch_frontiers.10.name
+ desc = epoch_frontiers.10.desc
+ picture = GFX_evt_space_debris
+ is_triggered_only = yes
+ trigger = { is_ai = no }
+ option = { name = epoch_frontiers.10.ok }
+}
+
+# The departing owner cannot finish a survey for the incoming owner.
+ship_event = {
+ id = epoch_frontiers.11
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = {
+  has_global_flag = epoch_iii_first_repulsed
+  exists = owner
+  exists = leader
+  exists = from
+  from = { is_scope_type = country is_same_value = root.owner }
+  exists = fromfrom
+  solar_system = {
+   is_same_value = fromfrom
+   has_star_flag = epoch_frontiers_ruin
+   NOT = { has_star_flag = epoch_frontiers_surveyed }
+   exists = starbase
+   starbase = {
+    epoch_frontiers_station_operational = yes
+    owner = { is_same_value = root.owner }
+   }
+  }
+ }
+ immediate = {
+  solar_system = { set_star_flag = epoch_frontiers_surveyed }
+  owner = { country_event = { id = epoch_frontiers.10 } }
+ }
+}

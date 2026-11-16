@@ -1,0 +1,36 @@
+# Starbase scope. An occupier controls the station without becoming its owner.
+epoch_frontiers_station_operational = {
+ is_normal_starbase = yes
+ exists = owner
+ owner = { epoch_iii_public_empire = yes }
+ exists = controller
+ controller = { is_same_value = prev.owner }
+}
+
+# Country scope in the project abort trigger and in the completing ship's owner.
+epoch_frontiers_can_survey = {
+ has_global_flag = epoch_iii_first_repulsed
+ exists = event_target:epoch_iii_front_$FRONT$
+ event_target:epoch_iii_front_$FRONT$ = {
+  has_star_flag = epoch_frontiers_ruin
+  NOT = { has_star_flag = epoch_frontiers_surveyed }
+  exists = starbase
+  starbase = {
+   epoch_frontiers_station_operational = yes
+   owner = { is_same_value = root }
+  }
+ }
+}
+
+# Starbase scope. Use existing borders as a proxy for a threatened location.
+epoch_frontiers_border = {
+ solar_system = {
+  any_neighbor_system = {
+   exists = owner
+   owner = {
+    epoch_iii_public_empire = yes
+    NOT = { is_same_value = prevprev.owner }
+   }
+  }
+ }
+}

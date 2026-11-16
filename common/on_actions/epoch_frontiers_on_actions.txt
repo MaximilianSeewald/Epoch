@@ -1,0 +1,2 @@
+# The same bounded reconciliation handles new and existing postwar saves.
+on_monthly_pulse = { events = { epoch_frontiers.1 } }

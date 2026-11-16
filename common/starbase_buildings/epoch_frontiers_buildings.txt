@@ -1,0 +1,35 @@
+epoch_frontiers_bulwark = {
+ icon = sb_defense_grid_supercomputer
+ construction_days = 360
+ category = sm_defense_cat
+ potential = {
+  is_normal_starbase = yes
+  solar_system = { has_star_flag = epoch_frontiers_surveyed }
+ }
+ possible = {
+  custom_tooltip = {
+   fail_text = epoch_frontiers.requires_operational_starport
+   has_starbase_size >= starbase_starport
+   epoch_frontiers_station_operational = yes
+  }
+  solar_system = {
+   count_starbase_buildings = { type = epoch_frontiers_bulwark count < 1 include_being_constructed = yes }
+  }
+ }
+ abort_construction_trigger = {
+  solar_system = {
+   count_starbase_buildings = { type = epoch_frontiers_bulwark count > 1 include_being_constructed = yes }
+  }
+ }
+ resources = {
+  category = starbase_buildings
+  cost = { alloys = 200 }
+  upkeep = { energy = 2 }
+ }
+ station_modifier = { starbase_defense_platform_capacity_add = 6 }
+ ai_weight = {
+  weight = 20
+  modifier = { factor = 5 epoch_frontiers_border = yes }
+  modifier = { factor = 0 owner = { has_deficit = energy } }
+ }
+}
