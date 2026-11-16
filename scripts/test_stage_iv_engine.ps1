@@ -5,7 +5,17 @@ param(
     [string]$InstallPath = 'G:\Steam\steamapps\common\Stellaris',
     [string]$TestRoot = 'G:\EPOCH-Stellaris-Test',
     [string]$Revision = 'HEAD',
-    [ValidateRange(5, 300)][int]$TimeoutSeconds = 60
+    [ValidateSet('DirectX11', 'Default')][string]$Renderer = 'DirectX11',
+    [ValidateSet('UserdirFile', 'Argument')][string]$ProfileMethod = 'UserdirFile',
+    [ValidateSet('Direct', 'Steam')][string]$LaunchMethod = 'Direct',
+    [switch]$DebugMode,
+    [switch]$LoadCandidate,
+    [switch]$SeedProbe,
+    [string]$SeedFixtureDirectory,
+    [switch]$BattleAttempt,
+    [ValidateRange(1, 2000)][int]$CandidateShips = 200,
+    [switch]$StopAfterSeedLoad,
+    [ValidateRange(5, 1800)][int]$TimeoutSeconds = 180
 )
 
 $ErrorActionPreference = 'Stop'
@@ -15,8 +25,10 @@ $regularProfile = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Parad
 $testProcess = $null
 $reportPath = $null
 $before = @()
+$redirectPath = $null
+$redirectValue = $null
 $report = [ordered]@{
-    schemaVersion = 1; harnessVersion = 'stage-iv-startup-gate-v1'
+    schemaVersion = 1; harnessVersion = 'stage-iv-startup-gate-v2'
     scenarioVersion = $null; runnerSha256 = $null; powershellVersion = $PSVersionTable.PSVersion.ToString(); runId = $runId
     status = 'blocked'; reason = 'Startup gate has not completed.'
     startedUtc = [DateTime]::UtcNow.ToString('o'); finishedUtc = $null
@@ -73,6 +85,9 @@ function Read-OwnCrash([int]$ProcessId, [datetime]$SinceUtc) {
 }
 
 try {
+    if ($BattleAttempt -and -not $SeedFixtureDirectory) { throw 'BattleAttempt requires SeedFixtureDirectory.' }
+    if ($StopAfterSeedLoad -and -not $SeedFixtureDirectory) { throw 'StopAfterSeedLoad requires SeedFixtureDirectory.' }
+    if ($SeedFixtureDirectory -and ($LoadCandidate -or $SeedProbe)) { throw 'SeedFixtureDirectory already stages candidate and probe; do not combine staging switches.' }
     $fullRoot = [IO.Path]::GetFullPath($TestRoot).TrimEnd('\', '/')
     $regularFull = [IO.Path]::GetFullPath($regularProfile).TrimEnd('\', '/')
     # No writing within, or above, the regular profile; reject reparse points on
@@ -91,13 +106,28 @@ try {
     $reportPath = Join-Path $runDirectory 'report.json'
     $report.runnerSha256 = (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash.ToLowerInvariant()
     $report.startup = [ordered]@{
-        profile = $testProfile; arguments = @(('-userdir="' + $testProfile.Replace('\', '/') + '"'), '-debug_mode')
+        profile = $testProfile; arguments = @('-gdpr-compliant')
+        profileMethod = $ProfileMethod; temporaryRedirectRemoved = $null
+        renderer = $Renderer; debugMode = [bool]$DebugMode; launchMethod = $LaunchMethod; commandLineObserved = $null
         processId = $null; startedUtc = $null; exitCode = $null; timedOut = $false
         timeoutSeconds = $TimeoutSeconds; freshEngineFiles = @(); crashEvents = @()
     }
+    if ($ProfileMethod -eq 'Argument') { $report.startup.arguments += ('-userdir="' + $testProfile.Replace('\', '/') + '"') }
+    if ($Renderer -eq 'DirectX11') { $report.startup.arguments += '-dx11' }
+    if ($DebugMode) { $report.startup.arguments += '-debug_mode' }
     $before = @(Get-RegularMetadata)
     $before | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $runDirectory 'regular-before.json') -Encoding UTF8
 
+    $fixture = $null
+    if ($SeedFixtureDirectory) {
+        $fixture = Get-Content -LiteralPath (Join-Path $SeedFixtureDirectory 'fixture.json') -Raw | ConvertFrom-Json
+        if ($fixture.scenarioVersion -ne 'seed-save-load-probe-v1') { throw 'Unsupported seed fixture.' }
+        if (-not $PSBoundParameters.ContainsKey('Revision')) { $Revision = $fixture.modCommit }
+        $fixtureSave = [IO.Path]::GetFullPath((Join-Path $SeedFixtureDirectory $fixture.saveRelativePath))
+        $fixtureRoot = [IO.Path]::GetFullPath($SeedFixtureDirectory).TrimEnd('\', '/') + '\'
+        if (-not $fixtureSave.StartsWith($fixtureRoot, [StringComparison]::OrdinalIgnoreCase)) { throw 'Fixture save escapes its directory.' }
+        if ((Get-FileHash -LiteralPath $fixtureSave -Algorithm SHA256).Hash.ToLowerInvariant() -ne $fixture.saveSha256) { throw 'Fixture save hash mismatch.' }
+    }
     $commit = & git -C $repo rev-parse --verify ($Revision + '^{commit}')
     if ($LASTEXITCODE -ne 0 -or $commit -notmatch '^[0-9a-f]{40}$') { throw 'Cannot resolve candidate Git commit.' }
     $report.candidate = [ordered]@{ commit = [string]$commit; loadedInEngine = $false; snapshotSha256 = $null }
@@ -105,6 +135,52 @@ try {
     & git -C $repo archive --format=zip ('--output=' + $snapshot) $commit common events localisation gfx interface compatibility descriptor.mod thumbnail.png
     if ($LASTEXITCODE -ne 0) { throw 'Cannot archive exact candidate mod content.' }
     $report.candidate.snapshotSha256 = (Get-FileHash -LiteralPath $snapshot -Algorithm SHA256).Hash.ToLowerInvariant()
+    $enabledMods = @()
+    if ($fixture -and $commit -ne $fixture.modCommit) { throw 'Fixture and candidate mod commits differ.' }
+    if ($LoadCandidate -or $fixture) {
+        $modDirectory = Join-Path $testProfile 'mod\epoch-candidate'
+        Expand-Archive -LiteralPath $snapshot -DestinationPath $modDirectory
+        $descriptor = [IO.File]::ReadAllText((Join-Path $modDirectory 'descriptor.mod'))
+        [IO.File]::WriteAllText((Join-Path $testProfile 'mod\epoch-candidate.mod'), ($descriptor + "`npath=""" + $modDirectory.Replace('\', '/') + """`n"), [Text.UTF8Encoding]::new($false))
+        $enabledMods += 'mod/epoch-candidate.mod'
+    }
+    if ($SeedProbe -or $fixture) {
+        if (-not ($LoadCandidate -or $fixture)) { throw 'SeedProbe requires LoadCandidate.' }
+        $probeDirectory = Join-Path $testProfile 'mod\epoch36-probe'
+        Copy-Item -LiteralPath (Join-Path $repo 'test-mods\stage-iv-engine-probe') -Destination $probeDirectory -Recurse
+        $unusedBattleTemplate = Join-Path $probeDirectory 'events\epoch36_battle_attempt.txt.in'
+        if (Test-Path -LiteralPath $unusedBattleTemplate) { Remove-Item -LiteralPath $unusedBattleTemplate }
+        $probeEvents = Join-Path $probeDirectory 'events\epoch36_events.txt'
+        $markerRunId = if ($fixture) { $fixture.runId } else { $runId }
+        [IO.File]::WriteAllText($probeEvents, ([IO.File]::ReadAllText($probeEvents).Replace('__RUN_ID__', $markerRunId).Replace('__RUN_FLAG__', $markerRunId.Replace('-', '_'))), [Text.UTF8Encoding]::new($false))
+        $probeDescriptor = [IO.File]::ReadAllText((Join-Path $probeDirectory 'descriptor.mod'))
+        [IO.File]::WriteAllText((Join-Path $testProfile 'mod\epoch36-probe.mod'), ($probeDescriptor + "`npath=""" + $probeDirectory.Replace('\', '/') + """`n"), [Text.UTF8Encoding]::new($false))
+        $enabledMods += 'mod/epoch36-probe.mod'
+        $report.scenarioVersion = 'seed-save-load-probe-v1'
+    }
+    # Native JSON input must not depend on Windows PowerShell's UTF-8 BOM.
+    [IO.File]::WriteAllText((Join-Path $testProfile 'dlc_load.json'), ([ordered]@{ disabled_dlcs = @(); enabled_mods = $enabledMods } | ConvertTo-Json), [Text.UTF8Encoding]::new($false))
+    if ($fixture) {
+        # Product files always come from the verified Git archive, not a mutable
+        # fixture mod directory. Probe scripts come from this runner checkout.
+        foreach ($name in @('save games', 'settings.txt', 'continue_game.json')) {
+            Copy-Item -LiteralPath (Join-Path $SeedFixtureDirectory $name) -Destination $testProfile -Recurse -Force
+        }
+        $report.scenarioVersion = $fixture.scenarioVersion
+        $report.candidate.seedSourceRunId = $fixture.runId
+        $report.candidate.seedSaveSha256 = $fixture.saveSha256
+        $report.startup.arguments += '-continuelastsave'
+        if ($BattleAttempt) {
+            $battleFile = Join-Path $testProfile 'mod\epoch36-probe\events\epoch36_battle_attempt.txt'
+            $battleText = [IO.File]::ReadAllText((Join-Path $repo 'test-mods\stage-iv-engine-probe\events\epoch36_battle_attempt.txt.in'))
+            $report.candidate.battleProbe = 'stage-iv-setup-probe-v2'
+            $report.candidate.candidateShips = $CandidateShips
+            $ships = (1..$CandidateShips | ForEach-Object { 'create_ship = { design = "NAME_EPOCH_III_Enforcer" graphical_culture = mammalian_01 }' }) -join "`n"
+            [IO.File]::WriteAllText($battleFile, $battleText.Replace('__RUN_ID__', $runId).Replace('__CANDIDATE_SHIPS__', $ships), [Text.UTF8Encoding]::new($false))
+            Add-Content -LiteralPath (Join-Path $testProfile 'mod\epoch36-probe\common\on_actions\epoch36_on_actions.txt') -Value 'on_single_player_save_game_load = { events = { epoch36.10 } }' -Encoding ASCII
+            Add-Content -LiteralPath (Join-Path $testProfile 'mod\epoch36-probe\common\on_actions\epoch36_on_actions.txt') -Value 'on_fleet_combat_joined_attacker = { events = { epoch36.13 } } on_fleet_combat_joined_defender = { events = { epoch36.13 } } on_fleet_exit_battle = { events = { epoch36.14 } }' -Encoding ASCII
+        }
+    }
 
     $exe = Join-Path $InstallPath 'stellaris.exe'
     $launcherPath = Join-Path $InstallPath 'launcher-settings.json'
@@ -122,14 +198,50 @@ try {
     # Do not archive the Steam manifest: it includes account identifiers.
     if ($launcher.rawVersion -ne 'v4.5.4' -or $build -ne '26557690') { throw 'Installed build differs from approved 4.5.4 / 26557690; no launch performed.' }
     if (Get-Process -Name stellaris -ErrorAction SilentlyContinue) { throw 'An existing Stellaris process is running; no launch performed.' }
+    if ($ProfileMethod -eq 'UserdirFile') {
+        $redirectPath = Join-Path $InstallPath 'userdir.txt'
+        if (Test-Path -LiteralPath $redirectPath) { $redirectPath = $null; throw 'Existing userdir.txt will not be overwritten.' }
+        $redirectValue = $testProfile.Replace('\', '/')
+        [IO.File]::WriteAllText($redirectPath, $redirectValue, [Text.Encoding]::ASCII)
+    }
     $launchUtc = [DateTime]::UtcNow
     $report.startup.startedUtc = $launchUtc.ToString('o')
-    $testProcess = Start-Process -FilePath $exe -WorkingDirectory $InstallPath -ArgumentList $report.startup.arguments -PassThru
+    if ($LaunchMethod -eq 'Steam') {
+        if (-not (Get-Process -Name steam -ErrorAction SilentlyContinue)) { throw 'Steam must already be running.' }
+        $steamPath = (Get-Process -Name steam | Select-Object -First 1).Path
+        $handoff = Start-Process -FilePath $steamPath -ArgumentList (@('-applaunch', '281990') + $report.startup.arguments) -PassThru
+        $handoff.WaitForExit(10000) | Out-Null
+        $report.startup.steamHandoffExitCode = if ($handoff.HasExited) { $handoff.ExitCode } else { $null }
+        $gameDeadline = $launchUtc.AddSeconds($TimeoutSeconds)
+        while (-not $testProcess -and [DateTime]::UtcNow -lt $gameDeadline) {
+            $testProcess = Get-Process -Name stellaris -ErrorAction SilentlyContinue | Where-Object { $_.StartTime.ToUniversalTime() -ge $launchUtc } | Select-Object -First 1
+            if (-not $testProcess) { Start-Sleep -Milliseconds 250 }
+        }
+        if (-not $testProcess) { throw 'No Stellaris child observed before launcher timeout.' }
+        $null = $testProcess.Handle
+    } else {
+        $testProcess = Start-Process -FilePath $exe -WorkingDirectory $InstallPath -ArgumentList $report.startup.arguments -PassThru
+    }
     $report.startup.processId = $testProcess.Id
+    try {
+        $report.startup.commandLineObserved = (Get-CimInstance Win32_Process -Filter ('ProcessId=' + $testProcess.Id) -ErrorAction Stop).CommandLine
+    } catch { $report.diagnostics += 'Actual process command line unavailable.' }
     $deadline = $launchUtc.AddSeconds($TimeoutSeconds)
     while (-not $testProcess.WaitForExit(250)) {
+        if ($fixture -and $StopAfterSeedLoad) {
+            $liveLog = Join-Path $testProfile 'logs\game.log'
+            $loadMarker = 'EPOCH36|run=' + $fixture.runId + '|state=marker-present'
+            if ((Test-Path -LiteralPath $liveLog) -and (Select-String -LiteralPath $liveLog -SimpleMatch $loadMarker -Quiet)) {
+                $report.startup.stopReason = 'seed_marker_observed'
+                Stop-Process -Id $testProcess.Id
+                $testProcess.WaitForExit(5000) | Out-Null
+                break
+            }
+        }
         if ([DateTime]::UtcNow -ge $deadline) {
             $report.startup.timedOut = $true
+            $testProcess.Refresh()
+            if ($testProcess.HasExited) { $report.startup.timedOut = $false; break }
             Stop-Process -Id $testProcess.Id -ErrorAction Stop
             if (-not $testProcess.WaitForExit(5000)) { throw 'Timed-out process could not be confirmed stopped.' }
             break
@@ -137,7 +249,12 @@ try {
     }
     $report.startup.exitCode = $testProcess.ExitCode
     # Read only this invocation's new profile. No historical log fallback.
-    $freshFiles = @(Get-ChildItem -LiteralPath $testProfile -Recurse -File | Where-Object { $_.LastWriteTimeUtc -ge $launchUtc })
+    # Retain evidence files, not thousands of shader/account/cache artifacts.
+    $freshFiles = @(Get-ChildItem -LiteralPath $testProfile -Recurse -File | Where-Object {
+        $_.LastWriteTimeUtc -ge $launchUtc -and
+        ($_.FullName.StartsWith((Join-Path $testProfile 'logs\'), [StringComparison]::OrdinalIgnoreCase) -or
+         $_.Name -in @('settings.txt', 'continue_game.json'))
+    })
     $report.startup.freshEngineFiles = @($freshFiles | ForEach-Object {
         [ordered]@{ file = $_.FullName.Substring($testProfile.Length + 1); length = $_.Length; sha256 = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
     })
@@ -145,6 +262,20 @@ try {
     $setupLog = Join-Path $testProfile 'logs\setup.log'
     if (@($freshFiles | Where-Object { $_.FullName -eq $systemLog -and $_.Length -gt 0 }).Count -and @($freshFiles | Where-Object { $_.FullName -eq $setupLog -and $_.Length -gt 0 }).Count) {
         $report.checks.isolatedProfile = 'fresh_system_and_setup_logs'
+    }
+    if ((Test-Path -LiteralPath $setupLog) -and (Select-String -LiteralPath $setupLog -Pattern 'tag = epoch_iv_judge_body' -Quiet)) {
+        $report.candidate.loadedInEngine = $true
+        $report.checks.modLoaded = 'epoch_setup_entries_observed'
+    }
+    if ($fixture) {
+        $seedLog = Join-Path $testProfile 'logs\game.log'
+        $marker = 'EPOCH36|run=' + $fixture.runId + '|state=marker-present'
+        if ((Test-Path -LiteralPath $seedLog) -and (Select-String -LiteralPath $seedLog -SimpleMatch $marker -Quiet)) {
+            $report.checks.scenarioLoaded = 'persisted_seed_marker_observed'
+            # A UI Load or launcher Resume can produce this same native hook.
+            # The marker proves save identity, never the route used to load it.
+            $report.checks.continueLastSave = 'argument_passed_route_requires_observation'
+        }
     }
     $errorLog = Join-Path $testProfile 'logs\error.log'
     if (@($freshFiles | Where-Object { $_.FullName -eq $errorLog }).Count -and (Get-Command node -ErrorAction SilentlyContinue)) {
@@ -155,12 +286,21 @@ try {
     if ($report.startup.timedOut) { $report.reason = 'Startup timeout. No verified scenario/load/combat driver is implemented.' }
     elseif ($testProcess.ExitCode -ne 0) { $report.reason = 'Stellaris exited before a verified scenario load. See startup.exitCode and crashEvents.' }
     else { $report.reason = 'Process ended; scenario identity, loading and combat remain unverified.' }
+    if ($report.checks.scenarioLoaded -eq 'persisted_seed_marker_observed') {
+        $report.reason = 'Persisted seed marker observed; load route requires observation. Combat/retreat/180-day regression remains unverified.'
+    }
 } catch {
     $report.reason = $_.Exception.Message
 } finally {
     if ($testProcess -and -not $testProcess.HasExited) {
         Stop-Process -Id $testProcess.Id -ErrorAction SilentlyContinue
         if (-not $testProcess.WaitForExit(5000)) { $report.diagnostics += 'Own process could not be confirmed stopped within five seconds.' }
+    }
+    if ($redirectPath -and (Test-Path -LiteralPath $redirectPath)) {
+        if ([IO.File]::ReadAllText($redirectPath) -ceq $redirectValue) {
+            Remove-Item -LiteralPath $redirectPath
+            $report.startup.temporaryRedirectRemoved = $true
+        } else { $report.diagnostics += 'userdir.txt changed externally; retained without overwrite/removal.' }
     }
     if ($reportPath) {
         $after = @(Get-RegularMetadata)

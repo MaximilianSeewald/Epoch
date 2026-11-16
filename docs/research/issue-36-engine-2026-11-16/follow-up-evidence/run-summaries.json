@@ -1,0 +1,280 @@
+[
+  {
+    "runId": "20261116T083507546Z-cb51240a",
+    "reportSha256": "f00525b4795e75c7f3b55b1aae4d56566b7137988ca462acc841f60a5d7dc59d",
+    "runnerSha256": "80ea936dfb13a4747cbb679896225a517bd9b0ccae752936a025c24bc8c7fcfb",
+    "modCommit": "59885296e0ac65bd11486dd5a56dac76ee8a23b1",
+    "buildId": "26557690",
+    "processId": 27532,
+    "actualCommandLine": "\"G:\\Steam\\steamapps\\common\\Stellaris\\stellaris.exe\" -userdir=\"G:/EPOCH-Stellaris-Test/runs/20261116T083507546Z-cb51240a/profile\" -gdpr-compliant -dx11 ",
+    "startedUtc": "2026-11-16T08:35:07.9017321Z",
+    "processExitCode": -1073741819,
+    "timedOut": false,
+    "stopReason": null,
+    "redirectRemoved": null,
+    "regularMetadataUnchanged": true,
+    "crashEvents": [
+      {
+        "eventId": 1000,
+        "recordId": 121580,
+        "timeUtc": "2026-11-16T08:35:08.7377754Z",
+        "processId": 27532,
+        "application": "stellaris.exe",
+        "module": "stellaris.exe",
+        "exceptionCode": "c0000005",
+        "faultingOffset": "0000000001caed25"
+      }
+    ],
+    "freshLogs": [],
+    "evidenceLimit": "See follow-up.md for UI route, scenario outcome and corrections to early automatic reason strings; no combat PASS."
+  },
+  {
+    "runId": "20261116T083910324Z-9bf09a82",
+    "reportSha256": "d3d70a146e94ebc9b7228a7eea63b66e5d8081dc534b89f8bbf65c970054d6ea",
+    "runnerSha256": "80ea936dfb13a4747cbb679896225a517bd9b0ccae752936a025c24bc8c7fcfb",
+    "modCommit": "59885296e0ac65bd11486dd5a56dac76ee8a23b1",
+    "buildId": "26557690",
+    "processId": 28896,
+    "actualCommandLine": "\"G:\\Steam\\steamapps\\common\\Stellaris\\stellaris.exe\" -userdir=\"G:/EPOCH-Stellaris-Test/runs/20261116T083910324Z-9bf09a82/profile\" -gdpr-compliant -dx11 -debug_mode ",
+    "startedUtc": "2026-11-16T08:39:10.6829689Z",
+    "processExitCode": -1073741819,
+    "timedOut": false,
+    "stopReason": null,
+    "redirectRemoved": null,
+    "regularMetadataUnchanged": true,
+    "crashEvents": [
+      {
+        "eventId": 1000,
+        "recordId": 121589,
+        "timeUtc": "2026-11-16T08:39:11.5043696Z",
+        "processId": 28896,
+        "application": "stellaris.exe",
+        "module": "stellaris.exe",
+        "exceptionCode": "c0000005",
+        "faultingOffset": "0000000001caed25"
+      }
+    ],
+    "freshLogs": [],
+    "evidenceLimit": "See follow-up.md for UI route, scenario outcome and corrections to early automatic reason strings; no combat PASS."
+  },
+  {
+    "runId": "20261116T084837419Z-139118c3",
+    "reportSha256": "48894042388822aaf1952e3ea55ef49dee279ce2aaf956f06190449dbf73a468",
+    "runnerSha256": "7d51e5fef1061485c88adda6b68a0d96d457819261ce817ab9915ef090594b5d",
+    "modCommit": "59885296e0ac65bd11486dd5a56dac76ee8a23b1",
+    "buildId": "26557690",
+    "processId": 13800,
+    "actualCommandLine": "\"G:\\Steam\\steamapps\\common\\Stellaris\\stellaris.exe\" -gdpr-compliant -dx11 -debug_mode ",
+    "startedUtc": "2026-11-16T08:48:39.4825193Z",
+    "processExitCode": 0,
+    "timedOut": false,
+    "stopReason": null,
+    "redirectRemoved": true,
+    "regularMetadataUnchanged": true,
+    "crashEvents": [],
+    "freshLogs": [
+      {
+        "file": "logs\\debug.log",
+        "length": 170,
+        "sha256": "5bbc661aa6e83d0e8f090a23bce608ea9d86cc8ce7ccb810f4460640678f4a33"
+      },
+      {
+        "file": "logs\\error.log",
+        "length": 92054,
+        "sha256": "72b22a989958873f1901a5f9e7a8d8695cadfd844936a3d61f02145cc0a5eb8d"
+      },
+      {
+        "file": "logs\\game.log",
+        "length": 673,
+        "sha256": "b44f8fd7b835894ce3c7359cfad6acb0816356ba5f854409d8e0bbcd42fcc15b"
+      },
+      {
+        "file": "logs\\setup.log",
+        "length": 1160191,
+        "sha256": "7650e92662b1f05e8cfce704f3fbe8dc537577f0f3f679b975b34000fd9cd3b3"
+      },
+      {
+        "file": "logs\\system.log",
+        "length": 4014,
+        "sha256": "65bf0a4cea2f41107d866534d69421a7c8948355de7bf4752c2018208fdf8af5"
+      }
+    ],
+    "evidenceLimit": "See follow-up.md for UI route, scenario outcome and corrections to early automatic reason strings; no combat PASS."
+  },
+  {
+    "runId": "20261116T090503832Z-3c4feacb",
+    "reportSha256": "c99552dceec46ca7538d20ba2170fee0daeba5fc4db720c2245b730386b975c2",
+    "runnerSha256": "c87669ec3c32dcab0b18860684059755bb255ff456c82d162eb7d04b17cc39bc",
+    "modCommit": "59885296e0ac65bd11486dd5a56dac76ee8a23b1",
+    "buildId": "26557690",
+    "processId": 31264,
+    "actualCommandLine": "\"G:\\Steam\\steamapps\\common\\Stellaris\\stellaris.exe\" -gdpr-compliant -dx11 -debug_mode -continuelastsave ",
+    "startedUtc": "2026-11-16T09:05:04.3444032Z",
+    "processExitCode": -1,
+    "timedOut": true,
+    "stopReason": null,
+    "redirectRemoved": true,
+    "regularMetadataUnchanged": true,
+    "crashEvents": [],
+    "freshLogs": [
+      {
+        "file": "logs\\debug.log",
+        "length": 170,
+        "sha256": "6c01ae27d577be2beca075f0beda18a5e50b2efa8c2c2a00a07e53e52cd68baf"
+      },
+      {
+        "file": "logs\\error.log",
+        "length": 80984,
+        "sha256": "09f14f2cfd857bef322d65f6b8d4f7b1af6faf59d86e530f12d95d46167ae0c4"
+      },
+      {
+        "file": "logs\\game.log",
+        "length": 176,
+        "sha256": "727425a55ac24d25a1285bacccbf101d3480b2a28f83464d219a6ffa8d5a7aa5"
+      },
+      {
+        "file": "logs\\setup.log",
+        "length": 1139519,
+        "sha256": "e2c83a0b48cbe04ddb3a64a29b57f6aaa1ab6c67b8ce9afa21e351b215abd9a4"
+      },
+      {
+        "file": "logs\\system.log",
+        "length": 4014,
+        "sha256": "1e659d7888dcb2d8a5683314a5a3914c996a9e1bda838eeee970d51a5711fa38"
+      }
+    ],
+    "evidenceLimit": "See follow-up.md for UI route, scenario outcome and corrections to early automatic reason strings; no combat PASS."
+  },
+  {
+    "runId": "20261116T091012335Z-010a3bc1",
+    "reportSha256": "9da268a2312e603be262c5562f16bcf11b2acb3efa967a0fc6f4306f1848ddaf",
+    "runnerSha256": "27dd7f02445d28fbe4409db68943e75007f8156e35b9e1b41ba89e9d6ba9a6f1",
+    "modCommit": "59885296e0ac65bd11486dd5a56dac76ee8a23b1",
+    "buildId": "26557690",
+    "processId": 25652,
+    "actualCommandLine": "\"G:\\Steam\\steamapps\\common\\Stellaris\\stellaris.exe\" -gdpr-compliant -dx11 -debug_mode -continuelastsave ",
+    "startedUtc": "2026-11-16T09:10:12.7845206Z",
+    "processExitCode": -1,
+    "timedOut": false,
+    "stopReason": null,
+    "redirectRemoved": true,
+    "regularMetadataUnchanged": true,
+    "crashEvents": [],
+    "freshLogs": [
+      {
+        "file": "logs\\debug.log",
+        "length": 170,
+        "sha256": "60d59a051447dfdad01ad7d2066e0e15e2d023cd1f044a44c7c28caff97a47e3"
+      },
+      {
+        "file": "logs\\error.log",
+        "length": 82015,
+        "sha256": "859c65cbe2d2c51f177b8009d03ab392792d0efede7380d8906f2ac40b047dd1"
+      },
+      {
+        "file": "logs\\game.log",
+        "length": 973,
+        "sha256": "ae3a6663bf909890738d03cd90e31e2f91abf489dd62441085f787228ae0d07b"
+      },
+      {
+        "file": "logs\\setup.log",
+        "length": 1139519,
+        "sha256": "ba03a826b35cd7b2dd4e1f56ebf1e5a824645c77643ba2ecbcbffda884dac545"
+      },
+      {
+        "file": "logs\\system.log",
+        "length": 4014,
+        "sha256": "7abc9a4829a4dc427fd23a8e7f23f16189f8dbd7cfbdf1405673b4762b1ab51a"
+      }
+    ],
+    "evidenceLimit": "See follow-up.md for UI route, scenario outcome and corrections to early automatic reason strings; no combat PASS."
+  },
+  {
+    "runId": "20261116T091338662Z-12834752",
+    "reportSha256": "a93d1462c28b4ade8a90428eea08ae836e61afd05b91e234f2db58e995800213",
+    "runnerSha256": "334be0e176b010a61f99eb889766595cf8bd80d04e9b5d362f215c96e4db7a49",
+    "modCommit": "59885296e0ac65bd11486dd5a56dac76ee8a23b1",
+    "buildId": "26557690",
+    "processId": 22764,
+    "actualCommandLine": "stellaris.exe --pdx-launcher-session-token <redacted> --paradox-account-userid <redacted> -gdpr-compliant -dx11 -debug_mode -continuelastsave -dx11 -gdpr-compliant",
+    "startedUtc": "2026-11-16T09:13:39.1522271Z",
+    "processExitCode": 0,
+    "timedOut": false,
+    "stopReason": null,
+    "redirectRemoved": true,
+    "regularMetadataUnchanged": false,
+    "crashEvents": [],
+    "freshLogs": [
+      {
+        "file": "logs\\debug.log",
+        "length": 170,
+        "sha256": "abf1437b0bfb641f8a8b4c36dc61c14ca694088e554231858bdd27b8c015d477"
+      },
+      {
+        "file": "logs\\error.log",
+        "length": 81715,
+        "sha256": "9ad2dc7ba102fa829f1b8e0a752a581cd792e5ee23b7c22e4285c3c59608e78f"
+      },
+      {
+        "file": "logs\\game.log",
+        "length": 3144,
+        "sha256": "6a1eb52739f6e5bd3b14fd0b171a934a54fb3b9be1dd51fbed9ad28be3c412ea"
+      },
+      {
+        "file": "logs\\setup.log",
+        "length": 1139519,
+        "sha256": "f2f2458d7c2685f047e0007ecf03403414d689ab394b7319d3b2e596f24c0b09"
+      },
+      {
+        "file": "logs\\system.log",
+        "length": 4014,
+        "sha256": "5cb4dcac14066bee91d27af17f375983814754c32637714091b09bdf653b8edd"
+      }
+    ],
+    "evidenceLimit": "See follow-up.md for UI route, scenario outcome and corrections to early automatic reason strings; no combat PASS."
+  },
+  {
+    "runId": "20261116T092040096Z-d277e5af",
+    "reportSha256": "d90b84f8b0f0058ff0de99f0697e9f9a48cbd3841e8cd65d8f075e4e8f10dffa",
+    "runnerSha256": "fe2b40b91e706669dd2bdc3d5fe23defde19998fada318768de7c1a94d4d7db3",
+    "modCommit": "59885296e0ac65bd11486dd5a56dac76ee8a23b1",
+    "buildId": "26557690",
+    "processId": 21644,
+    "actualCommandLine": "\"G:\\Steam\\steamapps\\common\\Stellaris\\stellaris.exe\" -gdpr-compliant -dx11 -debug_mode -continuelastsave ",
+    "startedUtc": "2026-11-16T09:20:42.1799973Z",
+    "processExitCode": -1,
+    "timedOut": false,
+    "stopReason": "seed_marker_observed",
+    "redirectRemoved": true,
+    "regularMetadataUnchanged": true,
+    "crashEvents": [],
+    "freshLogs": [
+      {
+        "file": "logs\\debug.log",
+        "length": 170,
+        "sha256": "e5e1bf47332fb3213ba7ef7b590e0340894c96cee402aec4cc29397bcb8ed26e"
+      },
+      {
+        "file": "logs\\error.log",
+        "length": 81596,
+        "sha256": "a593fc6c6d1379fcfd651d45df50a1e0dc9695e645aca55360ddc513bfd1adfe"
+      },
+      {
+        "file": "logs\\game.log",
+        "length": 384,
+        "sha256": "1882186172e8c80db6ac6c01a6d9744f84d2332f58cad06b58106e8e3d444dec"
+      },
+      {
+        "file": "logs\\setup.log",
+        "length": 1139519,
+        "sha256": "0760e61bafb967b0491f417728fef203376ae7c38c9a17f43cff65c89e75015d"
+      },
+      {
+        "file": "logs\\system.log",
+        "length": 4014,
+        "sha256": "377d47147fd359a0f842dfd13829c85288666c2bc57dbacbf1625798e1a8368e"
+      }
+    ],
+    "evidenceLimit": "See follow-up.md for UI route, scenario outcome and corrections to early automatic reason strings; no combat PASS."
+  }
+]

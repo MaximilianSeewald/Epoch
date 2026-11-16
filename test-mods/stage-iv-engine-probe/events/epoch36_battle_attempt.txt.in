@@ -1,0 +1,123 @@
+namespace = epoch36
+
+# Optional experimental setup. Beginning state only; no production attack,
+# engagement, cooldown or victory flag is assigned by this helper.
+event = {
+ id = epoch36.10
+ hide_window = yes
+ is_triggered_only = yes
+ immediate = {
+  every_country = {
+   limit = { is_ai = yes is_country_type = default NOT = { has_country_flag = epoch36_ai_setup } }
+   country_event = { id = epoch36.11 }
+  }
+ }
+}
+country_event = {
+ id = epoch36.11
+ hide_window = yes
+ is_triggered_only = yes
+ immediate = {
+  set_country_flag = epoch36_ai_setup
+  set_country_flag = epoch_res_schema_v1
+  set_country_flag = epoch_res_complete
+  set_country_flag = epoch_res_final_choice_v1
+  set_country_flag = epoch_res_stage_iii_ready
+  set_country_flag = epoch_core_phase_ii_ready
+  set_global_flag = epoch_iii_first_repulsed
+  set_country_flag = epoch_iv_started
+  set_variable = { which = epoch_iv_chapter value = 5 }
+  add_resource = { energy = 1000000 alloys = 1000000 minerals = 1000000 }
+  epoch_iv_spawn_judge = yes
+  if = {
+   limit = { epoch_iv_ai_personal_target = yes }
+   log = "EPOCH36|run=__RUN_ID__|state=personal-target-valid|country=[This.GetName]"
+  }
+  else = { log = "EPOCH36|run=__RUN_ID__|state=personal-target-invalid|country=[This.GetName]" }
+  event_target:epoch_iv_anchor@root = { star = { save_event_target_as = epoch36_candidate_start } }
+  create_fleet = {
+   name = "EPOCH36 Candidate"
+   effect = {
+    set_owner = root
+    set_fleet_flag = epoch36_candidate
+    __CANDIDATE_SHIPS__
+    set_location = { target = event_target:epoch36_candidate_start distance = 30 angle = 0 }
+    set_fleet_stance = aggressive
+   }
+  }
+  log = "EPOCH36|run=__RUN_ID__|state=ai-prepared|country=[This.GetName]"
+  set_variable = { which = epoch36_observed_days value = 0 }
+  country_event = { id = epoch36.12 days = 1 }
+ }
+}
+country_event = {
+ id = epoch36.12
+ hide_window = yes
+ is_triggered_only = yes
+ immediate = {
+  change_variable = { which = epoch36_observed_days value = 1 }
+  if = {
+   limit = { has_country_flag = epoch_iv_ai_attack_ordered NOT = { has_country_flag = epoch36_order_seen } }
+   set_country_flag = epoch36_order_seen
+   log = "EPOCH36|run=__RUN_ID__|state=attack-order-observed|country=[This.GetName]"
+  }
+  if = {
+   limit = { NOT = { has_country_flag = epoch_iv_ai_attack_ordered } has_country_flag = epoch36_order_seen }
+   remove_country_flag = epoch36_order_seen
+   log = "EPOCH36|run=__RUN_ID__|state=assignment-cleared|country=[This.GetName]"
+  }
+  if = {
+   limit = { has_country_flag = epoch_iv_ai_attack_cooldown NOT = { has_country_flag = epoch36_cooldown_seen } }
+   set_country_flag = epoch36_cooldown_seen
+   log = "EPOCH36|run=__RUN_ID__|state=cooldown-observed|country=[This.GetName]"
+  }
+  if = {
+   limit = { NOT = { has_country_flag = epoch_iv_ai_attack_cooldown } has_country_flag = epoch36_cooldown_seen }
+   remove_country_flag = epoch36_cooldown_seen
+   log = "EPOCH36|run=__RUN_ID__|state=cooldown-expired-observed|country=[This.GetName]"
+  }
+  if = {
+   limit = { check_variable = { which = epoch36_observed_days value = 1 } }
+   if = {
+    limit = { any_owned_fleet = { has_fleet_flag = epoch36_candidate fleet_power > 30000 fleet_power > event_target:epoch_iv_fleet@root.trigger:fleet_power } }
+    log = "EPOCH36|run=__RUN_ID__|state=candidate-power-above-target"
+   }
+   else = { log = "EPOCH36|run=__RUN_ID__|state=candidate-power-insufficient" }
+  }
+  if = {
+   limit = { check_variable = { which = epoch36_observed_days value < 720 } }
+   country_event = { id = epoch36.12 days = 1 }
+  }
+  else = { log = "EPOCH36|run=__RUN_ID__|state=observation-ended" }
+ }
+}
+fleet_event = {
+ id = epoch36.13
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { has_fleet_flag = epoch36_candidate }
+ immediate = {
+  if = {
+   limit = { owner = { event_target:epoch_iv_fleet@this = { is_same_value = from } } }
+   log = "EPOCH36|run=__RUN_ID__|state=personal-combat-joined"
+  }
+ }
+}
+fleet_event = {
+ id = epoch36.14
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { has_fleet_flag = epoch36_candidate }
+ immediate = {
+  if = {
+   limit = { any_owned_ship = { always = yes } }
+   log = "EPOCH36|run=__RUN_ID__|state=fleet-exit-with-ships"
+  }
+  owner = {
+   if = {
+    limit = { exists = event_target:epoch_iv_ship@this }
+    log = "EPOCH36|run=__RUN_ID__|state=guardian-alive-at-exit"
+   }
+  }
+ }
+}

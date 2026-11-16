@@ -1,0 +1,12 @@
+{
+    "schemaVersion":  1,
+    "scenarioVersion":  "seed-save-load-probe-v1",
+    "runId":  "20261116T084837419Z-139118c3",
+    "saveSha256":  "74c78511ae722a4739f4edd9a6f2aac3532a71ecc5d13b91a79f78863cd337fd",
+    "saveBytes":  537622,
+    "date":  "2200.01.01",
+    "seedMarker":  true,
+    "runFlag":  true,
+    "runName":  true,
+    "guardianCombatPrepared":  false
+}

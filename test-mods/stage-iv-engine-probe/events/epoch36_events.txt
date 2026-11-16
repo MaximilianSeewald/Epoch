@@ -1,0 +1,42 @@
+namespace = epoch36
+
+# Setup marker only. This does not prepare or certify guardian combat.
+country_event = {
+ id = epoch36.1
+ hide_window = yes
+ is_triggered_only = yes
+ trigger = { is_ai = no is_country_type = default }
+ immediate = {
+  set_country_flag = epoch36_seed_v1
+  set_country_flag = epoch36_run___RUN_FLAG__
+  set_name = "EPOCH36___RUN_ID__"
+  log = "EPOCH36|run=__RUN_ID__|state=seed-created|country=[This.GetName]"
+ }
+}
+
+# Console probe checks the persisted marker inside the immediate block;
+# invoking an event does not itself establish that an event trigger was tested.
+country_event = {
+ id = epoch36.2
+ hide_window = yes
+ is_triggered_only = yes
+ immediate = {
+  if = {
+   limit = { has_country_flag = epoch36_seed_v1 has_country_flag = epoch36_run___RUN_FLAG__ }
+   log = "EPOCH36|run=__RUN_ID__|state=marker-present|country=[This.GetName]"
+  }
+  else = { log = "EPOCH36|run=__RUN_ID__|state=marker-missing" }
+ }
+}
+
+event = {
+ id = epoch36.3
+ hide_window = yes
+ is_triggered_only = yes
+ immediate = {
+  every_country = {
+   limit = { has_country_flag = epoch36_seed_v1 }
+   country_event = { id = epoch36.2 }
+  }
+ }
+}

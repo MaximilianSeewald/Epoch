@@ -1,0 +1,2 @@
+on_game_start_country = { events = { epoch36.1 } }
+on_single_player_save_game_load = { events = { epoch36.3 } }

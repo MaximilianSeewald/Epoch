@@ -1,5 +1,7 @@
 # Issue #36: Engine-Test vor Profilinitialisierung blockiert
 
+> Historischer Erstbefund. Der [Fortsetzungsbericht](follow-up.md) weist inzwischen einen funktionierenden isolierten Start über `userdir.txt`, EPOCH-Laden und Save/Load nach und enthält den Crash-Stack des weiterhin fehlerhaften `-userdir`-Arguments. Die folgenden Laufartefakte bleiben unverändert.
+
 **16. November 2026: `blocked`.** Die vorhandene Installation stürzt beim isolierten Direktstart vor dem ersten Engine-Log ab. Kein Spielstand wurde geladen, keine Ingame-Zeit ist verstrichen, kein Stage-IV-Ablauf wurde in der Engine beobachtet. Dieser PR liefert einen wiederholbaren Start-Gate mit Diagnose, noch keinen fertigen Kampftest.
 
 ## PowerShell-Aufruf
